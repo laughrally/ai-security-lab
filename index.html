@@ -298,6 +298,68 @@
   .form-close:hover{color:var(--text)}
   .form-note{font-size:12px;color:var(--text4);text-align:center;margin-top:16px;line-height:1.7}
 
+
+  /* ===== 受講済みボタン ===== */
+  .complete-btn-wrap{text-align:center;margin-top:32px;padding-top:28px;border-top:1px solid var(--border)}
+  .complete-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 28px;border-radius:8px;border:2px solid var(--border2);
+    background:var(--bg2);color:var(--text3);font-size:14px;font-weight:700;
+    cursor:pointer;font-family:inherit;transition:all .2s;
+  }
+  .complete-btn:hover{border-color:var(--green);color:var(--green)}
+  .complete-btn.done{
+    background:var(--green-l);border-color:var(--green);color:var(--green);
+    cursor:default;
+  }
+  /* 修了証ページ */
+  #tab-certificate{display:none;padding:0}
+  #tab-certificate.active{display:block}
+  .cert-box{max-width:560px;margin:0 auto;text-align:center;padding:60px 20px}
+  .cert-icon{font-size:64px;margin-bottom:24px}
+  .cert-title{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;margin-bottom:12px}
+  .cert-sub{font-size:15px;color:var(--text3);line-height:1.8;margin-bottom:40px}
+  .cert-progress{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:32px;text-align:left}
+  .cert-progress-title{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text2)}
+  .cert-progress-bar{background:var(--border);border-radius:100px;height:8px;overflow:hidden;margin-bottom:8px}
+  .cert-progress-fill{background:var(--green);height:100%;border-radius:100px;transition:width .5s}
+  .cert-progress-text{font-size:12px;color:var(--text3)}
+  .cert-locked{opacity:.5;pointer-events:none}
+
+
+  /* ===== 受講済みボタン ===== */
+  .completion-area{text-align:center;margin:32px 0 8px;padding:24px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+  .completion-area p{font-size:13px;color:var(--text3);margin-bottom:14px}
+  .btn-complete{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 28px;border-radius:8px;border:2px solid var(--border2);
+    background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;
+    cursor:pointer;transition:all .2s;font-family:inherit;
+  }
+  .btn-complete:hover{border-color:var(--green);color:var(--green)}
+  .btn-complete.done{background:var(--green-l);border-color:var(--green);color:var(--green);pointer-events:none}
+  .completion-progress{
+    margin-top:16px;font-size:12px;color:var(--text3);
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;
+  }
+  .completion-progress span{color:var(--green);font-weight:700}
+
+  /* ===== 修了証ページ ===== */
+  #tab-certificate{display:none;padding:0}
+  #tab-certificate.active{display:block}
+  .cert-box{max-width:640px;margin:0 auto;text-align:center;padding:48px 24px}
+  .cert-icon{font-size:64px;margin-bottom:24px}
+  .cert-title{font-family:'Noto Serif JP',serif;font-size:28px;font-weight:700;margin-bottom:12px}
+  .cert-desc{font-size:15px;color:var(--text3);line-height:1.9;margin-bottom:40px}
+  .cert-locked{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:32px}
+  .cert-locked-title{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text2)}
+  .cert-locked-desc{font-size:13px;color:var(--text3);line-height:1.8}
+  .cert-progress-bar{background:var(--border);border-radius:100px;height:8px;margin:16px 0;overflow:hidden}
+  .cert-progress-fill{background:var(--green);height:100%;border-radius:100px;transition:width .5s}
+  .cert-form{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:36px;text-align:left;margin-top:32px}
+  .cert-form-title{font-size:18px;font-weight:700;margin-bottom:6px}
+  .cert-form-desc{font-size:13px;color:var(--text3);margin-bottom:24px}
+
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -824,6 +886,13 @@
           </div>
 
           <div class="hr"></div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-intro" onclick="markComplete('intro')">
+              ✓ 序章 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-intro"></div>
+          </div>
           <div class="lnav">
             <div></div>
             <a href="#lessons" onclick="switchTab('lesson1');return false;" class="lnbtn" style="text-align:right">
@@ -934,6 +1003,13 @@
             <div class="qfb qfbok" id="q1-ok">✅ 正解です。「学習オフ」は学習データとしての使用を止める設定であり、情報の送信自体は止まりません。情報はOpenAIのサーバーに送信・保存されています。この区別がセキュリティ判断の出発点です。</div>
             <div class="qfb qfbng" id="q1-ng">❌ 不正解です。「学習オフ」設定をしても、入力情報はOpenAIのサーバーに送信されます。「送信されない」と「学習に使われない」は全く別の概念です。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson1" onclick="markComplete('lesson1')">
+              ✓ L01 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson1"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('intro');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">序章：なぜ今学ぶ必要があるのか</span></a>
             <a href="#lessons" onclick="switchTab('lesson2');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L02：「学習オフ」設定の意味と限界</span></a>
@@ -1013,6 +1089,13 @@
             </div>
             <div class="qfb qfbok" id="q2-ok">✅ 正解です。設定はアカウント単位のため、5人が使っていれば5人全員が個別に設定する必要があります。一括設定はTeam・Enterpriseプランのみです。</div>
             <div class="qfb qfbng" id="q2-ng">❌ 不正解です。設定は各アカウントで個別に行う必要があります。設定後も個人情報の入力は避けてください。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson2" onclick="markComplete('lesson2')">
+              ✓ L02 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson2"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson1');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L01：入力情報はどこへ行くのか</span></a>
@@ -1108,6 +1191,13 @@
             <div class="qfb qfbok" id="q3-ok">✅ 正解です。全禁止は現実的でなく、厳罰主義は隠蔽を生みます。現状把握→許可リスト作成→教育という順序が最も効果的です。</div>
             <div class="qfb qfbng" id="q3-ng">❌ 不正解です。全禁止・放置・厳罰はいずれも逆効果です。正解は「現状把握→許可リスト→教育」のアプローチです。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson3" onclick="markComplete('lesson3')">
+              ✓ L03 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson3"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson2');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L02：「学習オフ」設定の意味と限界</span></a>
             <a href="#lessons" onclick="switchTab('lesson4');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L04：クラウドAIとオンプレAIの違い</span></a>
@@ -1191,6 +1281,13 @@
             </div>
             <div class="qfb qfbok" id="q4-ok">✅ 正解です。オンプレミスは中小企業には現実的でなく、無料プランは業務利用には不適切です。法人向けプランへの移行が最もバランスの良い選択です。</div>
             <div class="qfb qfbng" id="q4-ng">❌ 不正解です。無料プランの継続はリスクが高く、オンプレミスは過剰投資になりがちです。法人向けプランへの移行が現実的な最善策です。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson4" onclick="markComplete('lesson4')">
+              ✓ L04 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson4"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson3');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L03：シャドーAIとは何か</span></a>
@@ -1287,6 +1384,13 @@
             </div>
             <div class="qfb qfbok" id="q5-ok">✅ 正解です。Teamプランは組織全体でのデータ保護が契約レベルで保証され、DPAの締結も可能です。個人設定に依存するプランとは根本的に安全性が異なります。</div>
             <div class="qfb qfbng" id="q5-ng">❌ 不正解です。個人設定に依存するプランは設定漏れのリスクがあり、DPAも締結できません。Teamプランなら組織全体での保証が得られます。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson5" onclick="markComplete('lesson5')">
+              ✓ L05 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson5"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson4');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L04：クラウドAIとオンプレAIの違い</span></a>
@@ -1387,6 +1491,13 @@
             <div class="qfb qfbok" id="q6-ok">✅ 正解です。Copilotは社内データに広くアクセスできるため、権限設計が最重要です。設定を誤ると本来見えないはずの情報にCopilotがアクセスできてしまいます。</div>
             <div class="qfb qfbng" id="q6-ng">❌ 不正解です。Copilot導入時の最重要事項はアクセス権限の設定です。コスト・操作習熟より先に、データアクセスの範囲を適切に設計することが必要です。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson6" onclick="markComplete('lesson6')">
+              ✓ L06 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson6"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson5');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L05：ChatGPT各プランの違い</span></a>
             <a href="#lessons" onclick="switchTab('lesson7');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L07：情報の判断基準</span></a>
@@ -1475,6 +1586,13 @@
             </div>
             <div class="qfb qfbok" id="q7-ok">✅ 正解です。個人を特定する情報を除き、一般的な属性として表現することで安全に入力できます。これが「匿名化・抽象化」の基本です。</div>
             <div class="qfb qfbng" id="q7-ng">❌ 不正解です。正解は「65歳以上の独居高齢者向け…」です。他の選択肢は個人情報・企業機密・人事情報を含んでおり、すべて入力禁止に該当します。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson7" onclick="markComplete('lesson7')">
+              ✓ L07 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson7"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson6');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L06：Claude・Gemini・Copilotの比較</span></a>
@@ -1585,6 +1703,13 @@
             <div class="qfb qfbok" id="q8-ok">✅ 正解です。介護・医療情報は個人情報保護法第2条第3項の「要配慮個人情報」であり、AIへの入力は原則禁止です。フォーマット作成など、利用者を特定しない形での活用に限定してください。</div>
             <div class="qfb qfbng" id="q8-ng">❌ 不正解です。介護・医療情報は要配慮個人情報です。施設内PCでの使用でも、インターネット経由でAIを使う限り外部サーバーへの送信リスクは変わりません。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson8" onclick="markComplete('lesson8')">
+              ✓ L08 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson8"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson7');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L07：情報の判断基準</span></a>
             <a href="#lessons" onclick="switchTab('lesson9');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L09：AIと個人情報保護法</span></a>
@@ -1670,6 +1795,13 @@
             </div>
             <div class="qfb qfbok" id="q9-ok">✅ 正解です。個人情報のAIへの入力は個人情報保護法第27条の「第三者提供」の問題が生じる可能性があります。DPA締結など、適切な契約関係の確立が法的リスク回避の核心です。</div>
             <div class="qfb qfbng" id="q9-ng">❌ 不正解です。最重要確認事項は「AIサービスとの契約関係（データ処理委託の適法性）」です。対応言語や料金は法的リスクとは無関係です。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson9" onclick="markComplete('lesson9')">
+              ✓ L09 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson9"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson8');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L08：業種別リスク事例</span></a>
@@ -1770,6 +1902,13 @@
             </div>
             <div class="qfb qfbok" id="q10-ok">✅ 正解です。文化庁「考え方」によると、AI生成物は「著作物に該当しない可能性が高い」とされる一方、既存著作物との「類似性」と「依拠性」が認められる場合は著作権侵害になりえます。</div>
             <div class="qfb qfbng" id="q10-ng">❌ 不正解です。AI生成物は「すべて自由に使える」わけでも「すべてAI会社のもの」でもありません。文化庁「考え方」に基づき、類似性・依拠性の有無が重要な判断基準です。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson10" onclick="markComplete('lesson10')">
+              ✓ L10 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson10"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson9');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L09：AIと個人情報保護法</span></a>
@@ -1878,6 +2017,13 @@
             <div class="qfb qfbok" id="q11-ok">✅ 正解です。「AIがそう言ったから」は免責理由になりません。AI開発会社の利用規約には出力の正確性を保証しない旨が明記されており、AIを使った成果物に対する責任は利用者側にあります。</div>
             <div class="qfb qfbng" id="q11-ng">❌ 不正解です。AI開発会社の利用規約には「AIの出力の正確性を保証しない」と明記されており、法的責任は利用者側にあります。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson11" onclick="markComplete('lesson11')">
+              ✓ L11 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson11"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson10');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L10：著作権侵害になるケース</span></a>
             <a href="#lessons" onclick="switchTab('lesson12');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L12：ガイドライン作成テンプレート</span></a>
@@ -1963,6 +2109,13 @@
             <div class="qfb qfbok" id="q12-ok">✅ 正解です。完璧を求めて先送りにするより、70点のものを作って運用しながら改善することが重要です。AI関連法令は急速に整備が進んでいるため、継続的な更新が前提です。</div>
             <div class="qfb qfbng" id="q12-ng">❌ 不正解です。先送りも放置も逆効果です。まず基本的なルールを文書化し、運用しながら改善することが最善のアプローチです。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson12" onclick="markComplete('lesson12')">
+              ✓ L12 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson12"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson11');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L11：ハルシネーションと法的責任</span></a>
             <a href="#lessons" onclick="switchTab('lesson13');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L13：インシデント初動対応フロー</span></a>
@@ -2044,6 +2197,13 @@
             </div>
             <div class="qfb qfbok" id="q13-ok">✅ 正解です。まず事実を記録し、速やかに責任者に報告することが最優先です。自己解決・様子見・証拠隠滅はすべて状況を悪化させ、個人情報保護委員会への報告義務が発生した場合に違反となりえます。</div>
             <div class="qfb qfbng" id="q13-ng">❌ 不正解です。正解は「事実を記録し、速やかに責任者に報告する」です。隠蔽・自己解決は後に発覚した際の信頼失墜を何倍にも拡大させ、法的リスクも高まります。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson13" onclick="markComplete('lesson13')">
+              ✓ L13 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson13"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson12');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L12：ガイドライン作成テンプレート</span></a>
@@ -2141,6 +2301,13 @@
             <div class="qfb qfbok" id="q14-ok">✅ 正解です。完璧を求めて先送りにするより、今すぐできる基本的な対策（法人プランへの移行・入力禁止リスト作成）から着手することが最も効果的です。これだけでも法的リスクを大幅に低減できます。</div>
             <div class="qfb qfbng" id="q14-ng">❌ 不正解です。専任担当者の採用や高度なシステム導入は中小企業には現実的でないことが多いです。今すぐできる基本対策から始めることが重要です。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson14" onclick="markComplete('lesson14')">
+              ✓ L14 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson14"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson13');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L13：インシデント初動対応フロー</span></a>
             <a href="#lessons" onclick="switchTab('lesson15');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L15：【まとめ】今日からできる10のアクション</span></a>
@@ -2179,6 +2346,13 @@
             個人情報保護委員会（<a href="https://www.ppc.go.jp/" style="color:var(--blue)">ppc.go.jp</a>）　／　文化庁 著作権（<a href="https://www.bunka.go.jp/seisaku/chosakuken/aiandcopyright.html" style="color:var(--blue)">bunka.go.jp</a>）　／　経済産業省（<a href="https://www.meti.go.jp/policy/it_policy/ai/" style="color:var(--blue)">meti.go.jp</a>）
           </div>
 
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson15" onclick="markComplete('lesson15')">
+              ✓ L15 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson15"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson14');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L14：中小企業の最低限の体制づくり</span></a>
             <a href="#lessons" onclick="switchTab('lesson16');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L16：よくある事例集（20事例）</span></a>
@@ -2263,6 +2437,13 @@
             </div>
             <div class="qfb qfbok" id="q16-ok">✅ 正解です。AIエージェントは複数のAIが連携し、自律的にWebアクセス・ファイル操作・API呼び出しを行うため、通常のチャットAIには存在しない新しいリスクがあります。</div>
             <div class="qfb qfbng" id="q16-ng">❌ 不正解です。AIエージェントはクラウドで動作し、複数AIが連携するため、通常のAIより複雑なリスクを持ちます。</div>
+          </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson16" onclick="markComplete('lesson16')">
+              ✓ L16 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson16"></div>
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson15');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L15：今日からできる10のアクション</span></a>
@@ -2413,12 +2594,52 @@
             <div class="qfb qfbok" id="q17-ok">✅ 正解です。NotebookLMは個人アカウントとWorkspaceアカウントでセキュリティ水準が根本的に異なります。業務利用はWorkspace法人アカウント＋共有設定の厳格な管理が必須です。</div>
             <div class="qfb qfbng" id="q17-ng">❌ 不正解です。個人Googleアカウントでは「データがサービス改善に使われる可能性がある」とGoogleが明示しています。業務機密はWorkspace法人アカウントでのみ扱ってください。</div>
           </div>
+                    <div class="completion-area">
+            <p>このレッスンの内容を確認しましたか？</p>
+            <button class="btn-complete" id="complete-lesson17" onclick="markComplete('lesson17')">
+              ✓ L17 を受講済みにする
+            </button>
+            <div class="completion-progress" id="progress-lesson17"></div>
+          </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson16');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L16：よくある事例集</span></a>
-            <a href="#pricing" class="lnbtn" style="text-align:right">
+            <a href="#lessons" onclick="switchTab('certificate');return false;" class="lnbtn" style="text-align:right">
               <span class="lnt">🎉 修了証を取得する</span>
             </a>
           </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ===== 修了証申請ページ ===== -->
+    <div class="tcon" id="tab-certificate">
+      <div class="cert-box">
+        <div class="cert-icon">🎓</div>
+        <h1 class="cert-title">修了証を取得する</h1>
+        <div id="cert-locked-msg" class="cert-sub">
+          全17レッスンを受講済みにしてから申請できます。
+        </div>
+        <div id="cert-unlocked-msg" class="cert-sub" style="display:none">
+          全レッスンの受講が確認されました。<br>以下のフォームに入力して修了証を申請してください。
+        </div>
+
+        <div class="cert-progress">
+          <div class="cert-progress-title">受講進捗</div>
+          <div class="cert-progress-bar">
+            <div class="cert-progress-fill" id="cert-progress-fill" style="width:0%"></div>
+          </div>
+          <div class="cert-progress-text" id="cert-progress-text">0 / 17 レッスン完了</div>
+        </div>
+
+        <div id="cert-form-wrap" class="cert-locked">
+          <div class="form-field"><label>会社名<span style="color:var(--red)">*</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方はご氏名）"></div>
+          <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
+          <div class="form-field"><label>メールアドレス<span style="color:var(--red)">*</span></label><input type="email" id="cert-email" placeholder="you@example.com"></div>
+          <div class="form-field"><label>受講プラン</label><input type="text" id="cert-plan" placeholder="個人 / 法人5名 など"></div>
+          <div class="form-msg" id="cert-msg"></div>
+          <button class="form-submit" id="cert-submit-btn" onclick="submitCertificate()" style="margin-top:8px">修了証を申請する</button>
+          <div class="form-note" style="margin-top:16px">申請後、担当者より修了証PDFをメールにてお送りします。</div>
         </div>
       </div>
     </div>
@@ -2574,6 +2795,223 @@ async function submitForm(){
 document.getElementById('form-overlay').addEventListener('click', function(e){
   if(e.target === this) closeFormModal();
 });
+
+
+/* ===== 受講済み管理 ===== */
+const ALL_LESSONS = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec';
+
+function getCompletedLessons(){
+  try { return JSON.parse(localStorage.getItem('asl_completed') || '[]'); } catch(e){ return []; }
+}
+function saveCompletedLesson(name){
+  const done = getCompletedLessons();
+  if(!done.includes(name)) done.push(name);
+  localStorage.setItem('asl_completed', JSON.stringify(done));
+}
+function isAllCompleted(){
+  const done = getCompletedLessons();
+  return ALL_LESSONS.every(l => done.includes(l));
+}
+function getProgress(){
+  const done = getCompletedLessons();
+  return ALL_LESSONS.filter(l => done.includes(l)).length;
+}
+
+function markComplete(lesson){
+  saveCompletedLesson(lesson);
+  const btn = document.getElementById('complete-btn-' + lesson);
+  if(btn){
+    btn.classList.add('done');
+    btn.textContent = '✅ 受講済み';
+    btn.disabled = true;
+  }
+  updateCertPage();
+}
+
+function updateCertPage(){
+  const progress = getProgress();
+  const total = ALL_LESSONS.length;
+  const pct = Math.round(progress / total * 100);
+  const fill = document.getElementById('cert-progress-fill');
+  const text = document.getElementById('cert-progress-text');
+  const formWrap = document.getElementById('cert-form-wrap');
+  const lockedMsg = document.getElementById('cert-locked-msg');
+  const unlockedMsg = document.getElementById('cert-unlocked-msg');
+  if(fill) fill.style.width = pct + '%';
+  if(text) text.textContent = progress + ' / ' + total + ' レッスン完了';
+  if(isAllCompleted()){
+    if(formWrap) formWrap.classList.remove('cert-locked');
+    if(lockedMsg) lockedMsg.style.display = 'none';
+    if(unlockedMsg) unlockedMsg.style.display = 'block';
+  } else {
+    if(formWrap) formWrap.classList.add('cert-locked');
+    if(lockedMsg) lockedMsg.style.display = 'block';
+    if(unlockedMsg) unlockedMsg.style.display = 'none';
+  }
+}
+
+function injectCompleteButtons(){
+  const done = getCompletedLessons();
+  ALL_LESSONS.forEach(lesson => {
+    const tcon = document.getElementById('tab-' + lesson);
+    if(!tcon) return;
+    // すでにボタンがある場合はスキップ
+    if(document.getElementById('complete-btn-' + lesson)) return;
+    const lnav = tcon.querySelector('.lnav');
+    if(!lnav) return;
+    const isDone = done.includes(lesson);
+    const wrap = document.createElement('div');
+    wrap.className = 'complete-btn-wrap';
+    const btn = document.createElement('button');
+    btn.id = 'complete-btn-' + lesson;
+    btn.className = 'complete-btn' + (isDone ? ' done' : '');
+    btn.textContent = isDone ? '✅ 受講済み' : 'このレッスンを受講済みにする';
+    btn.disabled = isDone;
+    if(!isDone) btn.onclick = () => markComplete(lesson);
+    wrap.appendChild(btn);
+    lnav.parentNode.insertBefore(wrap, lnav);
+  });
+}
+
+async function submitCertificate(){
+  const company = document.getElementById('cert-company').value.trim();
+  const name    = document.getElementById('cert-name').value.trim();
+  const email   = document.getElementById('cert-email').value.trim();
+  const plan    = document.getElementById('cert-plan').value.trim();
+  const msg     = document.getElementById('cert-msg');
+  const btn     = document.getElementById('cert-submit-btn');
+
+  if(!company || !name || !email){
+    msg.className = 'form-msg error';
+    msg.textContent = '会社名・氏名・メールアドレスは必須です。';
+    msg.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  msg.style.display = 'none';
+
+  const params = new URLSearchParams({
+    '会社名': company,
+    '担当者名': name,
+    'メールアドレス': email,
+    'プラン': plan || '未入力',
+    '請求書払い': '修了証申請',
+    '備考': '修了証申請',
+    '申込日': new Date().toLocaleDateString('ja-JP')
+  });
+
+  fetch(GAS_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
+
+  msg.className = 'form-msg success';
+  msg.textContent = '申請を受け付けました！担当者より修了証PDFをメールにてお送りします。';
+  msg.style.display = 'block';
+  btn.textContent = '申請完了 ✓';
+}
+
+// ページ読み込み時に受講済みボタンを注入
+document.addEventListener('DOMContentLoaded', () => {
+  injectCompleteButtons();
+  updateCertPage();
+});
+
+
+/* ===== 受講済み管理 ===== */
+const ALL_LESSONS = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
+
+function loadCompleted(){
+  try { return JSON.parse(localStorage.getItem('asl_completed') || '[]'); } catch(e){ return []; }
+}
+function saveCompleted(arr){
+  localStorage.setItem('asl_completed', JSON.stringify(arr));
+}
+
+function markComplete(tabId){
+  const completed = loadCompleted();
+  if(!completed.includes(tabId)) completed.push(tabId);
+  saveCompleted(completed);
+  updateCompletionUI();
+}
+
+function updateCompletionUI(){
+  const completed = loadCompleted();
+  ALL_LESSONS.forEach(id => {
+    const btn = document.getElementById('complete-' + id);
+    const prog = document.getElementById('progress-' + id);
+    if(btn){
+      if(completed.includes(id)){
+        btn.classList.add('done');
+        btn.textContent = '✓ 受講済み';
+      } else {
+        btn.classList.remove('done');
+      }
+    }
+    if(prog){
+      prog.innerHTML = `<span>${completed.length}</span> / ${ALL_LESSONS.length} レッスン完了`;
+    }
+  });
+
+  // 修了証ページの進捗を更新
+  const fill = document.getElementById('cert-progress-fill');
+  const text = document.getElementById('cert-progress-text');
+  const lockedMsg = document.getElementById('cert-locked-msg');
+  const unlockedMsg = document.getElementById('cert-unlocked-msg');
+  const formWrap = document.getElementById('cert-form-wrap');
+  const submitBtn = document.getElementById('cert-submit-btn');
+
+  if(fill) fill.style.width = (completed.length / ALL_LESSONS.length * 100) + '%';
+  if(text) text.textContent = completed.length + ' / ' + ALL_LESSONS.length + ' レッスン完了';
+
+  const allDone = completed.length >= ALL_LESSONS.length;
+  if(lockedMsg) lockedMsg.style.display = allDone ? 'none' : 'block';
+  if(unlockedMsg) unlockedMsg.style.display = allDone ? 'block' : 'none';
+  if(submitBtn) submitBtn.disabled = !allDone;
+  if(formWrap) formWrap.style.opacity = allDone ? '1' : '0.4';
+}
+
+// 修了証申請フォーム送信
+async function submitCertificate(){
+  const company = document.getElementById('cert-company').value.trim();
+  const name    = document.getElementById('cert-name').value.trim();
+  const email   = document.getElementById('cert-email').value.trim();
+  const plan    = document.getElementById('cert-plan').value.trim();
+  const msg     = document.getElementById('cert-msg');
+
+  if(!company || !name || !email){
+    msg.className = 'form-msg error';
+    msg.textContent = '会社名・氏名・メールアドレスは必須です。';
+    msg.style.display = 'block';
+    return;
+  }
+
+  const btn = document.getElementById('cert-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+
+  const params = new URLSearchParams({
+    '会社名': company,
+    '担当者名': name,
+    'メールアドレス': email,
+    'プラン': plan || '未入力',
+    '請求書払い': '修了証申請',
+    '備考': '修了証発行申請',
+    '申込日': new Date().toLocaleDateString('ja-JP')
+  });
+
+  fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec?' + params.toString(), {
+    method: 'GET', mode: 'no-cors'
+  });
+
+  msg.className = 'form-msg success';
+  msg.textContent = '申請を受け付けました！担当者より修了証PDFをメールでお送りします。';
+  msg.style.display = 'block';
+  btn.textContent = '申請完了 ✓';
+}
+
+// 初期化時に受講済み状態を反映
+document.addEventListener('DOMContentLoaded', updateCompletionUI);
+setTimeout(updateCompletionUI, 500);
 
 /* ===== ダークモード ===== */
 function toggleDark(){
@@ -2742,7 +3180,7 @@ async function signOut(){
 /* ===== タブ切り替え（認証チェック付き） ===== */
 function switchTab(name){
   // 有料タブ かつ 未ログインならモーダルを出す
-  if(!FREE_TABS.includes(name) && !currentUser){
+  if(!FREE_TABS.includes(name) && name !== 'certificate' && !currentUser){
     openAuthModal();
     return;
   }
@@ -2753,6 +3191,10 @@ function switchTab(name){
   document.querySelectorAll('.tcon').forEach(t=>t.classList.remove('active'));
   const el = document.getElementById('tab-'+name);
   if(el) el.classList.add('active');
+  // 受講済みボタンを注入
+  injectCompleteButtons();
+  // 修了証ページなら進捗更新
+  if(name === 'certificate') updateCertPage();
   document.getElementById('lessons').scrollIntoView({behavior:'smooth'});
 }
 
@@ -2795,6 +3237,10 @@ window.signInWithEmail = signInWithEmail;
 window.signUpWithEmail = signUpWithEmail;
 window.signOut         = signOut;
 window.toggleDark      = toggleDark;
+window.markComplete    = markComplete;
+window.submitCertificate = submitCertificate;
+window.submitCertificate = submitCertificate;
+window.markComplete    = markComplete;
 window.openFormModal   = openFormModal;
 window.closeFormModal  = closeFormModal;
 window.submitForm      = submitForm;
