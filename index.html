@@ -3162,7 +3162,14 @@ window.submitForm      = submitForm;
 /* ===== 受講済み管理・修了証 ===== */
 const ALL_LESSONS_LIST = ['lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
 
-function loadCompleted(){ try{ return JSON.parse(localStorage.getItem('asl_completed')||'[]'); }catch(e){ return []; } }
+function loadCompleted(){
+  try{
+    let arr = JSON.parse(localStorage.getItem('asl_completed')||'[]');
+    // 序章（intro）が含まれていたら削除（旧データのクリーンアップ）
+    arr = arr.filter(id => id !== 'intro');
+    return arr;
+  }catch(e){ return []; }
+}
 function saveCompleted(arr){ localStorage.setItem('asl_completed', JSON.stringify(arr)); }
 
 function markComplete(tabId){
