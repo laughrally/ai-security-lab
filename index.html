@@ -2840,6 +2840,10 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'inline-flex';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
+    const heroSection = document.getElementById('top');
+    const problemSection = document.getElementById('problem');
+    if(heroSection)   heroSection.style.display   = 'none';
+    if(problemSection) problemSection.style.display = 'none';
     updateCompletionUI();
     updateDashboard();
   } else {
@@ -2852,6 +2856,10 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'none';
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
+    const heroSection2 = document.getElementById('top');
+    const problemSection2 = document.getElementById('problem');
+    if(heroSection2)    heroSection2.style.display   = '';
+    if(problemSection2) problemSection2.style.display = '';
     const dash = document.getElementById('progress-dashboard'); if(dash) dash.style.display='none';
   }
 }
