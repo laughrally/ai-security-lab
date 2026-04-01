@@ -546,6 +546,9 @@
     align-items:center;justify-content:flex-end;gap:16px;
   }
   #auth-user-bar.show{display:flex}
+  body.logged-in #how-to-use{padding-top:108px}
+  body.logged-in #curriculum{scroll-margin-top:100px}
+  body.logged-in #lessons{scroll-margin-top:100px}
   #auth-user-bar button{
     background:none;border:1px solid #15803d;border-radius:6px;
     padding:4px 12px;font-size:12px;color:#15803d;cursor:pointer;
@@ -2905,6 +2908,7 @@ function updateAuthUI(){
     if(hero)    hero.style.display    = 'none';
     if(problem) problem.style.display = 'none';
     if(guide)   guide.classList.add('show');
+    document.body.classList.add('logged-in');
     updateCompletionUI();
     updateDashboard();
   } else {
@@ -2923,6 +2927,7 @@ function updateAuthUI(){
     if(hero2)    hero2.style.display    = '';
     if(problem2) problem2.style.display = '';
     if(guide2)   guide2.classList.remove('show');
+    document.body.classList.remove('logged-in');
     const dash = document.getElementById('progress-dashboard'); if(dash) dash.style.display='none';
   }
 }
