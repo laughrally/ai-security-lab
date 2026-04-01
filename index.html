@@ -334,6 +334,29 @@
   body.logged-in #lessons { scroll-margin-top: 110px; }
   body.logged-in #progress-dashboard { scroll-margin-top: 110px; }
 
+
+  /* ===== 使い方ガイド（ログイン時表示） ===== */
+  #how-to-use{display:none;padding:80px 32px 48px;border-bottom:1px solid var(--border)}
+  #how-to-use.show{display:block}
+  .guide-wrap{max-width:900px;margin:0 auto}
+  .guide-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.18em;margin-bottom:14px}
+  .guide-title{font-family:'Noto Serif JP',serif;font-size:clamp(22px,3vw,32px);font-weight:700;margin-bottom:8px}
+  .guide-desc{font-size:15px;color:var(--text3);line-height:1.9;margin-bottom:40px}
+  .guide-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px}
+  .guide-step{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px 20px;position:relative}
+  .guide-step-num{font-family:'Barlow',sans-serif;font-size:36px;font-weight:800;color:var(--red);line-height:1;margin-bottom:12px;opacity:.15;position:absolute;top:16px;right:20px}
+  .guide-step-icon{font-size:28px;margin-bottom:12px}
+  .guide-step-title{font-size:14px;font-weight:700;margin-bottom:6px}
+  .guide-step-desc{font-size:13px;color:var(--text3);line-height:1.8}
+  .guide-cta{display:flex;gap:12px;flex-wrap:wrap}
+  .guide-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;border:none;font-family:inherit}
+  .guide-btn-primary{background:var(--red);color:#fff}
+  .guide-btn-primary:hover{background:#b91c1c;transform:translateY(-1px)}
+  .guide-btn-secondary{background:var(--bg2);color:var(--text2);border:1px solid var(--border2)}
+  .guide-btn-secondary:hover{border-color:var(--text3);color:var(--text)}
+  @media(max-width:768px){#how-to-use{padding:72px 20px 40px}.guide-steps{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){#how-to-use{padding:72px 16px 36px}.guide-steps{grid-template-columns:1fr}}
+
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -665,6 +688,48 @@
   </div>
 </nav>
 <div id="nav-progress-bar"><div id="nav-progress-fill"></div></div>
+
+
+<!-- ===== 使い方ガイド（ログイン時） ===== -->
+<div id="how-to-use">
+  <div class="guide-wrap">
+    <div class="guide-eyebrow">// HOW TO USE</div>
+    <h2 class="guide-title">ようこそ、AI Security Lab へ</h2>
+    <p class="guide-desc">全17レッスンを通じて、生成AIを安全に使うための知識を身につけましょう。<br>各レッスンを受講後に「受講済み」ボタンを押すと、進捗が記録されます。</p>
+
+    <div class="guide-steps">
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div class="guide-step-icon">📖</div>
+        <div class="guide-step-title">レッスンを受講する</div>
+        <div class="guide-step-desc">上部の「レッスン」から各レッスンにアクセスできます。序章・L01は無料公開、L02以降はログイン後に閲覧できます。</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div class="guide-step-icon">✅</div>
+        <div class="guide-step-title">受講済みにする</div>
+        <div class="guide-step-desc">各レッスンの最後にある「受講済みにする」ボタンを押すと進捗に記録されます。</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div class="guide-step-icon">📊</div>
+        <div class="guide-step-title">進捗を確認する</div>
+        <div class="guide-step-desc">上部の「📊 進捗」ボタンで修了証申請ページへ、ページ下部で各レッスンの受講状況を確認できます。</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">4</div>
+        <div class="guide-step-icon">🎓</div>
+        <div class="guide-step-title">修了証を取得する</div>
+        <div class="guide-step-desc">全17レッスンを受講済みにすると、修了証の発行申請ができます。担当者よりPDFをメールでお送りします。</div>
+      </div>
+    </div>
+
+    <div class="guide-cta">
+      <button class="guide-btn guide-btn-primary" onclick="switchTab('intro');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">▶ レッスンを始める</button>
+      <button class="guide-btn guide-btn-secondary" onclick="document.getElementById('curriculum').scrollIntoView({behavior:'smooth'})">カリキュラムを確認</button>
+    </div>
+  </div>
+</div>
 
 <div class="hero" id="top">
   <div class="hleft">
@@ -2848,6 +2913,7 @@ function updateAuthUI(){
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
     document.body.classList.add('logged-in');
+    const guide = document.getElementById('how-to-use'); if(guide) guide.classList.add('show');
     const heroSection = document.getElementById('top');
     const problemSection = document.getElementById('problem');
     if(heroSection)   heroSection.style.display   = 'none';
@@ -2869,6 +2935,7 @@ function updateAuthUI(){
     if(heroSection2)    heroSection2.style.display   = '';
     if(problemSection2) problemSection2.style.display = '';
     document.body.classList.remove('logged-in');
+    const guide2 = document.getElementById('how-to-use'); if(guide2) guide2.classList.remove('show');
     const dash = document.getElementById('progress-dashboard'); if(dash) dash.style.display='none';
   }
 }
