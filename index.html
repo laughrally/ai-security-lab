@@ -354,7 +354,24 @@
   .podcast-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:10px}
   .podcast-title{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
   .podcast-desc{font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.7}
-  .podcast-iframe{width:100%;height:80px;border-radius:8px;border:none;display:block}
+  .pod-player{background:var(--bg3);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+  .pod-top{display:flex;align-items:center;gap:12px}
+  .pod-play-btn{width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:16px;cursor:pointer;flex-shrink:0;transition:background .2s;display:flex;align-items:center;justify-content:center}
+  .pod-play-btn:hover{background:#b91c1c}
+  .pod-progress-wrap{flex:1;display:flex;flex-direction:column;gap:4px}
+  .pod-time-wrap{display:flex;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+  .pod-seek{width:100%;accent-color:var(--red);height:4px;cursor:pointer}
+  .pod-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .pod-vol-wrap{display:flex;align-items:center;gap:8px}
+  .pod-mute-btn{background:none;border:none;cursor:pointer;font-size:16px;padding:0;line-height:1}
+  .pod-vol{width:80px;accent-color:var(--red);height:4px;cursor:pointer}
+  .pod-speed-wrap{display:flex;align-items:center;gap:6px}
+  .pod-speed-label{font-size:11px;color:var(--text3)}
+  .pod-speeds{display:flex;gap:3px}
+  .pod-spd{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:11px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s}
+  .pod-spd:hover{border-color:var(--text3);color:var(--text)}
+  .pod-spd.active{background:var(--red);border-color:var(--red);color:#fff}
+  @media(max-width:480px){.pod-vol{width:60px}.pod-speeds{flex-wrap:wrap}}
   .podcast-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px}
   .pod-btn{padding:9px 20px;border-radius:8px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
   .pod-play{background:var(--red);color:#fff;min-width:90px}
@@ -551,8 +568,6 @@
     /* 受講済みボタン */
     .completion-area{padding:16px 12px}
     .btn-complete{font-size:13px;padding:10px 18px}
-    /* ポッドキャスト */
-    .podcast-iframe{height:120px}
     .podcast-box{padding:16px 14px}
   }
 
@@ -945,10 +960,38 @@
           <div class="podcast-label">// PODCAST</div>
           <div class="podcast-title">🎙 序章：音声で聴く「AI Security Lab」</div>
           <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。（約17分）</div>
-          <iframe class="podcast-iframe" 
-            src="https://drive.google.com/file/d/1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN/preview"
-            allow="autoplay">
-          </iframe>
+          <div class="pod-player">
+            <div class="pod-top">
+              <button class="pod-play-btn" id="pod-play-btn" onclick="podToggle()">▶</button>
+              <div class="pod-progress-wrap">
+                <div class="pod-time-wrap">
+                  <span id="pod-cur">0:00</span>
+                  <span style="color:var(--border2)">/</span>
+                  <span id="pod-dur">--:--</span>
+                </div>
+                <input type="range" class="pod-seek" id="pod-seek" value="0" min="0" step="1" oninput="podSeek(this.value)">
+              </div>
+            </div>
+            <div class="pod-bottom">
+              <div class="pod-vol-wrap">
+                <button class="pod-mute-btn" id="pod-mute-btn" onclick="podMute()">🔊</button>
+                <input type="range" class="pod-vol" id="pod-vol" value="100" min="0" max="100" oninput="podVol(this.value)">
+              </div>
+              <div class="pod-speed-wrap">
+                <span class="pod-speed-label">速度</span>
+                <div class="pod-speeds">
+                  <button class="pod-spd" onclick="podSpeed(0.75)">0.75x</button>
+                  <button class="pod-spd active" onclick="podSpeed(1)">1x</button>
+                  <button class="pod-spd" onclick="podSpeed(1.25)">1.25x</button>
+                  <button class="pod-spd" onclick="podSpeed(1.5)">1.5x</button>
+                  <button class="pod-spd" onclick="podSpeed(2)">2x</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <audio id="pod-audio" preload="none">
+            <source src="https://drive.google.com/uc?export=download&id=1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN" type="audio/mp4">
+          </audio>
         </div>
 
         <div class="lb">
@@ -3280,65 +3323,55 @@ async function submitCertificate(){
 
 
 /* ===== ポッドキャストプレーヤー ===== */
-function togglePodcast(){
-  const audio = document.getElementById('podcast-audio');
-  const btn = document.getElementById('pod-play-btn');
-  if(!audio) return;
-  if(audio.paused){
-    audio.play();
-    btn.textContent = '⏸ 一時停止';
-    btn.classList.add('playing');
-  } else {
-    audio.pause();
-    btn.textContent = '▶ 再生';
-    btn.classList.remove('playing');
-  }
+function podFmt(s){ const m=Math.floor(s/60),sec=Math.floor(s%60); return m+':'+(sec<10?'0':'')+sec; }
+
+function podToggle(){
+  const a=document.getElementById('pod-audio');
+  const btn=document.getElementById('pod-play-btn');
+  if(!a) return;
+  if(a.paused){ a.play(); btn.textContent='⏸'; }
+  else{ a.pause(); btn.textContent='▶'; }
+}
+function podSeek(v){ const a=document.getElementById('pod-audio'); if(a) a.currentTime=v; }
+function podVol(v){ const a=document.getElementById('pod-audio'); if(a){ a.volume=v/100; document.getElementById('pod-mute-btn').textContent=v==0?'🔇':'🔊'; } }
+function podMute(){
+  const a=document.getElementById('pod-audio');
+  const btn=document.getElementById('pod-mute-btn');
+  const vol=document.getElementById('pod-vol');
+  if(!a) return;
+  a.muted=!a.muted;
+  btn.textContent=a.muted?'🔇':'🔊';
+  if(vol) vol.value=a.muted?0:a.volume*100;
+}
+function podSpeed(s){
+  const a=document.getElementById('pod-audio');
+  if(a) a.playbackRate=s;
+  document.querySelectorAll('.pod-spd').forEach(b=>b.classList.toggle('active',parseFloat(b.textContent)===s));
 }
 
-function setPodSpeed(speed){
-  const audio = document.getElementById('podcast-audio');
-  if(!audio) return;
-  audio.playbackRate = speed;
-  document.querySelectorAll('.pod-speed').forEach(b=>{
-    b.classList.toggle('active', parseFloat(b.textContent) === speed);
+document.addEventListener('DOMContentLoaded',()=>{
+  const a=document.getElementById('pod-audio');
+  if(!a) return;
+  a.addEventListener('loadedmetadata',()=>{
+    const seek=document.getElementById('pod-seek');
+    if(seek) seek.max=Math.floor(a.duration);
+    const dur=document.getElementById('pod-dur');
+    if(dur) dur.textContent=podFmt(a.duration);
   });
-}
-
-function seekPodcast(val){
-  const audio = document.getElementById('podcast-audio');
-  if(!audio) return;
-  audio.currentTime = val;
-}
-
-function formatTime(s){
-  const m = Math.floor(s/60);
-  const sec = Math.floor(s%60);
-  return m + ':' + (sec<10?'0':'')+sec;
-}
-
-document.addEventListener('DOMContentLoaded', ()=>{
-  const audio = document.getElementById('podcast-audio');
-  const progress = document.getElementById('pod-progress');
-  const current = document.getElementById('pod-current');
-  const duration = document.getElementById('pod-duration');
-  if(!audio) return;
-  audio.addEventListener('loadedmetadata', ()=>{
-    progress.max = Math.floor(audio.duration);
-    duration.textContent = formatTime(audio.duration);
+  a.addEventListener('timeupdate',()=>{
+    const seek=document.getElementById('pod-seek');
+    const cur=document.getElementById('pod-cur');
+    if(seek) seek.value=Math.floor(a.currentTime);
+    if(cur) cur.textContent=podFmt(a.currentTime);
   });
-  audio.addEventListener('timeupdate', ()=>{
-    progress.value = Math.floor(audio.currentTime);
-    current.textContent = formatTime(audio.currentTime);
-  });
-  audio.addEventListener('ended', ()=>{
-    const btn = document.getElementById('pod-play-btn');
-    if(btn){ btn.textContent = '▶ 再生'; btn.classList.remove('playing'); }
-  });
+  a.addEventListener('ended',()=>{ const btn=document.getElementById('pod-play-btn'); if(btn) btn.textContent='▶'; });
 });
 
-window.togglePodcast = togglePodcast;
-window.setPodSpeed   = setPodSpeed;
-window.seekPodcast   = seekPodcast;
+window.podToggle=podToggle;
+window.podSeek=podSeek;
+window.podVol=podVol;
+window.podMute=podMute;
+window.podSpeed=podSpeed;
 
 
 /* ===== 法的ページモーダル ===== */
