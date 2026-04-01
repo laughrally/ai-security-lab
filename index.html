@@ -2546,7 +2546,7 @@
   </div>
 </section>
 
-<section class="sec" id="pricing">
+<section class="sec" id="pricing" data-auth-hide="true">
   <div class="conw">
     <div class="seye">// PRICING</div>
     <h2 class="stit">シンプルな料金体系</h2>
@@ -2799,22 +2799,25 @@ function updateAuthUI(){
   const navPricing = document.getElementById('nav-pricing');
   const navProg    = document.getElementById('nav-progress');
   const progBar    = document.getElementById('nav-progress-bar');
+  const pricingSection = document.getElementById('pricing');
   if(currentUser){
     bar.classList.add('show');
     email.textContent = currentUser.email ?? 'ログイン済み';
     lockPaidTabs(false);
-    if(navCta)     navCta.style.display     = 'none';
-    if(navPricing) navPricing.style.display = 'none';
-    if(navProg)    navProg.style.display    = 'inline-flex';
-    if(progBar)    progBar.classList.add('show');
+    if(navCta)        navCta.style.display     = 'none';
+    if(navPricing)    navPricing.style.display = 'none';
+    if(navProg)       navProg.style.display    = 'inline-flex';
+    if(progBar)       progBar.classList.add('show');
+    if(pricingSection) pricingSection.style.display = 'none';
     updateCompletionUI();
   } else {
     bar.classList.remove('show');
     lockPaidTabs(true);
-    if(navCta)     navCta.style.display     = '';
-    if(navPricing) navPricing.style.display = '';
-    if(navProg)    navProg.style.display    = 'none';
-    if(progBar)    progBar.classList.remove('show');
+    if(navCta)        navCta.style.display     = '';
+    if(navPricing)    navPricing.style.display = '';
+    if(navProg)       navProg.style.display    = 'none';
+    if(progBar)       progBar.classList.remove('show');
+    if(pricingSection) pricingSection.style.display = '';
   }
 }
 
