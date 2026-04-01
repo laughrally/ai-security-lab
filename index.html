@@ -308,6 +308,7 @@
   .completion-area p{font-size:13px;color:var(--text3);margin-bottom:12px}
   .btn-complete{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:8px;border:2px solid var(--border2);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;font-family:inherit}
   .btn-complete:hover{border-color:var(--green);color:var(--green)}
+  .btn-complete.quiz-locked{opacity:.4;pointer-events:none;cursor:not-allowed}
   .btn-complete.done{background:var(--green-l);border-color:var(--green);color:var(--green);pointer-events:none}
   .completion-note{font-size:12px;color:var(--text4);margin-top:10px;font-family:'IBM Plex Mono',monospace}
   .completion-note span{color:var(--green);font-weight:700}
@@ -3033,13 +3034,49 @@ function switchTab(name){
 function toggleCh(el){ el.closest('.chapter').classList.toggle('open') }
 
 function doQ(btn,correct,id){
-  btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>{
-    b.style.pointerEvents='none';
-    if(b.getAttribute('onclick').includes('true')) b.classList.add('ok');
-  });
-  if(!correct) btn.classList.add('ng');
-  document.getElementById(id+'-ok').classList.toggle('show', correct);
-  document.getElementById(id+'-ng').classList.toggle('show', !correct);
+  if(correct){
+    // 正解：全ボタンをロック、正解ボタンを緑に
+    btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>{
+      b.style.pointerEvents='none';
+      if(b.getAttribute('onclick') && b.getAttribute('onclick').includes('true')) b.classList.add('ok');
+    });
+    document.getElementById(id+'-ok').classList.add('show');
+    document.getElementById(id+'-ng').classList.remove('show');
+    // クイズが含まれるレッスンタブを特定して受講済みボタンを解放
+    const quiz = btn.closest('.quiz');
+    if(quiz){
+      const tcon = quiz.closest('.tcon');
+      if(tcon){
+        const tabId = tcon.id.replace('tab-','');
+        unlockCompleteBtn(tabId);
+      }
+    }
+  } else {
+    // 不正解：このボタンだけ赤く無効化、他は引き続き押せる
+    btn.style.pointerEvents='none';
+    btn.classList.add('ng');
+    document.getElementById(id+'-ng').classList.add('show');
+    setTimeout(()=>{
+      document.getElementById(id+'-ng').classList.remove('show');
+    }, 2000);
+  }
+}
+
+function unlockCompleteBtn(tabId){
+  const btn = document.getElementById('complete-' + tabId);
+  if(btn){
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.pointerEvents = 'auto';
+    btn.style.borderColor = 'var(--green)';
+    btn.style.color = 'var(--green)';
+    // 「正解しました！受講済みにできます」メッセージ
+    const note = document.getElementById('note-' + tabId);
+    if(note && !btn.classList.contains('done')){
+      note.innerHTML = '✅ 正解！受講済みボタンが解放されました';
+      note.style.color = 'var(--green)';
+    }
+  }
 }
 
 /* モーダルの外側クリックで閉じる */
@@ -3182,8 +3219,29 @@ function updateDashboard(){
 }
 window.updateDashboard = updateDashboard;
 
-document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); });
-setTimeout(()=>{ updateCompletionUI(); updateDashboard(); }, 800);
+
+/* ===== クイズ未正解時は受講済みボタンをロック ===== */
+function initQuizLocks(){
+  const ALL_IDS = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
+  ALL_IDS.forEach(tabId => {
+    const btn = document.getElementById('complete-' + tabId);
+    if(!btn) return;
+    // すでに受講済みなら何もしない
+    const completed = loadCompleted();
+    if(completed.includes(tabId)) return;
+    // そのレッスンにクイズがあるか確認
+    const tcon = document.getElementById('tab-' + tabId);
+    if(tcon && tcon.querySelector('.quiz')){
+      btn.classList.add('quiz-locked');
+      const note = document.getElementById('note-' + tabId);
+      if(note) note.innerHTML = '理解度チェックに正解すると受講済みにできます';
+    }
+  });
+}
+window.unlockCompleteBtn = unlockCompleteBtn;
+
+document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); });
+setTimeout(()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); }, 800);
 
 </script>
 </body>
