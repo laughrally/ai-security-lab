@@ -475,6 +475,7 @@
     .auth-sub{font-size:12px}
 
     /* ユーザーバー */
+    #nav-user-email{display:none}
     #auth-user-bar{font-size:12px;padding:6px 16px}
   }
 
@@ -547,20 +548,14 @@
   }
   .auth-msg.error{background:#fee2e2;color:#b91c1c;display:block}
   .auth-msg.success{background:#dcfce7;color:#15803d;display:block}
-  #auth-user-bar{
-    display:none;
-    position:fixed;top:60px;right:0;left:0;z-index:200;
-    background:var(--green-l,#dcfce7);border-bottom:1px solid #bbf7d0;
-    padding:8px 24px;
-    font-size:13px;color:#15803d;
-    align-items:center;justify-content:flex-end;gap:16px;
-  }
-  #auth-user-bar.show{display:flex}
-  #auth-user-bar button{
-    background:none;border:1px solid #15803d;border-radius:6px;
-    padding:4px 12px;font-size:12px;color:#15803d;cursor:pointer;
-    font-family:inherit;
-  }
+  #auth-user-bar{display:none}
+  #auth-user-bar.show{display:contents}
+  /* ナビ内のユーザー情報 */
+  #nav-user-info{display:none;align-items:center;gap:10px;font-size:12px;color:var(--text3)}
+  #nav-user-info.show{display:flex}
+  #nav-user-email{font-size:12px;color:var(--text3);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #nav-logout-btn{background:none;border:1px solid var(--border2);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+  #nav-logout-btn:hover{border-color:var(--red);color:var(--red)}
 
   /* 有料タブのロックUI */
   .tab.locked{position:relative;color:var(--text4) !important;cursor:pointer !important;pointer-events:auto !important}
@@ -669,10 +664,7 @@
 </div>
 
 <!-- ログイン済みユーザーバー -->
-<div id="auth-user-bar">
-  <span id="auth-user-email"></span>
-  <button onclick="signOut()">ログアウト</button>
-</div>
+<div id="auth-user-bar" style="display:none"></div>
 
 <nav>
   <a href="#top" class="nlogo">AI<span class="r">Security</span>Lab</a>
@@ -684,6 +676,10 @@
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="switchTab('certificate');document.getElementById('lessons').scrollIntoView({behavior:'smooth'});return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/17</button>
+    <div id="nav-user-info">
+      <span id="nav-user-email"></span>
+      <button id="nav-logout-btn" onclick="signOut()">ログアウト</button>
+    </div>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
 </nav>
@@ -2894,6 +2890,8 @@ function initSupabase(){
 function updateAuthUI(){
   const bar        = document.getElementById('auth-user-bar');
   const email      = document.getElementById('auth-user-email');
+  const navUserInfo = document.getElementById('nav-user-info');
+  const navUserEmail = document.getElementById('nav-user-email');
   const navCta     = document.getElementById('nav-cta');
   const navPricing = document.getElementById('nav-pricing');
   const navProg    = document.getElementById('nav-progress');
@@ -2904,6 +2902,8 @@ function updateAuthUI(){
   if(currentUser){
     bar.classList.add('show');
     email.textContent = currentUser.email ?? 'ログイン済み';
+    if(navUserInfo)  navUserInfo.classList.add('show');
+    if(navUserEmail) navUserEmail.textContent = currentUser.email ?? 'ログイン済み';
     lockPaidTabs(false);
     if(navCta)        navCta.style.display     = 'none';
     if(navPricing)    navPricing.style.display = 'none';
@@ -2922,6 +2922,8 @@ function updateAuthUI(){
     updateDashboard();
   } else {
     bar.classList.remove('show');
+    if(navUserInfo)  navUserInfo.classList.remove('show');
+    if(navUserEmail) navUserEmail.textContent = '';
     lockPaidTabs(true);
     if(navCta)        navCta.style.display     = '';
     if(navPricing)    navPricing.style.display = '';
