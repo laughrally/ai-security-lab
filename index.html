@@ -368,6 +368,22 @@
   .pod-time{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);min-width:36px;text-align:center}
   .pod-progress{flex:1;accent-color:var(--red);height:4px;cursor:pointer}
 
+
+  /* ===== 法的ページモーダル ===== */
+  #legal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow-y:auto;display:none}
+  #legal-overlay.show{display:flex}
+  #legal-modal{background:var(--bg);border-radius:16px;max-width:720px;width:100%;padding:40px;position:relative;max-height:85vh;overflow-y:auto}
+  .legal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--text3);transition:color .2s}
+  .legal-close:hover{color:var(--text)}
+  .legal-content h1{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .legal-content h2{font-size:15px;font-weight:700;margin:24px 0 8px;color:var(--text)}
+  .legal-content p,.legal-content li{font-size:14px;color:var(--text3);line-height:1.9}
+  .legal-content ul{padding-left:20px;margin:8px 0}
+  .legal-content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+  .legal-content th,.legal-content td{padding:10px 14px;border:1px solid var(--border);text-align:left;line-height:1.7}
+  .legal-content th{background:var(--bg2);font-weight:700;color:var(--text2)}
+  .legal-content td{color:var(--text3)}
+
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -2745,13 +2761,22 @@
   </div>
 </section>
 
+
+<!-- ===== 法的ページモーダル ===== -->
+<div id="legal-overlay" onclick="if(event.target===this)closeLegalModal()">
+  <div id="legal-modal">
+    <button class="legal-close" onclick="closeLegalModal()">✕</button>
+    <div class="legal-content" id="legal-content"></div>
+  </div>
+</div>
+
 <footer>
   <div class="flogo"><span>AI</span>SecurityLab</div>
   <div class="flinks">
-    <a href="#">特定商取引法に基づく表記</a>
-    <a href="#">プライバシーポリシー</a>
-    <a href="#">利用規約</a>
-    <a href="#">お問い合わせ</a>
+    <a href="#" onclick="openLegalModal('tokusho');return false;">特定商取引法に基づく表記</a>
+    <a href="#" onclick="openLegalModal('privacy');return false;">プライバシーポリシー</a>
+    <a href="#" onclick="openLegalModal('terms');return false;">利用規約</a>
+    <a href="#" onclick="openLegalModal('contact');return false;">お問い合わせ</a>
   </div>
   <div class="fcopy">© 2026 LaughRally LLC. All rights reserved.</div>
 </footer>
@@ -3258,6 +3283,154 @@ document.addEventListener('DOMContentLoaded', ()=>{
 window.togglePodcast = togglePodcast;
 window.setPodSpeed   = setPodSpeed;
 window.seekPodcast   = seekPodcast;
+
+
+/* ===== 法的ページモーダル ===== */
+const LEGAL_CONTENT = {
+  tokusho: `
+    <h1>特定商取引法に基づく表記</h1>
+    <table>
+      <tr><th>販売業者</th><td>合同会社LaughRally</td></tr>
+      <tr><th>代表責任者</th><td>佐藤誓哉</td></tr>
+      <tr><th>所在地</th><td>東京都港区南青山（詳細はお問い合わせください）</td></tr>
+      <tr><th>お問い合わせ</th><td>laughrally@gmail.com（お問い合わせフォームよりご連絡ください）</td></tr>
+      <tr><th>販売価格</th><td>個人プラン ¥9,800（税込）／法人5名プラン ¥39,800（税込）／法人20名プラン ¥98,000（税込）</td></tr>
+      <tr><th>支払方法</th><td>クレジットカード、銀行振込、請求書払い（法人向け）</td></tr>
+      <tr><th>支払時期</th><td>お申し込みと同時にお支払いいただきます</td></tr>
+      <tr><th>サービス提供時期</th><td>決済完了後、即時にアカウントを発行しご利用いただけます</td></tr>
+      <tr><th>返品・キャンセルについて</th><td>デジタルコンテンツの性質上、購入完了後の返品・返金はお受けできません。ただし、サービスに重大な瑕疵がある場合はこの限りではありません。</td></tr>
+      <tr><th>動作環境</th><td>インターネット接続環境および最新版のWebブラウザが必要です</td></tr>
+    </table>
+  `,
+  privacy: `
+    <h1>プライバシーポリシー</h1>
+    <p>合同会社LaughRally（以下「当社」）は、AI Security Lab（以下「本サービス」）において、お客様の個人情報を適切に取り扱うため、以下のとおりプライバシーポリシーを定めます。</p>
+
+    <h2>1. 収集する情報</h2>
+    <p>当社は、本サービスの提供にあたり、以下の情報を収集することがあります。</p>
+    <ul>
+      <li>氏名・会社名</li>
+      <li>メールアドレス</li>
+      <li>お問い合わせ内容</li>
+      <li>サービス利用状況（受講進捗等）</li>
+    </ul>
+
+    <h2>2. 利用目的</h2>
+    <ul>
+      <li>本サービスの提供・運営</li>
+      <li>修了証の発行</li>
+      <li>お問い合わせへの対応</li>
+      <li>サービス改善のための分析</li>
+      <li>重要なお知らせの送付</li>
+    </ul>
+
+    <h2>3. 第三者提供</h2>
+    <p>当社は、法令に基づく場合を除き、お客様の同意なく個人情報を第三者に提供することはありません。</p>
+
+    <h2>4. 外部サービスの利用</h2>
+    <p>本サービスでは、認証にSupabase（Supabase Inc.）、フォーム管理にGoogle Apps Scriptを利用しています。各サービスのプライバシーポリシーもご確認ください。</p>
+
+    <h2>5. Cookie・アクセス解析</h2>
+    <p>本サービスでは、利便性向上のためCookieを使用する場合があります。ブラウザの設定によりCookieを無効にすることが可能ですが、一部機能が利用できなくなる場合があります。</p>
+
+    <h2>6. 個人情報の管理</h2>
+    <p>当社は、個人情報の漏洩・滅失・毀損を防止するため、適切なセキュリティ対策を講じます。</p>
+
+    <h2>7. 開示・訂正・削除</h2>
+    <p>お客様ご自身の個人情報の開示・訂正・削除をご希望の場合は、下記お問い合わせ先までご連絡ください。</p>
+
+    <h2>8. お問い合わせ</h2>
+    <p>個人情報に関するお問い合わせ：laughrally@gmail.com</p>
+
+    <h2>9. 改定</h2>
+    <p>本ポリシーは、必要に応じて改定することがあります。重要な変更がある場合は、本サービス上にてお知らせします。</p>
+    <p style="margin-top:24px;font-size:12px;color:var(--text4)">制定日：2026年4月2日　合同会社LaughRally</p>
+  `,
+  terms: `
+    <h1>利用規約</h1>
+    <p>本利用規約（以下「本規約」）は、合同会社LaughRally（以下「当社」）が提供するAI Security Lab（以下「本サービス」）の利用条件を定めるものです。本サービスをご利用いただく前に、本規約をよくお読みください。</p>
+
+    <h2>第1条（適用）</h2>
+    <p>本規約は、本サービスの利用に関する当社とユーザーとの間の一切の関係に適用されます。ユーザーが本サービスを利用した時点で、本規約に同意したものとみなします。</p>
+
+    <h2>第2条（アカウント）</h2>
+    <ul>
+      <li>1つのアカウントは1名のみが利用できます。アカウントの共有・譲渡・貸与は禁止します。</li>
+      <li>アカウント情報の管理はユーザー自身の責任において行うものとします。</li>
+      <li>登録情報に虚偽があった場合、当社はアカウントを停止・削除できるものとします。</li>
+    </ul>
+
+    <h2>第3条（禁止事項）</h2>
+    <p>ユーザーは以下の行為を行ってはなりません。</p>
+    <ul>
+      <li>本サービスのコンテンツ（テキスト・画像・音声等）の無断転載・複製・二次配布・販売</li>
+      <li>スクリーンショットや録画によるコンテンツの保存・拡散</li>
+      <li>本サービスを利用した競合サービスの開発・提供</li>
+      <li>法令または公序良俗に反する行為</li>
+      <li>当社または第三者の知的財産権・名誉・プライバシーを侵害する行為</li>
+      <li>本サービスの運営を妨害する行為</li>
+    </ul>
+
+    <h2>第4条（知的財産権）</h2>
+    <p>本サービスに掲載されている全てのコンテンツ（文章・画像・動画・音声・デザイン等）の著作権その他知的財産権は、当社または正当な権利者に帰属します。本規約に定める範囲を超えた利用は、いかなる形式であっても禁止します。</p>
+
+    <h2>第5条（料金・返金）</h2>
+    <ul>
+      <li>本サービスの利用料金は、申し込み時に表示される金額とします。</li>
+      <li>デジタルコンテンツの性質上、購入完了後の返金は原則としてお受けできません。</li>
+      <li>当社の重大な過失によりサービスが提供できない場合はこの限りではありません。</li>
+    </ul>
+
+    <h2>第6条（サービスの変更・終了）</h2>
+    <p>当社は、ユーザーへの事前通知なく、本サービスの内容を変更・追加・削除し、または本サービスの提供を終了することができます。これによりユーザーに損害が生じた場合でも、当社は責任を負いません。</p>
+
+    <h2>第7条（免責事項）</h2>
+    <ul>
+      <li>本サービスのコンテンツは情報提供を目的としており、特定の成果を保証するものではありません。</li>
+      <li>ユーザーが本サービスを利用して行った行為およびその結果について、当社は一切の責任を負いません。</li>
+      <li>本サービスの利用により生じた損害（直接・間接・付随的・特別・懲罰的損害を含む）について、当社の故意または重過失による場合を除き、当社は責任を負いません。</li>
+      <li>当社が責任を負う場合であっても、その賠償額はユーザーが当社に支払った直近1ヶ月分の利用料金を上限とします。</li>
+    </ul>
+
+    <h2>第8条（個人情報）</h2>
+    <p>個人情報の取り扱いについては、別途定めるプライバシーポリシーに従います。</p>
+
+    <h2>第9条（規約の変更）</h2>
+    <p>当社は、必要と判断した場合には、ユーザーへの通知なく本規約を変更することができます。変更後の規約は、本サービス上に掲示した時点から効力を生じます。</p>
+
+    <h2>第10条（準拠法・管轄裁判所）</h2>
+    <p>本規約の解釈は日本法に準拠し、本サービスに関する紛争については東京地方裁判所を第一審の専属的合意管轄裁判所とします。</p>
+    <p style="margin-top:24px;font-size:12px;color:var(--text4)">制定日：2026年4月2日　合同会社LaughRally</p>
+  `,
+  contact: `
+    <h1>お問い合わせ</h1>
+    <p>本サービスに関するお問い合わせは、下記メールアドレスまでご連絡ください。</p>
+    <p style="margin:24px 0;font-size:16px;font-weight:700;color:var(--text)">📧 laughrally@gmail.com</p>
+    <p>通常2営業日以内にご返信いたします。</p>
+    <h2>お問い合わせ内容の例</h2>
+    <ul>
+      <li>受講に関するご質問</li>
+      <li>法人プラン・請求書払いのご相談</li>
+      <li>修了証の発行に関するお問い合わせ</li>
+      <li>その他本サービスに関するご意見・ご要望</li>
+    </ul>
+    <p style="margin-top:24px;font-size:13px;color:var(--text3)">合同会社LaughRally<br>東京都港区南青山</p>
+  `
+};
+
+function openLegalModal(type){
+  const content = LEGAL_CONTENT[type];
+  if(!content) return;
+  document.getElementById('legal-content').innerHTML = content;
+  document.getElementById('legal-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeLegalModal(){
+  document.getElementById('legal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+window.openLegalModal  = openLegalModal;
+window.closeLegalModal = closeLegalModal;
 
 window.markComplete      = markComplete;
 window.submitCertificate = submitCertificate;
