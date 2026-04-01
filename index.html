@@ -327,36 +327,6 @@
   .cert-form-desc{font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.8}
   .cert-locked-notice{background:var(--amber-l);border:1px solid rgba(217,119,6,.2);border-radius:10px;padding:16px 20px;font-size:14px;color:var(--amber);text-align:center;margin-bottom:24px}
 
-
-  /* ログイン時のスクロール余白 */
-  body.logged-in { scroll-padding-top: 110px; }
-  body.logged-in #curriculum { scroll-margin-top: 110px; }
-  body.logged-in #lessons { scroll-margin-top: 110px; }
-  body.logged-in #progress-dashboard { scroll-margin-top: 110px; }
-
-
-  /* ===== 使い方ガイド（ログイン時表示） ===== */
-  #how-to-use{display:none;padding:80px 32px 48px;border-bottom:1px solid var(--border)}
-  #how-to-use.show{display:block}
-  .guide-wrap{max-width:900px;margin:0 auto}
-  .guide-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.18em;margin-bottom:14px}
-  .guide-title{font-family:'Noto Serif JP',serif;font-size:clamp(22px,3vw,32px);font-weight:700;margin-bottom:8px}
-  .guide-desc{font-size:15px;color:var(--text3);line-height:1.9;margin-bottom:40px}
-  .guide-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:40px}
-  .guide-step{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px 20px;position:relative}
-  .guide-step-num{font-family:'Barlow',sans-serif;font-size:36px;font-weight:800;color:var(--red);line-height:1;margin-bottom:12px;opacity:.15;position:absolute;top:16px;right:20px}
-  .guide-step-icon{font-size:28px;margin-bottom:12px}
-  .guide-step-title{font-size:14px;font-weight:700;margin-bottom:6px}
-  .guide-step-desc{font-size:13px;color:var(--text3);line-height:1.8}
-  .guide-cta{display:flex;gap:12px;flex-wrap:wrap}
-  .guide-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;border:none;font-family:inherit}
-  .guide-btn-primary{background:var(--red);color:#fff}
-  .guide-btn-primary:hover{background:#b91c1c;transform:translateY(-1px)}
-  .guide-btn-secondary{background:var(--bg2);color:var(--text2);border:1px solid var(--border2)}
-  .guide-btn-secondary:hover{border-color:var(--text3);color:var(--text)}
-  @media(max-width:768px){#how-to-use{padding:72px 20px 40px}.guide-steps{grid-template-columns:1fr 1fr}}
-  @media(max-width:480px){#how-to-use{padding:72px 16px 36px}.guide-steps{grid-template-columns:1fr}}
-
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -475,7 +445,6 @@
     .auth-sub{font-size:12px}
 
     /* ユーザーバー */
-    #nav-user-email{display:none}
     #auth-user-bar{font-size:12px;padding:6px 16px}
   }
 
@@ -548,14 +517,20 @@
   }
   .auth-msg.error{background:#fee2e2;color:#b91c1c;display:block}
   .auth-msg.success{background:#dcfce7;color:#15803d;display:block}
-  #auth-user-bar{display:none}
-  #auth-user-bar.show{display:contents}
-  /* ナビ内のユーザー情報 */
-  #nav-user-info{display:none;align-items:center;gap:10px;font-size:12px;color:var(--text3)}
-  #nav-user-info.show{display:flex}
-  #nav-user-email{font-size:12px;color:var(--text3);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  #nav-logout-btn{background:none;border:1px solid var(--border2);border-radius:6px;padding:5px 12px;font-size:12px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
-  #nav-logout-btn:hover{border-color:var(--red);color:var(--red)}
+  #auth-user-bar{
+    display:none;
+    position:fixed;top:60px;right:0;left:0;z-index:200;
+    background:var(--green-l,#dcfce7);border-bottom:1px solid #bbf7d0;
+    padding:8px 24px;
+    font-size:13px;color:#15803d;
+    align-items:center;justify-content:flex-end;gap:16px;
+  }
+  #auth-user-bar.show{display:flex}
+  #auth-user-bar button{
+    background:none;border:1px solid #15803d;border-radius:6px;
+    padding:4px 12px;font-size:12px;color:#15803d;cursor:pointer;
+    font-family:inherit;
+  }
 
   /* 有料タブのロックUI */
   .tab.locked{position:relative;color:var(--text4) !important;cursor:pointer !important;pointer-events:auto !important}
@@ -664,7 +639,10 @@
 </div>
 
 <!-- ログイン済みユーザーバー -->
-<div id="auth-user-bar" style="display:none"></div>
+<div id="auth-user-bar">
+  <span id="auth-user-email"></span>
+  <button onclick="signOut()">ログアウト</button>
+</div>
 
 <nav>
   <a href="#top" class="nlogo">AI<span class="r">Security</span>Lab</a>
@@ -676,56 +654,10 @@
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="switchTab('certificate');document.getElementById('lessons').scrollIntoView({behavior:'smooth'});return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/17</button>
-    <div id="nav-user-info">
-      <span id="nav-user-email"></span>
-      <button id="nav-logout-btn" onclick="signOut()">ログアウト</button>
-    </div>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
 </nav>
 <div id="nav-progress-bar"><div id="nav-progress-fill"></div></div>
-
-
-<!-- ===== 使い方ガイド（ログイン時） ===== -->
-<div id="how-to-use">
-  <div class="guide-wrap">
-    <div class="guide-eyebrow">// HOW TO USE</div>
-    <h2 class="guide-title">ようこそ、AI Security Lab へ</h2>
-    <p class="guide-desc">全17レッスンを通じて、生成AIを安全に使うための知識を身につけましょう。<br>各レッスンを受講後に「受講済み」ボタンを押すと、進捗が記録されます。</p>
-
-    <div class="guide-steps">
-      <div class="guide-step">
-        <div class="guide-step-num">1</div>
-        <div class="guide-step-icon">📖</div>
-        <div class="guide-step-title">レッスンを受講する</div>
-        <div class="guide-step-desc">上部の「レッスン」から各レッスンにアクセスできます。序章・L01は無料公開、L02以降はログイン後に閲覧できます。</div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">2</div>
-        <div class="guide-step-icon">✅</div>
-        <div class="guide-step-title">受講済みにする</div>
-        <div class="guide-step-desc">各レッスンの最後にある「受講済みにする」ボタンを押すと進捗に記録されます。</div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">3</div>
-        <div class="guide-step-icon">📊</div>
-        <div class="guide-step-title">進捗を確認する</div>
-        <div class="guide-step-desc">上部の「📊 進捗」ボタンで修了証申請ページへ、ページ下部で各レッスンの受講状況を確認できます。</div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">4</div>
-        <div class="guide-step-icon">🎓</div>
-        <div class="guide-step-title">修了証を取得する</div>
-        <div class="guide-step-desc">全17レッスンを受講済みにすると、修了証の発行申請ができます。担当者よりPDFをメールでお送りします。</div>
-      </div>
-    </div>
-
-    <div class="guide-cta">
-      <button class="guide-btn guide-btn-primary" onclick="switchTab('intro');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">▶ レッスンを始める</button>
-      <button class="guide-btn guide-btn-secondary" onclick="document.getElementById('curriculum').scrollIntoView({behavior:'smooth'})">カリキュラムを確認</button>
-    </div>
-  </div>
-</div>
 
 <div class="hero" id="top">
   <div class="hleft">
@@ -2890,8 +2822,6 @@ function initSupabase(){
 function updateAuthUI(){
   const bar        = document.getElementById('auth-user-bar');
   const email      = document.getElementById('auth-user-email');
-  const navUserInfo = document.getElementById('nav-user-info');
-  const navUserEmail = document.getElementById('nav-user-email');
   const navCta     = document.getElementById('nav-cta');
   const navPricing = document.getElementById('nav-pricing');
   const navProg    = document.getElementById('nav-progress');
@@ -2902,8 +2832,6 @@ function updateAuthUI(){
   if(currentUser){
     bar.classList.add('show');
     email.textContent = currentUser.email ?? 'ログイン済み';
-    if(navUserInfo)  navUserInfo.classList.add('show');
-    if(navUserEmail) navUserEmail.textContent = currentUser.email ?? 'ログイン済み';
     lockPaidTabs(false);
     if(navCta)        navCta.style.display     = 'none';
     if(navPricing)    navPricing.style.display = 'none';
@@ -2912,18 +2840,10 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'inline-flex';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
-    document.body.classList.add('logged-in');
-    const guide = document.getElementById('how-to-use'); if(guide) guide.classList.add('show');
-    const heroSection = document.getElementById('top');
-    const problemSection = document.getElementById('problem');
-    if(heroSection)   heroSection.style.display   = 'none';
-    if(problemSection) problemSection.style.display = 'none';
     updateCompletionUI();
     updateDashboard();
   } else {
     bar.classList.remove('show');
-    if(navUserInfo)  navUserInfo.classList.remove('show');
-    if(navUserEmail) navUserEmail.textContent = '';
     lockPaidTabs(true);
     if(navCta)        navCta.style.display     = '';
     if(navPricing)    navPricing.style.display = '';
@@ -2932,12 +2852,6 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'none';
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
-    const heroSection2 = document.getElementById('top');
-    const problemSection2 = document.getElementById('problem');
-    if(heroSection2)    heroSection2.style.display   = '';
-    if(problemSection2) problemSection2.style.display = '';
-    document.body.classList.remove('logged-in');
-    const guide2 = document.getElementById('how-to-use'); if(guide2) guide2.classList.remove('show');
     const dash = document.getElementById('progress-dashboard'); if(dash) dash.style.display='none';
   }
 }
