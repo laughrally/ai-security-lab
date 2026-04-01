@@ -875,25 +875,10 @@
           <div class="podcast-label">// PODCAST</div>
           <div class="podcast-title">🎙 序章：音声で聴く「AI Security Lab」</div>
           <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。（約17分）</div>
-          <audio id="podcast-audio" src="https://drive.google.com/uc?export=download&id=1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN" preload="none" style="display:none"></audio>
-          <div class="podcast-controls">
-            <button class="pod-btn pod-play" id="pod-play-btn" onclick="togglePodcast()">▶ 再生</button>
-            <div class="pod-speed-wrap">
-              <span style="font-size:12px;color:var(--text3)">再生速度</span>
-              <div class="pod-speed-btns">
-                <button class="pod-speed" onclick="setPodSpeed(0.75)">0.75x</button>
-                <button class="pod-speed active" onclick="setPodSpeed(1)">1x</button>
-                <button class="pod-speed" onclick="setPodSpeed(1.25)">1.25x</button>
-                <button class="pod-speed" onclick="setPodSpeed(1.5)">1.5x</button>
-                <button class="pod-speed" onclick="setPodSpeed(2)">2x</button>
-              </div>
-            </div>
-          </div>
-          <div class="pod-progress-wrap">
-            <span class="pod-time" id="pod-current">0:00</span>
-            <input type="range" class="pod-progress" id="pod-progress" value="0" min="0" step="1" oninput="seekPodcast(this.value)">
-            <span class="pod-time" id="pod-duration">--:--</span>
-          </div>
+          <iframe style="width:100%;border-radius:8px;border:none" height="80"
+            src="https://drive.google.com/file/d/1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN/preview"
+            allow="autoplay" loading="lazy">
+          </iframe>
         </div>
 
         <div class="lb">
