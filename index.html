@@ -652,6 +652,7 @@
     <a href="#lessons">レッスン</a>
     <a href="#pricing" id="nav-pricing">料金</a>
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
+    <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="switchTab('certificate');document.getElementById('lessons').scrollIntoView({behavior:'smooth'});return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/17</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
@@ -2799,6 +2800,7 @@ function updateAuthUI(){
   const navPricing = document.getElementById('nav-pricing');
   const navProg    = document.getElementById('nav-progress');
   const progBar    = document.getElementById('nav-progress-bar');
+  const navLogin    = document.getElementById('nav-login');
   const pricingSection = document.getElementById('pricing');
   if(currentUser){
     bar.classList.add('show');
@@ -2806,6 +2808,7 @@ function updateAuthUI(){
     lockPaidTabs(false);
     if(navCta)        navCta.style.display     = 'none';
     if(navPricing)    navPricing.style.display = 'none';
+    if(navLogin)      navLogin.style.display   = 'none';
     if(navProg)       navProg.style.display    = 'inline-flex';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
@@ -2815,6 +2818,7 @@ function updateAuthUI(){
     lockPaidTabs(true);
     if(navCta)        navCta.style.display     = '';
     if(navPricing)    navPricing.style.display = '';
+    if(navLogin)      navLogin.style.display   = '';
     if(navProg)       navProg.style.display    = 'none';
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
