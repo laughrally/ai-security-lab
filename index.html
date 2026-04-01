@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Security Lab｜生成AIセキュリティ・情報漏洩対策 eラーニング</title>
 <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
@@ -298,7 +298,7 @@
   }
 
   /* 有料タブのロックUI */
-  .tab.locked{position:relative;color:var(--text4) !important}
+  .tab.locked{position:relative;color:var(--text4) !important;cursor:pointer !important;pointer-events:auto !important}
   .tab.locked::after{content:'🔒';font-size:10px;margin-left:4px}
 </style>
 </head>
@@ -2256,7 +2256,8 @@ let currentUser = null;
 
 function initSupabase(){
   if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // 未設定なら初期化しない
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  const { createClient } = window.supabase;
+  supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
   console.log('Supabase initialized:', !!supabase);
   supabase.auth.onAuthStateChange((_event, session)=>{
     currentUser = session?.user ?? null;
