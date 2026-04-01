@@ -966,11 +966,6 @@
           </div>
 
           <div class="hr"></div>
-                    <div class="completion-area">
-            <p>このレッスンの内容を確認しましたか？</p>
-            <button class="btn-complete" id="complete-intro" onclick="markComplete('intro')">✓ 序章 を受講済みにする</button>
-            <div class="completion-note" id="note-intro"></div>
-          </div>
           <div class="lnav">
             <div></div>
             <a href="#lessons" onclick="switchTab('lesson1');return false;" class="lnbtn" style="text-align:right">
@@ -2663,12 +2658,12 @@
         <div class="cert-progress-box">
           <div class="cert-progress-label">受講進捗</div>
           <div class="cert-bar"><div class="cert-bar-fill" id="cert-bar-fill" style="width:0%"></div></div>
-          <div class="cert-progress-count"><span id="cert-count">0</span> / 17 レッスン完了</div>
+          <div class="cert-progress-count"><span id="cert-count">0</span> / 17 レッスン完了（L01〜L17）</div>
         </div>
         <div class="cert-form-box">
           <div class="cert-form-title">修了証 発行申請フォーム</div>
           <div class="cert-form-desc">以下を入力して申請してください。全レッスン受講済みの場合のみ送信できます。</div>
-          <div id="cert-locked-notice" class="cert-locked-notice">⚠️ まだ受講済みでないレッスンがあります。全レッスンを受講済みにしてから申請してください。</div>
+          <div id="cert-locked-notice" class="cert-locked-notice">⚠️ L01〜L17のすべてを受講済みにしてから申請してください。</div>
           <div class="form-field"><label>会社名<span style="color:var(--red)">*</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方はご氏名）"></div>
           <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
           <div class="form-field"><label>メールアドレス<span style="color:var(--red)">*</span></label><input type="email" id="cert-email" placeholder="you@example.com"></div>
@@ -3165,7 +3160,7 @@ window.closeFormModal  = closeFormModal;
 window.submitForm      = submitForm;
 
 /* ===== 受講済み管理・修了証 ===== */
-const ALL_LESSONS_LIST = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
+const ALL_LESSONS_LIST = ['lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
 
 function loadCompleted(){ try{ return JSON.parse(localStorage.getItem('asl_completed')||'[]'); }catch(e){ return []; } }
 function saveCompleted(arr){ localStorage.setItem('asl_completed', JSON.stringify(arr)); }
@@ -3487,7 +3482,7 @@ window.updateDashboard = updateDashboard;
 
 /* ===== クイズ未正解時は受講済みボタンをロック ===== */
 function initQuizLocks(){
-  const ALL_IDS = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
+  const ALL_IDS = ALL_LESSONS_LIST;
   ALL_IDS.forEach(tabId => {
     const btn = document.getElementById('complete-' + tabId);
     if(!btn) return;
