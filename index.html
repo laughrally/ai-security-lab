@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Security Lab｜生成AIセキュリティ・情報漏洩対策 eラーニング</title>
 <!-- Supabase -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<!-- Supabase via ESM -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
@@ -298,7 +298,7 @@
   }
 
   /* 有料タブのロックUI */
-  .tab.locked{position:relative;color:var(--text4) !important}
+  .tab.locked{position:relative;color:var(--text4) !important;cursor:pointer !important;pointer-events:auto !important}
   .tab.locked::after{content:'🔒';font-size:10px;margin-left:4px}
 </style>
 </head>
@@ -2237,7 +2237,8 @@
   <div class="fcopy">© 2026 LaughRally LLC. All rights reserved.</div>
 </footer>
 
-<script>
+<script type="module">
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 /* ============================================================
    ▼ STEP 1: Supabaseの設定値をここに貼り付けてください
    Supabaseダッシュボード → Settings → API で取得できます
@@ -2251,21 +2252,25 @@ const SUPABASE_ANON = 'sb_publishable_MKMYWP8AP0xMcoKlEazytw_lFTTebRn';
 const FREE_TABS = ['intro', 'lesson1'];
 
 /* ========== Supabase初期化 ========== */
-let supabase = null;
+let _supabase = null;
 let currentUser = null;
 
 function initSupabase(){
-  if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // 未設定なら初期化しない
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
-  console.log('Supabase initialized:', !!supabase);
-  supabase.auth.onAuthStateChange((_event, session)=>{
-    currentUser = session?.user ?? null;
-    updateAuthUI();
-  });
-  supabase.auth.getSession().then(({data:{session}})=>{
-    currentUser = session?.user ?? null;
-    updateAuthUI();
-  });
+  if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return;
+  try {
+    _supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
+    console.log('Supabase initialized:', !!_supabase);
+    _supabase.auth.onAuthStateChange((_event, session)=>{
+      currentUser = session?.user ?? null;
+      updateAuthUI();
+    });
+    _supabase.auth.getSession().then(({data:{session}})=>{
+      currentUser = session?.user ?? null;
+      updateAuthUI();
+    });
+  } catch(e) {
+    console.error('Supabase init error:', e);
+  }
 }
 
 function updateAuthUI(){
@@ -2316,8 +2321,8 @@ function toggleAuthMode(mode){
 
 /* ===== Google ログイン ===== */
 async function signInWithGoogle(){
-  if(!supabase){ setAuthMsg('error','Supabaseが未設定です。設定値を入力してください。'); return; }
-  const {error} = await supabase.auth.signInWithOAuth({
+  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。設定値を入力してください。'); return; }
+  const {error} = await _supabase.auth.signInWithOAuth({
     provider:'google',
     options:{ redirectTo: window.location.href }
   });
@@ -2326,12 +2331,12 @@ async function signInWithGoogle(){
 
 /* ===== メール+PW ログイン ===== */
 async function signInWithEmail(){
-  if(!supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
+  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
   const email = document.getElementById('auth-email').value.trim();
   const pw    = document.getElementById('auth-pw').value;
   if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
   setAuthMsg('', '読み込み中...');
-  const {error} = await supabase.auth.signInWithPassword({email, password:pw});
+  const {error} = await _supabase.auth.signInWithPassword({email, password:pw});
   if(error){
     setAuthMsg('error', 'ログインに失敗しました。メールアドレスまたはパスワードをご確認ください。');
   } else {
@@ -2341,13 +2346,13 @@ async function signInWithEmail(){
 
 /* ===== メール+PW 新規登録 ===== */
 async function signUpWithEmail(){
-  if(!supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
+  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
   const email = document.getElementById('auth-signup-email').value.trim();
   const pw    = document.getElementById('auth-signup-pw').value;
   if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
   if(pw.length < 6){ setAuthMsg('error','パスワードは6文字以上で設定してください。'); return; }
   setAuthMsg('', '登録中...');
-  const {error} = await supabase.auth.signUp({email, password:pw});
+  const {error} = await _supabase.auth.signUp({email, password:pw});
   if(error){
     setAuthMsg('error', error.message);
   } else {
@@ -2357,8 +2362,8 @@ async function signUpWithEmail(){
 
 /* ===== ログアウト ===== */
 async function signOut(){
-  if(!supabase) return;
-  await supabase.auth.signOut();
+  if(!_supabase) return;
+  await _supabase.auth.signOut();
 }
 
 /* ===== タブ切り替え（認証チェック付き） ===== */
@@ -2402,8 +2407,20 @@ document.getElementById('auth-pw').addEventListener('keydown', e=>{
 });
 
 /* 初期化 */
-lockPaidTabs(true); // ページ読み込み時点でまず全有料タブをロック
+lockPaidTabs(true);
 initSupabase();
+
+/* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
+window.switchTab       = switchTab;
+window.toggleCh        = toggleCh;
+window.doQ             = doQ;
+window.openAuthModal   = openAuthModal;
+window.closeAuthModal  = closeAuthModal;
+window.toggleAuthMode  = toggleAuthMode;
+window.signInWithGoogle= signInWithGoogle;
+window.signInWithEmail = signInWithEmail;
+window.signUpWithEmail = signUpWithEmail;
+window.signOut         = signOut;
 </script>
 </body>
 </html>
