@@ -241,6 +241,63 @@
   .flinks a:hover{color:var(--text3)}
   .fcopy{font-size:12px;color:var(--text4)}
 
+
+  /* ===== 申込フォーム ===== */
+  #form-overlay{
+    position:fixed;inset:0;z-index:9998;
+    background:rgba(15,23,42,0.85);
+    backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+    overflow-y:auto;
+  }
+  #form-overlay.hidden{display:none}
+  .form-box{
+    background:#fff;border-radius:16px;
+    padding:40px 36px;width:100%;max-width:480px;
+    box-shadow:0 24px 64px rgba(0,0,0,0.2);
+    position:relative;
+  }
+  body.dark .form-box{background:var(--bg2);border:1px solid var(--border)}
+  .form-plan-badge{
+    display:inline-block;background:var(--red-l);color:var(--red);
+    font-size:12px;font-weight:700;padding:4px 14px;border-radius:100px;
+    margin-bottom:16px;border:1px solid rgba(220,38,38,.15);
+    font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;
+  }
+  .form-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px}
+  .form-sub{font-size:13px;color:var(--text3);margin-bottom:28px;line-height:1.6}
+  .form-field{margin-bottom:16px}
+  .form-field label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px}
+  .form-field label span{color:var(--red);margin-left:2px}
+  .form-field input,.form-field select{
+    width:100%;padding:10px 12px;border-radius:8px;
+    border:1.5px solid var(--border2);font-size:14px;color:var(--text);
+    outline:none;transition:border-color .2s;font-family:inherit;
+    background:var(--bg);
+  }
+  .form-field input:focus,.form-field select:focus{border-color:var(--blue)}
+  .form-field select{cursor:pointer}
+  .form-check{display:flex;align-items:center;gap:10px;margin-bottom:20px;font-size:14px;color:var(--text2);cursor:pointer}
+  .form-check input{width:18px;height:18px;cursor:pointer;accent-color:var(--red)}
+  .form-submit{
+    width:100%;padding:14px;border-radius:8px;border:none;
+    background:var(--red);color:#fff;font-size:15px;font-weight:700;
+    cursor:pointer;transition:background .2s;font-family:inherit;
+  }
+  .form-submit:hover{background:#b91c1c}
+  .form-submit:disabled{background:var(--text4);cursor:not-allowed}
+  .form-msg{font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none}
+  .form-msg.error{background:#fee2e2;color:#b91c1c;display:block}
+  .form-msg.success{background:#dcfce7;color:#15803d;display:block}
+  .form-close{
+    position:absolute;top:16px;right:16px;
+    background:none;border:none;font-size:20px;cursor:pointer;
+    color:var(--text4);line-height:1;padding:4px;
+  }
+  .form-close:hover{color:var(--text)}
+  .form-note{font-size:12px;color:var(--text4);text-align:center;margin-top:16px;line-height:1.7}
+
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -452,6 +509,53 @@
 </style>
 </head>
 <body>
+
+
+<!-- ===== 申込フォームモーダル ===== -->
+<div id="form-overlay" class="hidden">
+  <div class="form-box">
+    <button class="form-close" onclick="closeFormModal()">✕</button>
+    <div class="form-plan-badge" id="form-plan-label">INDIVIDUAL</div>
+    <div class="form-title">お申し込みフォーム</div>
+    <div class="form-sub">以下をご入力ください。確認後、担当者よりご連絡いたします。</div>
+    <div class="form-msg" id="form-msg"></div>
+
+    <div class="form-field">
+      <label>会社名<span>*</span></label>
+      <input type="text" id="form-company" placeholder="株式会社〇〇（個人の方はご氏名）">
+    </div>
+    <div class="form-field">
+      <label>担当者名<span>*</span></label>
+      <input type="text" id="form-name" placeholder="山田 太郎">
+    </div>
+    <div class="form-field">
+      <label>メールアドレス<span>*</span></label>
+      <input type="email" id="form-email" placeholder="you@example.com">
+    </div>
+    <div class="form-field">
+      <label>プラン</label>
+      <select id="form-plan">
+        <option value="個人 9800円">個人プラン ¥9,800（買い切り）</option>
+        <option value="法人5名 39800円">法人プラン 5名 ¥39,800（買い切り）</option>
+        <option value="法人20名 98000円">法人プラン 20名 ¥98,000（買い切り）</option>
+      </select>
+    </div>
+    <label class="form-check">
+      <input type="checkbox" id="form-invoice">
+      請求書払いを希望する
+    </label>
+    <div class="form-field">
+      <label>備考・ご質問</label>
+      <input type="text" id="form-note" placeholder="任意">
+    </div>
+
+    <button class="form-submit" id="form-submit-btn" onclick="submitForm()">申し込む</button>
+    <div class="form-note">
+      ご入力いただいた情報は受講管理のみに使用します。<br>
+      お支払いは請求書（銀行振込）にて対応いたします。
+    </div>
+  </div>
+</div>
 
 <!-- ===== AUTH MODAL ===== -->
 <div id="auth-overlay" class="hidden">
@@ -2340,7 +2444,7 @@
           <li>AI利用ガイドラインテンプレート（DL）</li>
           <li>コンテンツ更新通知</li>
         </ul>
-        <a href="#" class="pcbtn bpo">購入する</a>
+        <button class="pcbtn bpo" onclick="openFormModal('個人 9800円')">申し込む</button>
       </div>
       <div class="pc feat">
         <div class="pcbadge">法人・チームにおすすめ</div>
@@ -2356,7 +2460,7 @@
           <li>受講ログCSVエクスポート</li>
           <li>LaughRally AI導入相談 初回無料</li>
         </ul>
-        <a href="#" class="pcbtn bpr">チームで始める</a>
+        <button class="pcbtn bpr" onclick="openFormModal('法人5名 39800円')">申し込む</button>
       </div>
       <div class="pc">
         <div class="pcname">TEAM · 20名</div>
@@ -2370,7 +2474,7 @@
           <li>業種特化コンテンツ追加対応</li>
           <li>請求書払い対応</li>
         </ul>
-        <a href="#" class="pcbtn bpo">お問い合わせ</a>
+        <button class="pcbtn bpo" onclick="openFormModal('法人20名 98000円')">申し込む</button>
       </div>
     </div>
   </div>
@@ -2389,6 +2493,109 @@
 
 <script type="module">
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
+
+/* ===== 申込フォーム ===== */
+const NOTION_DS_ID = 'd8fec8f5-2465-42e4-b82b-c0b9e596bd43'; // 購入者管理DB
+
+function openFormModal(plan){
+  document.getElementById('form-overlay').classList.remove('hidden');
+  document.getElementById('form-plan').value = plan;
+  const labels = {
+    '個人 9800円': 'INDIVIDUAL · ¥9,800',
+    '法人5名 39800円': 'TEAM 5名 · ¥39,800',
+    '法人20名 98000円': 'TEAM 20名 · ¥98,000'
+  };
+  document.getElementById('form-plan-label').textContent = labels[plan] || plan;
+  setFormMsg('','');
+}
+function closeFormModal(){
+  document.getElementById('form-overlay').classList.add('hidden');
+}
+function setFormMsg(type, text){
+  const el = document.getElementById('form-msg');
+  el.className = 'form-msg' + (type ? ' '+type : '');
+  el.textContent = text;
+}
+
+async function submitForm(){
+  const company = document.getElementById('form-company').value.trim();
+  const name    = document.getElementById('form-name').value.trim();
+  const email   = document.getElementById('form-email').value.trim();
+  const plan    = document.getElementById('form-plan').value;
+  const invoice = document.getElementById('form-invoice').checked;
+  const note    = document.getElementById('form-note').value.trim();
+
+  if(!company || !name || !email){
+    setFormMsg('error','会社名・担当者名・メールアドレスは必須です。');
+    return;
+  }
+  if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
+    setFormMsg('error','メールアドレスの形式が正しくありません。');
+    return;
+  }
+
+  const btn = document.getElementById('form-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  setFormMsg('','');
+
+  try {
+    // Anthropic API経由でNotionに保存
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        mcp_servers: [{
+          type: 'url',
+          url: 'https://mcp.notion.com/mcp',
+          name: 'notion-mcp'
+        }],
+        messages: [{
+          role: 'user',
+          content: `Notionデータベース（data_source_id: ${NOTION_DS_ID}）に以下のレコードを追加してください。
+会社名: ${company}
+担当者名: ${name}
+メールアドレス: ${email}
+プラン: ${plan}
+請求書払い: ${invoice ? 'はい' : 'いいえ'}
+備考: ${note}
+申込日: ${new Date().toISOString().split('T')[0]}
+ステータス: 未入金`
+        }]
+      })
+    });
+
+    if(response.ok){
+      setFormMsg('success','お申し込みありがとうございます！担当者より2営業日以内にご連絡いたします。');
+      btn.textContent = '送信完了 ✓';
+      // フォームをリセット
+      ['form-company','form-name','form-email','form-note'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('form-invoice').checked = false;
+    } else {
+      throw new Error('送信失敗');
+    }
+  } catch(e) {
+    // Anthropic API経由が使えない場合はmailtoで代替
+    const subject = encodeURIComponent(`【AI Security Lab】お申し込み：${plan}`);
+    const body = encodeURIComponent(
+      `会社名：${company}\n担当者名：${name}\nメール：${email}\nプラン：${plan}\n請求書払い：${invoice ? '希望する' : '希望しない'}\n備考：${note}`
+    );
+    window.location.href = `mailto:info@laughrally.com?subject=${subject}&body=${body}`;
+    setFormMsg('success','メールアプリを開きました。送信してお申し込みください。');
+    btn.textContent = '申し込む';
+    btn.disabled = false;
+  }
+}
+
+/* フォームの外側クリックで閉じる */
+document.getElementById('form-overlay').addEventListener('click', function(e){
+  if(e.target === this) closeFormModal();
+});
 
 /* ===== ダークモード ===== */
 function toggleDark(){
@@ -2590,6 +2797,9 @@ window.signInWithEmail = signInWithEmail;
 window.signUpWithEmail = signUpWithEmail;
 window.signOut         = signOut;
 window.toggleDark      = toggleDark;
+window.openFormModal   = openFormModal;
+window.closeFormModal  = closeFormModal;
+window.submitForm      = submitForm;
 </script>
 </body>
 </html>
