@@ -2614,9 +2614,29 @@ function initSupabase(){
   try {
     _supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
     console.log('Supabase initialized:', !!_supabase);
+
+    // URLハッシュにアクセストークンがある場合（Google OAuth後のリダイレクト）
+    if(window.location.hash && window.location.hash.includes('access_token')){
+      const params = new URLSearchParams(window.location.hash.substring(1));
+      const access_token = params.get('access_token');
+      const refresh_token = params.get('refresh_token');
+      if(access_token){
+        _supabase.auth.setSession({access_token, refresh_token}).then(({data, error})=>{
+          if(!error && data.session){
+            currentUser = data.session.user;
+            updateAuthUI();
+            closeAuthModal();
+          }
+          // URLのハッシュをきれいにする
+          history.replaceState(null, '', window.location.pathname);
+        });
+      }
+    }
+
     _supabase.auth.onAuthStateChange((_event, session)=>{
       currentUser = session?.user ?? null;
       updateAuthUI();
+      if(session) closeAuthModal();
     });
     _supabase.auth.getSession().then(({data:{session}})=>{
       currentUser = session?.user ?? null;
