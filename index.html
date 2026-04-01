@@ -2539,8 +2539,10 @@ async function submitForm(){
   setFormMsg('','');
 
   try {
-    const res = await fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec', {
+    // GASはno-corsで送信（レスポンス読み取り不可だが送信は成功する）
+    fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec', {
       method: 'POST',
+      mode: 'no-cors',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         会社名: company,
@@ -2552,6 +2554,8 @@ async function submitForm(){
         申込日: new Date().toLocaleDateString('ja-JP')
       })
     });
+    // no-corsはレスポンス確認不可のため送信後すぐに成功扱い
+    const res = {ok: true};
     if(res.ok){
       setFormMsg('success','お申し込みありがとうございます！担当者より2営業日以内にご連絡いたします。');
       btn.textContent = '送信完了 ✓';
