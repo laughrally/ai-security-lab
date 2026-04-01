@@ -354,7 +354,19 @@
   .podcast-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:10px}
   .podcast-title{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
   .podcast-desc{font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.7}
-  .podcast-player{width:100%;border-radius:8px;border:none}
+  .podcast-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+  .pod-btn{padding:9px 20px;border-radius:8px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+  .pod-play{background:var(--red);color:#fff;min-width:90px}
+  .pod-play:hover{background:#b91c1c}
+  .pod-play.playing{background:var(--text3)}
+  .pod-speed-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .pod-speed-btns{display:flex;gap:4px}
+  .pod-speed{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s}
+  .pod-speed:hover{border-color:var(--text3);color:var(--text)}
+  .pod-speed.active{background:var(--red);border-color:var(--red);color:#fff}
+  .pod-progress-wrap{display:flex;align-items:center;gap:8px}
+  .pod-time{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);min-width:36px;text-align:center}
+  .pod-progress{flex:1;accent-color:var(--red);height:4px;cursor:pointer}
 
   /* ===== RESPONSIVE ===== */
 
@@ -863,11 +875,25 @@
           <div class="podcast-label">// PODCAST</div>
           <div class="podcast-title">🎙 序章：音声で聴く「AI Security Lab」</div>
           <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。（約17分）</div>
-          <iframe class="podcast-player" height="80"
-            src="https://drive.google.com/file/d/1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN/preview"
-            allow="autoplay"
-            loading="lazy">
-          </iframe>
+          <audio id="podcast-audio" src="https://drive.google.com/uc?export=download&id=1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN" preload="none" style="display:none"></audio>
+          <div class="podcast-controls">
+            <button class="pod-btn pod-play" id="pod-play-btn" onclick="togglePodcast()">▶ 再生</button>
+            <div class="pod-speed-wrap">
+              <span style="font-size:12px;color:var(--text3)">再生速度</span>
+              <div class="pod-speed-btns">
+                <button class="pod-speed" onclick="setPodSpeed(0.75)">0.75x</button>
+                <button class="pod-speed active" onclick="setPodSpeed(1)">1x</button>
+                <button class="pod-speed" onclick="setPodSpeed(1.25)">1.25x</button>
+                <button class="pod-speed" onclick="setPodSpeed(1.5)">1.5x</button>
+                <button class="pod-speed" onclick="setPodSpeed(2)">2x</button>
+              </div>
+            </div>
+          </div>
+          <div class="pod-progress-wrap">
+            <span class="pod-time" id="pod-current">0:00</span>
+            <input type="range" class="pod-progress" id="pod-progress" value="0" min="0" step="1" oninput="seekPodcast(this.value)">
+            <span class="pod-time" id="pod-duration">--:--</span>
+          </div>
         </div>
 
         <div class="lb">
@@ -3185,6 +3211,68 @@ async function submitCertificate(){
   msg.className='form-msg success'; msg.textContent='申請を受け付けました！担当者より修了証PDFをメールでお送りします。'; msg.style.display='block';
   btn.textContent='申請完了 ✓';
 }
+
+
+/* ===== ポッドキャストプレーヤー ===== */
+function togglePodcast(){
+  const audio = document.getElementById('podcast-audio');
+  const btn = document.getElementById('pod-play-btn');
+  if(!audio) return;
+  if(audio.paused){
+    audio.play();
+    btn.textContent = '⏸ 一時停止';
+    btn.classList.add('playing');
+  } else {
+    audio.pause();
+    btn.textContent = '▶ 再生';
+    btn.classList.remove('playing');
+  }
+}
+
+function setPodSpeed(speed){
+  const audio = document.getElementById('podcast-audio');
+  if(!audio) return;
+  audio.playbackRate = speed;
+  document.querySelectorAll('.pod-speed').forEach(b=>{
+    b.classList.toggle('active', parseFloat(b.textContent) === speed);
+  });
+}
+
+function seekPodcast(val){
+  const audio = document.getElementById('podcast-audio');
+  if(!audio) return;
+  audio.currentTime = val;
+}
+
+function formatTime(s){
+  const m = Math.floor(s/60);
+  const sec = Math.floor(s%60);
+  return m + ':' + (sec<10?'0':'')+sec;
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  const audio = document.getElementById('podcast-audio');
+  const progress = document.getElementById('pod-progress');
+  const current = document.getElementById('pod-current');
+  const duration = document.getElementById('pod-duration');
+  if(!audio) return;
+  audio.addEventListener('loadedmetadata', ()=>{
+    progress.max = Math.floor(audio.duration);
+    duration.textContent = formatTime(audio.duration);
+  });
+  audio.addEventListener('timeupdate', ()=>{
+    progress.value = Math.floor(audio.currentTime);
+    current.textContent = formatTime(audio.currentTime);
+  });
+  audio.addEventListener('ended', ()=>{
+    const btn = document.getElementById('pod-play-btn');
+    if(btn){ btn.textContent = '▶ 再生'; btn.classList.remove('playing'); }
+  });
+});
+
+window.togglePodcast = togglePodcast;
+window.setPodSpeed   = setPodSpeed;
+window.seekPodcast   = seekPodcast;
 
 window.markComplete      = markComplete;
 window.submitCertificate = submitCertificate;
