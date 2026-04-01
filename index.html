@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Security Lab｜生成AIセキュリティ・情報漏洩対策 eラーニング</title>
+<!-- Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
@@ -115,7 +117,7 @@
   .tcon{display:none;padding:0}
   .tcon.active{display:block}
 
-  .lc{max-width:720px}
+  .lc{max-width:720px;margin:0 auto}
   .leye{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:12px}
   .ltit{font-family:'Noto Serif JP',serif;font-size:clamp(24px,3.2vw,34px);line-height:1.3;font-weight:700;margin-bottom:18px}
   .lmeta{display:flex;flex-wrap:wrap;gap:20px;padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:40px}
@@ -219,9 +221,146 @@
     .sec{padding:72px 20px}
     .ltit{font-size:26px}
   }
+
+  /* ===== AUTH MODAL ===== */
+  #auth-overlay{
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(15,23,42,0.85);
+    backdrop-filter:blur(8px);
+    display:flex;align-items:center;justify-content:center;
+    padding:24px;
+  }
+  #auth-overlay.hidden{display:none}
+  .auth-box{
+    background:#fff;border-radius:16px;
+    padding:40px 36px;width:100%;max-width:420px;
+    box-shadow:0 24px 64px rgba(0,0,0,0.2);
+  }
+  .auth-logo{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;
+    color:var(--red);letter-spacing:.1em;margin-bottom:6px;
+  }
+  .auth-logo span{color:var(--text3)}
+  .auth-title{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px}
+  .auth-sub{font-size:13px;color:var(--text3);margin-bottom:28px;line-height:1.6}
+  .auth-btn-google{
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    width:100%;padding:12px;border-radius:8px;border:1.5px solid var(--border2);
+    background:#fff;font-size:14px;font-weight:600;color:var(--text);
+    cursor:pointer;transition:border-color .2s,box-shadow .2s;margin-bottom:20px;
+  }
+  .auth-btn-google:hover{border-color:#4285f4;box-shadow:0 0 0 3px rgba(66,133,244,.12)}
+  .auth-btn-google img{width:20px;height:20px}
+  .auth-divider{
+    display:flex;align-items:center;gap:12px;
+    font-size:12px;color:var(--text4);margin-bottom:20px;
+  }
+  .auth-divider::before,.auth-divider::after{
+    content:'';flex:1;height:1px;background:var(--border);
+  }
+  .auth-field{margin-bottom:14px}
+  .auth-field label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:6px}
+  .auth-field input{
+    width:100%;padding:10px 12px;border-radius:8px;
+    border:1.5px solid var(--border2);font-size:14px;color:var(--text);
+    outline:none;transition:border-color .2s;font-family:inherit;
+  }
+  .auth-field input:focus{border-color:var(--blue)}
+  .auth-btn-email{
+    width:100%;padding:12px;border-radius:8px;border:none;
+    background:var(--red);color:#fff;font-size:14px;font-weight:700;
+    cursor:pointer;transition:background .2s;margin-top:4px;font-family:inherit;
+  }
+  .auth-btn-email:hover{background:#b91c1c}
+  .auth-toggle{
+    text-align:center;margin-top:16px;font-size:13px;color:var(--text3);
+  }
+  .auth-toggle a{color:var(--blue);cursor:pointer;text-decoration:none;font-weight:600}
+  .auth-toggle a:hover{text-decoration:underline}
+  .auth-msg{
+    font-size:13px;padding:10px 14px;border-radius:8px;margin-bottom:14px;display:none;
+  }
+  .auth-msg.error{background:#fee2e2;color:#b91c1c;display:block}
+  .auth-msg.success{background:#dcfce7;color:#15803d;display:block}
+  #auth-user-bar{
+    display:none;
+    position:fixed;top:60px;right:0;left:0;z-index:200;
+    background:var(--green-l,#dcfce7);border-bottom:1px solid #bbf7d0;
+    padding:8px 24px;
+    font-size:13px;color:#15803d;
+    align-items:center;justify-content:flex-end;gap:16px;
+  }
+  #auth-user-bar.show{display:flex}
+  #auth-user-bar button{
+    background:none;border:1px solid #15803d;border-radius:6px;
+    padding:4px 12px;font-size:12px;color:#15803d;cursor:pointer;
+    font-family:inherit;
+  }
+
+  /* 有料タブのロックUI */
+  .tab.locked{position:relative;color:var(--text4) !important}
+  .tab.locked::after{content:'🔒';font-size:10px;margin-left:4px}
 </style>
 </head>
 <body>
+
+<!-- ===== AUTH MODAL ===== -->
+<div id="auth-overlay" class="hidden">
+  <div class="auth-box">
+    <div class="auth-logo">AI<span>Security</span>Lab</div>
+    <div class="auth-title" id="auth-modal-title">受講者ログイン</div>
+    <div class="auth-sub" id="auth-modal-sub">L02以降の受講には登録が必要です。<br>アカウントをお持ちでない方は新規登録してください。</div>
+    <div class="auth-msg" id="auth-msg"></div>
+
+    <!-- Googleログイン -->
+    <button class="auth-btn-google" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+      Googleアカウントでログイン
+    </button>
+
+    <div class="auth-divider">または</div>
+
+    <!-- メール+PW フォーム -->
+    <div id="auth-form-login">
+      <div class="auth-field">
+        <label>メールアドレス</label>
+        <input type="email" id="auth-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>パスワード</label>
+        <input type="password" id="auth-pw" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn-email" onclick="signInWithEmail()">ログイン</button>
+      <div class="auth-toggle">
+        アカウントをお持ちでない方は
+        <a onclick="toggleAuthMode('signup')">新規登録</a>
+      </div>
+    </div>
+
+    <div id="auth-form-signup" style="display:none">
+      <div class="auth-field">
+        <label>メールアドレス</label>
+        <input type="email" id="auth-signup-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>パスワード（6文字以上）</label>
+        <input type="password" id="auth-signup-pw" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="auth-btn-email" onclick="signUpWithEmail()">新規登録する</button>
+      <div class="auth-toggle">
+        すでにアカウントをお持ちの方は
+        <a onclick="toggleAuthMode('login')">ログイン</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ログイン済みユーザーバー -->
+<div id="auth-user-bar">
+  <span id="auth-user-email"></span>
+  <button onclick="signOut()">ログアウト</button>
+</div>
 
 <nav>
   <a href="#top" class="nlogo">AI<span class="r">Security</span>Lab</a>
@@ -2099,27 +2238,172 @@
 </footer>
 
 <script>
-function toggleCh(el){el.closest('.chapter').classList.toggle('open')}
-function switchTab(name){
-  document.querySelectorAll('.tab').forEach(t=>{
-    const match=t.getAttribute('onclick').match(/switchTab\('([^']+)'\)/);
-    if(match)t.classList.toggle('active',match[1]===name);
+/* ============================================================
+   ▼ STEP 1: Supabaseの設定値をここに貼り付けてください
+   Supabaseダッシュボード → Settings → API で取得できます
+   ============================================================ */
+const SUPABASE_URL  = 'https://zektuwdsmqpdbbslxyal.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_MKMYWP8AP0xMcoKlEazytw_lFTTebRn';
+
+/* ============================================================
+   ▼ 無料で見られるタブ名（これ以外はログイン必須）
+   ============================================================ */
+const FREE_TABS = ['intro', 'lesson1'];
+
+/* ========== Supabase初期化 ========== */
+let supabase = null;
+let currentUser = null;
+
+function initSupabase(){
+  if(SUPABASE_URL === 'YOUR_SUPABASE_URL') return; // 未設定なら初期化しない
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  console.log('Supabase initialized:', !!supabase);
+  supabase.auth.onAuthStateChange((_event, session)=>{
+    currentUser = session?.user ?? null;
+    updateAuthUI();
   });
-  // 序章ボタンは別扱い（class="tab active"で初期表示）
+  supabase.auth.getSession().then(({data:{session}})=>{
+    currentUser = session?.user ?? null;
+    updateAuthUI();
+  });
+}
+
+function updateAuthUI(){
+  const bar   = document.getElementById('auth-user-bar');
+  const email = document.getElementById('auth-user-email');
+  if(currentUser){
+    bar.classList.add('show');
+    email.textContent = currentUser.email ?? 'ログイン済み';
+    lockPaidTabs(false);
+  } else {
+    bar.classList.remove('show');
+    lockPaidTabs(true);
+  }
+}
+
+/* ログイン済みかどうかで有料タブのクラスを切り替え */
+function lockPaidTabs(lock){
+  document.querySelectorAll('.tab').forEach(t=>{
+    const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
+    if(!m) return;
+    const name = m[1];
+    if(!FREE_TABS.includes(name)){
+      t.classList.toggle('locked', lock);
+    }
+  });
+}
+
+/* ===== 認証モーダル制御 ===== */
+function openAuthModal(){
+  document.getElementById('auth-overlay').classList.remove('hidden');
+  setAuthMsg('', '');
+}
+function closeAuthModal(){
+  document.getElementById('auth-overlay').classList.add('hidden');
+}
+function setAuthMsg(type, text){
+  const el = document.getElementById('auth-msg');
+  el.className = 'auth-msg' + (type ? ' '+type : '');
+  el.textContent = text;
+}
+function toggleAuthMode(mode){
+  const isSignup = mode === 'signup';
+  document.getElementById('auth-form-login' ).style.display = isSignup ? 'none'  : 'block';
+  document.getElementById('auth-form-signup').style.display = isSignup ? 'block' : 'none';
+  document.getElementById('auth-modal-title').textContent = isSignup ? '新規登録' : '受講者ログイン';
+  setAuthMsg('', '');
+}
+
+/* ===== Google ログイン ===== */
+async function signInWithGoogle(){
+  if(!supabase){ setAuthMsg('error','Supabaseが未設定です。設定値を入力してください。'); return; }
+  const {error} = await supabase.auth.signInWithOAuth({
+    provider:'google',
+    options:{ redirectTo: window.location.href }
+  });
+  if(error) setAuthMsg('error', error.message);
+}
+
+/* ===== メール+PW ログイン ===== */
+async function signInWithEmail(){
+  if(!supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
+  const email = document.getElementById('auth-email').value.trim();
+  const pw    = document.getElementById('auth-pw').value;
+  if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
+  setAuthMsg('', '読み込み中...');
+  const {error} = await supabase.auth.signInWithPassword({email, password:pw});
+  if(error){
+    setAuthMsg('error', 'ログインに失敗しました。メールアドレスまたはパスワードをご確認ください。');
+  } else {
+    closeAuthModal();
+  }
+}
+
+/* ===== メール+PW 新規登録 ===== */
+async function signUpWithEmail(){
+  if(!supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
+  const email = document.getElementById('auth-signup-email').value.trim();
+  const pw    = document.getElementById('auth-signup-pw').value;
+  if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
+  if(pw.length < 6){ setAuthMsg('error','パスワードは6文字以上で設定してください。'); return; }
+  setAuthMsg('', '登録中...');
+  const {error} = await supabase.auth.signUp({email, password:pw});
+  if(error){
+    setAuthMsg('error', error.message);
+  } else {
+    setAuthMsg('success', '確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。');
+  }
+}
+
+/* ===== ログアウト ===== */
+async function signOut(){
+  if(!supabase) return;
+  await supabase.auth.signOut();
+}
+
+/* ===== タブ切り替え（認証チェック付き） ===== */
+function switchTab(name){
+  // 有料タブ かつ 未ログインならモーダルを出す
+  if(!FREE_TABS.includes(name) && !currentUser){
+    openAuthModal();
+    return;
+  }
+  document.querySelectorAll('.tab').forEach(t=>{
+    const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
+    if(m) t.classList.toggle('active', m[1]===name);
+  });
   document.querySelectorAll('.tcon').forEach(t=>t.classList.remove('active'));
-  const el=document.getElementById('tab-'+name);
-  if(el)el.classList.add('active');
+  const el = document.getElementById('tab-'+name);
+  if(el) el.classList.add('active');
   document.getElementById('lessons').scrollIntoView({behavior:'smooth'});
 }
+
+/* ===== その他の既存関数 ===== */
+function toggleCh(el){ el.closest('.chapter').classList.toggle('open') }
+
 function doQ(btn,correct,id){
   btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>{
     b.style.pointerEvents='none';
-    if(b.getAttribute('onclick').includes('true'))b.classList.add('ok');
+    if(b.getAttribute('onclick').includes('true')) b.classList.add('ok');
   });
-  if(!correct)btn.classList.add('ng');
-  document.getElementById(id+'-ok').classList.toggle('show',correct);
-  document.getElementById(id+'-ng').classList.toggle('show',!correct);
+  if(!correct) btn.classList.add('ng');
+  document.getElementById(id+'-ok').classList.toggle('show', correct);
+  document.getElementById(id+'-ng').classList.toggle('show', !correct);
 }
+
+/* モーダルの外側クリックで閉じる */
+document.getElementById('auth-overlay').addEventListener('click', function(e){
+  if(e.target === this) closeAuthModal();
+});
+
+/* Enterキーでログイン */
+document.getElementById('auth-pw').addEventListener('keydown', e=>{
+  if(e.key==='Enter') signInWithEmail();
+});
+
+/* 初期化 */
+lockPaidTabs(true); // ページ読み込み時点でまず全有料タブをロック
+initSupabase();
 </script>
 </body>
 </html>
