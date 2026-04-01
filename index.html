@@ -2539,22 +2539,20 @@ async function submitForm(){
   setFormMsg('','');
 
   try {
-    // GASはno-corsで送信（レスポンス読み取り不可だが送信は成功する）
-    fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec', {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        会社名: company,
-        担当者名: name,
-        メールアドレス: email,
-        プラン: plan,
-        請求書払い: invoice ? '希望する' : '希望しない',
-        備考: note,
-        申込日: new Date().toLocaleDateString('ja-JP')
-      })
+    // GASにURLパラメータで送信（CORS回避）
+    const params = new URLSearchParams({
+      '会社名': company,
+      '担当者名': name,
+      'メールアドレス': email,
+      'プラン': plan,
+      '請求書払い': invoice ? '希望する' : '希望しない',
+      '備考': note,
+      '申込日': new Date().toLocaleDateString('ja-JP')
     });
-    // no-corsはレスポンス確認不可のため送信後すぐに成功扱い
+    fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec?' + params.toString(), {
+      method: 'GET',
+      mode: 'no-cors'
+    });
     const res = {ok: true};
     if(res.ok){
       setFormMsg('success','お申し込みありがとうございます！担当者より2営業日以内にご連絡いたします。');
