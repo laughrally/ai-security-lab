@@ -327,6 +327,13 @@
   .cert-form-desc{font-size:13px;color:var(--text3);margin-bottom:24px;line-height:1.8}
   .cert-locked-notice{background:var(--amber-l);border:1px solid rgba(217,119,6,.2);border-radius:10px;padding:16px 20px;font-size:14px;color:var(--amber);text-align:center;margin-bottom:24px}
 
+
+  /* ログイン時のスクロール余白 */
+  body.logged-in { scroll-padding-top: 110px; }
+  body.logged-in #curriculum { scroll-margin-top: 110px; }
+  body.logged-in #lessons { scroll-margin-top: 110px; }
+  body.logged-in #progress-dashboard { scroll-margin-top: 110px; }
+
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -2840,6 +2847,7 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'inline-flex';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
+    document.body.classList.add('logged-in');
     const heroSection = document.getElementById('top');
     const problemSection = document.getElementById('problem');
     if(heroSection)   heroSection.style.display   = 'none';
@@ -2860,6 +2868,7 @@ function updateAuthUI(){
     const problemSection2 = document.getElementById('problem');
     if(heroSection2)    heroSection2.style.display   = '';
     if(problemSection2) problemSection2.style.display = '';
+    document.body.classList.remove('logged-in');
     const dash = document.getElementById('progress-dashboard'); if(dash) dash.style.display='none';
   }
 }
