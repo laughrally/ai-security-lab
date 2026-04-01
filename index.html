@@ -360,6 +360,18 @@
   .cert-form-title{font-size:18px;font-weight:700;margin-bottom:6px}
   .cert-form-desc{font-size:13px;color:var(--text3);margin-bottom:24px}
 
+
+  /* ===== 進捗バー（ナビ下） ===== */
+  #nav-progress-bar{
+    position:fixed;top:62px;left:0;right:0;z-index:99;
+    height:3px;background:var(--border);display:none;
+  }
+  #nav-progress-bar.show{display:block}
+  #nav-progress-fill-bar{
+    height:100%;background:var(--green);
+    transition:width .4s ease;width:0%;
+  }
+
   /* ===== RESPONSIVE ===== */
 
   /* タブレット（〜1024px） */
@@ -683,11 +695,19 @@
     <a href="#problem">なぜ必要か</a>
     <a href="#curriculum">カリキュラム</a>
     <a href="#lessons">レッスン</a>
-    <a href="#pricing">料金</a>
-    <a href="#pricing" class="ncta">受講を始める</a>
+    <a href="#pricing" id="nav-pricing">料金</a>
+    <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
+    <a href="#lessons" class="ncta" id="nav-progress" onclick="switchTab('certificate');return false;" style="display:none;background:var(--green)!important;gap:8px;align-items:center">
+      📊 進捗状況
+    </a>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
 </nav>
+
+<!-- 進捗バー -->
+<div id="nav-progress-bar">
+  <div id="nav-progress-fill-bar"></div>
+</div>
 
 <div class="hero" id="top">
   <div class="hleft">
@@ -2932,6 +2952,7 @@ function markComplete(tabId){
   if(!completed.includes(tabId)) completed.push(tabId);
   saveCompleted(completed);
   updateCompletionUI();
+  updateNavProgress();
 }
 
 function updateCompletionUI(){
@@ -3087,14 +3108,40 @@ function initSupabase(){
 function updateAuthUI(){
   const bar   = document.getElementById('auth-user-bar');
   const email = document.getElementById('auth-user-email');
+  const navCta = document.getElementById('nav-cta');
+  const navProgress = document.getElementById('nav-progress');
+  const progressBar = document.getElementById('nav-progress-bar');
+
+  const navPricing = document.getElementById('nav-pricing');
   if(currentUser){
     bar.classList.add('show');
     email.textContent = currentUser.email ?? 'ログイン済み';
     lockPaidTabs(false);
+    // ログイン時：「受講を始める」「料金」を隠して「進捗状況」を表示
+    if(navCta) navCta.style.display = 'none';
+    if(navPricing) navPricing.style.display = 'none';
+    if(navProgress) navProgress.style.display = 'inline-flex';
+    if(progressBar) progressBar.classList.add('show');
+    updateNavProgress();
   } else {
     bar.classList.remove('show');
     lockPaidTabs(true);
+    // 未ログイン時：「受講を始める」「料金」を表示
+    if(navCta) navCta.style.display = '';
+    if(navPricing) navPricing.style.display = '';
+    if(navProgress) navProgress.style.display = 'none';
+    if(progressBar) progressBar.classList.remove('show');
   }
+}
+
+function updateNavProgress(){
+  const completed = loadCompleted();
+  const pct = completed.length / 17 * 100;
+  const fill = document.getElementById('nav-progress-fill-bar');
+  if(fill) fill.style.width = pct + '%';
+  // 進捗状況ボタンのテキストも更新
+  const btn = document.getElementById('nav-progress');
+  if(btn) btn.innerHTML = '📊 進捗 ' + completed.length + '/17';
 }
 
 /* ログイン済みかどうかで有料タブのクラスを切り替え */
