@@ -2789,9 +2789,9 @@ function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
   document.getElementById('form-plan').value = plan;
   const labels = {
-    '個人 9800円': 'INDIVIDUAL · ¥9,800',
-    '法人5名 39800円': 'TEAM 5名 · ¥39,800',
-    '法人20名 98000円': 'TEAM 20名 · ¥98,000'
+    'ベーシック 9800円': 'BASIC · ¥9,800',
+    'スタンダード 39800円': 'STANDARD · ¥39,800',
+    'プレミアム 98000円': 'PREMIUM · ¥98,000'
   };
   document.getElementById('form-plan-label').textContent = labels[plan] || plan;
   setFormMsg('','');
@@ -3293,7 +3293,7 @@ const LEGAL_CONTENT = {
       <tr><th>代表責任者</th><td>佐藤誓哉</td></tr>
       <tr><th>所在地</th><td>東京都港区南青山（詳細はお問い合わせください）</td></tr>
       <tr><th>お問い合わせ</th><td>info@laughrally.tech（お問い合わせフォームよりご連絡ください）</td></tr>
-      <tr><th>販売価格</th><td>個人プラン ¥9,800（税込）／法人5名プラン ¥39,800（税込）／法人20名プラン ¥98,000（税込）</td></tr>
+      <tr><th>販売価格</th><td>ベーシック ¥9,800（税込）／スタンダード ¥39,800（税込）／プレミアム ¥98,000（税込）</td></tr>
       <tr><th>支払方法</th><td>クレジットカード、銀行振込、請求書払い（法人向け）</td></tr>
       <tr><th>支払時期</th><td>お申し込みと同時にお支払いいただきます</td></tr>
       <tr><th>サービス提供時期</th><td>決済完了後、即時にアカウントを発行しご利用いただけます</td></tr>
@@ -3409,7 +3409,7 @@ const LEGAL_CONTENT = {
     <h2>お問い合わせ内容の例</h2>
     <ul>
       <li>受講に関するご質問</li>
-      <li>法人プラン・請求書払いのご相談</li>
+      <li>スタンダード・プレミアムプランのご相談</li>
       <li>修了証の発行に関するお問い合わせ</li>
       <li>その他本サービスに関するご意見・ご要望</li>
     </ul>
