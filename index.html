@@ -354,6 +354,7 @@
   .podcast-label{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:10px}
   .podcast-title{font-size:15px;font-weight:700;margin-bottom:6px;color:var(--text)}
   .podcast-desc{font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.7}
+  .podcast-iframe{width:100%;height:80px;border-radius:8px;border:none;display:block}
   .podcast-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px}
   .pod-btn{padding:9px 20px;border-radius:8px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
   .pod-play{background:var(--red);color:#fff;min-width:90px}
@@ -550,6 +551,9 @@
     /* 受講済みボタン */
     .completion-area{padding:16px 12px}
     .btn-complete{font-size:13px;padding:10px 18px}
+    /* ポッドキャスト */
+    .podcast-iframe{height:120px}
+    .podcast-box{padding:16px 14px}
   }
 
   /* 超小型（〜375px） */
@@ -941,9 +945,9 @@
           <div class="podcast-label">// PODCAST</div>
           <div class="podcast-title">🎙 序章：音声で聴く「AI Security Lab」</div>
           <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。（約17分）</div>
-          <iframe style="width:100%;border-radius:8px;border:none" height="80"
+          <iframe class="podcast-iframe" 
             src="https://drive.google.com/file/d/1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN/preview"
-            allow="autoplay" loading="lazy">
+            allow="autoplay">
           </iframe>
         </div>
 
