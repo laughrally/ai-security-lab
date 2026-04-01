@@ -960,38 +960,12 @@
           <div class="podcast-label">// PODCAST</div>
           <div class="podcast-title">🎙 序章：音声で聴く「AI Security Lab」</div>
           <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。（約17分）</div>
-          <div class="pod-player">
-            <div class="pod-top">
-              <button class="pod-play-btn" id="pod-play-btn" onclick="podToggle()">▶</button>
-              <div class="pod-progress-wrap">
-                <div class="pod-time-wrap">
-                  <span id="pod-cur">0:00</span>
-                  <span style="color:var(--border2)">/</span>
-                  <span id="pod-dur">--:--</span>
-                </div>
-                <input type="range" class="pod-seek" id="pod-seek" value="0" min="0" step="1" oninput="podSeek(this.value)">
-              </div>
-            </div>
-            <div class="pod-bottom">
-              <div class="pod-vol-wrap">
-                <button class="pod-mute-btn" id="pod-mute-btn" onclick="podMute()">🔊</button>
-                <input type="range" class="pod-vol" id="pod-vol" value="100" min="0" max="100" oninput="podVol(this.value)">
-              </div>
-              <div class="pod-speed-wrap">
-                <span class="pod-speed-label">速度</span>
-                <div class="pod-speeds">
-                  <button class="pod-spd" onclick="podSpeed(0.75)">0.75x</button>
-                  <button class="pod-spd active" onclick="podSpeed(1)">1x</button>
-                  <button class="pod-spd" onclick="podSpeed(1.25)">1.25x</button>
-                  <button class="pod-spd" onclick="podSpeed(1.5)">1.5x</button>
-                  <button class="pod-spd" onclick="podSpeed(2)">2x</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <audio id="pod-audio" preload="none">
-            <source src="https://drive.google.com/uc?export=download&id=1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN" type="audio/mp4">
-          </audio>
+          <iframe
+            src="https://drive.google.com/file/d/1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN/preview"
+            style="width:100%;height:100px;border:none;border-radius:8px;display:block"
+            allow="autoplay">
+          </iframe>
+          <p style="font-size:11px;color:var(--text4);margin-top:8px;text-align:center">※ 再生速度はプレーヤー右側のメニューから変更できます</p>
         </div>
 
         <div class="lb">
