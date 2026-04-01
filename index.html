@@ -303,7 +303,6 @@
   #nav-progress-bar{position:fixed;top:62px;left:0;right:0;z-index:99;height:3px;background:var(--border);display:none}
   #nav-progress-bar.show{display:block}
   #nav-progress-fill{height:100%;background:var(--green);transition:width .4s ease;width:0%}
-
   /* ===== 受講済みボタン ===== */
   .completion-area{text-align:center;margin:32px 0 8px;padding:20px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
   .completion-area p{font-size:13px;color:var(--text3);margin-bottom:12px}
@@ -312,7 +311,6 @@
   .btn-complete.done{background:var(--green-l);border-color:var(--green);color:var(--green);pointer-events:none}
   .completion-note{font-size:12px;color:var(--text4);margin-top:10px;font-family:'IBM Plex Mono',monospace}
   .completion-note span{color:var(--green);font-weight:700}
-
   /* ===== 修了証ページ ===== */
   .cert-wrap{max-width:600px;margin:0 auto;padding:40px 24px 60px;text-align:center}
   .cert-icon{font-size:56px;margin-bottom:20px}
@@ -698,7 +696,7 @@
   <div class="conw">
     <div class="seye">// CURRICULUM</div>
     <h2 class="stit">カリキュラム</h2>
-    <p class="sdesc" style="margin-bottom:40px">序章 + 全6章・17レッスン。各章末に理解度テスト付き。</p>
+    <p class="sdesc" style="margin-bottom:40px">序章 + 全4章・16レッスン。各章末に理解度テスト付き。</p>
     <div class="chapter open" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">序章</span><span class="cname">なぜ今、AIセキュリティを学ぶ必要があるのか</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
       <div class="cbd"><div class="lrow" onclick="switchTab('intro')"><span class="ln">00</span><span class="lname">日本企業の8割が教育なしでAIを使っている現実</span><span class="badge bf">無料</span></div></div>
@@ -707,47 +705,47 @@
       <div class="chd"><span class="ctag">第1章</span><span class="cname">AIと情報漏洩の基礎知識</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
         <div class="lrow" onclick="switchTab('lesson1')"><span class="ln">01</span><span class="lname">ChatGPTに入力した情報はどこへ行くのか</span><span class="badge bf">無料</span></div>
-        <div class="lrow" onclick="switchTab('lesson2');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">02</span><span class="lname">「学習オフ」設定の意味と限界</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson3');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">03</span><span class="lname">シャドーAIとは何か・なぜ危険か</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson4');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">04</span><span class="lname">クラウドAIとオンプレAIの違い</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson2');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">02</span><span class="lname">「学習オフ」設定の意味と限界</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson3');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">03</span><span class="lname">シャドーAIとは何か・なぜ危険か</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson4');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">04</span><span class="lname">クラウドAIとオンプレAIの違い</span><span class="badge bl">受講者限定</span></div>
       </div>
     </div>
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第2章</span><span class="cname">ツール別・やってはいけないこと</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson5');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">05</span><span class="lname">ChatGPT（無料版・有料版・Teams版）の違い</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson6');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">06</span><span class="lname">Claude・Gemini・Copilotのセキュリティ設定比較</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson7');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">07</span><span class="lname">「社外秘」「個人情報」「顧客情報」の判断基準</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson8');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">08</span><span class="lname">業種別リスク事例（不動産・介護・飲食・士業）</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson5');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">05</span><span class="lname">ChatGPT（無料版・有料版・Teams版）の違い</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson6');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">06</span><span class="lname">Claude・Gemini・Copilotのセキュリティ設定比較</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson7');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">07</span><span class="lname">「社外秘」「個人情報」「顧客情報」の判断基準</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson8');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">08</span><span class="lname">業種別リスク事例（不動産・介護・飲食・士業）</span><span class="badge bl">受講者限定</span></div>
       </div>
     </div>
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第3章</span><span class="cname">法律・著作権・倫理</span><span class="ccnt">3レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson9');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">09</span><span class="lname">AIと個人情報保護法の関係</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson10');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">10</span><span class="lname">著作権侵害になるケース・ならないケース</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson11');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">11</span><span class="lname">ハルシネーションと法的責任</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson9');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">09</span><span class="lname">AIと個人情報保護法の関係</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson10');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">10</span><span class="lname">著作権侵害になるケース・ならないケース</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson11');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">11</span><span class="lname">ハルシネーションと法的責任</span><span class="badge bl">受講者限定</span></div>
       </div>
     </div>
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第4章</span><span class="cname">会社・チームとして整備すること</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson12');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">12</span><span class="lname">AI利用ガイドライン作成テンプレート（DL可）</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson13');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">13</span><span class="lname">インシデント発生時の初動対応フロー</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson14');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">14</span><span class="lname">中小企業でもできる最低限の体制づくり</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson15');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">15</span><span class="lname">【まとめ】今日からできる10のアクション</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson12');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">12</span><span class="lname">AI利用ガイドライン作成テンプレート（DL可）</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson13');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">13</span><span class="lname">インシデント発生時の初動対応フロー</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson14');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">14</span><span class="lname">中小企業でもできる最低限の体制づくり</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson15');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">15</span><span class="lname">【まとめ】今日からできる10のアクション</span><span class="badge bl">受講者限定</span></div>
       </div>
     </div>
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第5章</span><span class="cname">よくある事例と実践ケーススタディ</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson16');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">16</span><span class="lname">業種・シーン別 よくある事例集（20事例）</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson16');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">16</span><span class="lname">業種・シーン別 よくある事例集（20事例）</span><span class="badge bl">受講者限定</span></div>
       </div>
     </div>
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第6章</span><span class="cname">主要AIツール 徹底比較</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson17');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})"><span class="ln">17</span><span class="lname">ChatGPT / Gemini / Claude / Genspark / Manus / NotebookLM の使い分けと注意点</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson17');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">17</span><span class="lname">ChatGPT / Gemini / Claude / Genspark / Manus / NotebookLM の使い分けと注意点</span><span class="badge bl">受講者限定</span></div>
       </div>
     </div>
   </div>
@@ -776,7 +774,7 @@
       <button class="tab" onclick="switchTab('lesson15')">L15</button>
       <button class="tab" onclick="switchTab('lesson16')">L16</button>
       <button class="tab" onclick="switchTab('lesson17')">L17</button>
-      <button class="tab" onclick="switchTab('certificate')" id="tab-btn-certificate" style="display:none">🎓</button>
+      <button class="tab" id="cert-tab-btn" onclick="switchTab('certificate')" style="display:none">🎓</button>
     </div>
 
     <!-- ===== 序章 ===== -->
@@ -2539,9 +2537,7 @@
           </div>
           <div class="lnav">
             <a href="#lessons" onclick="switchTab('lesson16');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L16：よくある事例集</span></a>
-            <a href="#lessons" onclick="switchTab('certificate');return false;" class="lnbtn" style="text-align:right">
-              <span class="lnt">🎉 修了証を取得する</span>
-            </a>
+            <a href="#lessons" onclick="switchTab('certificate');return false;" class="lnbtn" style="text-align:right"><span class="lnt">🎉 修了証を取得する</span></a>
           </div>
         </div>
       </div>
@@ -2607,13 +2603,11 @@
         <div class="cert-icon">🎓</div>
         <h1 class="cert-title">修了証を取得する</h1>
         <p class="cert-desc">全17レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、担当者より修了証PDFをメールでお送りします。</p>
-
         <div class="cert-progress-box">
           <div class="cert-progress-label">受講進捗</div>
           <div class="cert-bar"><div class="cert-bar-fill" id="cert-bar-fill" style="width:0%"></div></div>
           <div class="cert-progress-count"><span id="cert-count">0</span> / 17 レッスン完了</div>
         </div>
-
         <div class="cert-form-box">
           <div class="cert-form-title">修了証 発行申請フォーム</div>
           <div class="cert-form-desc">以下を入力して申請してください。全レッスン受講済みの場合のみ送信できます。</div>
@@ -2799,15 +2793,28 @@ function initSupabase(){
 }
 
 function updateAuthUI(){
-  const bar   = document.getElementById('auth-user-bar');
-  const email = document.getElementById('auth-user-email');
+  const bar        = document.getElementById('auth-user-bar');
+  const email      = document.getElementById('auth-user-email');
+  const navCta     = document.getElementById('nav-cta');
+  const navPricing = document.getElementById('nav-pricing');
+  const navProg    = document.getElementById('nav-progress');
+  const progBar    = document.getElementById('nav-progress-bar');
   if(currentUser){
     bar.classList.add('show');
     email.textContent = currentUser.email ?? 'ログイン済み';
     lockPaidTabs(false);
+    if(navCta)     navCta.style.display     = 'none';
+    if(navPricing) navPricing.style.display = 'none';
+    if(navProg)    navProg.style.display    = 'inline-flex';
+    if(progBar)    progBar.classList.add('show');
+    updateCompletionUI();
   } else {
     bar.classList.remove('show');
     lockPaidTabs(true);
+    if(navCta)     navCta.style.display     = '';
+    if(navPricing) navPricing.style.display = '';
+    if(navProg)    navProg.style.display    = 'none';
+    if(progBar)    progBar.classList.remove('show');
   }
 }
 
@@ -2952,11 +2959,9 @@ window.closeFormModal  = closeFormModal;
 window.submitForm      = submitForm;
 
 /* ===== 受講済み管理・修了証 ===== */
-const ALL_LESSONS = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
+const ALL_LESSONS_LIST = ['intro','lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17'];
 
-function loadCompleted(){
-  try{ return JSON.parse(localStorage.getItem('asl_completed')||'[]'); }catch(e){ return []; }
-}
+function loadCompleted(){ try{ return JSON.parse(localStorage.getItem('asl_completed')||'[]'); }catch(e){ return []; } }
 function saveCompleted(arr){ localStorage.setItem('asl_completed', JSON.stringify(arr)); }
 
 function markComplete(tabId){
@@ -2969,48 +2974,31 @@ function markComplete(tabId){
 
 function updateCompletionUI(){
   const completed = loadCompleted();
-  ALL_LESSONS.forEach(id => {
-    const btn = document.getElementById('complete-' + id);
+  ALL_LESSONS_LIST.forEach(id => {
+    const btn  = document.getElementById('complete-' + id);
     const note = document.getElementById('note-' + id);
     if(btn){
-      if(completed.includes(id)){
-        btn.classList.add('done');
-        btn.textContent = '✓ 受講済み';
-      } else {
-        btn.classList.remove('done');
-      }
+      if(completed.includes(id)){ btn.classList.add('done'); btn.textContent = '✓ 受講済み'; }
+      else { btn.classList.remove('done'); }
     }
-    if(note){
-      note.innerHTML = '<span>' + completed.length + '</span> / ' + ALL_LESSONS.length + ' レッスン完了';
-    }
+    if(note) note.innerHTML = '<span>' + completed.length + '</span> / ' + ALL_LESSONS_LIST.length + ' レッスン完了';
   });
-
-  // 修了証ページの進捗
   const fill = document.getElementById('cert-bar-fill');
   const count = document.getElementById('cert-count');
   const notice = document.getElementById('cert-locked-notice');
   const submitBtn = document.getElementById('cert-submit-btn');
-  const pct = completed.length / ALL_LESSONS.length * 100;
-  if(fill) fill.style.width = pct + '%';
+  const pct = completed.length / ALL_LESSONS_LIST.length * 100;
+  if(fill)  fill.style.width = pct + '%';
   if(count) count.textContent = completed.length;
-  const allDone = completed.length >= ALL_LESSONS.length;
-  if(notice) notice.style.display = allDone ? 'none' : 'block';
+  const allDone = completed.length >= ALL_LESSONS_LIST.length;
+  if(notice)    notice.style.display = allDone ? 'none' : 'block';
   if(submitBtn){ submitBtn.disabled = !allDone; submitBtn.style.opacity = allDone ? '1' : '.4'; }
-
+  if(allDone){ const tb = document.getElementById('cert-tab-btn'); if(tb) tb.style.display = ''; }
   // ナビ進捗ボタン更新
-  updateNavProgress();
-}
-
-function updateNavProgress(){
-  const completed = loadCompleted();
-  const btn = document.getElementById('nav-progress');
-  const fill = document.getElementById('nav-progress-fill');
-  if(btn) btn.textContent = '📊 進捗 ' + completed.length + '/17';
-  if(fill) fill.style.width = (completed.length / 17 * 100) + '%';
-
-  // 全レッスン修了したら修了証タブを表示
-  const certTab = document.getElementById('tab-btn-certificate');
-  if(certTab && completed.length >= ALL_LESSONS.length) certTab.style.display = '';
+  const navProg = document.getElementById('nav-progress');
+  const progFill = document.getElementById('nav-progress-fill');
+  if(navProg) navProg.textContent = '📊 進捗 ' + completed.length + '/17';
+  if(progFill) progFill.style.width = pct + '%';
 }
 
 async function submitCertificate(){
@@ -3018,59 +3006,18 @@ async function submitCertificate(){
   const name    = document.getElementById('cert-name').value.trim();
   const email   = document.getElementById('cert-email').value.trim();
   const msg     = document.getElementById('cert-msg');
-
-  if(!company || !name || !email){
-    msg.className = 'form-msg error';
-    msg.textContent = '会社名・氏名・メールアドレスは必須です。';
-    msg.style.display = 'block';
-    return;
-  }
+  if(!company||!name||!email){ msg.className='form-msg error'; msg.textContent='会社名・氏名・メールアドレスは必須です。'; msg.style.display='block'; return; }
   const btn = document.getElementById('cert-submit-btn');
-  btn.disabled = true;
-  btn.textContent = '送信中...';
-
-  const params = new URLSearchParams({
-    '会社名': company,
-    '担当者名': name,
-    'メールアドレス': email,
-    'プラン': '修了証申請',
-    '請求書払い': '修了証発行申請',
-    '備考': '全17レッスン受講完了',
-    '申込日': new Date().toLocaleDateString('ja-JP')
-  });
-  fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec?' + params.toString(), {method:'GET',mode:'no-cors'});
-
-  msg.className = 'form-msg success';
-  msg.textContent = '申請を受け付けました！担当者より修了証PDFをメールでお送りします。';
-  msg.style.display = 'block';
-  btn.textContent = '申請完了 ✓';
+  btn.disabled=true; btn.textContent='送信中...';
+  const params = new URLSearchParams({'会社名':company,'担当者名':name,'メールアドレス':email,'プラン':'修了証申請','請求書払い':'修了証発行申請','備考':'全17レッスン受講完了','申込日':new Date().toLocaleDateString('ja-JP')});
+  fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec?'+params.toString(),{method:'GET',mode:'no-cors'});
+  msg.className='form-msg success'; msg.textContent='申請を受け付けました！担当者より修了証PDFをメールでお送りします。'; msg.style.display='block';
+  btn.textContent='申請完了 ✓';
 }
 
-window.markComplete       = markComplete;
-window.submitCertificate  = submitCertificate;
-
-// updateAuthUIを拡張してログイン状態でナビを切替
-const _origUpdateAuthUI = updateAuthUI;
-function updateAuthUI(){
-  _origUpdateAuthUI();
-  const navCta      = document.getElementById('nav-cta');
-  const navPricing  = document.getElementById('nav-pricing');
-  const navProgress = document.getElementById('nav-progress');
-  const progressBar = document.getElementById('nav-progress-bar');
-  if(currentUser){
-    if(navCta)      navCta.style.display = 'none';
-    if(navPricing)  navPricing.style.display = 'none';
-    if(navProgress) navProgress.style.display = 'inline-flex';
-    if(progressBar) progressBar.classList.add('show');
-    updateCompletionUI();
-  } else {
-    if(navCta)      navCta.style.display = '';
-    if(navPricing)  navPricing.style.display = '';
-    if(navProgress) navProgress.style.display = 'none';
-    if(progressBar) progressBar.classList.remove('show');
-  }
-}
-window.updateAuthUI = updateAuthUI;
+window.markComplete      = markComplete;
+window.submitCertificate = submitCertificate;
+window.updateCompletionUI = updateCompletionUI;
 
 document.addEventListener('DOMContentLoaded', updateCompletionUI);
 setTimeout(updateCompletionUI, 800);
