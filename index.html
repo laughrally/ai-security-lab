@@ -2698,7 +2698,7 @@ async function signInWithGoogle(){
   if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。設定値を入力してください。'); return; }
   const {error} = await _supabase.auth.signInWithOAuth({
     provider:'google',
-    options:{ redirectTo: window.location.href }
+    options:{ redirectTo: window.location.origin + window.location.pathname }
   });
   if(error) setAuthMsg('error', error.message);
 }
