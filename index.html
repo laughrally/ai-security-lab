@@ -647,9 +647,9 @@
 <nav>
   <a href="#top" class="nlogo">AI<span class="r">Security</span>Lab</a>
   <div class="nright">
-    <a href="#problem">なぜ必要か</a>
-    <a href="#curriculum">カリキュラム</a>
-    <a href="#lessons">レッスン</a>
+    <a href="#problem" id="nav-problem">なぜ必要か</a>
+    <a href="#curriculum" id="nav-curriculum">カリキュラム</a>
+    <a href="#lessons" id="nav-lessons">レッスン</a>
     <a href="#pricing" id="nav-pricing">料金</a>
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
@@ -2626,6 +2626,32 @@
   </div>
 </section>
 
+
+<!-- ===== 受講進捗ダッシュボード（ログイン時のみ表示） ===== -->
+<section id="progress-dashboard" style="display:none;padding:64px 32px;border-top:1px solid var(--border)">
+  <div style="max-width:900px;margin:0 auto">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.18em;margin-bottom:14px">// PROGRESS</div>
+    <h2 style="font-family:'Noto Serif JP',serif;font-size:clamp(20px,2.8vw,28px);font-weight:700;margin-bottom:8px">受講進捗</h2>
+    <p style="font-size:14px;color:var(--text3);margin-bottom:32px">受講済みのレッスンを確認できます。</p>
+
+    <!-- 全体進捗バー -->
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:32px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:700">全体進捗</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green)" id="dash-count">0 / 17</span>
+      </div>
+      <div style="background:var(--border);border-radius:100px;height:10px;overflow:hidden">
+        <div id="dash-bar" style="background:var(--green);height:100%;border-radius:100px;transition:width .5s;width:0%"></div>
+      </div>
+    </div>
+
+    <!-- 各レッスンの進捗リスト -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px" id="dash-lessons">
+      <!-- JSで生成 -->
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="flogo"><span>AI</span>SecurityLab</div>
   <div class="flinks">
@@ -2801,6 +2827,7 @@ function updateAuthUI(){
   const navProg    = document.getElementById('nav-progress');
   const progBar    = document.getElementById('nav-progress-bar');
   const navLogin    = document.getElementById('nav-login');
+  const navProblem  = document.getElementById('nav-problem');
   const pricingSection = document.getElementById('pricing');
   if(currentUser){
     bar.classList.add('show');
@@ -2809,19 +2836,23 @@ function updateAuthUI(){
     if(navCta)        navCta.style.display     = 'none';
     if(navPricing)    navPricing.style.display = 'none';
     if(navLogin)      navLogin.style.display   = 'none';
+    if(navProblem)    navProblem.style.display  = 'none';
     if(navProg)       navProg.style.display    = 'inline-flex';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
     updateCompletionUI();
+    updateDashboard();
   } else {
     bar.classList.remove('show');
     lockPaidTabs(true);
     if(navCta)        navCta.style.display     = '';
     if(navPricing)    navPricing.style.display = '';
     if(navLogin)      navLogin.style.display   = '';
+    if(navProblem)    navProblem.style.display  = '';
     if(navProg)       navProg.style.display    = 'none';
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
+    const dash = document.getElementById('progress-dashboard'); if(dash) dash.style.display='none';
   }
 }
 
@@ -2977,6 +3008,7 @@ function markComplete(tabId){
   if(!completed.includes(tabId)) completed.push(tabId);
   saveCompleted(completed);
   updateCompletionUI();
+  updateDashboard();
 }
 
 function updateCompletionUI(){
@@ -3026,8 +3058,56 @@ window.markComplete      = markComplete;
 window.submitCertificate = submitCertificate;
 window.updateCompletionUI = updateCompletionUI;
 
-document.addEventListener('DOMContentLoaded', updateCompletionUI);
-setTimeout(updateCompletionUI, 800);
+
+/* ===== 進捗ダッシュボード ===== */
+const LESSON_LABELS = {
+  'intro':'序章：なぜ今学ぶか',
+  'lesson1':'L01：入力情報はどこへ行くのか',
+  'lesson2':'L02：学習オフ設定の意味と限界',
+  'lesson3':'L03：シャドーAIとは何か',
+  'lesson4':'L04：クラウドAIとオンプレAIの違い',
+  'lesson5':'L05：ChatGPT各プランの違い',
+  'lesson6':'L06：Claude・Gemini・Copilot比較',
+  'lesson7':'L07：社外秘・個人情報の判断基準',
+  'lesson8':'L08：業種別リスク事例',
+  'lesson9':'L09：AIと個人情報保護法',
+  'lesson10':'L10：著作権侵害になるケース',
+  'lesson11':'L11：ハルシネーションと法的責任',
+  'lesson12':'L12：ガイドライン作成テンプレート',
+  'lesson13':'L13：インシデント初動対応フロー',
+  'lesson14':'L14：中小企業の最低限の体制',
+  'lesson15':'L15：今日からできる10のアクション',
+  'lesson16':'L16：よくある事例集（20事例）',
+  'lesson17':'L17：主要AIツール完全比較'
+};
+
+function updateDashboard(){
+  const completed = loadCompleted();
+  const dashboard = document.getElementById('progress-dashboard');
+  if(!currentUser){ if(dashboard) dashboard.style.display='none'; return; }
+  if(dashboard) dashboard.style.display='block';
+
+  const bar   = document.getElementById('dash-bar');
+  const count = document.getElementById('dash-count');
+  const list  = document.getElementById('dash-lessons');
+  const pct   = completed.length / 17 * 100;
+  if(bar)   bar.style.width = pct + '%';
+  if(count) count.textContent = completed.length + ' / 17';
+
+  if(list){
+    list.innerHTML = ALL_LESSONS_LIST.map(id => {
+      const done = completed.includes(id);
+      return `<div onclick="switchTab('${id}');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--bg2);border:1px solid ${done?'var(--green)':'var(--border)'};border-radius:10px;cursor:pointer;transition:all .2s">
+        <div style="width:20px;height:20px;border-radius:50%;background:${done?'var(--green)':'var(--border)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;color:#fff;font-weight:700">${done?'✓':''}</div>
+        <span style="font-size:13px;color:${done?'var(--text)':'var(--text3)'};line-height:1.4">${LESSON_LABELS[id]||id}</span>
+      </div>`;
+    }).join('');
+  }
+}
+window.updateDashboard = updateDashboard;
+
+document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); });
+setTimeout(()=>{ updateCompletionUI(); updateDashboard(); }, 800);
 
 </script>
 </body>
