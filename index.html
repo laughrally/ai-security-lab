@@ -675,9 +675,21 @@
     <button class="form-close" onclick="closeFormModal()">✕</button>
     <div class="form-plan-badge" id="form-plan-label">INDIVIDUAL</div>
     <div class="form-title">受講登録・お支払い</div>
-    <div class="form-sub">メールアドレスとパスワードを設定してください。<br>決済完了後、そのままログインできます。</div>
+    <div class="form-sub">以下をご入力ください。決済完了後、そのままログインできます。</div>
     <div class="form-msg" id="form-msg"></div>
 
+    <div class="form-field">
+      <label>お名前<span>*</span></label>
+      <input type="text" id="form-name" placeholder="山田 太郎" autocomplete="name">
+    </div>
+    <div class="form-field">
+      <label>会社名</label>
+      <input type="text" id="form-company" placeholder="株式会社〇〇（個人の方は空欄可）">
+    </div>
+    <div class="form-field">
+      <label>電話番号<span>*</span></label>
+      <input type="tel" id="form-tel" placeholder="090-0000-0000" autocomplete="tel">
+    </div>
     <div class="form-field">
       <label>メールアドレス<span>*</span></label>
       <input type="email" id="form-email" placeholder="you@example.com" autocomplete="email">
@@ -689,6 +701,28 @@
     <div class="form-field">
       <label>パスワード確認<span>*</span></label>
       <input type="password" id="form-password2" placeholder="パスワードを再入力" autocomplete="new-password">
+    </div>
+
+    <!-- スタンダード・プレミアムのみ表示 -->
+    <div id="form-consult-fields" style="display:none">
+      <div class="form-field">
+        <label>現在の課題・解決したいこと</label>
+        <textarea id="form-challenge" placeholder="例：社員がAIを使い始めているがルールがない、情報漏洩が心配など" rows="3" style="width:100%;padding:10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg2);color:var(--text);font-size:14px;resize:vertical;font-family:inherit"></textarea>
+      </div>
+      <div class="form-field">
+        <label>ご連絡希望方法</label>
+        <div style="display:flex;gap:12px;margin-top:6px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer">
+            <input type="radio" name="form-contact" value="電話" id="form-contact-tel"> 電話
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer">
+            <input type="radio" name="form-contact" value="メール" id="form-contact-email" checked> メール
+          </label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer">
+            <input type="radio" name="form-contact" value="どちらでも可" id="form-contact-both"> どちらでも可
+          </label>
+        </div>
+      </div>
     </div>
 
     <button class="form-submit" id="form-submit-btn" onclick="submitForm()">決済画面へ進む →</button>
@@ -2842,10 +2876,12 @@ const PRICE_ID_MAP = {
   'プレミアム 98000円':   'price_1TJYgc2OQszM8w2hd1vwkKko',
 };
 let currentPriceId = '';
+let currentPlanName = '';
 
 function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
   currentPriceId = PRICE_ID_MAP[plan] || '';
+  currentPlanName = plan;
   const labels = {
     'ベーシック 9800円':    'BASIC · ¥9,800',
     'スタンダード 39800円': 'STANDARD · ¥39,800',
@@ -2853,9 +2889,15 @@ function openFormModal(plan){
   };
   document.getElementById('form-plan-label').textContent = labels[plan] || plan;
   setFormMsg('','');
-  document.getElementById('form-email').value = '';
-  document.getElementById('form-password').value = '';
-  document.getElementById('form-password2').value = '';
+  // ベーシック以外はコンサルフィールドを表示
+  const isConsult = plan !== 'ベーシック 9800円';
+  document.getElementById('form-consult-fields').style.display = isConsult ? 'block' : 'none';
+  // フィールドリセット
+  ['form-name','form-company','form-tel','form-email','form-password','form-password2','form-challenge'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.value = '';
+  });
+  document.getElementById('form-contact-email').checked = true;
 }
 function closeFormModal(){
   document.getElementById('form-overlay').classList.add('hidden');
@@ -2867,12 +2909,18 @@ function setFormMsg(type, text){
 }
 
 async function submitForm(){
-  const email = document.getElementById('form-email').value.trim();
-  const pw    = document.getElementById('form-password').value;
-  const pw2   = document.getElementById('form-password2').value;
+  const name    = document.getElementById('form-name').value.trim();
+  const company = document.getElementById('form-company').value.trim();
+  const tel     = document.getElementById('form-tel').value.trim();
+  const email   = document.getElementById('form-email').value.trim();
+  const pw      = document.getElementById('form-password').value;
+  const pw2     = document.getElementById('form-password2').value;
+  const isConsult = currentPlanName !== 'ベーシック 9800円';
+  const challenge = isConsult ? document.getElementById('form-challenge').value.trim() : '';
+  const contactPref = isConsult ? (document.querySelector('input[name="form-contact"]:checked')?.value || 'メール') : '';
 
-  if(!email || !pw || !pw2){
-    setFormMsg('error','すべての項目を入力してください。');
+  if(!name || !tel || !email || !pw || !pw2){
+    setFormMsg('error','お名前・電話番号・メールアドレス・パスワードは必須です。');
     return;
   }
   if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
@@ -2901,7 +2949,12 @@ async function submitForm(){
     const res = await fetch(WORKER_URL + '/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ priceId: currentPriceId, email, password: pw }),
+      body: JSON.stringify({
+        priceId: currentPriceId,
+        email,
+        password: pw,
+        metadata: { name, company, tel, challenge, contactPref, plan: currentPlanName }
+      }),
     });
     const data = await res.json();
     if(data.url){
