@@ -674,43 +674,27 @@
   <div class="form-box">
     <button class="form-close" onclick="closeFormModal()">✕</button>
     <div class="form-plan-badge" id="form-plan-label">INDIVIDUAL</div>
-    <div class="form-title">お申し込みフォーム</div>
-    <div class="form-sub">以下をご入力ください。確認後、担当者よりご連絡いたします。</div>
+    <div class="form-title">受講登録・お支払い</div>
+    <div class="form-sub">メールアドレスとパスワードを設定してください。<br>決済完了後、そのままログインできます。</div>
     <div class="form-msg" id="form-msg"></div>
 
     <div class="form-field">
-      <label>会社名<span>*</span></label>
-      <input type="text" id="form-company" placeholder="株式会社〇〇（個人の方はご氏名）">
-    </div>
-    <div class="form-field">
-      <label>担当者名<span>*</span></label>
-      <input type="text" id="form-name" placeholder="山田 太郎">
-    </div>
-    <div class="form-field">
       <label>メールアドレス<span>*</span></label>
-      <input type="email" id="form-email" placeholder="you@example.com">
+      <input type="email" id="form-email" placeholder="you@example.com" autocomplete="email">
     </div>
     <div class="form-field">
-      <label>プラン</label>
-      <select id="form-plan">
-        <option value="ベーシック 9800円">ベーシック ¥9,800（買い切り）</option>
-        <option value="スタンダード 39800円">スタンダード ¥39,800（買い切り）</option>
-        <option value="プレミアム 98000円">プレミアム ¥98,000（買い切り）</option>
-      </select>
+      <label>パスワード<span>*</span>（6文字以上）</label>
+      <input type="password" id="form-password" placeholder="パスワードを設定" autocomplete="new-password">
     </div>
-    <label class="form-check">
-      <input type="checkbox" id="form-invoice">
-      請求書払いを希望する
-    </label>
     <div class="form-field">
-      <label>備考・ご質問</label>
-      <input type="text" id="form-note" placeholder="任意">
+      <label>パスワード確認<span>*</span></label>
+      <input type="password" id="form-password2" placeholder="パスワードを再入力" autocomplete="new-password">
     </div>
 
-    <button class="form-submit" id="form-submit-btn" onclick="submitForm()">申し込む</button>
+    <button class="form-submit" id="form-submit-btn" onclick="submitForm()">決済画面へ進む →</button>
     <div class="form-note">
-      ご入力いただいた情報は受講管理のみに使用します。<br>
-      お支払いは請求書（銀行振込）にて対応いたします。
+      クレジットカード決済（Stripe）で安全にお支払いいただけます。<br>
+      決済完了後、即時にアカウントが発行されます。
     </div>
   </div>
 </div>
@@ -2852,16 +2836,26 @@ import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 
 /* ===== 申込フォーム ===== */
+const PRICE_ID_MAP = {
+  'ベーシック 9800円':    'price_1TJYfK2OQszM8w2hEWWM5R36',
+  'スタンダード 39800円': 'price_1TJYfz2OQszM8w2huAXy1NVp',
+  'プレミアム 98000円':   'price_1TJYgc2OQszM8w2hd1vwkKko',
+};
+let currentPriceId = '';
+
 function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
-  document.getElementById('form-plan').value = plan;
+  currentPriceId = PRICE_ID_MAP[plan] || '';
   const labels = {
-    'ベーシック 9800円': 'BASIC · ¥9,800',
+    'ベーシック 9800円':    'BASIC · ¥9,800',
     'スタンダード 39800円': 'STANDARD · ¥39,800',
-    'プレミアム 98000円': 'PREMIUM · ¥98,000'
+    'プレミアム 98000円':   'PREMIUM · ¥98,000'
   };
   document.getElementById('form-plan-label').textContent = labels[plan] || plan;
   setFormMsg('','');
+  document.getElementById('form-email').value = '';
+  document.getElementById('form-password').value = '';
+  document.getElementById('form-password2').value = '';
 }
 function closeFormModal(){
   document.getElementById('form-overlay').classList.add('hidden');
@@ -2873,57 +2867,52 @@ function setFormMsg(type, text){
 }
 
 async function submitForm(){
-  const company = document.getElementById('form-company').value.trim();
-  const name    = document.getElementById('form-name').value.trim();
-  const email   = document.getElementById('form-email').value.trim();
-  const plan    = document.getElementById('form-plan').value;
-  const invoice = document.getElementById('form-invoice').checked;
-  const note    = document.getElementById('form-note').value.trim();
+  const email = document.getElementById('form-email').value.trim();
+  const pw    = document.getElementById('form-password').value;
+  const pw2   = document.getElementById('form-password2').value;
 
-  if(!company || !name || !email){
-    setFormMsg('error','会社名・担当者名・メールアドレスは必須です。');
+  if(!email || !pw || !pw2){
+    setFormMsg('error','すべての項目を入力してください。');
     return;
   }
   if(!/^[^@]+@[^@]+\.[^@]+$/.test(email)){
     setFormMsg('error','メールアドレスの形式が正しくありません。');
     return;
   }
+  if(pw.length < 6){
+    setFormMsg('error','パスワードは6文字以上で設定してください。');
+    return;
+  }
+  if(pw !== pw2){
+    setFormMsg('error','パスワードが一致しません。');
+    return;
+  }
+  if(!currentPriceId){
+    setFormMsg('error','プランの選択でエラーが発生しました。再度お試しください。');
+    return;
+  }
 
   const btn = document.getElementById('form-submit-btn');
   btn.disabled = true;
-  btn.textContent = '送信中...';
+  btn.textContent = '処理中...';
   setFormMsg('','');
 
   try {
-    // GASにURLパラメータで送信（CORS回避）
-    const params = new URLSearchParams({
-      '会社名': company,
-      '担当者名': name,
-      'メールアドレス': email,
-      'プラン': plan,
-      '請求書払い': invoice ? '希望する' : '希望しない',
-      '備考': note,
-      '申込日': new Date().toLocaleDateString('ja-JP')
+    const res = await fetch(WORKER_URL + '/create-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ priceId: currentPriceId, email, password: pw }),
     });
-    fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec?' + params.toString(), {
-      method: 'GET',
-      mode: 'no-cors'
-    });
-    const res = {ok: true};
-    if(res.ok){
-      setFormMsg('success','お申し込みありがとうございます！担当者より2営業日以内にご連絡いたします。');
-      btn.textContent = '送信完了 ✓';
-      ['form-company','form-name','form-email','form-note'].forEach(id=>{
-        document.getElementById(id).value='';
-      });
-      document.getElementById('form-invoice').checked=false;
+    const data = await res.json();
+    if(data.url){
+      window.location.href = data.url;
     } else {
-      throw new Error('送信失敗');
+      throw new Error(data.error || '決済画面の取得に失敗しました。');
     }
   } catch(e) {
-    setFormMsg('error','送信に失敗しました。時間をおいて再度お試しください。');
+    setFormMsg('error', e.message || '送信に失敗しました。時間をおいて再度お試しください。');
     btn.disabled = false;
-    btn.textContent = '申し込む';
+    btn.textContent = '決済画面へ進む →';
   }
 }
 
@@ -2953,8 +2942,9 @@ function toggleDark(){
    ▼ STEP 1: Supabaseの設定値をここに貼り付けてください
    Supabaseダッシュボード → Settings → API で取得できます
    ============================================================ */
-const SUPABASE_URL  = 'https://zektuwdsmqpdbbslxyal.supabase.co';
-const SUPABASE_ANON = 'sb_publishable_MKMYWP8AP0xMcoKlEazytw_lFTTebRn';
+const SUPABASE_URL  = 'https://qsvkzhozklgczsdpbgnd.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzdmt6aG96a2xnY3pzZHBiZ25kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1NjA3MzQsImV4cCI6MjA5MTEzNjczNH0.22JKU3r41qcx_bw-F8CLXC3u0rwIGzdAmnrMjcjRBhA';
+const WORKER_URL    = 'https://ai-security-lab-stripe.laughrally.workers.dev';
 
 /* ============================================================
    ▼ 無料で見られるタブ名（これ以外はログイン必須）
@@ -2971,7 +2961,21 @@ function initSupabase(){
     _supabase = createClient(SUPABASE_URL, SUPABASE_ANON);
     console.log('Supabase initialized:', !!_supabase);
 
-    // URLハッシュにアクセストークンがある場合（Google OAuth後のリダイレクト）
+    // 決済完了後のリダイレクト処理
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams.get('payment') === 'success'){
+      // 決済完了メッセージを表示してログイン画面を開く
+      history.replaceState(null, '', window.location.pathname);
+      setTimeout(()=>{
+        openAuthModal();
+        setAuthMsg('success','🎉 決済が完了しました！登録したメールアドレスとパスワードでログインしてください。');
+      }, 500);
+    }
+    if(urlParams.get('payment') === 'cancel'){
+      history.replaceState(null, '', window.location.pathname);
+    }
+
+    // URLハッシュにアクセストークンがある場合（OAuth後のリダイレクト）
     if(window.location.hash && window.location.hash.includes('access_token')){
       const params = new URLSearchParams(window.location.hash.substring(1));
       const access_token = params.get('access_token');
@@ -2983,7 +2987,6 @@ function initSupabase(){
             updateAuthUI();
             closeAuthModal();
           }
-          // URLのハッシュをきれいにする
           history.replaceState(null, '', window.location.pathname);
         });
       }
