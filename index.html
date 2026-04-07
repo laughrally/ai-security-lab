@@ -741,14 +741,6 @@
     <div class="auth-sub" id="auth-modal-sub">L02以降の受講には登録が必要です。<br>アカウントをお持ちでない方は新規登録してください。</div>
     <div class="auth-msg" id="auth-msg"></div>
 
-    <!-- Googleログイン -->
-    <button class="auth-btn-google" onclick="signInWithGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-      Googleアカウントでログイン
-    </button>
-
-    <div class="auth-divider">または</div>
-
     <!-- メール+PW フォーム -->
     <div id="auth-form-login">
       <div class="auth-field">
@@ -3144,15 +3136,6 @@ function toggleAuthMode(mode){
 }
 
 /* ===== Google ログイン ===== */
-async function signInWithGoogle(){
-  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。設定値を入力してください。'); return; }
-  const {error} = await _supabase.auth.signInWithOAuth({
-    provider:'google',
-    options:{ redirectTo: window.location.origin + window.location.pathname }
-  });
-  if(error) setAuthMsg('error', error.message);
-}
-
 /* ===== メール+PW ログイン ===== */
 async function signInWithEmail(){
   if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
@@ -3277,7 +3260,6 @@ window.doQ             = doQ;
 window.openAuthModal   = openAuthModal;
 window.closeAuthModal  = closeAuthModal;
 window.toggleAuthMode  = toggleAuthMode;
-window.signInWithGoogle= signInWithGoogle;
 window.signInWithEmail = signInWithEmail;
 window.signUpWithEmail = signUpWithEmail;
 window.signOut         = signOut;
