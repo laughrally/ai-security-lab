@@ -741,7 +741,7 @@
     <!-- 同意チェックボックス -->
     <label id="form-agree-label" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2)">
       <input type="checkbox" id="form-agree" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--accent)" onchange="toggleSubmitBtn()">
-      <span><a href="/tokusho.html" target="_blank" style="color:var(--accent)">特定商取引法に基づく表記</a>・<a href="#" onclick="openLegalModal('terms');return false;" style="color:var(--accent)">利用規約</a>・<a href="#" onclick="openLegalModal('privacy');return false;" style="color:var(--accent)">プライバシーポリシー</a>に同意します</span>
+      <span><a href="/tokusho.html" target="_blank" style="color:var(--accent)">特定商取引法に基づく表記</a>・<a href="#" onclick="window.openLegalModal('terms');return false;" style="color:var(--accent)">利用規約</a>・<a href="#" onclick="window.openLegalModal('privacy');return false;" style="color:var(--accent)">プライバシーポリシー</a>に同意します</span>
     </label>
 
     <button class="form-submit" id="form-submit-btn" onclick="submitForm()" disabled style="opacity:0.5;cursor:not-allowed">決済画面へ進む →</button>
