@@ -725,7 +725,25 @@
       </div>
     </div>
 
-    <button class="form-submit" id="form-submit-btn" onclick="submitForm()">決済画面へ進む →</button>
+    <!-- 特商法最終確認（法12条の6対応） -->
+    <div id="form-legal-summary" style="background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 16px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.7">
+      <div style="font-weight:700;font-size:13px;color:var(--text);margin-bottom:8px">📋 お申し込み内容の確認</div>
+      <table style="width:100%;border-collapse:collapse">
+        <tr><td style="padding:3px 0;color:var(--text3);white-space:nowrap;width:90px">商品</td><td id="legal-plan-name" style="padding:3px 0;font-weight:600;color:var(--text)">—</td></tr>
+        <tr><td style="padding:3px 0;color:var(--text3)">金額</td><td id="legal-plan-price" style="padding:3px 0;font-weight:600;color:var(--text)">—</td></tr>
+        <tr><td style="padding:3px 0;color:var(--text3)">支払方法</td><td style="padding:3px 0">クレジットカード（即時決済）</td></tr>
+        <tr><td style="padding:3px 0;color:var(--text3)">提供時期</td><td style="padding:3px 0">決済完了後、即時アクセス可能</td></tr>
+        <tr><td style="padding:3px 0;color:var(--text3)">返金・解除</td><td style="padding:3px 0">デジタルコンテンツのため原則返金不可。サービスに重大な瑕疵がある場合を除く。</td></tr>
+        <tr><td style="padding:3px 0;color:var(--text3)">販売事業者</td><td style="padding:3px 0">合同会社LaughRally（<a href="/tokusho.html" target="_blank" style="color:var(--accent)">特定商取引法に基づく表記</a>）</td></tr>
+      </table>
+    </div>
+    <!-- 同意チェックボックス -->
+    <label id="form-agree-label" style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;cursor:pointer;font-size:13px;color:var(--text2)">
+      <input type="checkbox" id="form-agree" style="margin-top:2px;width:16px;height:16px;flex-shrink:0;accent-color:var(--accent)" onchange="toggleSubmitBtn()">
+      <span><a href="/tokusho.html" target="_blank" style="color:var(--accent)">特定商取引法に基づく表記</a>・<a href="#" onclick="openLegalModal('terms');return false;" style="color:var(--accent)">利用規約</a>・<a href="#" onclick="openLegalModal('privacy');return false;" style="color:var(--accent)">プライバシーポリシー</a>に同意します</span>
+    </label>
+
+    <button class="form-submit" id="form-submit-btn" onclick="submitForm()" disabled style="opacity:0.5;cursor:not-allowed">決済画面へ進む →</button>
     <div class="form-note">
       クレジットカード決済（Stripe）で安全にお支払いいただけます。<br>
       決済完了後、即時にアカウントが発行されます。
@@ -2870,6 +2888,15 @@ const PRICE_ID_MAP = {
 let currentPriceId = '';
 let currentPlanName = '';
 
+function toggleSubmitBtn(){
+  const checked = document.getElementById('form-agree').checked;
+  const btn = document.getElementById('form-submit-btn');
+  btn.disabled = !checked;
+  btn.style.opacity = checked ? '1' : '0.5';
+  btn.style.cursor = checked ? 'pointer' : 'not-allowed';
+}
+window.toggleSubmitBtn = toggleSubmitBtn;
+
 function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
   currentPriceId = PRICE_ID_MAP[plan] || '';
@@ -2880,6 +2907,22 @@ function openFormModal(plan){
     'プレミアム 98000円':   'PREMIUM · ¥98,000'
   };
   document.getElementById('form-plan-label').textContent = labels[plan] || plan;
+  // 最終確認テーブルを更新
+  const priceLabels = {
+    'ベーシック 9800円':    'BASICプラン（全17レッスン）',
+    'スタンダード 39800円': 'STANDARDプラン（全17レッスン＋コンサルティング1h）',
+    'プレミアム 98000円':   'PREMIUMプラン（全17レッスン＋コンサルティング3h＋個別サポート）'
+  };
+  const priceTags = {
+    'ベーシック 9800円':    '¥9,800（税込）',
+    'スタンダード 39800円': '¥39,800（税込）',
+    'プレミアム 98000円':   '¥98,000（税込）'
+  };
+  document.getElementById('legal-plan-name').textContent = priceLabels[plan] || plan;
+  document.getElementById('legal-plan-price').textContent = priceTags[plan] || '';
+  // 同意チェックをリセット
+  document.getElementById('form-agree').checked = false;
+  toggleSubmitBtn();
   setFormMsg('','');
   // ベーシック以外はコンサルフィールドを表示
   const isConsult = plan !== 'ベーシック 9800円';
