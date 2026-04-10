@@ -776,6 +776,32 @@
         アカウントをお持ちでない方は
         <a onclick="toggleAuthMode('signup')">新規登録</a>
       </div>
+      <div style="text-align:center;margin-top:10px">
+        <a onclick="toggleAuthMode('reset')" style="font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline">パスワードをお忘れの方</a>
+      </div>
+    </div>
+
+    <div id="auth-form-reset" style="display:none">
+      <div class="auth-field">
+        <label>メールアドレス</label>
+        <input type="email" id="auth-reset-email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <button class="auth-btn-email" onclick="sendPasswordReset()">リセットメールを送信</button>
+      <div class="auth-toggle" style="margin-top:12px">
+        <a onclick="toggleAuthMode('login')">ログインに戻る</a>
+      </div>
+    </div>
+
+    <div id="auth-form-newpw" style="display:none">
+      <div class="auth-field">
+        <label>新しいパスワード（6文字以上）</label>
+        <input type="password" id="auth-newpw" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div class="auth-field">
+        <label>パスワード確認</label>
+        <input type="password" id="auth-newpw2" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="auth-btn-email" onclick="updatePassword()">パスワードを更新する</button>
     </div>
 
     <div id="auth-form-signup" style="display:none">
@@ -3083,6 +3109,11 @@ function initSupabase(){
     }
 
     _supabase.auth.onAuthStateChange((_event, session)=>{
+      if(_event === 'PASSWORD_RECOVERY'){
+        openAuthModal();
+        toggleAuthMode('newpw');
+        return;
+      }
       currentUser = session?.user ?? null;
       updateAuthUI();
       if(session) closeAuthModal();
@@ -3173,10 +3204,12 @@ function setAuthMsg(type, text){
   el.textContent = text;
 }
 function toggleAuthMode(mode){
-  const isSignup = mode === 'signup';
-  document.getElementById('auth-form-login' ).style.display = isSignup ? 'none'  : 'block';
-  document.getElementById('auth-form-signup').style.display = isSignup ? 'block' : 'none';
-  document.getElementById('auth-modal-title').textContent = isSignup ? '新規登録' : '受講者ログイン';
+  document.getElementById('auth-form-login' ).style.display = mode==='login'  ? 'block' : 'none';
+  document.getElementById('auth-form-signup').style.display = mode==='signup' ? 'block' : 'none';
+  document.getElementById('auth-form-reset' ).style.display = mode==='reset'  ? 'block' : 'none';
+  document.getElementById('auth-form-newpw' ).style.display = mode==='newpw'  ? 'block' : 'none';
+  const titles = {login:'受講者ログイン', signup:'新規登録', reset:'パスワードの再設定', newpw:'新しいパスワードを設定'};
+  document.getElementById('auth-modal-title').textContent = titles[mode] || '受講者ログイン';
   setAuthMsg('', '');
 }
 
@@ -3212,7 +3245,41 @@ async function signUpWithEmail(){
   }
 }
 
-/* ===== ログアウト ===== */
+/* ===== パスワードリセット ===== */
+async function sendPasswordReset(){
+  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
+  const email = document.getElementById('auth-reset-email').value.trim();
+  if(!email){ setAuthMsg('error','メールアドレスを入力してください。'); return; }
+  setAuthMsg('', '送信中...');
+  const {error} = await _supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://ai-security-lab.com/'
+  });
+  if(error){
+    setAuthMsg('error', '送信に失敗しました。メールアドレスをご確認ください。');
+  } else {
+    setAuthMsg('success', '✅ リセットメールを送信しました。メール内のリンクをクリックしてください。');
+  }
+}
+
+/* ===== パスワード更新（リセットリンクから） ===== */
+async function updatePassword(){
+  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
+  const pw  = document.getElementById('auth-newpw').value;
+  const pw2 = document.getElementById('auth-newpw2').value;
+  if(!pw || !pw2){ setAuthMsg('error','パスワードを入力してください。'); return; }
+  if(pw.length < 6){ setAuthMsg('error','パスワードは6文字以上で設定してください。'); return; }
+  if(pw !== pw2){ setAuthMsg('error','パスワードが一致しません。'); return; }
+  setAuthMsg('', '更新中...');
+  const {error} = await _supabase.auth.updateUser({password: pw});
+  if(error){
+    setAuthMsg('error', '更新に失敗しました。もう一度お試しください。');
+  } else {
+    setAuthMsg('success', '✅ パスワードを更新しました！');
+    setTimeout(()=>{ toggleAuthMode('login'); }, 2000);
+  }
+}
+
+
 async function signOut(){
   if(!_supabase) return;
   await _supabase.auth.signOut();
