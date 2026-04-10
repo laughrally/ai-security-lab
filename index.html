@@ -3259,7 +3259,7 @@ async function sendPasswordReset(){
   if(!email){ setAuthMsg('error','メールアドレスを入力してください。'); return; }
   setAuthMsg('', '送信中...');
   const {error} = await _supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://ai-security-lab.com/'
+    redirectTo: 'https://ai-security-lab.com/reset-password.html'
   });
   if(error){
     setAuthMsg('error', '送信に失敗しました。メールアドレスをご確認ください。');
