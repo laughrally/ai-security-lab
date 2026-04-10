@@ -3096,12 +3096,19 @@ function initSupabase(){
       const params = new URLSearchParams(window.location.hash.substring(1));
       const access_token = params.get('access_token');
       const refresh_token = params.get('refresh_token');
+      const type = params.get('type');
       if(access_token){
         _supabase.auth.setSession({access_token, refresh_token}).then(({data, error})=>{
           if(!error && data.session){
-            currentUser = data.session.user;
-            updateAuthUI();
-            closeAuthModal();
+            if(type === 'recovery'){
+              // パスワードリセットリンクからのアクセス → PW設定画面を表示
+              openAuthModal();
+              toggleAuthMode('newpw');
+            } else {
+              currentUser = data.session.user;
+              updateAuthUI();
+              closeAuthModal();
+            }
           }
           history.replaceState(null, '', window.location.pathname);
         });
