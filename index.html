@@ -2801,7 +2801,7 @@
           <div class="cert-form-title">修了証 発行申請フォーム</div>
           <div class="cert-form-desc">以下を入力して申請してください。全レッスン受講済みの場合のみ送信できます。</div>
           <div id="cert-locked-notice" class="cert-locked-notice">⚠️ L01〜L17のすべてを受講済みにしてから申請してください。</div>
-          <div class="form-field"><label>会社名<span style="color:var(--red)">*</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方はご氏名）"></div>
+          <div class="form-field"><label>会社名<span style="font-size:11px;color:#999;margin-left:6px">（任意）</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方は空欄でOK）"></div>
           <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
           <div class="form-field"><label>メールアドレス<span style="color:var(--red)">*</span></label><input type="email" id="cert-email" placeholder="you@example.com"></div>
           <div class="form-msg" id="cert-msg" style="display:none"></div>
@@ -3455,7 +3455,7 @@ async function submitCertificate(){
   const name    = document.getElementById('cert-name').value.trim();
   const email   = document.getElementById('cert-email').value.trim();
   const msg     = document.getElementById('cert-msg');
-  if(!company||!name||!email){ msg.className='form-msg error'; msg.textContent='会社名・氏名・メールアドレスは必須です。'; msg.style.display='block'; return; }
+  if(!name||!email){ msg.className='form-msg error'; msg.textContent='氏名・メールアドレスは必須です。'; msg.style.display='block'; return; }
   const btn = document.getElementById('cert-submit-btn');
   btn.disabled=true; btn.textContent='送信中...';
   const params = new URLSearchParams({'会社名':company,'担当者名':name,'メールアドレス':email,'プラン':'修了証申請','請求書払い':'修了証発行申請','備考':'全17レッスン受講完了','申込日':new Date().toLocaleDateString('ja-JP')});
