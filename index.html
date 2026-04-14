@@ -3459,7 +3459,7 @@ async function submitCertificate(){
   const btn = document.getElementById('cert-submit-btn');
   btn.disabled=true; btn.textContent='送信中...';
   const params = new URLSearchParams({'会社名':company,'担当者名':name,'メールアドレス':email,'プラン':'修了証申請','請求書払い':'修了証発行申請','備考':'全17レッスン受講完了','申込日':new Date().toLocaleDateString('ja-JP')});
-  fetch('https://script.google.com/macros/s/AKfycbxDdY19fFX7foRBFTmNXcuCjqoIcNit0Xx02y-XVDGWL-adYYzOKkBpK-Vfqv_BsifV/exec?'+params.toString(),{method:'GET',mode:'no-cors'});
+  fetch('https://script.google.com/macros/s/AKfycbxzuTg3WqsIsByqM8LGUgLoA7uZxn_15VQI4FZjmiMCDjT79rNznxtYT0DKm26EAzx3/exec?'+params.toString(),{method:'GET',mode:'no-cors'});
   msg.className='form-msg success'; msg.textContent='申請を受け付けました！担当者より修了証PDFをメールでお送りします。'; msg.style.display='block';
   btn.textContent='申請完了 ✓';
 }
