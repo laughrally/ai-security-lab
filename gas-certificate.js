@@ -83,161 +83,123 @@ function buildCertificateHTML(company, name, date) {
 <head>
 <meta charset="UTF-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Shippori+Mincho:wght@400;700&display=swap');
-
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   body {
-    width: 297mm;
-    height: 210mm;
-    font-family: 'Noto Serif JP', 'Shippori Mincho', serif;
+    width: 210mm;
+    min-height: 280mm;
+    font-family: 'Noto Serif JP', 'MS Mincho', serif;
     background: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
   }
-
   .cert {
-    width: 100%;
-    height: 100%;
+    width: 210mm;
+    min-height: 280mm;
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 20mm 24mm;
+    padding: 20mm 18mm;
     background: #fff;
+    text-align: center;
   }
-
-  /* 外枠 */
   .cert::before {
     content: '';
     position: absolute;
-    inset: 8mm;
+    inset: 10mm;
     border: 2px solid #1a1a1a;
   }
   .cert::after {
     content: '';
     position: absolute;
-    inset: 10mm;
-    border: 0.5px solid #888;
+    inset: 12mm;
+    border: 0.5px solid #999;
   }
-
-  /* 上部ロゴ */
   .logo {
-    font-family: 'Noto Serif JP', serif;
-    font-size: 11pt;
-    letter-spacing: 0.3em;
-    color: #555;
-    margin-bottom: 6mm;
-    text-transform: uppercase;
+    font-size: 10pt;
+    letter-spacing: 0.35em;
+    color: #666;
+    margin-bottom: 8mm;
   }
   .logo span { color: #c00; }
-
-  /* 修了証タイトル */
   .title {
-    font-size: 28pt;
+    font-size: 30pt;
     font-weight: 700;
-    letter-spacing: 0.5em;
+    letter-spacing: 0.6em;
     color: #1a1a1a;
-    margin-bottom: 8mm;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 4mm;
-    padding-right: 0.5em;
+    margin-bottom: 6mm;
+    padding-right: 0.6em;
   }
-
-  /* 受講者名 */
+  .divider {
+    font-size: 14pt;
+    color: #c00;
+    letter-spacing: 0.5em;
+    margin-bottom: 10mm;
+  }
   .company {
-    font-size: 13pt;
+    font-size: 12pt;
     color: #555;
     letter-spacing: 0.1em;
-    margin-bottom: 2mm;
+    margin-bottom: 3mm;
   }
   .name {
-    font-size: 26pt;
+    font-size: 28pt;
     font-weight: 700;
     color: #1a1a1a;
-    letter-spacing: 0.15em;
-    margin-bottom: 1mm;
-    border-bottom: 1px solid #1a1a1a;
-    padding-bottom: 2mm;
+    letter-spacing: 0.2em;
+    border-bottom: 1.5px solid #1a1a1a;
+    padding-bottom: 3mm;
     padding-right: 0.2em;
+    margin-bottom: 3mm;
   }
   .suffix {
-    font-size: 13pt;
-    color: #333;
-    margin-bottom: 8mm;
-    letter-spacing: 0.2em;
+    font-size: 12pt;
+    color: #444;
+    letter-spacing: 0.3em;
+    margin-bottom: 10mm;
   }
-
-  /* 本文 */
   .body-text {
-    font-size: 11pt;
+    font-size: 10.5pt;
     color: #333;
-    line-height: 2;
-    text-align: center;
+    line-height: 2.2;
     letter-spacing: 0.05em;
-    margin-bottom: 8mm;
+    margin-bottom: 10mm;
   }
   .course-name {
-    font-size: 13pt;
+    font-size: 12pt;
     font-weight: 700;
     color: #1a1a1a;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
   }
-
-  /* 日付・発行者 */
   .footer {
+    position: absolute;
+    bottom: 20mm;
+    left: 20mm;
+    right: 20mm;
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    width: 100%;
-    padding: 0 10mm;
-    margin-top: 4mm;
   }
-  .issue-date {
-    font-size: 10pt;
-    color: #555;
-    letter-spacing: 0.1em;
-  }
-  .issuer {
-    text-align: right;
-  }
-  .issuer-name {
-    font-size: 13pt;
-    font-weight: 700;
-    color: #1a1a1a;
-    letter-spacing: 0.1em;
-  }
-  .issuer-sub {
-    font-size: 9pt;
-    color: #777;
-    letter-spacing: 0.05em;
-  }
-
-  /* 装飾 */
-  .ornament {
-    font-size: 18pt;
-    color: #c00;
-    margin-bottom: 4mm;
-    letter-spacing: 0.5em;
-  }
+  .issue-date { font-size: 9pt; color: #666; letter-spacing: 0.1em; }
+  .issuer { text-align: right; }
+  .issuer-name { font-size: 11pt; font-weight: 700; color: #1a1a1a; letter-spacing: 0.1em; }
+  .issuer-sub { font-size: 8pt; color: #888; margin-top: 1mm; }
 </style>
 </head>
 <body>
 <div class="cert">
-  <div class="logo">AI <span>Security</span> Lab</div>
+  <div class="logo">AI <span>SECURITY</span> LAB</div>
   <div class="title">修　了　証</div>
-  <div class="ornament">― ✦ ―</div>
+  <div class="divider">― ✦ ―</div>
   ${companyLine}
   <div class="name">${name}</div>
   <div class="suffix">殿</div>
   <div class="body-text">
-    あなたは下記の課程を修了されたことをここに証します。
-    <br><br>
-    <span class="course-name">AI Security Lab｜AI時代のセキュリティ実践講座</span>
-    <br>
+    あなたは下記の課程を修了されたことをここに証します。<br><br>
+    <span class="course-name">AI Security Lab｜AI時代のセキュリティ実践講座</span><br>
     全17レッスン・修了
   </div>
   <div class="footer">
