@@ -3147,12 +3147,14 @@ function initSupabase(){
         return;
       }
       currentUser = session?.user ?? null;
-      if(currentUser) fetchUserPlan().then(()=>updateAuthUI()); else { currentUserPlan=null; updateAuthUI(); }
-      if(session) closeAuthModal();
+      if(!currentUser){ currentUserPlan=null; }
+      updateAuthUI();
+      if(session){ closeAuthModal(); fetchUserPlan(); }
     });
     _supabase.auth.getSession().then(({data:{session}})=>{
       currentUser = session?.user ?? null;
-      if(currentUser) fetchUserPlan().then(()=>updateAuthUI()); else updateAuthUI();
+      updateAuthUI();
+      if(currentUser) fetchUserPlan();
     });
   } catch(e) {
     console.error('Supabase init error:', e);
