@@ -2279,6 +2279,13 @@
             <div class="dr"><span class="drl">新しい使い方を試したいとき</span><span class="drv" style="color:var(--text3)">AI管理責任者に事前相談してから実施</span></div>
           </div>
 
+          <div style="text-align:center;margin:28px 0 8px;">
+            <button onclick="downloadGuideline()" style="display:inline-flex;align-items:center;gap:10px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:14px 32px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;">
+              <span style="font-size:18px">📄</span> ガイドラインテンプレートをダウンロード（.txt）
+            </button>
+            <div style="font-size:12px;color:var(--text3);margin-top:8px;">会社名・担当者名などを編集してご利用ください</div>
+          </div>
+
           <div class="co cg"><div class="col">// 運用のポイント</div>ガイドラインは「作って終わり」ではありません。<strong>①新入社員・業務委託先への周知、②四半期ごとの見直し、③新しいAIツール登場時の更新</strong>——この3つを継続することが、実効性ある管理の核心です。AI関連法令は急速に整備が進んでいるため、定期的な更新が特に重要です。</div>
 
           <div class="ref">
@@ -3708,6 +3715,73 @@ window.closeLegalModal = closeLegalModal;
 
 window.markComplete      = markComplete;
 window.submitCertificate = submitCertificate;
+
+function downloadGuideline(){
+  const today = new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
+  const text = `生成AI利用に関する社内ガイドライン ver.1.0
+制定日：${today}
+担当者（AI管理責任者）：○○（役職・氏名）
+適用範囲：全従業員・業務委託先（個人端末での業務利用も含む）
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. 使用を許可するツール
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ 許可：ChatGPT Business / Claude Pro / Gemini（Google Workspace法人契約）
+❌ 禁止：ChatGPT 無料プラン（業務利用）/ 個人判断で追加したAIツール全般
+⚠️ 要確認：新しいAIツールを使いたい場合はAI管理責任者に相談してから使用
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. 入力禁止情報（個人情報保護法第27条・第28条等に基づく）
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔴 顧客・取引先の個人情報：氏名・住所・連絡先・財産状況等（個情法第2条第1項）
+🔴 要配慮個人情報：病名・診断・障害等（個情法第2条第3項）
+🔴 社外秘・機密扱いの社内情報：契約内容・財務情報・人事情報等
+🔴 未公開の製品・事業情報：新商品・新事業・M&A情報等（インサイダー情報）
+🔴 第三者の著作物のコピー：他社サイト・書籍・記事をそのまま貼り付けること
+
+【原則】「この情報が外部に漏れたとき、会社・顧客・取引先に不利益が生じるか？」
+→ YESなら入力しない。迷ったら入力しない。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. AI出力物の取り扱いルール
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+・ファクトチェック義務：数値・法律・統計は必ず一次ソース（政府機関等公式サイト）で確認
+・人間による最終確認：AI出力をそのまま使わず、必ず人間が編集・確認する
+・AI生成の明示：明示が必要な場面（公式報告書等）ではAI利用を表記する
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. 問題発生時の対応
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+・情報漏洩の疑いが生じたとき：直ちにAI管理責任者（○○）に報告。自己判断で解決しない
+・判断に迷うとき：「迷ったら入力しない」が原則。AI管理責任者に相談
+・新しい使い方を試したいとき：AI管理責任者に事前相談してから実施
+・インシデント発生時は個人情報保護法第26条に基づき3〜5日以内に速報が必要な場合あり
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. 見直し・更新ルール
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+・四半期ごと（3ヶ月に1回）に内容を見直す
+・新しいAIツールが登場した際は随時更新
+・新入社員・業務委託先には入社・契約時に周知する
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【参考】関連法令・ガイドライン
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+・個人情報の保護に関する法律（令和2年改正、2022年4月施行）
+・総務省・経済産業省「AI事業者ガイドライン（第1.1版）」2024年4月
+・個人情報保護委員会「生成AIサービスの利用に関する注意喚起等について」2023年6月
+
+本ガイドラインは AI Security Lab（https://ai-security-lab.com）のL12テンプレートを基に作成。
+`;
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '生成AI利用ガイドライン_テンプレート.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+window.downloadGuideline = downloadGuideline;
 window.updateCompletionUI = updateCompletionUI;
 
 
