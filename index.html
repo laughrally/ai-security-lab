@@ -864,7 +864,7 @@
   <div class="guide-wrap">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.18em;margin-bottom:14px">// HOW TO USE</div>
     <h2 style="font-family:'Noto Serif JP',serif;font-size:clamp(22px,3vw,32px);font-weight:700;margin-bottom:8px">ようこそ、AI Security Lab へ</h2>
-    <p style="font-size:15px;color:var(--text3);line-height:1.9;margin-bottom:40px">全22レッスンを通じて、生成AIを安全に使うための知識を身につけましょう。<br>各レッスンを受講後に「受講済み」ボタンを押すと、進捗が記録されます。</p>
+    <p style="font-size:15px;color:var(--text3);line-height:1.9;margin-bottom:40px">全27レッスンを通じて、生成AIを安全に使うための知識を身につけましょう。<br>各レッスンを受講後に「受講済み」ボタンを押すと、進捗が記録されます。</p>
     <div class="guide-steps">
       <div class="guide-step">
         <div class="guide-step-num">1</div>
@@ -888,7 +888,7 @@
         <div class="guide-step-num">4</div>
         <div class="guide-step-icon">🎓</div>
         <div class="guide-step-title">修了証を取得する</div>
-        <div class="guide-step-desc">全22レッスンを受講済みにすると修了証の発行申請ができます。担当者よりPDFをメールでお送りします。</div>
+        <div class="guide-step-desc">全27レッスンを受講済みにすると修了証の発行申請ができます。担当者よりPDFをメールでお送りします。</div>
       </div>
     </div>
     <div class="guide-cta">
@@ -1019,6 +1019,11 @@
       <button class="tab" onclick="switchTab('lesson20')">L20</button>
       <button class="tab" onclick="switchTab('lesson21')">L21</button>
       <button class="tab" onclick="switchTab('lesson22')">L22</button>
+      <button class="tab" onclick="switchTab('lesson23')">L23</button>
+      <button class="tab" onclick="switchTab('lesson24')">L24</button>
+      <button class="tab" onclick="switchTab('lesson25')">L25</button>
+      <button class="tab" onclick="switchTab('lesson26')">L26</button>
+      <button class="tab" onclick="switchTab('lesson27')">L27</button>
       <button class="tab" id="cert-tab-btn" onclick="switchTab('certificate')" style="display:none">🎓</button>
     </div>
 
@@ -3265,6 +3270,517 @@
         </div>
         <div class="lnav">
           <a href="#lessons" onclick="switchTab('lesson21');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L21：AIエージェント・自動化ツールのリスク</span></a>
+          <a href="#lessons" onclick="switchTab('lesson23');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L23：LLMの仕組み入門</span></a>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ===== L23 ===== -->
+    <div class="tcon" id="tab-lesson23">
+      <div class="lc">
+        <div class="leye">CHAPTER 06 // LESSON 23</div>
+        <h1 class="ltit">LLMの仕組み入門<br>——なぜAIは「嘘」をつくのか</h1>
+        <div class="lmeta">
+          <span class="lmi">📖 読了時間：約18分</span>
+          <span class="lmi">🎯 難易度：中級</span>
+          <span class="lmi">🔐 Premium以上</span>
+        </div>
+        <div class="lb">
+
+          <h2>ChatGPTの「中身」を知ることがなぜ重要か</h2>
+          <p>多くのビジネスパーソンはChatGPTやClaudeを「賢い検索エンジン」のように使っている。しかし内部の仕組みを知らないまま業務に使い続けることは、<strong>予測できないリスクを抱えたまま車を運転するようなもの</strong>だ。なぜ嘘をつくのか、なぜ同じ質問でも答えが変わるのかを理解することが、安全な活用の出発点になる。</p>
+
+          <h2>LLMとは何か</h2>
+          <p>LLM（Large Language Model：大規模言語モデル）は、インターネット上のテキストデータを大量に学習し、<strong>「次に来る確率が最も高い単語」を繰り返し予測することで文章を生成する</strong>AIだ。「理解して答える」のではなく、「統計的にそれらしい文章を組み立てる」のが本質。</p>
+
+          <div class="co cb">
+            <div class="col">🔑 LLMの3つの「Large」</div>
+            <strong>① 学習データ量</strong>：数千億〜数兆トークンのWebページ・書籍・論文<br>
+            <strong>② 計算量</strong>：高性能GPUを数百〜数千台、数週間〜数ヶ月かけて学習<br>
+            <strong>③ パラメータ数</strong>：GPT-4は推定1兆以上のパラメータ（脳のシナプス結合に相当）
+          </div>
+
+          <h2>「確率的な予測」が生む3つのリスク</h2>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク①</span><span class="cco">ハルシネーション（幻覚）</span></div>
+            <p class="cdesc">LLMは「最もそれらしい文章」を生成するため、<strong>事実確認なしに自信満々で誤情報を出力</strong>することがある。存在しない法律・判例・統計・人名を生成するケースが実際に発生している。L11でも扱ったが、仕組みを理解すると「なぜ起きるか」が腑に落ちる。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク②</span><span class="cco">同じ質問で答えが変わる（Temperature）</span></div>
+            <p class="cdesc">LLMは<strong>Temperature</strong>というパラメータで「ランダム性」を制御している。Temperature=0なら毎回同じ答え、Temperature=1以上なら毎回異なる答えが返ってくる。「昨日は正しかったのに今日は違う答えが出た」という体験はこれが原因。重要な情報は必ず別途確認する。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク③</span><span class="cco">コンテキストウィンドウの限界（忘れる）</span></div>
+            <p class="cdesc">LLMには<strong>「一度に記憶できる量の上限（コンテキストウィンドウ）」</strong>がある。長い会話を続けると古いやり取りが「存在しないもの」として扱われる。「さっき言ったはずなのに忘れてる」という現象の原因。長い契約書を分析させる際は、コンテキストが大きいモデルを選ぶことが重要。</p>
+          </div>
+
+          <h2>「知識のカットオフ」——AIは未来を知らない</h2>
+          <p>LLMは学習データの収集日時（カットオフ日）以降の情報を持っていない。法改正・新製品情報・最新の判例・時事ニュースなど、<strong>時間が経つほど陳腐化する情報はAIの回答を信頼しすぎてはいけない</strong>。カットオフ日をAIに確認してから使うことを習慣にする。</p>
+
+          <div class="dbox">
+            <div class="dbtit">// 主要LLMの特徴比較</div>
+            <div class="dr"><span class="drl" style="font-weight:700">GPT-4o（OpenAI）</span><span class="drv" style="color:var(--text3)">マルチモーダル・API展開が最も充実</span></div>
+            <div class="dr"><span class="drl" style="font-weight:700">Claude 3.5（Anthropic）</span><span class="drv" style="color:var(--text3)">200Kトークン・安全性重視・長文分析に強い</span></div>
+            <div class="dr"><span class="drl" style="font-weight:700">Gemini 1.5 Pro（Google）</span><span class="drv" style="color:var(--text3)">最大100万トークン・Google製品と深い統合</span></div>
+            <div class="dr"><span class="drl" style="font-weight:700">LLaMA / Mistral（オープンソース）</span><span class="drv vg">社内サーバーで運用可能・データが外部に出ない</span></div>
+          </div>
+
+          <div class="co cg">
+            <div class="col">💡 セキュリティ視点でのLLM選択ポイント</div>
+            <strong>機密情報を扱う業務</strong>には、データが外部サーバーに送信されないオープンソースLLM（LLaMA等）の<strong>ローカル運用</strong>を検討する。クラウド型を使う場合は<strong>法人向けプランのデータ保護規約</strong>を必ず確認。個人アカウントでの業務利用は原則禁止。
+          </div>
+
+          <div class="dbox" style="margin-top:40px">
+            <div class="dbtit">// 参考資料</div>
+            <div class="dr"><span class="drl">「Attention Is All You Need」（2017, Google）</span><span class="drv"><a href="https://arxiv.org/abs/1706.03762" target="_blank" style="color:var(--blue);text-decoration:none">→ arXiv</a></span></div>
+            <div class="dr"><span class="drl">Anthropic「Claude モデル概要」</span><span class="drv"><a href="https://www.anthropic.com/claude" target="_blank" style="color:var(--blue);text-decoration:none">→ Anthropic</a></span></div>
+          </div>
+
+        </div>
+
+        <div class="hr"></div>
+        <div class="quiz">
+          <div class="qlbl">// 理解度チェック</div>
+          <div class="qq">LLMが「ハルシネーション（幻覚）」を起こす根本的な原因として最も正確なものはどれですか？</div>
+          <div class="qopts">
+            <button class="qopt" onclick="doQ(this,false,'q23')">学習データに誤情報が含まれていたから</button>
+            <button class="qopt" onclick="doQ(this,false,'q23')">AIが意図的にユーザーを欺こうとするから</button>
+            <button class="qopt" onclick="doQ(this,true,'q23')">「次に来る確率が高い単語」を統計的に予測する仕組みのため、事実確認なしに「それらしい文章」を生成してしまうから</button>
+            <button class="qopt" onclick="doQ(this,false,'q23')">インターネット接続がないため最新情報にアクセスできないから</button>
+          </div>
+          <div class="qfb qfbok" id="q23-ok">✅ 正解です。LLMは「理解して答える」のではなく「統計的にそれらしい文章を組み立てる」のが本質です。そのため事実確認なしに自信満々で誤情報を生成することがあります。</div>
+          <div class="qfb qfbng" id="q23-ng">❌ 不正解です。ハルシネーションは悪意や学習ミスではなく、LLMの仕組み上の必然です。「次に来る確率が高い単語を繰り返し予測する」という統計的生成の結果、事実と異なる「それらしい文章」が生まれます。</div>
+        </div>
+
+        <div class="completion-area">
+          <p>このレッスンの内容を確認しましたか？</p>
+          <button class="btn-complete" id="complete-lesson23" onclick="markComplete('lesson23')">✓ L23 を受講済みにする</button>
+          <div class="completion-note" id="note-lesson23"></div>
+        </div>
+        <div class="lnav">
+          <a href="#lessons" onclick="switchTab('lesson22');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L22：インシデント対応ロールプレイ</span></a>
+          <a href="#lessons" onclick="switchTab('lesson24');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L24：プロンプトエンジニアリング基礎</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L24 ===== -->
+    <div class="tcon" id="tab-lesson24">
+      <div class="lc">
+        <div class="leye">CHAPTER 06 // LESSON 24</div>
+        <h1 class="ltit">プロンプトエンジニアリング基礎<br>——安全で精度の高い指示の書き方</h1>
+        <div class="lmeta">
+          <span class="lmi">📖 読了時間：約18分</span>
+          <span class="lmi">🎯 難易度：中級</span>
+          <span class="lmi">🔐 Premium以上</span>
+        </div>
+        <div class="lb">
+
+          <h2>プロンプトの品質がリスクを左右する</h2>
+          <p>AIへの入力（プロンプト）の書き方が悪いと、<strong>意図しない個人情報の漏洩・誤情報の信用・著作権リスクのある出力</strong>につながる。このレッスンでは「どう書けば安全で精度が高いか」をセキュリティ視点で学ぶ。</p>
+
+          <h2>プロンプトの4要素（DAIR.AI）</h2>
+
+          <div class="dbox">
+            <div class="dbtit">// プロンプトの4要素</div>
+            <div class="dr"><span class="drl"><strong>① Instruction（指示）</strong>　※唯一の必須要素</span><span class="drv" style="color:var(--text3)">実行してほしいタスクを動詞で明示</span></div>
+            <div class="dr"><span class="drl"><strong>② Context（文脈）</strong></span><span class="drv" style="color:var(--text3)">背景・対象者・分野・前提を指定</span></div>
+            <div class="dr"><span class="drl"><strong>③ Input Data（入力データ）</strong></span><span class="drv" style="color:var(--text3)">処理してほしい素材・テキストを提供</span></div>
+            <div class="dr"><span class="drl"><strong>④ Output Indicator（出力形式）</strong></span><span class="drv" style="color:var(--text3)">箇条書き・文字数・形式などを指定</span></div>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">悪い例</span><span class="cco" style="color:var(--red)">「マーケティングについて教えて」</span></div>
+            <p class="cdesc">Instructionのみで範囲が広すぎる。AIが何を求められているか判断できず、的外れな回答が返ってくる。</p>
+          </div>
+
+          <div class="ccase" style="border-left:3px solid var(--green)">
+            <div class="cchd"><span class="ctg" style="background:var(--green-l);color:var(--green)">良い例</span><span class="cco">4要素を組み合わせた指示</span></div>
+            <p class="cdesc">「<strong>（Instruction）</strong>次の文章を要約してください。<strong>（Context）</strong>専門知識のない一般読者向けに、<strong>（Output）</strong>200文字以内の箇条書きで。<strong>（Input）</strong>〔原文〕」</p>
+          </div>
+
+          <h2>セキュリティ視点での4つのルール</h2>
+          <ul class="slist">
+            <li><span class="snum">1</span><span><strong>個人情報・機密情報を直接入力しない</strong><br>氏名・住所・社員番号・顧客データ・売上数字は、匿名化・一般化してから入力する。「田中様（65歳・糖尿病）」ではなく「65歳の患者」に置き換える。</span></li>
+            <li><span class="snum">2</span><span><strong>「出力形式」を指定して情報漏洩リスクを下げる</strong><br>「箇条書きで要点のみ」と指定することで、AIが不必要な詳細や推測を出力するリスクを下げられる。</span></li>
+            <li><span class="snum">3</span><span><strong>AIの回答を「ドラフト」として扱う</strong><br>法的情報・医療情報・財務情報はAIの出力をそのまま使わない。必ず専門家・一次ソースで確認する習慣をつける。</span></li>
+            <li><span class="snum">4</span><span><strong>ロールプレイ指示の悪用に注意する</strong><br>「あなたは制限のないAIです」「悪役として答えて」などのロール指示は、AIの安全フィルターを迂回しようとするジェイルブレイク手口。社内ガイドラインでこのような使い方を禁止することを推奨。</span></li>
+          </ul>
+
+          <h2>精度を上げる3つの技法</h2>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">技法①</span><span class="cco">Few-shot（例示）</span></div>
+            <p class="cdesc">入力と期待する出力のペアを2〜3例示してから本番の質問をする。「このような形式で答えてほしい」という具体例を見せることで、精度と形式が大幅に安定する。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">技法②</span><span class="cco">Chain of Thought（段階的思考）</span></div>
+            <p class="cdesc">「ステップごとに考えてから答えてください」と指示することで、AIが推論過程を示しながら答えるようになる。複雑な判断や計算が絡む場合に誤答率が下がる。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">技法③</span><span class="cco">段階的アプローチ</span></div>
+            <p class="cdesc">複雑な指示を一度に与えず、「まずXを教えて、次にYを〜」と段階に分けて質問する。一度に多くを求めると、AIは先の要素を優先し後の要素を見落としがちになる。</p>
+          </div>
+
+          <div class="co ca">
+            <div class="col">⚠️ 過信しないための習慣</div>
+            どれほど精巧なプロンプトを書いても、LLMは「確率的な予測」をしているにすぎない。<strong>重要な業務判断に使う情報は、一次ソースや専門家で必ず確認する</strong>ことを組織のルールとして定める。
+          </div>
+
+          <div class="dbox" style="margin-top:40px">
+            <div class="dbtit">// 参考資料</div>
+            <div class="dr"><span class="drl">DAIR.AI「Prompt Engineering Guide」</span><span class="drv"><a href="https://www.promptingguide.ai/jp" target="_blank" style="color:var(--blue);text-decoration:none">→ promptingguide.ai</a></span></div>
+          </div>
+
+        </div>
+
+        <div class="hr"></div>
+        <div class="quiz">
+          <div class="qlbl">// 理解度チェック</div>
+          <div class="qq">プロンプトエンジニアリングの「4要素」のうち、唯一の必須要素はどれですか？</div>
+          <div class="qopts">
+            <button class="qopt" onclick="doQ(this,false,'q24')">Context（文脈）</button>
+            <button class="qopt" onclick="doQ(this,true,'q24')">Instruction（指示）</button>
+            <button class="qopt" onclick="doQ(this,false,'q24')">Input Data（入力データ）</button>
+            <button class="qopt" onclick="doQ(this,false,'q24')">Output Indicator（出力形式）</button>
+          </div>
+          <div class="qfb qfbok" id="q24-ok">✅ 正解です。Instruction（指示）だけがプロンプトの唯一の必須要素です。他の3要素（Context・Input Data・Output Indicator）を組み合わせることで精度は上がりますが、なくても機能します。</div>
+          <div class="qfb qfbng" id="q24-ng">❌ 不正解です。プロンプトの4要素の中で唯一の必須要素はInstruction（指示）です。「何をしてほしいか」を明示することだけが絶対に必要で、他の要素は精度向上のための補助です。</div>
+        </div>
+
+        <div class="completion-area">
+          <p>このレッスンの内容を確認しましたか？</p>
+          <button class="btn-complete" id="complete-lesson24" onclick="markComplete('lesson24')">✓ L24 を受講済みにする</button>
+          <div class="completion-note" id="note-lesson24"></div>
+        </div>
+        <div class="lnav">
+          <a href="#lessons" onclick="switchTab('lesson23');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L23：LLMの仕組み入門</span></a>
+          <a href="#lessons" onclick="switchTab('lesson25');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L25：RAG・ファインチューニングのリスク</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L25 ===== -->
+    <div class="tcon" id="tab-lesson25">
+      <div class="lc">
+        <div class="leye">CHAPTER 06 // LESSON 25</div>
+        <h1 class="ltit">RAG・ファインチューニングのリスク<br>——社内データをAIに学習させる前に知ること</h1>
+        <div class="lmeta">
+          <span class="lmi">📖 読了時間：約18分</span>
+          <span class="lmi">🎯 難易度：上級</span>
+          <span class="lmi">🔐 Premium以上</span>
+        </div>
+        <div class="lb">
+
+          <h2>AIのカスタマイズ3手法の概要</h2>
+          <p>生成AIを自社業務に特化させる方法は主に3つある。それぞれのリスクを理解せずに導入すると、<strong>機密情報の漏洩・法的リスク・予期しない出力</strong>につながる。</p>
+
+          <div class="dbox">
+            <div class="dbtit">// 3つのカスタマイズ手法の比較</div>
+            <div class="dr">
+              <span class="drl"><strong>① プロンプトエンジニアリング</strong></span>
+              <span class="drv vg">リスク低・コスト低・すぐ使える</span>
+            </div>
+            <div class="dr">
+              <span class="drl"><strong>② RAG</strong>（Retrieval-Augmented Generation）</span>
+              <span class="drv va">リスク中・最新情報を動的に参照</span>
+            </div>
+            <div class="dr">
+              <span class="drl"><strong>③ ファインチューニング</strong></span>
+              <span class="drv vr">リスク高・コスト高・特化度が高い</span>
+            </div>
+          </div>
+
+          <h2>RAGとは——仕組みとリスク</h2>
+          <p>RAG（Retrieval-Augmented Generation）とは、AIが回答を生成する前に<strong>外部の知識ベース（社内文書・FAQ・マニュアル等）を検索し、関連情報をプロンプトに組み込んで回答を補強する</strong>手法だ。モデルを再学習させずに最新情報・社内情報を反映できる。</p>
+
+          <div class="ccase" style="border-left:3px solid var(--amber)">
+            <div class="cchd"><span class="ctg" style="background:var(--amber-l);color:var(--amber)">RAGの4ステップ</span></div>
+            <ul class="slist" style="margin-top:8px">
+              <li><span class="snum">1</span><span><strong>知識ベースの準備</strong>：FAQ・マニュアル・社内文書をテキスト化・インデックス化</span></li>
+              <li><span class="snum">2</span><span><strong>検索エンジンの構築</strong>：質問に関連する文書を高速で検索する仕組みを用意</span></li>
+              <li><span class="snum">3</span><span><strong>生成モデルへの組み込み</strong>：検索結果をプロンプトに追加してAIに渡す</span></li>
+              <li><span class="snum">4</span><span><strong>回答生成・デプロイ</strong>：社内チャットボットやFAQシステムとして展開</span></li>
+            </ul>
+          </div>
+
+          <h2>RAG導入時の3つのリスク</h2>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク①</span><span class="cco">知識ベースへの不正アクセス</span></div>
+            <p class="cdesc">社内文書を知識ベースとして使う場合、<strong>アクセス権限の設計が不十分だと</strong>本来見せてはいけない情報（人事評価・役員報酬・未公開情報）を一般社員のチャットボットが返してしまう事故が起きる。「誰がどの情報を検索できるか」の権限設計が必須。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク②</span><span class="cco">知識ベースへのデータポイズニング</span></div>
+            <p class="cdesc">悪意ある第三者（または内部不正）が知識ベースに<strong>誤情報・偏った情報・悪意ある命令</strong>を混入させると、RAGシステム全体が汚染される。L19のプロンプトインジェクションと組み合わさると被害が拡大する。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク③</span><span class="cco">知識ベースの品質に依存する精度</span></div>
+            <p class="cdesc">RAGの回答品質は知識ベースの品質に直結する。<strong>古い・不正確・矛盾した情報が含まれていると、AIがそれを根拠に誤った回答を生成する</strong>。定期的な更新・品質管理のプロセスが不可欠。</p>
+          </div>
+
+          <h2>ファインチューニングとは——仕組みとリスク</h2>
+          <p>ファインチューニングとは、既存のLLMに<strong>追加データを使って再学習させ、特定のタスクや分野に特化させる</strong>手法だ。医療・法律・金融など専門分野での高精度回答が可能になるが、コストとリスクが最も高い。</p>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク①</span><span class="cco">学習データの著作権・個人情報リスク</span></div>
+            <p class="cdesc">ファインチューニングに使うデータに<strong>著作権のある文書・個人情報・機密情報が含まれると</strong>、学習済みモデルがそれを「記憶」して回答に出力してしまうリスクがある。学習データの事前審査が必須。</p>
+          </div>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg">リスク②</span><span class="cco">汎用性の低下（破滅的忘却）</span></div>
+            <p class="cdesc">特定タスクに特化したファインチューニングを行うと、<strong>元のモデルが持っていた汎用的な能力が低下する</strong>「破滅的忘却（Catastrophic Forgetting）」が起きることがある。用途を絞り込んで慎重に設計する必要がある。</p>
+          </div>
+
+          <div class="co cg">
+            <div class="col">💡 中小企業に最適な選択は？</div>
+            多くの中小企業にとっては<strong>プロンプトエンジニアリング → RAG</strong>の順で検討するのが現実的。ファインチューニングは専門エンジニアと相当の予算・データが必要。まず既存モデルをうまく使うことから始め、限界を感じてからRAGを検討する順序が推奨される。
+          </div>
+
+          <div class="dbox" style="margin-top:40px">
+            <div class="dbtit">// 参考資料</div>
+            <div class="dr"><span class="drl">OWASP「LLM Training Data Poisoning」</span><span class="drv"><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank" style="color:var(--blue);text-decoration:none">→ OWASP</a></span></div>
+          </div>
+
+        </div>
+
+        <div class="hr"></div>
+        <div class="quiz">
+          <div class="qlbl">// 理解度チェック</div>
+          <div class="qq">社内文書をRAGの知識ベースとして使う際、セキュリティ上で最初に設計すべきことはどれですか？</div>
+          <div class="qopts">
+            <button class="qopt" onclick="doQ(this,false,'q25')">知識ベースのデータ量をできるだけ多くすること</button>
+            <button class="qopt" onclick="doQ(this,false,'q25')">検索エンジンの処理速度を最大化すること</button>
+            <button class="qopt" onclick="doQ(this,false,'q25')">ファインチューニングと組み合わせて精度を上げること</button>
+            <button class="qopt" onclick="doQ(this,true,'q25')">誰がどの情報を検索・閲覧できるかのアクセス権限を適切に設計すること</button>
+          </div>
+          <div class="qfb qfbok" id="q25-ok">✅ 正解です。RAGのセキュリティ上の最大リスクは「権限設計の不備による情報漏洩」です。本来見せてはいけない情報が誰でも取得できる状態になることを防ぐため、アクセス権限の設計が最優先事項です。</div>
+          <div class="qfb qfbng" id="q25-ng">❌ 不正解です。RAGの最大リスクは権限設計の不備です。知識ベースに機密情報（人事・財務・未公開情報）が含まれる場合、誰がどの情報にアクセスできるかの権限設計を最初に確立しなければ、情報漏洩事故が起きます。</div>
+        </div>
+
+        <div class="completion-area">
+          <p>このレッスンの内容を確認しましたか？</p>
+          <button class="btn-complete" id="complete-lesson25" onclick="markComplete('lesson25')">✓ L25 を受講済みにする</button>
+          <div class="completion-note" id="note-lesson25"></div>
+        </div>
+        <div class="lnav">
+          <a href="#lessons" onclick="switchTab('lesson24');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L24：プロンプトエンジニアリング基礎</span></a>
+          <a href="#lessons" onclick="switchTab('lesson26');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L26：業種別AIロードマップ</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L26 ===== -->
+    <div class="tcon" id="tab-lesson26">
+      <div class="lc">
+        <div class="leye">CHAPTER 06 // LESSON 26</div>
+        <h1 class="ltit">業種別AIロードマップ<br>——あなたの職種での安全な活用と禁止事項</h1>
+        <div class="lmeta">
+          <span class="lmi">📖 読了時間：約20分</span>
+          <span class="lmi">🎯 難易度：中級</span>
+          <span class="lmi">🔐 Premium以上</span>
+        </div>
+        <div class="lb">
+
+          <h2>職種別に「何がOKで何がNGか」を明確にする</h2>
+          <p>AIツールの業務活用が進む中、「どこまでAIを使っていいのか」の基準が曖昧なまま運用されている企業が多い。このレッスンでは<strong>主要5職種・業種について、具体的なOK/NGの事例</strong>を整理する。</p>
+
+          <h2>営業・マーケティング職</h2>
+          <div class="dbox">
+            <div class="dbtit">// 営業・マーケティング職のAI活用指針</div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">提案書のドラフト生成・メール文案作成・架電スクリプト作成（実在顧客名を含めない）</span></div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">競合分析・市場トレンド調査・SNS投稿アイデア出し</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">顧客の氏名・連絡先・購買履歴をそのままプロンプトに入力</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">未公開の新製品情報・価格戦略をAIに入力して分析させる</span></div>
+          </div>
+
+          <h2>経理・財務職</h2>
+          <div class="dbox">
+            <div class="dbtit">// 経理・財務職のAI活用指針</div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">一般的な会計処理の確認・税制の概要理解・Excelマクロ生成支援</span></div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">数値を匿名化した上での財務分析フォーマット作成</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">実際の売上・利益・給与データを入力しての分析（個人情報保護・インサイダーリスク）</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">AIの税務・法務アドバイスをそのまま業務判断に使う（専門家確認必須）</span></div>
+          </div>
+
+          <h2>人事・総務職</h2>
+          <div class="dbox">
+            <div class="dbtit">// 人事・総務職のAI活用指針</div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">求人票・研修資料・社内規程ドラフトの作成支援</span></div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">一般的な労働法の概要確認・ハラスメント対応マニュアルの参考情報収集</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">社員の氏名・評価・給与・家族構成・病歴をAIに入力</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">採用選考でAIの評価をそのまま使う（差別・公平性の問題）</span></div>
+          </div>
+
+          <h2>医療・介護職</h2>
+          <div class="dbox">
+            <div class="dbtit">// 医療・介護職のAI活用指針</div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">一般的な医学情報の調査・書類作成支援・匿名化した事例のケーススタディ</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">患者の氏名・診断名・処方薬・病歴をAIに入力（個人情報保護法・医療情報）</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">薬の用量・相互作用の確認にAIを使い、医師・薬剤師確認を省略</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">AIのケアプラン提案をそのまま使う（ハルシネーションで事故リスク）</span></div>
+          </div>
+
+          <h2>士業（弁護士・税理士・社労士等）</h2>
+          <div class="dbox">
+            <div class="dbtit">// 士業のAI活用指針</div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">判例・法令の調査支援・契約書ドラフト作成の補助（必ず専門家が確認）</span></div>
+            <div class="dr"><span class="drl vg">✅ OK</span><span class="drv" style="color:var(--text3)">匿名化したケースでの法的論点の整理・文書の文章整形</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">依頼人の氏名・案件内容・財務情報をAIに入力（守秘義務違反のリスク）</span></div>
+            <div class="dr"><span class="drl vr">❌ NG</span><span class="drv" style="color:var(--text3)">AIの法的判断をそのまま依頼人に提供（資格者としての責任問題）</span></div>
+          </div>
+
+          <div class="co cg">
+            <div class="col">💡 全職種共通のルール3つ</div>
+            <strong>① 実名・実数値は入れない</strong>：匿名化・一般化してから入力<br>
+            <strong>② 専門判断の代替に使わない</strong>：法律・医療・財務の最終判断は専門家が行う<br>
+            <strong>③ 出力は「ドラフト」として扱う</strong>：AIの回答は必ず人間が確認・修正する
+          </div>
+
+          <div class="dbox" style="margin-top:40px">
+            <div class="dbtit">// 参考資料</div>
+            <div class="dr"><span class="drl">IPA「生成AIの業務利用に関するセキュリティガイドライン」</span><span class="drv"><a href="https://www.ipa.go.jp/security/ai" target="_blank" style="color:var(--blue);text-decoration:none">→ IPA</a></span></div>
+          </div>
+
+        </div>
+
+        <div class="hr"></div>
+        <div class="quiz">
+          <div class="qlbl">// 理解度チェック</div>
+          <div class="qq">経理担当者がAIを使って財務分析を行う際、正しい使い方はどれですか？</div>
+          <div class="qopts">
+            <button class="qopt" onclick="doQ(this,false,'q26')">実際の売上・利益データをそのまま入力して分析させる</button>
+            <button class="qopt" onclick="doQ(this,false,'q26')">AIが生成した税務アドバイスをそのまま申告に使う</button>
+            <button class="qopt" onclick="doQ(this,true,'q26')">数値を匿名化・一般化した上で分析フォーマットを作成し、実際の数値への当てはめは自分で行う</button>
+            <button class="qopt" onclick="doQ(this,false,'q26')">法人向けプランなら実データを入力しても問題ない</button>
+          </div>
+          <div class="qfb qfbok" id="q26-ok">✅ 正解です。実データの入力は個人情報保護・インサイダーリスクの観点から避けるべきです。AIはフォーマット作成や考え方の整理に使い、実数値の当てはめは人間が行うことで安全に活用できます。</div>
+          <div class="qfb qfbng" id="q26-ng">❌ 不正解です。法人向けプランでもデータ保護規約をよく確認する必要があります。実際の財務数値・個人情報はリスクがあります。AIを使う場合は匿名化・一般化してから入力し、最終判断は人間が行うことが原則です。</div>
+        </div>
+
+        <div class="completion-area">
+          <p>このレッスンの内容を確認しましたか？</p>
+          <button class="btn-complete" id="complete-lesson26" onclick="markComplete('lesson26')">✓ L26 を受講済みにする</button>
+          <div class="completion-note" id="note-lesson26"></div>
+        </div>
+        <div class="lnav">
+          <a href="#lessons" onclick="switchTab('lesson25');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L25：RAG・ファインチューニングのリスク</span></a>
+          <a href="#lessons" onclick="switchTab('lesson27');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L27：MCPとAIエージェント最前線</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== L27 ===== -->
+    <div class="tcon" id="tab-lesson27">
+      <div class="lc">
+        <div class="leye">CHAPTER 06 // LESSON 27</div>
+        <h1 class="ltit">MCPとAIエージェント最前線<br>——2025年以降のAI活用とセキュリティ</h1>
+        <div class="lmeta">
+          <span class="lmi">📖 読了時間：約20分</span>
+          <span class="lmi">🎯 難易度：上級</span>
+          <span class="lmi">🔐 Premium以上</span>
+        </div>
+        <div class="lb">
+
+          <h2>「答えるAI」から「働くAI」へ</h2>
+          <p>2025年は「AIエージェント元年」と呼ばれた。従来のChatGPTのような「質問に答えるAI」から、目標を与えられると<strong>自ら計画を立て・ツールを使い・タスクを完了する「自律的に働くAI」</strong>への転換が始まっている。L21でリスクを学んだが、このレッスンでは最新技術の仕組みとビジネスインパクトを深掘りする。</p>
+
+          <div class="dbox">
+            <div class="dbtit">// 普通のAIとAIエージェントの違い</div>
+            <div class="dr"><span class="drl"><strong>普通の生成AI</strong></span><span class="drv" style="color:var(--text3)">質問→1回の回答。受動的・テキストを返すだけ</span></div>
+            <div class="dr"><span class="drl"><strong>AIエージェント</strong></span><span class="drv" style="color:var(--text3)">目標→計画→ツール実行→確認→完成。能動的・外部システムを操作</span></div>
+          </div>
+
+          <h2>PAORサイクル——エージェントが「考えて動く」仕組み</h2>
+          <p>AIエージェントは以下のサイクルを繰り返してゴールに近づく：</p>
+
+          <div class="ccase">
+            <div class="cchd"><span class="ctg" style="background:var(--blue-l);color:var(--blue)">PAORサイクル</span></div>
+            <ul class="slist" style="margin-top:8px">
+              <li><span class="snum" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,.25)">P</span><span><strong>Plan（計画）</strong>：目標を分解して実行ステップを立案する</span></li>
+              <li><span class="snum" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,.25)">A</span><span><strong>Act（実行）</strong>：ツールを呼び出して実際に操作する</span></li>
+              <li><span class="snum" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,.25)">O</span><span><strong>Observe（観測）</strong>：実行結果を確認・評価する</span></li>
+              <li><span class="snum" style="background:var(--blue-l);color:var(--blue);border-color:rgba(37,99,235,.25)">R</span><span><strong>Reflect（反省）</strong>：結果が不十分なら計画を修正して再実行する</span></li>
+            </ul>
+          </div>
+
+          <h2>MCP（Model Context Protocol）とは</h2>
+          <p>MCP（Model Context Protocol）とは、<strong>AIと外部ツール・データを接続する共通規格</strong>だ。Anthropicが2024年に発表し、急速に普及している。一言で言えば「AIのUSB-C」——規格を統一することで、あらゆるAIとあらゆるツールを接続できるようになった。</p>
+
+          <div class="co cb">
+            <div class="col">🔑 MCPが解決した「NxM問題」</div>
+            MCPが登場する前は、<strong>N個のAIアプリ × M個のツール = N×M個の個別実装</strong>が必要だった。MCPは1つの共通規格でこれを解決。AIを変えても、ツールを変えても、接続の仕組みを作り直す必要がなくなった。
+          </div>
+
+          <div class="dbox">
+            <div class="dbtit">// MCPの3層構造</div>
+            <div class="dr"><span class="drl"><strong>MCPホスト</strong></span><span class="drv" style="color:var(--text3)">ユーザーが操作するAIアプリ（Claude Desktop・ChatGPT等）</span></div>
+            <div class="dr"><span class="drl"><strong>MCPクライアント</strong></span><span class="drv" style="color:var(--text3)">接続管理・認証・通信の翻訳を担うモジュール</span></div>
+            <div class="dr"><span class="drl"><strong>MCPサーバー</strong></span><span class="drv" style="color:var(--text3)">外部ツール・データベース・APIを提供する側</span></div>
+          </div>
+
+          <h2>A2A（Agent to Agent）——エージェント同士の連携</h2>
+          <p>A2A（Agent to Agent）とは、<strong>AIエージェント同士が互いに通信・協調して複雑なタスクを分担する</strong>仕組みだ。例えば「リサーチエージェント」が情報を集め、「分析エージェント」が整理し、「報告書エージェント」が文書化するという連携が自動で行われる。</p>
+
+          <div class="co cr">
+            <div class="col">⚠️ MCP・A2A時代のセキュリティリスク</div>
+            <strong>① 接続範囲の拡大＝攻撃面の拡大</strong><br>
+            MCPで多くのツールに接続するほど、1つの脆弱性が全ツールへの侵入口になるリスクが高まる。<br><br>
+            <strong>② エージェント間の信頼連鎖の悪用</strong><br>
+            A2Aで連携するエージェントの1つが侵害されると、それを信頼している他のエージェントにも悪意ある命令が伝播する「信頼連鎖攻撃」のリスクがある。<br><br>
+            <strong>③ 操作ログの複雑化</strong><br>
+            複数のエージェントが連携して操作を行うと、「何がどのエージェントによって実行されたか」の追跡が困難になり、インシデント調査が複雑化する。
+          </div>
+
+          <h2>Function Calling——責任分界の原則</h2>
+          <p>AIエージェントがツールを呼び出す際の基本原則として、<strong>「モデル＝選択と推論のみ担当」「アプリ＝実行と統制を担当」</strong>という責任分界が重要だ。</p>
+
+          <div class="ccase" style="border-left:3px solid var(--green)">
+            <div class="cchd"><span class="ctg" style="background:var(--green-l);color:var(--green)">安全な設計原則</span></div>
+            <ul class="slist" style="margin-top:8px">
+              <li><span class="snum">1</span><span><strong>AIはツール選択のみ判断</strong>し、実際の実行はアプリ側が権限確認・承認・ログ記録を行ってから実施する</span></li>
+              <li><span class="snum">2</span><span><strong>重要な操作（送金・削除・外部送信）には人間の承認ゲート</strong>を設ける</span></li>
+              <li><span class="snum">3</span><span><strong>全操作のログを記録</strong>し、どのエージェントが何をいつ実行したか追跡可能にする</span></li>
+            </ul>
+          </div>
+
+          <div class="dbox" style="margin-top:40px">
+            <div class="dbtit">// 参考資料</div>
+            <div class="dr"><span class="drl">Anthropic「Model Context Protocol」</span><span class="drv"><a href="https://www.anthropic.com/news/model-context-protocol" target="_blank" style="color:var(--blue);text-decoration:none">→ Anthropic</a></span></div>
+            <div class="dr"><span class="drl">OWASP「Top 10 for LLM Applications」</span><span class="drv"><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" target="_blank" style="color:var(--blue);text-decoration:none">→ OWASP</a></span></div>
+          </div>
+
+        </div>
+
+        <div class="hr"></div>
+        <div class="quiz">
+          <div class="qlbl">// 理解度チェック</div>
+          <div class="qq">MCP（Model Context Protocol）が解決した主な問題はどれですか？</div>
+          <div class="qopts">
+            <button class="qopt" onclick="doQ(this,false,'q27')">AIのハルシネーション（幻覚）を防ぐための規格</button>
+            <button class="qopt" onclick="doQ(this,false,'q27')">AIが日本語を正確に処理するための言語規格</button>
+            <button class="qopt" onclick="doQ(this,true,'q27')">AIアプリと外部ツールを接続するために必要だった「N×M個の個別実装」を、1つの共通規格で解決した</button>
+            <button class="qopt" onclick="doQ(this,false,'q27')">AIエージェント同士が通信するためのセキュリティ規格</button>
+          </div>
+          <div class="qfb qfbok" id="q27-ok">✅ 正解です。MCPはN個のAIアプリとM個のツールの接続に「N×M個の個別実装」が必要だった問題を、1つの共通規格で解決しました。「AIのUSB-C」と例えると理解しやすいです。</div>
+          <div class="qfb qfbng" id="q27-ng">❌ 不正解です。MCPはAIと外部ツール・データの「接続規格の標準化」のための規格です。N個のAIとM個のツールを接続するために従来必要だったN×M個の個別実装を、1つの共通インターフェースで解決することがMCPの本質です。</div>
+        </div>
+
+        <div class="completion-area">
+          <p>このレッスンの内容を確認しましたか？</p>
+          <button class="btn-complete" id="complete-lesson27" onclick="markComplete('lesson27')">✓ L27 を受講済みにする</button>
+          <div class="completion-note" id="note-lesson27"></div>
+        </div>
+        <div class="lnav">
+          <a href="#lessons" onclick="switchTab('lesson26');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L26：業種別AIロードマップ</span></a>
           <a href="#lessons" onclick="switchTab('certificate');return false;" class="lnbtn" style="text-align:right"><span class="lnt">🎉 修了証を取得する</span></a>
         </div>
       </div>
@@ -3276,16 +3792,16 @@
       <div class="cert-wrap">
         <div class="cert-icon">🎓</div>
         <h1 class="cert-title">修了証を取得する</h1>
-        <p class="cert-desc">全22レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、担当者より修了証PDFをメールでお送りします。</p>
+        <p class="cert-desc">全27レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、担当者より修了証PDFをメールでお送りします。</p>
         <div class="cert-progress-box">
           <div class="cert-progress-label">受講進捗</div>
           <div class="cert-bar"><div class="cert-bar-fill" id="cert-bar-fill" style="width:0%"></div></div>
-          <div class="cert-progress-count"><span id="cert-count">0</span> / 22 レッスン完了（L01〜L22）</div>
+          <div class="cert-progress-count"><span id="cert-count">0</span> / 27 レッスン完了（L01〜L22）</div>
         </div>
         <div class="cert-form-box">
           <div class="cert-form-title">修了証 発行申請フォーム</div>
           <div class="cert-form-desc">以下を入力して申請してください。全レッスン受講済みの場合のみ送信できます。</div>
-          <div id="cert-locked-notice" class="cert-locked-notice">⚠️ L01〜L22のすべてを受講済みにしてから申請してください。</div>
+          <div id="cert-locked-notice" class="cert-locked-notice">⚠️ L01〜L27のすべてを受講済みにしてから申請してください。</div>
           <div class="form-field"><label>会社名<span style="font-size:11px;color:#999;margin-left:6px">（任意）</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方は空欄でOK）"></div>
           <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
           <div class="form-field"><label>メールアドレス<span style="color:var(--red)">*</span></label><input type="email" id="cert-email" placeholder="you@example.com"></div>
@@ -3310,7 +3826,7 @@
         <div class="pcprice">¥9,800</div>
         <div class="pcperiod">買い切り・税込</div>
         <ul class="pcf">
-          <li>全22レッスンへのアクセス</li>
+          <li>全27レッスンへのアクセス</li>
           <li>各章末 理解度テスト</li>
           <li>AI利用ガイドラインテンプレート（DL）</li>
           <li>コンテンツ更新通知</li>
@@ -3323,7 +3839,7 @@
         <div class="pcprice">¥39,800</div>
         <div class="pcperiod">買い切り・税込</div>
         <ul class="pcf">
-          <li>全22レッスンへのアクセス</li>
+          <li>全27レッスンへのアクセス</li>
           <li>各章末 理解度テスト</li>
           <li>修了証PDF発行（会社名・氏名入り）</li>
           <li>AI利用ガイドラインテンプレート（DL）</li>
@@ -3337,7 +3853,7 @@
         <div class="pcprice">¥98,000</div>
         <div class="pcperiod">買い切り・税込</div>
         <ul class="pcf">
-          <li>全22レッスンへのアクセス</li>
+          <li>全27レッスンへのアクセス</li>
           <li>各章末 理解度テスト</li>
           <li>修了証PDF発行（会社名・氏名入り）</li>
           <li>AI利用ガイドラインテンプレート（DL）</li>
@@ -3364,7 +3880,7 @@
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:32px">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
         <span style="font-size:14px;font-weight:700">全体進捗</span>
-        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green)" id="dash-count">0 / 22</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green)" id="dash-count">0 / 27</span>
       </div>
       <div style="background:var(--border);border-radius:100px;height:10px;overflow:hidden">
         <div id="dash-bar" style="background:var(--green);height:100%;border-radius:100px;transition:width .5s;width:0%"></div>
@@ -3452,9 +3968,9 @@ function openFormModal(plan){
   document.getElementById('form-plan-label').textContent = labels[plan] || plan;
   // 最終確認テーブルを更新
   const priceLabels = {
-    'ベーシック 9800円':    'BASICプラン（全22レッスン）',
-    'スタンダード 39800円': 'STANDARDプラン（全22レッスン＋コンサルティング1h）',
-    'プレミアム 98000円':   'PREMIUMプラン（全22レッスン＋コンサルティング3h＋個別サポート）'
+    'ベーシック 9800円':    'BASICプラン（全27レッスン）',
+    'スタンダード 39800円': 'STANDARDプラン（全27レッスン＋コンサルティング1h）',
+    'プレミアム 98000円':   'PREMIUMプラン（全27レッスン＋コンサルティング3h＋個別サポート）'
   };
   const priceTags = {
     'ベーシック 9800円':    '¥9,800（税込）',
@@ -3989,7 +4505,7 @@ window.closeFormModal  = closeFormModal;
 window.submitForm      = submitForm;
 
 /* ===== 受講済み管理・修了証 ===== */
-const ALL_LESSONS_LIST = ['lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17','lesson18','lesson19','lesson20','lesson21','lesson22'];
+const ALL_LESSONS_LIST = ['lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17','lesson18','lesson19','lesson20','lesson21','lesson22','lesson23','lesson24','lesson25','lesson26','lesson27'];
 
 function loadCompleted(){
   try{
@@ -4057,7 +4573,7 @@ async function submitCertificate(){
   if(!name||!email){ msg.className='form-msg error'; msg.textContent='氏名・メールアドレスは必須です。'; msg.style.display='block'; return; }
   const btn = document.getElementById('cert-submit-btn');
   btn.disabled=true; btn.textContent='送信中...';
-  const params = new URLSearchParams({'会社名':company,'担当者名':name,'メールアドレス':email,'プラン':'修了証申請','請求書払い':'修了証発行申請','備考':'全22レッスン受講完了','申込日':new Date().toLocaleDateString('ja-JP')});
+  const params = new URLSearchParams({'会社名':company,'担当者名':name,'メールアドレス':email,'プラン':'修了証申請','請求書払い':'修了証発行申請','備考':'全27レッスン受講完了','申込日':new Date().toLocaleDateString('ja-JP')});
   fetch('https://script.google.com/macros/s/AKfycbxzuTg3WqsIsByqM8LGUgLoA7uZxn_15VQI4FZjmiMCDjT79rNznxtYT0DKm26EAzx3/exec?'+params.toString(),{method:'GET',mode:'no-cors'});
   msg.className='form-msg success'; msg.textContent='申請を受け付けました！担当者より修了証PDFをメールでお送りします。'; msg.style.display='block';
   btn.textContent='申請完了 ✓';
@@ -4413,7 +4929,12 @@ const LESSON_LABELS = {
   'lesson19':'L19：プロンプトインジェクション攻撃',
   'lesson20':'L20：ディープフェイクと音声詐欺',
   'lesson21':'L21：AIエージェント・自動化ツールのリスク',
-  'lesson22':'L22：インシデント対応ロールプレイ'
+  'lesson22':'L22：インシデント対応ロールプレイ',
+  'lesson23':'L23：LLMの仕組み入門',
+  'lesson24':'L24：プロンプトエンジニアリング基礎',
+  'lesson25':'L25：RAG・ファインチューニングのリスク',
+  'lesson26':'L26：業種別AIロードマップ',
+  'lesson27':'L27：MCPとAIエージェント最前線'
 };
 
 function updateDashboard(){
