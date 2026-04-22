@@ -364,6 +364,44 @@
   .guide-btn-secondary{background:var(--bg2);color:var(--text2);border:1px solid var(--border2)}
   .guide-btn-secondary:hover{border-color:var(--text3)}
   @media(max-width:768px){#how-to-use{padding:72px 20px 40px}.guide-steps{grid-template-columns:1fr 1fr}}
+
+  /* ===== 使い方ガイドモーダル ===== */
+  #guide-modal-overlay{
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:rgba(15,23,42,.6);backdrop-filter:blur(4px);
+    align-items:center;justify-content:center;padding:20px;
+  }
+  #guide-modal-overlay.show{display:flex}
+  #guide-modal{
+    background:var(--bg);border:1px solid var(--border);
+    border-radius:16px;width:100%;max-width:680px;
+    padding:36px 32px;position:relative;
+    box-shadow:0 24px 64px rgba(0,0,0,.2);
+    max-height:90vh;overflow-y:auto;
+  }
+  body.dark #guide-modal{background:var(--bg2)}
+  #guide-modal-close{
+    position:absolute;top:14px;right:16px;
+    background:none;border:none;font-size:20px;
+    cursor:pointer;color:var(--text4);line-height:1;padding:4px;
+  }
+  #guide-modal-close:hover{color:var(--text)}
+  .gm-eye{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--red);letter-spacing:.18em;margin-bottom:10px}
+  .gm-title{font-family:'Noto Serif JP',serif;font-size:22px;font-weight:700;margin-bottom:6px}
+  .gm-sub{font-size:14px;color:var(--text3);line-height:1.8;margin-bottom:28px}
+  .gm-steps{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+  .gm-step{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 16px;position:relative;overflow:hidden}
+  .gm-step-num{font-family:'Barlow',sans-serif;font-size:40px;font-weight:800;color:var(--red);opacity:.1;position:absolute;top:10px;right:14px;line-height:1}
+  .gm-step-icon{font-size:24px;margin-bottom:10px}
+  .gm-step-title{font-size:13px;font-weight:700;margin-bottom:5px}
+  .gm-step-desc{font-size:12px;color:var(--text3);line-height:1.8}
+  .gm-plan-section{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:24px}
+  .gm-plan-title{font-size:12px;font-weight:700;margin-bottom:12px;color:var(--text2)}
+  .gm-plan-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+  .gm-plan-row:last-child{border-bottom:none}
+  .gm-plan-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700;flex-shrink:0;font-family:'IBM Plex Mono',monospace}
+  .gm-cta{display:flex;gap:10px;flex-wrap:wrap}
+  @media(max-width:560px){.gm-steps{grid-template-columns:1fr}}
   @media(max-width:480px){.guide-steps{grid-template-columns:1fr}}
 
 
@@ -1114,12 +1152,75 @@
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="switchTab('certificate');document.getElementById('lessons').scrollIntoView({behavior:'smooth'});return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/27</button>
+    <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
 </nav>
 <div id="nav-progress-bar"><div id="nav-progress-fill"></div></div>
 
-<!-- ===== 使い方ガイド（ログイン時） ===== -->
+<!-- ===== 使い方ガイドモーダル ===== -->
+<div id="guide-modal-overlay" onclick="if(event.target===this)closeGuideModal()">
+  <div id="guide-modal">
+    <button id="guide-modal-close" onclick="closeGuideModal()">✕</button>
+    <div class="gm-eye">// HOW TO USE</div>
+    <h2 class="gm-title">AI Security Lab の使い方</h2>
+    <p class="gm-sub">全27レッスンを通じて、生成AIを安全に使うための知識を身につけましょう。</p>
+
+    <div class="gm-steps">
+      <div class="gm-step">
+        <div class="gm-step-num">1</div>
+        <div class="gm-step-icon">📖</div>
+        <div class="gm-step-title">レッスンを受講する</div>
+        <div class="gm-step-desc">左のサイドバーからレッスンを選択。序章・L01は無料、L02以降はログイン後に閲覧できます。</div>
+      </div>
+      <div class="gm-step">
+        <div class="gm-step-num">2</div>
+        <div class="gm-step-icon">❓</div>
+        <div class="gm-step-title">理解度チェックに答える</div>
+        <div class="gm-step-desc">各レッスン末尾のクイズに正解すると「受講済み」ボタンが押せるようになります。</div>
+      </div>
+      <div class="gm-step">
+        <div class="gm-step-num">3</div>
+        <div class="gm-step-icon">✅</div>
+        <div class="gm-step-title">受講済みにする</div>
+        <div class="gm-step-desc">「受講済みにする」ボタンを押すと進捗に記録されます。別端末でも引き継がれます。</div>
+      </div>
+      <div class="gm-step">
+        <div class="gm-step-num">4</div>
+        <div class="gm-step-icon">🎓</div>
+        <div class="gm-step-title">修了証を取得する</div>
+        <div class="gm-step-desc">全レッスン完了後に修了証を申請できます。PDFをメールでお送りします。</div>
+      </div>
+    </div>
+
+    <div class="gm-plan-section">
+      <div class="gm-plan-title">🔓 プランとアクセス範囲</div>
+      <div class="gm-plan-row">
+        <span class="gm-plan-badge" style="background:var(--green-l);color:var(--green);border:1px solid rgba(22,163,74,.2)">無料</span>
+        <span>序章・L01のみ閲覧可能</span>
+      </div>
+      <div class="gm-plan-row">
+        <span class="gm-plan-badge" style="background:var(--bg3);color:var(--text3);border:1px solid var(--border)">Basic</span>
+        <span>L01〜L17（第1章〜第5章）全17レッスン</span>
+      </div>
+      <div class="gm-plan-row">
+        <span class="gm-plan-badge" style="background:#e0f2fe;color:#0369a1;border:1px solid rgba(3,105,161,.2)">Standard</span>
+        <span>Basic + L18〜L22（第6章）AI攻撃手口と防衛策</span>
+      </div>
+      <div class="gm-plan-row">
+        <span class="gm-plan-badge" style="background:#ede9fe;color:#6d28d9;border:1px solid rgba(109,40,217,.2)">Premium</span>
+        <span>Standard + L23〜L27（第7章）AI技術の深層</span>
+      </div>
+    </div>
+
+    <div class="gm-cta">
+      <button class="guide-btn guide-btn-primary" onclick="closeGuideModal();goLesson('intro')">▶ レッスンを始める</button>
+      <button class="guide-btn guide-btn-secondary" onclick="closeGuideModal()">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 使い方ガイド（ログイン時・旧） ===== -->
 <div id="how-to-use">
   <div class="guide-wrap">
     <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.18em;margin-bottom:14px">// HOW TO USE</div>
@@ -4842,6 +4943,8 @@ window.switchTab = function(name){
   }
 };
 window.toggleCh        = toggleCh;
+window.openGuideModal  = function(){ document.getElementById('guide-modal-overlay').classList.add('show'); };
+window.closeGuideModal = function(){ document.getElementById('guide-modal-overlay').classList.remove('show'); };
 window.doQ             = doQ;
 window.openAuthModal   = openAuthModal;
 window.closeAuthModal  = closeAuthModal;
