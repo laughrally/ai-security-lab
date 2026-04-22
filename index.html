@@ -5645,6 +5645,164 @@ window.unlockCompleteBtn = unlockCompleteBtn;
 document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); });
 setTimeout(()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); }, 800);
 
+
+
+// ===== 認定試験UI =====
+let examState = {
+  active: false,
+  answers: {},   // index: 選択肢番号
+  timer: null,
+  remaining: 3600, // 60分
+  submitted: false,
+};
+
+function fmtTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+function startExam(){
+  if(currentUserPlan !== 'premium'){
+    alert('認定試験はPremiumプランの受講者のみ受験できます。');
+    return;
+  }
+  const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
+  if(!confirmed) return;
+  examState.active = true;
+  examState.answers = {};
+  examState.remaining = 3600;
+  examState.submitted = false;
+  renderExam();
+  startExamTimer();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function startExamTimer(){
+  if(examState.timer) clearInterval(examState.timer);
+  examState.timer = setInterval(() => {
+    examState.remaining--;
+    const timerEl = document.getElementById('examTimer');
+    if(timerEl) timerEl.textContent = fmtTime(examState.remaining);
+    if(examState.remaining <= 0){
+      clearInterval(examState.timer);
+      submitExam();
+    }
+  }, 1000);
+}
+
+function renderExam(){
+  const container = document.getElementById('examContainer');
+  if(!container) return;
+  let html = `
+    <div style="position:sticky;top:0;background:var(--bg);padding:16px 0;border-bottom:2px solid var(--purple);z-index:10;margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <div style="font-weight:700;font-size:18px">🏆 AI Security Lab 認定試験</div>
+        <div style="display:flex;gap:16px;align-items:center">
+          <div style="font-weight:700;color:var(--purple)">⏰ <span id="examTimer">${fmtTime(examState.remaining)}</span></div>
+          <button onclick="submitExam()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
+        </div>
+      </div>
+    </div>
+  `;
+  EXAM_QUESTIONS.forEach((q, i) => {
+    html += `<div style="margin-bottom:32px;padding:20px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">問題 ${i+1} / ${EXAM_QUESTIONS.length}　[${q.lesson}]</div>
+      <div style="font-weight:700;margin-bottom:16px;line-height:1.6">${q.q}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">`;
+    q.o.forEach((opt, j) => {
+      const selected = examState.answers[i] === j;
+      html += `<label style="display:flex;align-items:center;gap:12px;padding:12px;border:2px solid ${selected ? 'var(--purple)' : 'var(--border)'};border-radius:8px;cursor:pointer;background:${selected ? 'rgba(124,58,237,0.05)' : 'transparent'}">
+        <input type="radio" name="q${i}" value="${j}" ${selected ? 'checked' : ''} onchange="selectAnswer(${i},${j})" style="cursor:pointer">
+        <span>${opt}</span>
+      </label>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `<div style="text-align:center;margin:40px 0">
+    <button onclick="submitExam()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:16px 48px;font-size:16px;font-weight:700;cursor:pointer">✅ 試験を提出する</button>
+  </div>`;
+  container.innerHTML = html;
+  container.style.display = 'block';
+  const introEl = document.getElementById('examIntro');
+  if(introEl) introEl.style.display = 'none';
+}
+
+function selectAnswer(qIdx, optIdx){
+  examState.answers[qIdx] = optIdx;
+  renderExam();
+}
+
+function submitExam(){
+  const answered = Object.keys(examState.answers).length;
+  if(answered < EXAM_QUESTIONS.length){
+    const unanswered = EXAM_QUESTIONS.length - answered;
+    if(!confirm(`${unanswered}問が未回答です。このまま提出しますか？`)) return;
+  }
+  if(examState.timer) clearInterval(examState.timer);
+  examState.submitted = true;
+  examState.active = false;
+  let correct = 0;
+  const results = EXAM_QUESTIONS.map((q, i) => {
+    const userAns = examState.answers[i];
+    const isCorrect = userAns === q.a;
+    if(isCorrect) correct++;
+    return {q, userAns, isCorrect, idx:i};
+  });
+  const passed = correct >= 48;
+  renderExamResult(correct, results, passed);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function renderExamResult(correct, results, passed){
+  const container = document.getElementById('examContainer');
+  if(!container) return;
+  const pct = Math.round(correct / EXAM_QUESTIONS.length * 100);
+  let html = `
+    <div style="text-align:center;padding:40px 20px;background:${passed ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};border:2px solid ${passed ? '#22c55e' : 'var(--red)'};border-radius:16px;margin-bottom:32px">
+      <div style="font-size:64px;margin-bottom:16px">${passed ? '🎉' : '😢'}</div>
+      <div style="font-size:28px;font-weight:700;margin-bottom:8px;color:${passed ? '#22c55e' : 'var(--red)'}">${passed ? '合格' : '不合格'}</div>
+      <div style="font-size:20px;margin-bottom:16px">${correct} / ${EXAM_QUESTIONS.length} 問正解（${pct}%）</div>
+      <div style="color:var(--muted);font-size:14px">合格ライン: 48問以上（80%）</div>
+      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
+    </div>
+    <div style="font-weight:700;font-size:18px;margin-bottom:16px">📋 全問題の解答と解説</div>
+  `;
+  results.forEach((r, idx) => {
+    const bg = r.isCorrect ? 'rgba(34,197,94,0.05)' : 'rgba(239,68,68,0.05)';
+    const bc = r.isCorrect ? '#22c55e' : 'var(--red)';
+    html += `<div style="margin-bottom:16px;padding:16px;background:${bg};border-left:4px solid ${bc};border-radius:8px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">問題 ${idx+1} [${r.q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
+      <div style="font-weight:700;margin-bottom:8px">${r.q.q}</div>
+      <div style="font-size:14px;margin-bottom:4px"><strong>あなたの解答:</strong> ${r.userAns !== undefined ? r.q.o[r.userAns] : '未回答'}</div>
+      <div style="font-size:14px;margin-bottom:8px;color:#22c55e"><strong>正解:</strong> ${r.q.o[r.q.a]}</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6"><strong>解説:</strong> ${r.q.e}</div>
+    </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function retryExam(){
+  examState = { active:false, answers:{}, timer:null, remaining:3600, submitted:false };
+  const container = document.getElementById('examContainer');
+  if(container) container.style.display = 'none';
+  const introEl = document.getElementById('examIntro');
+  if(introEl) introEl.style.display = 'block';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function requestCertificate(){
+  const email = currentUser ? currentUser.email : '';
+  const subject = encodeURIComponent('AI Security Lab 認定試験 合格 - 修了証発行申請');
+  const body = encodeURIComponent(`AI Security Lab 認定試験に合格しましたので、修了証の発行を申請します。\n\n受講者メール: ${email}\n\n※会社名・氏名を以下にご記入ください。\n会社名: \nお名前: `);
+  window.location.href = `mailto:info@laughrally.tech?subject=${subject}&body=${body}`;
+}
+
+window.startExam = startExam;
+window.submitExam = submitExam;
+window.selectAnswer = selectAnswer;
+window.retryExam = retryExam;
+window.requestCertificate = requestCertificate;
+
 </script>
 </body>
 </html>
