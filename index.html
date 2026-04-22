@@ -951,6 +951,13 @@
 
   /* 既存要素の上書き・非表示 */
   .tabs-wrap.hidden { display: none; }
+
+  /* ===== 認定試験CSS ===== */
+  .exam-opt:hover { border-color: var(--border2) !important; background: var(--bg2) !important; }
+  @media(max-width:600px){
+    .exam-q { padding: 16px 14px !important; }
+    .exam-opt { font-size: 13px !important; padding: 10px 12px !important; }
+  }
   #lesson-layout { display: block !important; }
   #lesson-sidenav { display: none !important; }
   #lesson-main { padding: 0; }
@@ -4257,6 +4264,7 @@
         </div>
         <div class="lnav">
           <a href="#lessons" onclick="switchTab('lesson26');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">L26：業種別AIロードマップ</span></a>
+          <a href="#" onclick="startExam();return false;" class="lnbtn" style="text-align:right;background:var(--purple);border-color:var(--purple)"><span class="lnt" style="color:#fff">🏆 認定試験を受験する</span></a>
           <a href="#lessons" onclick="switchTab('certificate');return false;" class="lnbtn" style="text-align:right"><span class="lnt">🎉 修了証を取得する</span></a>
         </div>
       </div>
@@ -4264,6 +4272,38 @@
 
 
     <!-- ===== 修了証ページ ===== -->
+    <!-- 認定試験tcon -->
+    <div class="tcon" id="tab-exam">
+      <div class="lc">
+        <div style="padding:40px 0 24px">
+          <div class="leye">// CERTIFICATION EXAM</div>
+          <h1 class="ltit">AI Security Lab 認定試験</h1>
+          <div style="display:flex;flex-wrap:wrap;gap:12px;margin:20px 0 32px">
+            <span style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px">📋 60問</span>
+            <span style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px">⏱ 制限時間60分</span>
+            <span style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px">🎯 80%以上（48問）で合格</span>
+            <span style="background:var(--purple-l);border:1px solid var(--purple);border-radius:6px;padding:6px 14px;font-size:13px;color:var(--purple)">🔒 Premiumプラン限定</span>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:32px">
+            <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">受験前に確認してください</h3>
+            <ul style="font-size:14px;color:var(--text2);line-height:2;list-style:none;padding:0">
+              <li>✅ L01〜L27の全27レッスンを受講済みにしてから受験することを推奨します</li>
+              <li>✅ 試験開始後は60分のカウントダウンが始まります</li>
+              <li>✅ 途中で中断しても時間は進みます</li>
+              <li>✅ 提出後に全問の正誤と解説が表示されます</li>
+              <li>✅ 不合格でも再受験できます</li>
+            </ul>
+          </div>
+          <div style="text-align:center">
+            <button onclick="startExam()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:18px 56px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 20px rgba(124,58,237,.3)">
+              🏆 試験を開始する
+            </button>
+            <p style="font-size:12px;color:var(--text4);margin-top:12px">開始確認ダイアログが表示されます</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="tcon" id="tab-certificate">
       <div class="cert-wrap">
         <div class="cert-icon">🎓</div>
@@ -4973,6 +5013,11 @@ function switchTab(name){
     openAuthModal();
     return;
   }
+  // examタブはPremiumのみ
+  if(name === 'exam' && currentUser && currentUserPlan !== 'premium'){
+    alert('認定試験はPremiumプランの受講者のみ受験できます。');
+    return;
+  }
   // プランチェック
   if(currentUser){
     const plan = currentUserPlan || 'basic';
@@ -5169,6 +5214,307 @@ function updateCompletionUI(){
   if(progFill) progFill.style.width = pct + '%';
 }
 
+
+// ===== 認定試験データ（60問・4択） =====
+const EXAM_QUESTIONS = [
+  // L01
+  {lesson:'L01',q:'ChatGPTの無料版（Plus未加入）でデータ学習をオフにしていない場合、入力した情報はどうなるか？',o:['即時削除される','OpenAIのモデル改善に使われる可能性がある','日本の法律により保護される','企業秘密として扱われる'],a:1,e:'無料版でデータ学習をオフにしていない場合、入力内容がOpenAIのモデル改善に利用される可能性があります。'},
+  {lesson:'L01',q:'「ChatGPT Team」プランでデータ学習がオフになる条件として正しいものはどれか？',o:['自動的にオフになる','管理者が設定でオフにする必要がある','ユーザーが毎回リセットする必要がある','日本国内では常にオフ'],a:0,e:'ChatGPT TeamおよびEnterpriseプランは、デフォルトでデータ学習がオフになっています。'},
+  // L02
+  {lesson:'L02',q:'「学習オフ」設定をしてもなお残るリスクとして正しいものはどれか？',o:['入力データがサーバーに送信される','会話履歴が一時的にサーバーに残る','AIが回答を生成する際に社内システムに接触する','設定が自動で元に戻る'],a:1,e:'学習オフにしても、会話データはAPIの処理やセキュリティ監視のためにサーバーに一時保存されます。完全な非送信にはなりません。'},
+  {lesson:'L02',q:'ChatGPTで「チャット履歴とトレーニング」をオフにした場合の正しい説明はどれか？',o:['入力データがOpenAIに送信されなくなる','30日後に会話データが削除される','過去の会話が一切残らない','他のユーザーと会話が共有される'],a:1,e:'設定をオフにすると、新しいチャットは履歴に保存されなくなり、データは30日後に削除されます。'},
+  // L03
+  {lesson:'L03',q:'「シャドーAI」とは何か？',o:['公式に導入されたAIツールの総称','会社の許可なく従業員が業務に使うAI','AIが自律的に行動する状態','サイバー攻撃に使われるAI'],a:1,e:'シャドーAIとは、企業の許可・管理なしに従業員が個人的にAIツールを業務利用する行為です。シャドーITの生成AI版です。'},
+  {lesson:'L03',q:'シャドーAIが特に危険な理由として最も適切なものはどれか？',o:['AIの性能が低い','会社が情報漏洩を把握できない','コストがかかりすぎる','社員のスキルが上がりすぎる'],a:1,e:'管理外のAIに機密情報が入力されても、会社側はそれを把握できません。インシデント発生時の対応も遅れます。'},
+  // L04
+  {lesson:'L04',q:'クラウドAIとオンプレAIの最大の違いは何か？',o:['処理速度','データの保管・管理場所','UIのデザイン','サポート体制'],a:1,e:'クラウドAIはデータが外部サーバーで処理されますが、オンプレAIは自社サーバー内で完結します。'},
+  {lesson:'L04',q:'中小企業がオンプレAIを導入する際の主なデメリットとして正しいものはどれか？',o:['データが外部に出る','初期コストと保守コストが高い','性能が著しく低い','法律で禁止されている'],a:1,e:'オンプレAIは初期導入費用・サーバー維持費・専門人材が必要なため、中小企業には大きな負担となります。'},
+  // L05
+  {lesson:'L05',q:'ChatGPT Businessプランの主な特徴として正しいものはどれか？',o:['個人利用専用','データ学習がデフォルトでオフ','無料で使える','日本語非対応'],a:1,e:'ChatGPT Business（旧Team）プランはデータ学習がデフォルトでオフになっており、企業利用に適したプランです。'},
+  {lesson:'L05',q:'ChatGPT無料版を業務で使う場合のリスクとして最も適切なものはどれか？',o:['回答の質が低すぎる','入力内容がモデル改善に使われる可能性がある','社員が依存しすぎる','接続速度が遅い'],a:1,e:'無料版はデフォルトでデータ学習がオンのため、業務上の機密情報を入力すると学習データになる可能性があります。'},
+  // L06
+  {lesson:'L06',q:'Microsoft Copilot（M365）のセキュリティ上の特徴として正しいものはどれか？',o:['データがOpenAIに送られる','既存のM365セキュリティポリシーが適用される','無条件でデータが外部共有される','個人情報保護法の対象外'],a:1,e:'Copilot for M365は既存のMicrosoftセキュリティ・コンプライアンスポリシーの範囲内で動作します。'},
+  {lesson:'L06',q:'Claudeの利用規約上、企業利用時にデータ学習を無効化するために必要なものはどれか？',o:['無料プランで自動的に無効化される','API利用またはTeamsプランへの加入','日本語での利用申請','政府機関の認証'],a:1,e:'ClaudeはAPI利用やTeams/Enterpriseプランでデータ学習がオフになります。無料版は対象外です。'},
+  // L07
+  {lesson:'L07',q:'AIに入力してはいけない情報として「個人情報」に該当するものはどれか？',o:['製品の一般的な説明','顧客の氏名・住所・電話番号','業界全体の統計データ','公開されているプレスリリース'],a:1,e:'氏名・住所・電話番号などは個人情報保護法上の「個人情報」に該当し、無断でAIに入力することはリスクがあります。'},
+  {lesson:'L07',q:'「社外秘」に分類すべき情報として最も適切なものはどれか？',o:['会社の住所','未発表の新製品情報','代表取締役の氏名','営業時間'],a:1,e:'未発表の製品情報は競合他社に知られると損害が生じる可能性があり、社外秘として扱うべき情報です。'},
+  // L08
+  {lesson:'L08',q:'不動産業でAIを使う際に特に注意すべき情報として正しいものはどれか？',o:['物件の一般的な間取り','顧客の収入情報や家族構成','地域の相場価格','建物の築年数'],a:1,e:'収入情報や家族構成は個人情報として厳重に管理が必要であり、AIへの無断入力は個人情報保護法違反のリスクがあります。'},
+  {lesson:'L08',q:'介護事業者がAIを活用する際のリスクとして最も注意すべきものはどれか？',o:['AIが感情を持つリスク','利用者の健康情報・介護記録の漏洩','スタッフのAI依存','サービス品質の低下'],a:1,e:'介護記録には要配慮個人情報（健康情報）が含まれており、AIへの入力は特に慎重な対応が必要です。'},
+  // L09
+  {lesson:'L09',q:'個人情報保護法において「要配慮個人情報」に該当するものはどれか？',o:['氏名','生年月日','病歴・診療情報','メールアドレス'],a:2,e:'病歴・診療情報は「要配慮個人情報」に該当し、取得・利用に本人同意が必要など、特別な保護が必要です。'},
+  {lesson:'L09',q:'生成AIに個人情報を入力する行為が個人情報保護法上問題になり得るケースはどれか？',o:['公開情報を確認のために入力する','本人の同意なく第三者の個人情報を入力する','自分自身の情報を入力する','匿名化された統計情報を入力する'],a:1,e:'本人の同意なく他者の個人情報をAIサービスに送信することは、個人情報の「第三者提供」にあたる可能性があります。'},
+  // L10
+  {lesson:'L10',q:'文化庁のガイドラインで「著作権侵害になりうる」とされているAIの使い方はどれか？',o:['AIで文章のアイデアを出す','AIが既存の著作物に似た表現を大量生成して市場を代替する','AIに文章の誤字を修正させる','AIで社内資料の要約を作る'],a:1,e:'AI生成物が既存著作物の市場を代替するほど類似している場合、著作権侵害と判断されるリスクがあります（文化庁ガイドライン）。'},
+  {lesson:'L10',q:'AIで生成した文章の著作権について正しい説明はどれか？',o:['常にAI開発者に帰属する','常に利用者に帰属する','人間の創作的寄与がある場合に利用者に帰属しうる','著作権は発生しない'],a:2,e:'AI生成物に人間の創作的な関与がある場合に限り、利用者が著作権を持つ可能性があります。単なる指示だけでは著作権は発生しにくいとされています。'},
+  // L11
+  {lesson:'L11',q:'ハルシネーションとは何か？',o:['AIが人間の感情を模倣する現象','AIが事実に基づかない情報を自信を持って出力すること','AIが長文を生成すること','AIが古いデータを参照すること'],a:1,e:'ハルシネーションとは、AIが事実ではない情報をあたかも正確であるかのように生成する現象です。'},
+  {lesson:'L11',q:'AIのハルシネーションによる法的リスクとして最も適切なものはどれか？',o:['AIが過剰に正直になる','誤った法的情報に基づいて行動し損害が発生する','AIが接続を拒否する','コストが増加する'],a:1,e:'AIが誤った契約内容・法律情報を出力し、それを確認せずに使用した場合、損害賠償や契約トラブルが発生するリスクがあります。'},
+  // L12
+  {lesson:'L12',q:'社内AI利用ガイドラインに必ず含めるべき項目として最も重要なものはどれか？',o:['AIの歴史','入力禁止情報の具体的なリスト','AIツールの値段一覧','他社の事例紹介'],a:1,e:'ガイドラインの核心は「何を入力してはいけないか」の具体的なリストです。抽象的なルールでは現場で判断できません。'},
+  {lesson:'L12',q:'AI利用ガイドラインを策定した後に行うべき重要なアクションはどれか？',o:['そのまま棚にしまう','定期的な見直しと全社員への周知・教育','外部に公開する','法務部だけが管理する'],a:1,e:'ガイドラインは作るだけでなく、全社員が理解し実践できるよう教育・周知を行い、定期的に更新することが重要です。'},
+  // L13
+  {lesson:'L13',q:'AI起因の情報漏洩が疑われる場合、最初の1時間に最優先でやるべきことはどれか？',o:['原因の特定','役員への報告','該当AIツールの使用停止と証拠保全','プレスリリースの作成'],a:2,e:'インシデント発生時の初動で最も重要なのは、被害の拡大防止（使用停止）と証拠保全です。'},
+  {lesson:'L13',q:'個人情報漏洩が発生した場合、個人情報保護委員会への報告義務が生じる条件として正しいものはどれか？',o:['漏洩が1件でも発生した場合','要配慮個人情報が含まれるなど一定の条件を満たす場合','社内で気づいた段階で即時','マスコミが報道した場合'],a:1,e:'個人情報保護法では、要配慮個人情報の漏洩など一定の条件を満たした場合に、個人情報保護委員会への報告と本人通知が義務付けられています。'},
+  // L14
+  {lesson:'L14',q:'中小企業がまず取り組むべき最低限のAIセキュリティ対策として正しいものはどれか？',o:['AIを一切禁止する','入力禁止情報のルール化と全社周知','高額なセキュリティツールの導入','専任のAI担当者を雇用する'],a:1,e:'まず「何を入力してはいけないか」を明確にして全社員に周知することが、最も費用対効果の高い基本対策です。'},
+  {lesson:'L14',q:'「5つのことで8割のリスクを下げる」対策のひとつとして正しいものはどれか？',o:['AIツールの完全な禁止','業務用と個人用AIアカウントの分離','毎日のパスワード変更','AIの使用ログを全て削除する'],a:1,e:'業務用と個人用のAIアカウントを分離することで、個人の設定による情報漏洩リスクを大幅に低減できます。'},
+  // L15
+  {lesson:'L15',q:'「今日からできる10のアクション」のうち、最も即効性が高い対策はどれか？',o:['AIツールの完全撤廃','社内のAI利用実態調査','新しいAIシステムの導入','社外への情報公開'],a:1,e:'まず現状を把握することが重要です。どのAIツールがどのように使われているかを調査することがすべての対策の出発点です。'},
+  {lesson:'L15',q:'AIセキュリティ教育を効果的に行うための方法として最も適切なものはどれか？',o:['年1回のメール通知のみ','具体的な事例を使った定期的な研修','難しい法律の読み合わせ','外部専門家に全て委託する'],a:1,e:'抽象的なルール説明より、実際に起きうる事例を使った研修の方が、社員の理解と行動変容につながります。'},
+  // L16
+  {lesson:'L16',q:'不動産業でのAI情報漏洩事例として実際に起きやすいシナリオはどれか？',o:['AIが自動的に物件を売却する','顧客の査定情報をAIに入力し外部に漏洩','AIが不動産価格を操作する','AIが登記情報を改ざんする'],a:1,e:'顧客の個人情報や査定情報をAIチャットに入力することで、意図せず外部サーバーにデータが送信されるリスクがあります。'},
+  {lesson:'L16',q:'士業（弁護士・税理士等）のAI利用で特に注意すべき点はどれか？',o:['AIが資格を取得するリスク','依頼人の機密情報をAIに入力することによる守秘義務違反','AIが業務を代替するリスク','AIのコストが高すぎる'],a:1,e:'士業は守秘義務があり、依頼人の情報を管理外のAIに入力することは、守秘義務違反や信頼失墜につながります。'},
+  // L17
+  {lesson:'L17',q:'NotebookLMが他の生成AIツールと大きく異なる特徴はどれか？',o:['常にインターネット検索を行う','アップロードしたドキュメントだけを情報源として回答する','音声のみで操作できる','企業のみが使用できる'],a:1,e:'NotebookLMは指定したドキュメントのみを情報源とするため、ハルシネーションが少なく、社内資料の分析に適しています。'},
+  {lesson:'L17',q:'GensparkやManusなどの「AIエージェント型」ツールのリスクとして正しいものはどれか？',o:['回答が短すぎる','自律的に行動するため予期しないデータアクセスが発生しうる','日本語に対応していない','利用料が高い'],a:1,e:'AIエージェントは自律的にWebアクセスやファイル操作を行うため、意図しない情報送信や操作が行われるリスクがあります。'},
+  // L18
+  {lesson:'L18',q:'AIを使ったフィッシング詐欺の特徴として正しいものはどれか？',o:['文章が不自然で見破りやすい','自然な日本語で個人に最適化された偽メールを大量生成できる','添付ファイルが必ず含まれる','送信元が必ず海外になる'],a:1,e:'AIにより自然な文章で個人情報を盛り込んだ偽メールを大量かつ低コストで生成できるようになり、従来の見分け方が通用しなくなっています。'},
+  {lesson:'L18',q:'AIフィッシングを見破るための最も効果的な方法はどれか？',o:['日本語の自然さで判断する','URLの確認・送信元ドメインの確認・公式サイトへの直接アクセス','添付ファイルを開いて確認する','返信して本物か聞く'],a:1,e:'AIが自然な文章を生成できる今、文章の質だけでは判断できません。URLや送信元を直接確認し、公式サイトへ独自にアクセスすることが重要です。'},
+  // L19
+  {lesson:'L19',q:'プロンプトインジェクション攻撃とはどのような攻撃か？',o:['AIサーバーに物理的に侵入する','悪意のある指示をAIに混入させてAIの行動を乗っ取る','AIの学習データを盗む','AIを使って大量のスパムを送る'],a:1,e:'プロンプトインジェクションは、AIシステムへの入力に悪意ある命令を埋め込み、AIの本来の動作を書き換える攻撃です。'},
+  {lesson:'L19',q:'企業がAIエージェントを導入する際、プロンプトインジェクション対策として最も重要なものはどれか？',o:['AIを使わない','外部コンテンツをそのままAIに処理させない・サンドボックス化','AIの速度を遅くする','ユーザー数を制限する'],a:1,e:'外部コンテンツ（Webページ・メール等）をそのままAIに処理させず、サンドボックス（隔離環境）で処理することが基本的な対策です。'},
+  // L20
+  {lesson:'L20',q:'ディープフェイクを使った詐欺の代表的な事例はどれか？',o:['AIが自動的に送金する','偽の経営者映像でCFOに送金を指示した香港の事件','AIが銀行口座を作成する','音声AIが契約書に署名する'],a:1,e:'2024年、香港でCFOがビデオ会議で偽の経営幹部たちに騙され約38億円を送金した事件は、ディープフェイク詐欺の代表事例です。'},
+  {lesson:'L20',q:'音声・映像が本物かどうか確認するための対策として最も有効なものはどれか？',o:['画質が高ければ本物','別の通信手段（電話・直接確認）で本人確認を取る','AIツールで自動判定する','送信者のメアドを確認する'],a:1,e:'重要な指示は必ず別の手段で本人確認を取ることが最も確実な対策です。ツールによる検出は完璧ではありません。'},
+  // L21
+  {lesson:'L21',q:'AIエージェントが自律的に動作することの主なリスクはどれか？',o:['処理が遅くなる','意図しないデータ送信・操作が発生する','コストが下がりすぎる','社員がさぼるようになる'],a:1,e:'AIエージェントは指示された範囲を超えて行動する場合があり、意図しない外部へのデータ送信や操作が発生するリスクがあります。'},
+  {lesson:'L21',q:'業務自動化にAIエージェントを使う前に確認すべき最重要事項はどれか？',o:['AIが最新モデルかどうか','エージェントがアクセスできる範囲と権限の最小化','UIが使いやすいか','無料プランかどうか'],a:1,e:'最小権限の原則（Principle of Least Privilege）に基づき、エージェントに必要最小限のアクセス権のみを付与することが重要です。'},
+  // L22
+  {lesson:'L22',q:'インシデント対応ロールプレイで学ぶ最重要の教訓はどれか？',o:['インシデントは必ず防げる','事前に対応手順を決めておくことで、有事の初動が速くなる','AIを使わなければよかった','法律に任せれば解決する'],a:1,e:'インシデント発生後に慌てて対応を考えるのではなく、事前にシナリオを想定し対応手順を決めておくことが被害最小化につながります。'},
+  {lesson:'L22',q:'漏洩インシデント発生後に「やってはいけないこと」はどれか？',o:['証拠を保全する','関係者に事実を報告する','事実を隠蔽して様子を見る','使用していたAIツールを停止する'],a:2,e:'隠蔽は法的リスクを高め、信頼を大きく損ないます。適切な報告と対応が長期的な信頼回復につながります。'},
+  // L23
+  {lesson:'L23',q:'LLM（大規模言語モデル）がハルシネーションを起こす根本的な理由はどれか？',o:['計算能力が不足しているから','確率的なパターン予測で文章を生成するため、事実確認をしていないから','インターネットに接続していないから','日本語が苦手だから'],a:1,e:'LLMは「次に来る確率の高いトークン」を生成する仕組みであり、事実かどうかの検証プロセスがありません。そのためもっともらしい誤情報を生成することがあります。'},
+  {lesson:'L23',q:'トランスフォーマーアーキテクチャの「Attention機構」の役割はどれか？',o:['文章を画像に変換する','文章中の単語間の関係性・重要度を計算する','AIをインターネットに接続する','回答の速度を上げる'],a:1,e:'Attention機構は入力文章の各単語が他の単語とどれだけ関連するかの重みを計算し、文脈理解を実現しています。'},
+  // L24
+  {lesson:'L24',q:'プロンプトエンジニアリングにおいて「Few-shot」とはどのような手法か？',o:['短いプロンプトを使う手法','具体的な例を複数示してから指示する手法','音声でAIに指示する手法','AIを少人数で使う手法'],a:1,e:'Few-shotプロンプティングは、指示の前に回答例を複数示すことでAIの出力形式や品質を制御する手法です。'},
+  {lesson:'L24',q:'セキュリティ観点でプロンプト設計時に注意すべき点はどれか？',o:['プロンプトをできるだけ長くする','機密情報や個人情報をプロンプトに含めない','英語で指示する','毎回異なるプロンプトを使う'],a:1,e:'プロンプト自体がAPIサーバーに送信されるため、機密情報・個人情報をプロンプトに含めることは情報漏洩のリスクがあります。'},
+  // L25
+  {lesson:'L25',q:'RAG（Retrieval-Augmented Generation）の主なリスクはどれか？',o:['回答が短くなりすぎる','検索対象の社内データベースへの不正アクセスが発生しうる','AIが自動的に学習してしまう','日本語に対応していない'],a:1,e:'RAGは社内データベースをAIが参照する仕組みのため、そのデータベースへの不正アクセスや権限管理の不備が新たなリスクとなります。'},
+  {lesson:'L25',q:'社内データでファインチューニングを行う前に確認すべき最重要事項はどれか？',o:['AIモデルのバージョン','学習データに個人情報・機密情報が含まれていないか','学習にかかるコスト','モデルのUI設計'],a:1,e:'ファインチューニングに使ったデータはモデルの重みに組み込まれるため、個人情報や機密情報が意図せず出力されるリスクがあります。'},
+  // L26
+  {lesson:'L26',q:'医療・介護分野でAIを活用する際に最も注意すべき法規制はどれか？',o:['著作権法','個人情報保護法（要配慮個人情報の取り扱い）','景品表示法','電気通信事業法'],a:1,e:'医療・介護記録は要配慮個人情報であり、個人情報保護法の厳格な規制が適用されます。AIへの入力には特別な注意が必要です。'},
+  {lesson:'L26',q:'法律・税務士業でAIを使う場合、倫理的に特に問題になりうるケースはどれか？',o:['議事録の作成補助','依頼人との相談内容を無断でAIに入力する','公開判例の検索','文書の誤字修正'],a:1,e:'弁護士・税理士などには守秘義務があり、依頼人の同意なく相談内容をAIに入力することは職業倫理・守秘義務違反のリスクがあります。'},
+  // L27
+  {lesson:'L27',q:'MCP（Model Context Protocol）とは何か？',o:['AIが感情を理解するプロトコル','AIと外部ツール・データソースを接続するための標準規格','AIの計算速度を上げる技術','AIを暗号化する規格'],a:1,e:'MCPはAnthropicが2024年に公開した、LLMと外部ツール・データベースを安全に接続するための標準プロトコルです。'},
+  {lesson:'L27',q:'AIエージェント時代に企業が備えるべきセキュリティ対策として最も重要なものはどれか？',o:['AIを一切使わない','エージェントの行動ログを記録し権限を最小化する','全ての業務をAIに移行する','セキュリティ対策は不要になる'],a:1,e:'AIエージェントが自律的に行動する時代には、行動ログの記録・監視と最小権限の原則が特に重要になります。'},
+,...[
+  {lesson:'序章',q:'生成AIが日本のビジネス現場に急速に普及した主な契機はどれか？',o:['スマートフォンの普及','2022年11月のChatGPT公開','政府のAI推進法の施行','AIロボットの導入'],a:1,e:'2022年11月のChatGPT公開が契機となり、生成AIが日本のビジネス現場に急速に普及しました。'},
+  {lesson:'L09',q:'個人情報保護法における「匿名加工情報」の説明として正しいものはどれか？',o:['個人を特定できる情報','特定の個人を識別できないよう加工された情報','社外秘に分類された情報','医療情報のみを指す'],a:1,e:'匿名加工情報とは、特定の個人を識別できないよう加工された情報で、本人の同意なく第三者提供が可能です。'},
+  {lesson:'L10',q:'AIが生成した画像を商業利用する際に注意すべき著作権上のリスクはどれか？',o:['AIは著作権を主張できる','学習データに含まれる既存著作物に酷似した画像が生成されるリスク','商業利用は全て禁止されている','著作権は自動的にAI開発者のものになる'],a:1,e:'AIの学習データに含まれる著作物に類似した画像が生成された場合、著作権侵害となるリスクがあります。'},
+  {lesson:'L16',q:'飲食業でAIを活用する際に注意すべき情報漏洩リスクとして最も適切なものはどれか？',o:['レシピの公開','アレルギー情報など顧客の個人情報の漏洩','食材の発注ミス','AIが料理を作り始める'],a:1,e:'顧客のアレルギー情報は要配慮個人情報に該当する可能性があり、AIへの入力には特別な注意が必要です。'},
+  {lesson:'L20',q:'ディープフェイク対策として企業が導入すべき「コードワード」制度とはどれか？',o:['AIとの会話に使う暗号','重要な指示の際に事前に決めた合言葉で本人確認を行う仕組み','パスワードの複雑化ルール','ビデオ会議の暗号化'],a:1,e:'重要な送金・決裁指示の際に、事前に決めたコードワードで本人確認を行うことで、ディープフェイク詐欺を防ぐことができます。'},
+  {lesson:'L25',q:'「ベクトルデータベース」がRAGシステムで使われる目的として正しいものはどれか？',o:['画像の保存','文章の意味的な類似度で関連情報を高速検索する','ファイルを暗号化する','ユーザーのパスワードを管理する'],a:1,e:'ベクトルデータベースは文章を数値ベクトルで表現し、意味的な類似度に基づいて関連情報を素早く検索するために使われます。'},
+]
+
+  // 追加6問
+
+
+
+
+
+
+];
+// 時間フォーマット
+function fmtTime(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return m + ':' + String(s).padStart(2,'0');
+}
+
+// ===== 認定試験UI =====
+let examState = {
+  active: false,
+  answers: {},   // index: 選択肢番号
+  timer: null,
+  remaining: 3600, // 60分
+  submitted: false,
+};
+
+function startExam(){
+  if(currentUserPlan !== 'premium'){
+    alert('認定試験はPremiumプランの受講者のみ受験できます。');
+    return;
+  }
+  const confirmed = confirm('認定試験を開始しますか？\n\n・60問・制限時間60分\n・4択・80%以上（48問以上正解）で合格\n\n開始すると途中でやめても時間は進みます。');
+  if(!confirmed) return;
+
+  examState = { active:true, answers:{}, timer:null, remaining:3600, submitted:false };
+  renderExam();
+  startExamTimer();
+}
+window.startExam = startExam;
+
+function renderExam(){
+  const inner = document.getElementById('learn-content-inner');
+  if(!inner) return;
+
+  let html = `
+  <div id="exam-wrap" style="max-width:800px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+      <div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:6px">// CERTIFICATION EXAM</div>
+        <h2 style="font-size:22px;font-weight:700">AI Security Lab 認定試験</h2>
+        <p style="font-size:13px;color:var(--text3);margin-top:4px">60問 · 80%以上（48問正解）で合格</p>
+      </div>
+      <div style="text-align:center;background:var(--bg2);border:2px solid var(--border);border-radius:12px;padding:12px 20px;flex-shrink:0">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">残り時間</div>
+        <div id="exam-timer" style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:var(--red)">${fmtTime(examState.remaining)}</div>
+      </div>
+    </div>`;
+
+  EXAM_QUESTIONS.forEach((q, i) => {
+    html += `
+    <div class="exam-q" id="eq-${i}" style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin-bottom:16px">
+      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:14px">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:2px 7px;flex-shrink:0;margin-top:2px">${q.lesson}</span>
+        <span style="font-size:15px;font-weight:600;line-height:1.6;color:var(--text)">Q${i+1}. ${q.q}</span>
+      </div>
+      <div class="exam-opts" style="display:flex;flex-direction:column;gap:8px">
+        ${q.o.map((opt,j) => `
+        <button class="exam-opt" data-q="${i}" data-a="${j}" onclick="selectExamOpt(${i},${j})"
+          style="text-align:left;padding:11px 16px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg);font-size:14px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'Noto Sans JP',sans-serif;line-height:1.5">
+          <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text4);margin-right:10px">${['A','B','C','D'][j]}</span>${opt}
+        </button>`).join('')}
+      </div>
+      <div id="exam-expl-${i}" style="display:none;margin-top:12px;padding:12px 14px;background:var(--bg3);border-radius:8px;font-size:13px;color:var(--text2);line-height:1.8;border-left:3px solid var(--green)"></div>
+    </div>`;
+  });
+
+  html += `
+    <div style="text-align:center;padding:32px 0 16px">
+      <div id="exam-answered" style="font-size:13px;color:var(--text3);margin-bottom:16px">回答済み: <span id="exam-answered-count">0</span> / 60問</div>
+      <button onclick="submitExam()" style="background:var(--red);color:#fff;border:none;border-radius:10px;padding:14px 48px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif">
+        試験を提出する
+      </button>
+    </div>
+  </div>`;
+
+  inner.innerHTML = html;
+}
+
+function selectExamOpt(qi, ai){
+  if(examState.submitted) return;
+  examState.answers[qi] = ai;
+
+  // 選択ハイライト
+  const q = document.getElementById(`eq-${qi}`);
+  if(!q) return;
+  q.querySelectorAll('.exam-opt').forEach((btn, j) => {
+    btn.style.borderColor = j === ai ? 'var(--red)' : 'var(--border)';
+    btn.style.background  = j === ai ? 'var(--red-l)' : 'var(--bg)';
+    btn.style.color       = j === ai ? 'var(--red)' : 'var(--text2)';
+    btn.style.fontWeight  = j === ai ? '600' : '400';
+  });
+
+  // 回答数更新
+  const cnt = document.getElementById('exam-answered-count');
+  if(cnt) cnt.textContent = Object.keys(examState.answers).length;
+}
+window.selectExamOpt = selectExamOpt;
+
+function startExamTimer(){
+  examState.timer = setInterval(()=>{
+    examState.remaining--;
+    const el = document.getElementById('exam-timer');
+    if(el) el.textContent = fmtTime(examState.remaining);
+    if(examState.remaining <= 300){
+      if(el) el.style.color = '#dc2626';
+    }
+    if(examState.remaining <= 0){
+      clearInterval(examState.timer);
+      submitExam(true);
+    }
+  }, 1000);
+}
+
+function submitExam(timeUp = false){
+  if(examState.submitted) return;
+  const answered = Object.keys(examState.answers).length;
+  if(!timeUp && answered < 60){
+    const ok = confirm(`まだ${60 - answered}問未回答です。このまま提出しますか？`);
+    if(!ok) return;
+  }
+
+  examState.submitted = true;
+  clearInterval(examState.timer);
+
+  // 採点
+  let correct = 0;
+  const wrongList = [];
+  EXAM_QUESTIONS.forEach((q, i) => {
+    const ans = examState.answers[i];
+    const isCorrect = ans === q.a;
+    if(isCorrect) correct++;
+    else wrongList.push(i);
+  });
+
+  const pct = Math.round(correct / 60 * 100);
+  const passed = correct >= 48;
+
+  // 各問に正誤表示
+  EXAM_QUESTIONS.forEach((q, i) => {
+    const qEl = document.getElementById(`eq-${i}`);
+    if(!qEl) return;
+    const ans = examState.answers[i];
+    const isCorrect = ans === q.a;
+
+    qEl.querySelectorAll('.exam-opt').forEach((btn, j) => {
+      if(j === q.a){
+        btn.style.borderColor = 'var(--green)';
+        btn.style.background  = 'var(--green-l)';
+        btn.style.color       = 'var(--green)';
+        btn.style.fontWeight  = '700';
+      } else if(j === ans && !isCorrect){
+        btn.style.borderColor = 'var(--red)';
+        btn.style.background  = 'var(--red-l)';
+        btn.style.color       = 'var(--red)';
+      } else {
+        btn.style.opacity = '.5';
+      }
+    });
+
+    // 解説表示
+    const expl = document.getElementById(`exam-expl-${i}`);
+    if(expl){
+      expl.style.display = 'block';
+      expl.style.borderLeftColor = isCorrect ? 'var(--green)' : 'var(--red)';
+      expl.innerHTML = `<strong>${isCorrect ? '✅ 正解' : '❌ 不正解'}</strong>　${q.e}`;
+    }
+  });
+
+  // 結果サマリーをトップに表示
+  const wrap = document.getElementById('exam-wrap');
+  if(wrap){
+    const resultHtml = `
+    <div style="background:${passed ? 'var(--green-l)' : 'var(--red-l)'};border:2px solid ${passed ? 'var(--green)' : 'var(--red)'};border-radius:16px;padding:32px;text-align:center;margin-bottom:32px">
+      <div style="font-size:48px;margin-bottom:12px">${passed ? '🎓' : '📝'}</div>
+      <div style="font-size:28px;font-weight:800;color:${passed ? 'var(--green)' : 'var(--red)'};margin-bottom:8px">
+        ${passed ? '合格' : '不合格'}
+      </div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px">${correct} / 60問正解（正答率 ${pct}%）</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:${passed ? '0' : '16px'}">
+        ${passed ? '修了証の申請ができます。下記フォームからお申し込みください。' : `合格ラインは48問（80%）です。あと${48-correct}問正解が必要でした。`}
+      </div>
+      ${passed ? `<a href="#" onclick="switchTab('certificate');return false;" style="display:inline-block;margin-top:16px;background:var(--green);color:#fff;padding:12px 32px;border-radius:8px;font-size:15px;font-weight:700;text-decoration:none">修了証を申請する →</a>` : ''}
+      ${!passed ? `<button onclick="retryExam()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px 32px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif">再受験する</button>` : ''}
+    </div>`;
+    wrap.insertAdjacentHTML('afterbegin', resultHtml);
+    wrap.scrollIntoView({behavior:'smooth'});
+  }
+
+  const lc = document.getElementById('learn-content');
+  if(lc) lc.scrollTop = 0;
+}
+window.submitExam = submitExam;
+
+function retryExam(){
+  const ok = confirm('試験を最初からやり直しますか？');
+  if(ok) startExam();
+}
+window.retryExam = retryExam;
+
+
+/
 async function submitCertificate(){
   const company = document.getElementById('cert-company').value.trim();
   const name    = document.getElementById('cert-name').value.trim();
@@ -5599,7 +5945,7 @@ window.updateDashboard = updateDashboard;
 
 // ========== 学習UI（PEP風） ==========
 
-const ALL_TABS_ORDERED = ['intro', ...ALL_LESSONS_LIST];
+const ALL_TABS_ORDERED = ['intro', ...ALL_LESSONS_LIST, 'exam', 'certificate'];
 
 // ---- サイドバータブ切替 ----
 function setSbTab(tab, btn){
@@ -5773,6 +6119,17 @@ function buildSideNav(completed){
     });
   });
   list.innerHTML = html;
+
+  // Premiumのみ：認定試験リンクをサイドバーに追加
+  if(currentUserPlan === 'premium'){
+    const examRow = list.querySelector('[data-exam]');
+    if(!examRow){
+      const div = document.createElement('div');
+      div.setAttribute('data-exam','1');
+      div.innerHTML = '<div class="sb-ch-label">認定試験</div><div class="sb-row" onclick="switchTab('exam');closeSbDrawer()" style="color:var(--purple);font-weight:600"><div class="sb-row-dot" style="background:var(--purple)"></div><span class="sb-row-num">EX</span><span class="sb-row-title">AI Security Lab 認定試験</span></div>';
+      list.appendChild(div);
+    }
+  }
 
   // プランロック適用
   applyPlanLock();
