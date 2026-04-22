@@ -3537,9 +3537,8 @@ function markComplete(tabId){
   updateCompletionUI();
   updateDashboard();
   // Supabaseにログを保存
-  const sb = getSupabase();
-  if(sb && currentUser){
-    sb.from('lesson_logs').upsert({
+  if(_supabase && currentUser){
+    _supabase.from('lesson_logs').upsert({
       user_id: currentUser.id,
       lesson_id: tabId,
       completed_at: new Date().toISOString()
@@ -3797,15 +3796,14 @@ window.submitCertificate = submitCertificate;
 
 // ===== 管理者：受講ログCSVエクスポート =====
 async function adminExportLogs(){
-  const sb = getSupabase();
-  if(!sb){ alert('Supabase未初期化'); return; }
+  if(!_supabase){ alert('Supabase未初期化'); return; }
 
   const btn = document.getElementById('admin-export-btn');
   if(btn){ btn.disabled = true; btn.textContent = '取得中...'; }
 
   try {
     // lesson_logsをprofilesと結合して全件取得
-    const { data, error } = await sb
+    const { data, error } = await _supabase
       .from('lesson_logs')
       .select('user_id, lesson_id, completed_at, profiles(plan)')
       .order('completed_at', { ascending: true });
