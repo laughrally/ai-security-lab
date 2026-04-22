@@ -985,6 +985,28 @@
   #sb-menu-btn { display: none; }
   #nav-menu-btn { display: none; flex-shrink: 0; }
 
+  /* モバイル FAB（左下丸ボタン） */
+  #sb-fab {
+    display: none;
+    position: fixed;
+    bottom: 24px;
+    left: 20px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 148;
+    box-shadow: 0 4px 16px rgba(0,0,0,.25);
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s, opacity .15s;
+  }
+  #sb-fab:active { transform: scale(.92); }
+
   /* タブレット（〜860px） */
   @media (max-width: 860px) {
     #learn-wrapper.show {
@@ -1008,8 +1030,9 @@
       transform: translateX(0);
     }
 
-    /* メニューボタン表示 */
-    #nav-menu-btn { display: flex !important; }
+    /* FABボタン表示 */
+    #nav-menu-btn { display: none !important; }
+    #sb-fab { display: flex; }
 
     /* メイン全幅 */
     #learn-main { width: 100%; }
@@ -4345,6 +4368,9 @@
 
 
 <!-- ===== ログイン後 学習エリア ===== -->
+<!-- モバイル FABボタン -->
+<button id="sb-fab" onclick="toggleSbDrawer()">≡</button>
+
 <div id="learn-wrapper">
   <!-- モバイル：ドロワーオーバーレイ -->
   <div id="sb-overlay" onclick="closeSbDrawer()"></div>
@@ -4768,6 +4794,8 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'inline-flex';
     const navMenuBtn = document.getElementById('nav-menu-btn');
     if(navMenuBtn) navMenuBtn.style.display = '';
+    const fab = document.getElementById('sb-fab');
+    if(fab) fab.style.display = '';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
     const hero = document.getElementById('top');
@@ -4789,6 +4817,8 @@ function updateAuthUI(){
     if(navProg)       navProg.style.display    = 'none';
     const navMenuBtn2 = document.getElementById('nav-menu-btn');
     if(navMenuBtn2) navMenuBtn2.style.display = 'none';
+    const fab2 = document.getElementById('sb-fab');
+    if(fab2) fab2.style.display = 'none';
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
     const hero2 = document.getElementById('top');
