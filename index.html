@@ -1235,7 +1235,7 @@
     <a href="#pricing" id="nav-pricing">料金</a>
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
-    <button class="ncta" id="nav-progress" onclick="switchTab('certificate');document.getElementById('lessons').scrollIntoView({behavior:'smooth'});return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/27</button>
+    <button class="ncta" id="nav-progress" onclick="openProgressPanel();return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/27</button>
     <button id="nav-menu-btn" onclick="toggleSbDrawer()" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;color:var(--text2);align-items:center;gap:6px;white-space:nowrap">≡ カリキュラム</button>
     <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
@@ -5144,7 +5144,19 @@ function updateCompletionUI(){
   const pct = completed.length / ALL_LESSONS_LIST.length * 100;
   if(fill)  fill.style.width = pct + '%';
   if(count) count.textContent = completed.length;
-  const allDone = completed.length >= ALL_LESSONS_LIST.length;
+  // プランごとの修了条件
+  const plan = currentUserPlan || 'basic';
+  const planLessons = plan === 'premium'
+    ? ALL_LESSONS_LIST                                          // 27本
+    : plan === 'standard'
+    ? ALL_LESSONS_LIST.slice(0, 22)                            // 22本
+    : ALL_LESSONS_LIST.slice(0, 17);                           // 17本
+  const allDone = planLessons.every(id => completed.includes(id));
+  const certDesc = document.querySelector('.cert-desc');
+  if(certDesc){
+    const count = planLessons.length;
+    certDesc.innerHTML = `全${count}レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、修了証PDFをメールでお送りします。`;
+  }
   if(notice)    notice.style.display = allDone ? 'none' : 'block';
   if(submitBtn){ submitBtn.disabled = !allDone; submitBtn.style.opacity = allDone ? '1' : '.4'; }
   if(allDone){ const tb = document.getElementById('cert-tab-btn'); if(tb) tb.style.display = ''; }
@@ -5602,6 +5614,20 @@ function setSbTab(tab, btn){
   }
 }
 window.setSbTab = setSbTab;
+
+// 進捗ボタン → サイドバーの進捗タブを開く
+function openProgressPanel(){
+  // PC: サイドバーの進捗タブをアクティブに
+  const progressTab = document.querySelector('#sb-tabs .sb-tab:nth-child(2)');
+  if(progressTab) setSbTab('progress', progressTab);
+  // スマホ: ドロワーを開く
+  if(window.innerWidth <= 860){
+    openSbDrawer();
+  }
+  // learn-wrapperが表示されていなければ表示
+  showLearnUI();
+}
+window.openProgressPanel = openProgressPanel;
 
 // モバイル：ドロワー開閉
 function toggleSbDrawer(){
