@@ -5196,14 +5196,25 @@ function updateCompletionUI(){
     ? ALL_LESSONS_LIST           // 27本
     : ALL_LESSONS_LIST.slice(0, 22); // 22本（standard）
   const allDone = planLessons.every(id => completed.includes(id));
+  const examPassed = localStorage.getItem('asl_exam_passed') === '1';
+  const canApply = plan === 'premium' ? (allDone && examPassed) : allDone;
   const certDesc = document.querySelector('.cert-desc');
   if(certDesc){
     const count = planLessons.length;
-    certDesc.innerHTML = `全${count}レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、修了証PDFをメールでお送りします。`;
+    if(plan === 'premium'){
+      certDesc.innerHTML = `全${count}レッスン受講済み ＋ 認定試験合格で修了証・合格証を申請できます。<br>申請後、修了証PDFをメールでお送りします。`;
+    } else {
+      certDesc.innerHTML = `全${count}レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、修了証PDFをメールでお送りします。`;
+    }
   }
-  if(notice)    notice.style.display = allDone ? 'none' : 'block';
-  if(submitBtn){ submitBtn.disabled = !allDone; submitBtn.style.opacity = allDone ? '1' : '.4'; }
-  if(allDone){ const tb = document.getElementById('cert-tab-btn'); if(tb) tb.style.display = ''; }
+  const noticeText = plan === 'premium' && allDone && !examPassed
+    ? '⚠️ 認定試験に合格してから申請してください。'
+    : plan === 'premium'
+      ? `⚠️ L01〜L27のすべてを受講済みにしてから申請してください。`
+      : `⚠️ L01〜L22のすべてを受講済みにしてから申請してください。`;
+  if(notice){ notice.textContent = noticeText; notice.style.display = canApply ? 'none' : 'block'; }
+  if(submitBtn){ submitBtn.disabled = !canApply; submitBtn.style.opacity = canApply ? '1' : '.4'; }
+  if(canApply){ const tb = document.getElementById('cert-tab-btn'); if(tb) tb.style.display = ''; }
   // ナビ進捗ボタン更新
   const navProg = document.getElementById('nav-progress');
   const progFill = document.getElementById('nav-progress-fill');
@@ -5750,7 +5761,9 @@ function submitExam(){
     return {q, userAns, isCorrect, idx:i};
   });
   const passed = correct >= 48;
+  if(passed) localStorage.setItem('asl_exam_passed', '1');
   renderExamResult(correct, results, passed);
+  if(passed) updateCompletionUI();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
