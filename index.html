@@ -684,196 +684,262 @@
   .tab.locked{position:relative;color:var(--text4) !important;cursor:pointer !important;pointer-events:auto !important}
   .tab.locked::after{content:'🔒';font-size:10px;margin-left:4px}
 
-  /* ===== ログイン後 学習UI ===== */
+  /* ===== ログイン後 学習UI（PEP風） ===== */
 
-  /* 学習エリア全体レイアウト */
-  #learn-area{display:none}
-  #learn-area.show{display:flex;min-height:calc(100vh - 64px)}
+  /* body全体をflex化して固定サイドバーを実現 */
+  body.logged-in { overflow-x: hidden; }
+
+  /* 学習レイアウトラッパー */
+  #learn-wrapper {
+    display: none;
+    position: fixed;
+    top: 64px; left: 0; right: 0; bottom: 0;
+    z-index: 50;
+    background: var(--bg);
+  }
+  #learn-wrapper.show { display: flex; }
 
   /* 左サイドバー */
-  #learn-sidebar{
-    width:280px;flex-shrink:0;
-    background:var(--bg2);
-    border-right:1px solid var(--border);
-    display:flex;flex-direction:column;
-    position:sticky;top:64px;
-    height:calc(100vh - 64px);
-    overflow:hidden;
+  #learn-sidebar {
+    width: 256px;
+    flex-shrink: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
   }
 
-  /* サイドバー上部：進捗サマリー */
-  #sb-progress{
-    padding:16px 18px;
-    border-bottom:1px solid var(--border);
-    flex-shrink:0;
+  /* サイドバー上部：ロゴエリア */
+  #sb-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
   }
-  #sb-progress-label{
-    display:flex;justify-content:space-between;align-items:center;
-    font-size:12px;font-weight:700;margin-bottom:8px;
+  #sb-logo {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  #sb-progress-count{
-    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--green);
-  }
-  #sb-progress-bar-bg{
-    background:var(--border);border-radius:100px;height:6px;overflow:hidden;
-  }
-  #sb-progress-bar-fill{
-    background:var(--green);height:100%;border-radius:100px;
-    transition:width .6s ease;width:0%;
-  }
+  #sb-logo span { color: var(--red); }
 
-  /* サイドバー タブ切替 */
-  #sb-tabs{
-    display:flex;border-bottom:1px solid var(--border);flex-shrink:0;
+  /* サイドバー タブ切替（学習/進捗） */
+  #sb-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
   }
-  .sb-tab{
-    flex:1;padding:10px 4px;text-align:center;font-size:12px;font-weight:600;
-    cursor:pointer;color:var(--text3);border:none;background:none;
-    transition:all .15s;font-family:'Noto Sans JP',sans-serif;
-    border-bottom:2px solid transparent;
+  .sb-tab {
+    flex: 1;
+    padding: 9px 4px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--text3);
+    border: none;
+    background: none;
+    transition: all .15s;
+    font-family: 'Noto Sans JP', sans-serif;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
   }
-  .sb-tab:hover{color:var(--text2)}
-  .sb-tab.active{color:var(--red);border-bottom-color:var(--red)}
+  .sb-tab:hover { color: var(--text2); background: var(--bg3); }
+  .sb-tab.active { color: var(--red); border-bottom-color: var(--red); background: none; }
 
-  /* サイドバー コンテンツエリア */
-  #sb-content{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--border) transparent}
-  #sb-content::-webkit-scrollbar{width:4px}
-  #sb-content::-webkit-scrollbar-track{background:transparent}
-  #sb-content::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+  /* サイドバー スクロールエリア */
+  #sb-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  #sb-scroll::-webkit-scrollbar { width: 3px; }
+  #sb-scroll::-webkit-scrollbar-track { background: transparent; }
+  #sb-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
   /* レッスンリスト */
-  #sb-lesson-list{padding:8px 0}
-  .sb-chapter-label{
-    padding:10px 18px 4px;
-    font-family:'IBM Plex Mono',monospace;font-size:10px;
-    color:var(--text4);letter-spacing:.1em;
-    display:flex;align-items:center;gap:8px;
-  }
-  .sb-chapter-label span{flex:1;height:1px;background:var(--border)}
-  .sb-lesson-row{
-    display:flex;align-items:center;gap:10px;
-    padding:9px 18px;cursor:pointer;
-    transition:background .12s;
-    border-left:3px solid transparent;
-  }
-  .sb-lesson-row:hover{background:var(--bg3)}
-  .sb-lesson-row.active{
-    background:var(--red-l);
-    border-left-color:var(--red);
-  }
-  .sb-lesson-row.done .sb-dot{background:var(--green);border-color:var(--green)}
-  .sb-lesson-row.active .sb-dot{background:var(--red);border-color:var(--red)}
-  .sb-dot{
-    width:16px;height:16px;border-radius:4px;
-    border:1.5px solid var(--border2);
-    display:flex;align-items:center;justify-content:center;
-    font-size:9px;color:#fff;flex-shrink:0;
-    transition:all .15s;
-  }
-  .sb-num{
-    font-family:'IBM Plex Mono',monospace;font-size:10px;
-    color:var(--text4);min-width:22px;flex-shrink:0;
-  }
-  .sb-lesson-row.active .sb-num{color:var(--red)}
-  .sb-title{
-    font-size:12px;color:var(--text3);line-height:1.4;flex:1;
-  }
-  .sb-lesson-row.active .sb-title{color:var(--red);font-weight:700}
-  .sb-lesson-row.done .sb-title{color:var(--text2)}
+  #sb-lesson-list { padding: 6px 0; }
 
-  /* 進捗パネル（タブ切替） */
-  #sb-progress-panel{padding:12px;display:none}
-  #sb-progress-panel.show{display:block}
-  .sb-dash-ch{margin-bottom:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-  .sb-dash-ch-head{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:10px 12px;font-size:12px;font-weight:700;
-    border-bottom:1px solid var(--border);
+  /* 章見出し */
+  .sb-ch-label {
+    padding: 10px 16px 3px;
+    font-size: 10px;
+    letter-spacing: .08em;
+    color: var(--text4);
+    text-transform: uppercase;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
   }
-  .sb-dash-ch-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text4);margin-right:6px}
-  .sb-dash-ch-cnt{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4)}
-  .sb-dash-bar{height:3px;background:var(--border);overflow:hidden}
-  .sb-dash-bar-fill{height:100%;transition:width .5s;background:var(--green)}
-  .sb-dash-items{display:flex;flex-wrap:wrap;gap:4px;padding:8px 10px}
-  .sb-dash-dot{
-    width:28px;height:28px;border-radius:5px;
-    border:1.5px solid var(--border);
-    display:flex;align-items:center;justify-content:center;
-    font-family:'IBM Plex Mono',monospace;font-size:9px;
-    color:var(--text4);cursor:pointer;transition:all .12s;
+
+  /* レッスン行 */
+  .sb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background .12s;
+    font-size: 13px;
+    color: var(--text2);
+    border-right: 2px solid transparent;
+    line-height: 1.4;
   }
-  .sb-dash-dot:hover{border-color:var(--border2);color:var(--text2)}
-  .sb-dash-dot.done{background:var(--green-l);border-color:rgba(22,163,74,.3);color:var(--green)}
+  .sb-row:hover { background: var(--bg3); }
+  .sb-row.active {
+    background: var(--red-l);
+    color: var(--red);
+    font-weight: 600;
+    border-right-color: var(--red);
+  }
+  .sb-row.done { color: var(--text); }
+  .sb-row-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border2);
+    flex-shrink: 0;
+    transition: background .15s;
+  }
+  .sb-row.done .sb-row-dot { background: var(--green); }
+  .sb-row.active .sb-row-dot { background: var(--red); }
+  .sb-row-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text4);
+    min-width: 20px;
+    flex-shrink: 0;
+  }
+  .sb-row.active .sb-row-num { color: var(--red); }
+  .sb-row-title { flex: 1; }
+
+  /* 進捗パネル */
+  #sb-progress-panel { padding: 12px; display: none; }
+  #sb-progress-panel.show { display: block; }
+
+  /* サイドバー下部：全体進捗 */
+  #sb-footer {
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  #sb-footer-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #sb-footer-count { font-family: 'IBM Plex Mono', monospace; }
+  #sb-footer-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  #sb-footer-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 99px;
+    transition: width .5s;
+    width: 0%;
+  }
 
   /* メインコンテンツ */
-  #learn-main{
-    flex:1;min-width:0;
-    padding:0;
-    background:var(--bg);
+  #learn-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
   }
 
-  /* レッスン上部バー */
-  #lesson-topbar{
-    display:flex;align-items:center;justify-content:space-between;
-    padding:12px 32px;
-    border-bottom:1px solid var(--border);
-    background:var(--bg);
-    position:sticky;top:64px;z-index:10;
-    gap:12px;
+  /* 上部バー */
+  #learn-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    flex-shrink: 0;
+    gap: 12px;
+    min-height: 48px;
   }
-  #lesson-breadcrumb-new{
-    display:flex;align-items:center;gap:8px;
-    font-size:12px;color:var(--text4);
-    font-family:'IBM Plex Mono',monospace;
-    letter-spacing:.04em;
+  #learn-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'IBM Plex Mono', monospace;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  #lesson-breadcrumb-new .bc-ch{color:var(--text3);font-weight:600}
-  #lesson-breadcrumb-new .bc-title{color:var(--text2)}
-  #lesson-breadcrumb-new .bc-sep{color:var(--border2)}
-  #lesson-nav-btns{display:flex;gap:8px}
-  .lesson-nav-btn{
-    padding:6px 14px;border-radius:6px;font-size:12px;font-weight:600;
-    border:1px solid var(--border);background:var(--bg2);color:var(--text3);
-    cursor:pointer;transition:all .15s;font-family:'Noto Sans JP',sans-serif;
-    white-space:nowrap;
+  #learn-breadcrumb .bc-sep { color: var(--border2); }
+  #learn-breadcrumb .bc-ch { font-weight: 600; }
+  #learn-nav-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .learn-nav-btn {
+    padding: 5px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all .15s;
+    font-family: 'Noto Sans JP', sans-serif;
   }
-  .lesson-nav-btn:hover{border-color:var(--border2);color:var(--text2)}
-  .lesson-nav-btn.prev::before{content:'←  ';font-size:11px}
-  .lesson-nav-btn.next::after{content:'  →';font-size:11px}
+  .learn-nav-btn:hover:not(:disabled) { border-color: var(--border2); color: var(--text2); background: var(--bg2); }
+  .learn-nav-btn:disabled { opacity: .3; cursor: default; }
 
-  /* メインコンテンツ内側 */
-  #learn-main-inner{padding:40px 48px;max-width:800px}
+  /* レッスン本文スクロールエリア */
+  #learn-content {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  #learn-content::-webkit-scrollbar { width: 4px; }
+  #learn-content::-webkit-scrollbar-track { background: transparent; }
+  #learn-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  #learn-content-inner { padding: 40px 48px; max-width: 820px; }
 
-  /* タブはログイン後非表示 */
-  .tabs-wrap{display:block}
-  .tabs-wrap.hidden{display:none}
+  /* 既存要素の上書き・非表示 */
+  .tabs-wrap.hidden { display: none; }
+  #lesson-layout { display: block !important; }
+  #lesson-sidenav { display: none !important; }
+  #lesson-main { padding: 0; }
+  .lesson-breadcrumb { display: none !important; }
+  #progress-dashboard { display: none !important; }
 
-  /* 既存のlessonレイアウトを無効化（learn-areaで管理） */
-  #lesson-layout{display:block}
-  #lesson-sidenav{display:none !important}
-  #lesson-main{padding:0}
-  .lesson-breadcrumb{display:none !important}
+  /* 進捗パネル内 */
+  .sb-dash-ch { margin-bottom: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .sb-dash-ch-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
+  .sb-dash-ch-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text4); margin-right: 6px; }
+  .sb-dash-ch-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text4); }
+  .sb-dash-bar { height: 3px; background: var(--border); }
+  .sb-dash-bar-fill { height: 100%; transition: width .4s; background: var(--green); }
+  .sb-dash-items { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px; }
+  .sb-dash-dot { width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text4); cursor: pointer; transition: all .12s; }
+  .sb-dash-dot:hover { border-color: var(--border2); color: var(--text2); }
+  .sb-dash-dot.done { background: var(--green-l); border-color: rgba(22,163,74,.3); color: var(--green); }
 
-  /* ダッシュボード（独立セクション）非表示 → サイドバーに統合 */
-  #progress-dashboard{display:none !important}
-
-  /* ダッシュボード章別カード（旧） */
-  .dash-chapter-card,.dash-ch-head,.dash-ch-title,.dash-ch-count,.dash-ch-bar,.dash-ch-bar-fill,.dash-lessons-grid,.dash-lesson-item,.dlcheck{display:none}
-
-  @media(max-width:900px){
-    #learn-area{flex-direction:column}
-    #learn-sidebar{
-      width:100%;height:auto;
-      position:sticky;top:64px;z-index:20;
-      border-right:none;border-bottom:1px solid var(--border);
-      flex-direction:row;
-      max-height:none;
-    }
-    #sb-progress{display:none}
-    #sb-tabs{border-bottom:none;border-right:1px solid var(--border);width:auto;flex-direction:column;min-width:80px}
-    #sb-content{max-height:240px}
-    #learn-main-inner{padding:24px 20px}
-    #lesson-topbar{padding:10px 20px}
+  @media (max-width: 860px) {
+    #learn-wrapper.show { top: 64px; flex-direction: column; }
+    #learn-sidebar { width: 100%; height: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); }
+    #sb-header { display: none; }
+    #sb-footer { display: none; }
+    #sb-tabs { border-bottom: none; }
+    #sb-scroll { max-height: 180px; }
+    #learn-content-inner { padding: 24px 20px; }
+    #learn-topbar { padding: 8px 20px; }
   }
 </style>
 </head>
@@ -4118,44 +4184,50 @@
 
 
 <!-- ===== ログイン後 学習エリア ===== -->
-<div id="learn-area">
+<div id="learn-wrapper">
   <!-- 左サイドバー -->
   <div id="learn-sidebar">
-    <!-- 進捗サマリー -->
-    <div id="sb-progress">
-      <div id="sb-progress-label">
-        <span>受講進捗</span>
-        <span id="sb-progress-count">0 / 27</span>
-      </div>
-      <div id="sb-progress-bar-bg">
-        <div id="sb-progress-bar-fill"></div>
-      </div>
+    <!-- ヘッダー -->
+    <div id="sb-header">
+      <div id="sb-logo"><span>AI</span>SecurityLab</div>
     </div>
-    <!-- タブ -->
+    <!-- タブ切替 -->
     <div id="sb-tabs">
       <button class="sb-tab active" onclick="setSbTab('lessons',this)">📖 学習</button>
       <button class="sb-tab" onclick="setSbTab('progress',this)">📊 進捗</button>
     </div>
-    <!-- コンテンツ -->
-    <div id="sb-content">
+    <!-- スクロールエリア -->
+    <div id="sb-scroll">
       <div id="sb-lesson-list"><!-- JSで生成 --></div>
       <div id="sb-progress-panel"><!-- JSで生成 --></div>
+    </div>
+    <!-- フッター進捗 -->
+    <div id="sb-footer">
+      <div id="sb-footer-label">
+        <span>全体進捗</span>
+        <span id="sb-footer-count">0 / 27</span>
+      </div>
+      <div id="sb-footer-track">
+        <div id="sb-footer-fill"></div>
+      </div>
     </div>
   </div>
 
   <!-- メインコンテンツ -->
   <div id="learn-main">
     <!-- 上部バー -->
-    <div id="lesson-topbar">
-      <div id="lesson-breadcrumb-new"></div>
-      <div id="lesson-nav-btns">
-        <button class="lesson-nav-btn prev" id="lesson-prev-btn" onclick="lessonNav(-1)">前へ</button>
-        <button class="lesson-nav-btn next" id="lesson-next-btn" onclick="lessonNav(1)">次へ</button>
+    <div id="learn-topbar">
+      <div id="learn-breadcrumb"></div>
+      <div id="learn-nav-btns">
+        <button class="learn-nav-btn" id="learn-prev-btn" onclick="lessonNav(-1)">← 前へ</button>
+        <button class="learn-nav-btn" id="learn-next-btn" onclick="lessonNav(1)">次へ →</button>
       </div>
     </div>
     <!-- レッスン本文 -->
-    <div id="learn-main-inner" id="learn-main-inner-wrap">
-      <!-- JSでtconをここに移動 -->
+    <div id="learn-content">
+      <div id="learn-content-inner">
+        <!-- JSでtconをここに表示 -->
+      </div>
     </div>
   </div>
 </div>
@@ -4755,26 +4827,16 @@ initSupabase();
 /* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
 window.switchTab = switchTab;
 
-// switchTab後にサイドナビ・学習UIを更新
+// switchTab後にサイドバー・学習UIを更新
 const _origSwitchTab = switchTab;
 window.switchTab = function(name){
   _origSwitchTab(name);
   if(currentUser){
-    // メインエリアにtconを移動
-    const inner = document.getElementById('learn-main-inner');
-    const tcon = document.getElementById('tab-' + name);
-    if(inner && tcon && tcon.parentElement !== inner){
-      inner.appendChild(tcon);
-      // tconをactiveに
-      document.querySelectorAll('#learn-main-inner .tcon').forEach(t=>t.classList.remove('active'));
-      tcon.classList.add('active');
-    }
     const completed = loadCompleted();
     buildSideNav(completed);
-    // スクロールをトップに
-    const lm = document.getElementById('learn-main');
-    if(lm) lm.scrollTop = 0;
-    window.scrollTo({top: document.getElementById('learn-area')?.offsetTop - 64 || 0, behavior:'smooth'});
+    // コンテンツをトップへ
+    const lc = document.getElementById('learn-content');
+    if(lc) lc.scrollTop = 0;
   }
 };
 window.toggleCh        = toggleCh;
@@ -5276,146 +5338,158 @@ function updateDashboard(){
     </div>`;
   }).join('');
 
-  // サイドバーも更新
+  // サイドバー更新
   if(currentUser) buildSideNav(completed);
 }
 window.updateDashboard = updateDashboard;
 
-// ========== 学習UI ==========
+// ========== 学習UI（PEP風） ==========
 
-// サイドバータブ切替
+const ALL_TABS_ORDERED = ['intro', ...ALL_LESSONS_LIST];
+
+// ---- サイドバータブ切替 ----
 function setSbTab(tab, btn){
   document.querySelectorAll('.sb-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  const lessonList = document.getElementById('sb-lesson-list');
-  const progressPanel = document.getElementById('sb-progress-panel');
+  if(btn) btn.classList.add('active');
+  const list = document.getElementById('sb-lesson-list');
+  const panel = document.getElementById('sb-progress-panel');
   if(tab === 'lessons'){
-    if(lessonList) lessonList.style.display = 'block';
-    if(progressPanel) { progressPanel.style.display = 'none'; progressPanel.classList.remove('show'); }
+    if(list) list.style.display = '';
+    if(panel){ panel.style.display = 'none'; panel.classList.remove('show'); }
   } else {
-    if(lessonList) lessonList.style.display = 'none';
-    if(progressPanel) { progressPanel.style.display = 'block'; progressPanel.classList.add('show'); buildProgressPanel(); }
+    if(list) list.style.display = 'none';
+    if(panel){ panel.style.display = ''; panel.classList.add('show'); buildProgressPanel(); }
   }
 }
 window.setSbTab = setSbTab;
 
-// ALL_LESSONS_LIST（intro含む全リスト）
-const ALL_TABS_ORDERED = ['intro', ...ALL_LESSONS_LIST];
-
-// 学習エリアの表示切替
-function showLearnArea(){
-  const learnArea = document.getElementById('learn-area');
-  const preview = document.getElementById('lessons-preview');
-  const tabsWrap = document.getElementById('tabs-wrap');
-  if(learnArea) learnArea.classList.add('show');
-  if(preview) preview.style.display = 'none';
-  if(tabsWrap) tabsWrap.classList.add('hidden');
+// ---- 学習画面 表示/非表示 ----
+function showLearnUI(){
+  const w = document.getElementById('learn-wrapper');
+  if(w) w.classList.add('show');
+  // タブバー非表示
+  const tw = document.getElementById('tabs-wrap');
+  if(tw) tw.classList.add('hidden');
+  // lessonsセクションのパディングを消す
+  const sec = document.getElementById('lessons');
+  if(sec) sec.style.display = 'none';
+  document.body.classList.add('logged-in');
+}
+function hideLearnUI(){
+  const w = document.getElementById('learn-wrapper');
+  if(w) w.classList.remove('show');
+  const tw = document.getElementById('tabs-wrap');
+  if(tw) tw.classList.remove('hidden');
+  const sec = document.getElementById('lessons');
+  if(sec) sec.style.display = '';
+  document.body.classList.remove('logged-in');
 }
 
-function hideLearnArea(){
-  const learnArea = document.getElementById('learn-area');
-  const preview = document.getElementById('lessons-preview');
-  const tabsWrap = document.getElementById('tabs-wrap');
-  if(learnArea) learnArea.classList.remove('show');
-  if(preview) preview.style.display = '';
-  if(tabsWrap) tabsWrap.classList.remove('hidden');
-}
-
-// メインエリアにtconを移動
-function mountLesson(tabId){
-  const inner = document.getElementById('learn-main-inner');
+// ---- アクティブtconをlearn-content-innerに表示 ----
+function showActiveLesson(tabId){
+  const inner = document.getElementById('learn-content-inner');
   if(!inner) return;
+
+  // 全tconを非表示（元の場所）
+  document.querySelectorAll('.tcon').forEach(t => t.classList.remove('active'));
+
+  // 対象tconを取得してlearn-content-innerへ移動・表示
   const tcon = document.getElementById('tab-' + tabId);
   if(!tcon) return;
-  // 既にinnerにあればそのまま
-  if(tcon.parentElement === inner) return;
-  inner.appendChild(tcon);
+
+  // まだinnerにない場合は移動
+  if(tcon.parentElement !== inner){
+    inner.innerHTML = '';
+    inner.appendChild(tcon);
+  }
+  tcon.classList.add('active');
 }
 
-// 前後ナビ
+// ---- 前後ナビ ----
 function lessonNav(dir){
-  const currentTab = document.querySelector('#learn-main-inner .tcon.active')?.id?.replace('tab-','')
-    || document.querySelector('.tcon.active')?.id?.replace('tab-','') || 'intro';
-  const idx = ALL_TABS_ORDERED.indexOf(currentTab);
+  const inner = document.getElementById('learn-content-inner');
+  const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
+  const currentId = activeTcon?.id?.replace('tab-','') || 'intro';
+  const idx = ALL_TABS_ORDERED.indexOf(currentId);
   const next = ALL_TABS_ORDERED[idx + dir];
   if(next) switchTab(next);
 }
 window.lessonNav = lessonNav;
 
-// サイドバーのレッスンリスト生成
+// ---- サイドバーのレッスンリスト生成 ----
 function buildSideNav(completed){
-  if(!currentUser){ hideLearnArea(); return; }
-  showLearnArea();
+  if(!currentUser){ hideLearnUI(); return; }
+  showLearnUI();
 
-  const currentTab = document.querySelector('#learn-main-inner .tcon.active')?.id?.replace('tab-','')
-    || document.querySelector('.tcon.active')?.id?.replace('tab-','') || 'intro';
+  // 現在のタブ
+  const inner = document.getElementById('learn-content-inner');
+  const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
+  const currentTab = activeTcon?.id?.replace('tab-','') || 'intro';
 
-  // レッスンをメインエリアにマウント
-  mountLesson(currentTab);
+  // レッスン表示
+  showActiveLesson(currentTab);
 
-  // 進捗バー更新
-  const fill = document.getElementById('sb-progress-bar-fill');
-  const cnt = document.getElementById('sb-progress-count');
+  // フッター進捗
+  const fill = document.getElementById('sb-footer-fill');
+  const cnt = document.getElementById('sb-footer-count');
   const total = ALL_LESSONS_LIST.length;
   const pct = completed.length / total * 100;
   if(fill) fill.style.width = pct + '%';
   if(cnt) cnt.textContent = completed.length + ' / ' + total;
 
-  // レッスンリスト生成
+  // レッスンリスト
   const list = document.getElementById('sb-lesson-list');
   if(!list) return;
-
   let html = '';
   CHAPTER_DATA.forEach(ch => {
     const doneCnt = ch.lessons.filter(id => completed.includes(id)).length;
-    html += `<div class="sb-chapter-label"><span style="color:${ch.color};font-weight:700">${ch.tag}</span><span></span><span style="font-size:9px">${doneCnt}/${ch.lessons.length}</span></div>`;
+    html += `<div class="sb-ch-label">${ch.tag} · ${ch.name}</div>`;
     ch.lessons.forEach(id => {
       const done = completed.includes(id);
       const active = id === currentTab;
       const raw = LESSON_LABELS[id] || id;
-      const title = raw.replace(/^L\d+：/,'').replace(/^序章：/,'');
+      const title = raw.replace(/^L\d+[：:]/,'').replace(/^序章[：:]/,'').replace(/^【序章】/,'');
       const num = id === 'intro' ? '00' : id.replace('lesson','').padStart(2,'0');
-      html += `<div class="sb-lesson-row${active?' active':''}${done?' done':''}" onclick="switchTab('${id}')">
-        <div class="sb-dot">${done||active ? '✓' : ''}</div>
-        <span class="sb-num">${num}</span>
-        <span class="sb-title" title="${raw}">${title}</span>
+      html += `<div class="sb-row${active?' active':''}${done?' done':''}" onclick="switchTab('${id}')">
+        <div class="sb-row-dot"></div>
+        <span class="sb-row-num">${num}</span>
+        <span class="sb-row-title">${title}</span>
       </div>`;
     });
   });
   list.innerHTML = html;
 
-  // パンくず更新
-  updateTopBar(currentTab);
+  // アクティブ行をスクロール表示
+  setTimeout(()=>{
+    const activeRow = list.querySelector('.sb-row.active');
+    if(activeRow) activeRow.scrollIntoView({block:'nearest', behavior:'smooth'});
+  }, 50);
 
-  // スクロールでアクティブ行を表示
-  const activeRow = list.querySelector('.sb-lesson-row.active');
-  if(activeRow) activeRow.scrollIntoView({block:'nearest', behavior:'smooth'});
+  // パンくず・ボタン更新
+  updateLearnTopBar(currentTab);
 }
 
-// 上部バー更新
-function updateTopBar(tabId){
-  const bc = document.getElementById('lesson-breadcrumb-new');
-  if(!bc) return;
-  const ch = CHAPTER_DATA.find(c => c.lessons.includes(tabId));
-  const label = LESSON_LABELS[tabId] || '';
-  const title = label.replace(/^L\d+：/,'').replace(/^序章：/,'');
-  const num = tabId === 'intro' ? '00' : tabId.replace('lesson','').padStart(2,'0');
-
-  // 前後ボタン更新
+// ---- 上部バー更新 ----
+function updateLearnTopBar(tabId){
+  const bc = document.getElementById('learn-breadcrumb');
+  if(bc){
+    const ch = CHAPTER_DATA.find(c => c.lessons.includes(tabId));
+    const raw = LESSON_LABELS[tabId] || '';
+    const title = raw.replace(/^L\d+[：:]/,'').replace(/^序章[：:]/,'');
+    const num = tabId === 'intro' ? '00' : tabId.replace('lesson','').padStart(2,'0');
+    if(ch){
+      bc.innerHTML = `<span class="bc-ch" style="color:${ch.color}">${ch.tag}</span><span class="bc-sep">/</span><span>L${num}</span><span class="bc-sep">—</span><span style="color:var(--text2)">${title}</span>`;
+    }
+  }
   const allTabs = ALL_TABS_ORDERED;
   const idx = allTabs.indexOf(tabId);
-  const prevBtn = document.getElementById('lesson-prev-btn');
-  const nextBtn = document.getElementById('lesson-next-btn');
+  const prevBtn = document.getElementById('learn-prev-btn');
+  const nextBtn = document.getElementById('learn-next-btn');
   if(prevBtn) prevBtn.disabled = idx <= 0;
   if(nextBtn) nextBtn.disabled = idx >= allTabs.length - 1;
-  if(prevBtn) prevBtn.style.opacity = idx <= 0 ? '0.3' : '1';
-  if(nextBtn) nextBtn.style.opacity = idx >= allTabs.length - 1 ? '0.3' : '1';
-
-  if(!ch){ bc.innerHTML = ''; return; }
-  bc.innerHTML = `<span class="bc-ch" style="color:${ch.color}">${ch.tag}</span><span class="bc-sep">/</span><span style="font-family:'IBM Plex Mono',monospace">L${num}</span><span class="bc-sep">—</span><span class="bc-title">${title}</span>`;
 }
 
-// 進捗パネル生成
+// ---- 進捗パネル ----
 function buildProgressPanel(){
   const panel = document.getElementById('sb-progress-panel');
   if(!panel) return;
@@ -5441,9 +5515,9 @@ function buildProgressPanel(){
   panel.innerHTML = html;
 }
 
-// 旧breadcrumb関数（互換性）
-function buildSideNavCompat(completed){ buildSideNav(completed); }
-function updateBreadcrumb(tabId){ updateTopBar(tabId); }
+// 旧関数互換
+function buildSideNavCompat(c){ buildSideNav(c); }
+function updateBreadcrumb(tabId){ updateLearnTopBar(tabId); }
 
 
 /* ===== クイズ未正解時は受講済みボタンをロック ===== */
