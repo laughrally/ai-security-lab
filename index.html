@@ -4830,13 +4830,15 @@ window.switchTab = switchTab;
 // switchTab後にサイドバー・学習UIを更新
 const _origSwitchTab = switchTab;
 window.switchTab = function(name){
-  _origSwitchTab(name);
   if(currentUser){
+    // ログイン後はshowActiveLessonで直接切替
+    showActiveLesson(name);
     const completed = loadCompleted();
     buildSideNav(completed);
-    // コンテンツをトップへ
     const lc = document.getElementById('learn-content');
     if(lc) lc.scrollTop = 0;
+  } else {
+    _origSwitchTab(name);
   }
 };
 window.toggleCh        = toggleCh;
@@ -5389,10 +5391,20 @@ function showLearnUI(){
   // タブバー非表示
   const tw = document.getElementById('tabs-wrap');
   if(tw) tw.classList.add('hidden');
-  // lessonsセクションのパディングを消す
+  // lessonsセクションを非表示
   const sec = document.getElementById('lessons');
   if(sec) sec.style.display = 'none';
   document.body.classList.add('logged-in');
+
+  // 全tconをlearn-content-innerに移動（初回のみ）
+  const inner = document.getElementById('learn-content-inner');
+  if(inner && inner.dataset.moved !== '1'){
+    inner.dataset.moved = '1';
+    document.querySelectorAll('.tcon').forEach(t => {
+      t.style.display = 'none';
+      inner.appendChild(t);
+    });
+  }
 }
 function hideLearnUI(){
   const w = document.getElementById('learn-wrapper');
@@ -5406,21 +5418,16 @@ function hideLearnUI(){
 
 // ---- アクティブtconをlearn-content-innerに表示 ----
 function showActiveLesson(tabId){
-  const inner = document.getElementById('learn-content-inner');
-  if(!inner) return;
+  // 全tconをhidden
+  document.querySelectorAll('.tcon').forEach(t => {
+    t.classList.remove('active');
+    t.style.display = 'none';
+  });
 
-  // 全tconを非表示（元の場所）
-  document.querySelectorAll('.tcon').forEach(t => t.classList.remove('active'));
-
-  // 対象tconを取得してlearn-content-innerへ移動・表示
+  // 対象tconだけ表示
   const tcon = document.getElementById('tab-' + tabId);
   if(!tcon) return;
-
-  // まだinnerにない場合は移動
-  if(tcon.parentElement !== inner){
-    inner.innerHTML = '';
-    inner.appendChild(tcon);
-  }
+  tcon.style.display = 'block';
   tcon.classList.add('active');
 }
 
