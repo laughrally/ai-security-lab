@@ -4533,6 +4533,8 @@ const WORKER_URL    = 'https://ai-security-lab-stripe.laughrally.workers.dev';
    ▼ 無料で見られるタブ名（これ以外はログイン必須）
    ============================================================ */
 const FREE_TABS = ['intro', 'lesson1'];
+const STANDARD_TABS = ['lesson18','lesson19','lesson20','lesson21','lesson22'];
+const PREMIUM_TABS  = ['lesson23','lesson24','lesson25','lesson26','lesson27'];
 
 /* ========== Supabase初期化 ========== */
 let _supabase = null;
@@ -4613,6 +4615,7 @@ async function fetchUserPlan(){
     currentUserPlan = 'basic';
   }
   updateCertificateUI();
+  applyPlanLock();
   // Supabaseから受講済みレッスンを復元
   await syncCompletedFromSupabase();
   // 管理者メールの場合のみ管理者ダッシュボードを表示
@@ -4744,6 +4747,29 @@ function lockPaidTabs(lock){
   });
 }
 
+// プランに応じてL18〜L27のアクセスをロック
+function applyPlanLock(){
+  const plan = currentUserPlan || 'basic';
+  document.querySelectorAll('.sb-row, .lrow').forEach(el => {
+    const onclick = el.getAttribute('onclick') || '';
+    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/);
+    if(!m) return;
+    const lessonId = m[1];
+    const isLocked =
+      (PREMIUM_TABS.includes(lessonId) && plan !== 'premium') ||
+      (STANDARD_TABS.includes(lessonId) && plan === 'basic');
+    if(isLocked){
+      el.style.opacity = '0.4';
+      el.style.pointerEvents = 'none';
+      el.title = plan === 'basic' ? 'Standardプラン以上で受講できます' : 'Premiumプランで受講できます';
+    } else {
+      el.style.opacity = '';
+      el.style.pointerEvents = '';
+      el.title = '';
+    }
+  });
+}
+
 /* ===== 認証モーダル制御 ===== */
 function openAuthModal(){
   document.getElementById('auth-overlay').classList.remove('hidden');
@@ -4849,6 +4875,18 @@ function switchTab(name){
   if(!FREE_TABS.includes(name) && !currentUser){
     openAuthModal();
     return;
+  }
+  // プランチェック
+  if(currentUser){
+    const plan = currentUserPlan || 'basic';
+    if(PREMIUM_TABS.includes(name) && plan !== 'premium'){
+      alert('このレッスンはPremiumプランでご受講いただけます。');
+      return;
+    }
+    if(STANDARD_TABS.includes(name) && plan === 'basic'){
+      alert('このレッスンはStandard以上のプランでご受講いただけます。');
+      return;
+    }
   }
   document.querySelectorAll('.tab').forEach(t=>{
     const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
@@ -5586,6 +5624,9 @@ function buildSideNav(completed){
     });
   });
   list.innerHTML = html;
+
+  // プランロック適用
+  applyPlanLock();
 
   // アクティブ行をスクロール表示
   setTimeout(()=>{
