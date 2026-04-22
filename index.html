@@ -5791,6 +5791,44 @@ function retryExam(){
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
+const GAS_CERT_URL = 'https://script.google.com/macros/s/AKfycbxzuTg3WqsIsByqM8LGUgLoA7uZxn_15VQI4FZjmiMCDjT79rNznxtYT0DKm26EAzx3/exec';
+
+async function submitCertificate(){
+  const company = (document.getElementById('cert-company')?.value || '').trim();
+  const name    = (document.getElementById('cert-name')?.value || '').trim();
+  const email   = (document.getElementById('cert-email')?.value || '').trim();
+  const msg     = document.getElementById('cert-msg');
+  const btn     = document.getElementById('cert-submit-btn');
+
+  if(!name){ alert('氏名を入力してください。'); return; }
+  if(!email){ alert('メールアドレスを入力してください。'); return; }
+
+  btn.disabled = true;
+  btn.textContent = '送信中...';
+  if(msg){ msg.style.display = 'none'; }
+
+  const plan = currentUserPlan || 'standard';
+  const params = new URLSearchParams({ '会社名': company, '担当者名': name, 'メールアドレス': email, 'plan': plan });
+
+  try {
+    await fetch(GAS_CERT_URL + '?' + params.toString(), { method: 'GET', mode: 'no-cors' });
+    if(msg){
+      msg.style.display = 'block';
+      msg.style.color = 'var(--green)';
+      msg.textContent = '✅ 申請完了！修了証PDFをメールでお送りします。';
+    }
+    btn.textContent = '申請済み';
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = '修了証を申請する';
+    if(msg){
+      msg.style.display = 'block';
+      msg.style.color = 'var(--red)';
+      msg.textContent = '送信に失敗しました。時間をおいて再試行してください。';
+    }
+  }
+}
+
 function requestCertificate(){
   const email = currentUser ? currentUser.email : '';
   const subject = encodeURIComponent('AI Security Lab 認定試験 合格 - 修了証発行申請');
@@ -5799,6 +5837,7 @@ function requestCertificate(){
 }
 
 window.startExam = startExam;
+window.submitCertificate = submitCertificate;
 window.submitExam = submitExam;
 window.selectAnswer = selectAnswer;
 window.retryExam = retryExam;
