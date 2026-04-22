@@ -4734,13 +4734,16 @@ function initSupabase(){
   }
 }
 
+let currentExamPassed = false;
 async function fetchUserPlan(){
   if(!_supabase || !currentUser) return;
   try {
-    const { data } = await _supabase.from('profiles').select('plan').eq('id', currentUser.id).single();
+    const { data } = await _supabase.from('profiles').select('plan,exam_passed').eq('id', currentUser.id).single();
     currentUserPlan = data?.plan ?? 'basic';
+    currentExamPassed = data?.exam_passed ?? false;
   } catch(e) {
     currentUserPlan = 'basic';
+    currentExamPassed = false;
   }
   updateCertificateUI();
   applyPlanLock();
@@ -5196,7 +5199,7 @@ function updateCompletionUI(){
     ? ALL_LESSONS_LIST           // 27本
     : ALL_LESSONS_LIST.slice(0, 22); // 22本（standard）
   const allDone = planLessons.every(id => completed.includes(id));
-  const examPassed = localStorage.getItem('asl_exam_passed') === '1';
+  const examPassed = currentExamPassed;
   const canApply = plan === 'premium' ? (allDone && examPassed) : allDone;
   const certDesc = document.querySelector('.cert-desc');
   if(certDesc){
@@ -5761,7 +5764,9 @@ function submitExam(){
     return {q, userAns, isCorrect, idx:i};
   });
   const passed = correct >= 48;
-  if(passed) localStorage.setItem('asl_exam_passed', '1');
+  if(passed && _supabase && currentUser){
+    _supabase.from('profiles').update({ exam_passed: true }).eq('id', currentUser.id).then();
+  }
   renderExamResult(correct, results, passed);
   if(passed) updateCompletionUI();
   window.scrollTo({top:0, behavior:'smooth'});
