@@ -5275,6 +5275,50 @@ const EXAM_QUESTIONS = [
   {lesson:'序章',q:'生成AIが日本のビジネス現場に急速に普及した主な契機はどれか？',o:['スマートフォンの普及','2022年11月のChatGPT公開','政府のAI推進法の施行','AIロボットの導入'],a:1,e:'2022年11月のChatGPT公開が契機となり、生成AIが日本のビジネス現場に急速に普及しました。'},
 ];
 
+/* ===== 進捗ダッシュボード ===== */
+const LESSON_LABELS = {
+  'intro':'序章：なぜ今学ぶか',
+  'lesson1':'L01：入力情報はどこへ行くのか',
+  'lesson2':'L02：学習オフ設定の意味と限界',
+  'lesson3':'L03：シャドーAIとは何か',
+  'lesson4':'L04：クラウドAIとオンプレAIの違い',
+  'lesson5':'L05：ChatGPT各プランの違い',
+  'lesson6':'L06：Claude・Gemini・Copilot比較',
+  'lesson7':'L07：社外秘・個人情報の判断基準',
+  'lesson8':'L08：業種別リスク事例',
+  'lesson9':'L09：AIと個人情報保護法',
+  'lesson10':'L10：著作権侵害になるケース',
+  'lesson11':'L11：ハルシネーションと法的責任',
+  'lesson12':'L12：ガイドライン作成テンプレート',
+  'lesson13':'L13：インシデント初動対応フロー',
+  'lesson14':'L14：中小企業の最低限の体制',
+  'lesson15':'L15：今日からできる10のアクション',
+  'lesson16':'L16：よくある事例集（20事例）',
+  'lesson17':'L17：主要AIツール完全比較',
+  'lesson18':'L18：AIを使ったフィッシング詐欺',
+  'lesson19':'L19：プロンプトインジェクション攻撃',
+  'lesson20':'L20：ディープフェイクと音声詐欺',
+  'lesson21':'L21：AIエージェント・自動化ツールのリスク',
+  'lesson22':'L22：インシデント対応ロールプレイ',
+  'lesson23':'L23：LLMの仕組み入門',
+  'lesson24':'L24：プロンプトエンジニアリング基礎',
+  'lesson25':'L25：RAG・ファインチューニングのリスク',
+  'lesson26':'L26：業種別AIロードマップ',
+  'lesson27':'L27：MCPとAIエージェント最前線'
+};
+
+// 章別レッスン定義
+const CHAPTER_DATA = [
+  {tag:'序章', name:'なぜ今、AIセキュリティを学ぶ必要があるのか', lessons:['intro'], color:'var(--red)'},
+  {tag:'第1章', name:'AIと情報漏洩の基礎知識', lessons:['lesson1','lesson2','lesson3','lesson4'], color:'var(--red)'},
+  {tag:'第2章', name:'ツール別リスクと設定', lessons:['lesson5','lesson6','lesson7','lesson8'], color:'var(--amber)'},
+  {tag:'第3章', name:'法律・著作権・ハルシネーション', lessons:['lesson9','lesson10','lesson11'], color:'var(--amber)'},
+  {tag:'第4章', name:'組織・ガイドライン整備', lessons:['lesson12','lesson13','lesson14','lesson15'], color:'var(--blue)'},
+  {tag:'第5章', name:'実践：事例研究とツール比較', lessons:['lesson16','lesson17'], color:'var(--blue)'},
+  {tag:'第6章', name:'AI攻撃手口と防衛策', lessons:['lesson18','lesson19','lesson20','lesson21','lesson22'], color:'#0ea5e9', plan:'Standard+'},
+  {tag:'第7章', name:'AI技術とセキュリティの深層', lessons:['lesson23','lesson24','lesson25','lesson26','lesson27'], color:'#8b5cf6', plan:'Premium'},
+];
+
 function updateDashboard(){
   const completed = loadCompleted();
   const dashboard = document.getElementById('progress-dashboard');
