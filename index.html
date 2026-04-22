@@ -151,6 +151,8 @@
   .badge{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:4px}
   .bf{background:var(--green-l);color:var(--green);border:1px solid rgba(22,163,74,.2)}
   .bl{background:var(--bg3);color:var(--text4);border:1px solid var(--border)}
+  .bs{background:#e0f2fe;color:#0369a1;border:1px solid rgba(3,105,161,.2)}
+  .bp{background:#ede9fe;color:#6d28d9;border:1px solid rgba(109,40,217,.2)}
 
   .tabs{display:flex;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:40px;overflow-x:auto}
   .tab{padding:9px 18px;border-radius:7px;font-size:12px;cursor:pointer;white-space:nowrap;color:var(--text3);border:none;background:none;font-family:'Noto Sans JP',sans-serif;transition:all .15s}
@@ -911,7 +913,7 @@
   </div>
   <div class="hright">
     <div class="hsc"><div class="hscicon ic-r">⚠️</div><div><div class="hscn cn-r">81%</div><div class="hscl">教育なしで生成AIを<br>使い続ける日本企業</div></div></div>
-    <div class="hsc"><div class="hscicon ic-a">📋</div><div><div class="hscn cn-a">17</div><div class="hscl">実践的なレッスン数<br>（序章 + 全6章）</div></div></div>
+    <div class="hsc"><div class="hscicon ic-a">📋</div><div><div class="hscn cn-a">27</div><div class="hscl">実践的なレッスン数<br>（序章 + 全7章）</div></div></div>
     <div class="hsc"><div class="hscicon ic-b">⏱</div><div><div class="hscn cn-b">約5h</div><div class="hscl">目安学習時間<br>隙間時間での受講も可</div></div></div>
   </div>
 </div>
@@ -936,56 +938,78 @@
   <div class="conw">
     <div class="seye">// CURRICULUM</div>
     <h2 class="stit">カリキュラム</h2>
-    <p class="sdesc" style="margin-bottom:40px">序章 + 全4章・16レッスン。各章末に理解度テスト付き。</p>
+    <p class="sdesc" style="margin-bottom:40px">序章 + 全7章・27レッスン。Basic（L01〜L17）・Standard（L18〜L22）・Premium（L23〜L27）の3段階で深く学べます。各レッスンに理解度テスト付き。</p>
     <div class="chapter open" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">序章</span><span class="cname">なぜ今、AIセキュリティを学ぶ必要があるのか</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
       <div class="cbd"><div class="lrow" onclick="switchTab('intro')"><span class="ln">00</span><span class="lname">日本企業の8割が教育なしでAIを使っている現実</span><span class="badge bf">無料</span></div></div>
     </div>
+
     <div class="chapter open" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第1章</span><span class="cname">AIと情報漏洩の基礎知識</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
         <div class="lrow" onclick="switchTab('lesson1')"><span class="ln">01</span><span class="lname">ChatGPTに入力した情報はどこへ行くのか</span><span class="badge bf">無料</span></div>
-        <div class="lrow" onclick="switchTab('lesson2');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">02</span><span class="lname">「学習オフ」設定の意味と限界</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson3');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">03</span><span class="lname">シャドーAIとは何か・なぜ危険か</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson4');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">04</span><span class="lname">クラウドAIとオンプレAIの違い</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson2');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">02</span><span class="lname">「学習オフ」設定の意味と限界</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson3');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">03</span><span class="lname">シャドーAIとは何か・なぜ危険か</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson4');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">04</span><span class="lname">クラウドAIとオンプレAIの違い</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
+
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第2章</span><span class="cname">ツール別・やってはいけないこと</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第2章</span><span class="cname">ツール別リスクと設定</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson5');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">05</span><span class="lname">ChatGPT（無料版・有料版・Business版）の違い</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson6');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">06</span><span class="lname">Claude・Gemini・Copilotのセキュリティ設定比較</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson7');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">07</span><span class="lname">「社外秘」「個人情報」「顧客情報」の判断基準</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson8');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">08</span><span class="lname">業種別リスク事例（不動産・介護・飲食・士業）</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson5');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">05</span><span class="lname">ChatGPT（無料版・有料版・Business版）の違い</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson6');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">06</span><span class="lname">Claude・Gemini・Copilotのセキュリティ設定比較</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson7');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">07</span><span class="lname">「社外秘」「個人情報」「顧客情報」の判断基準</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson8');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">08</span><span class="lname">業種別リスク事例（不動産・介護・飲食・士業）</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
+
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第3章</span><span class="cname">法律・著作権・倫理</span><span class="ccnt">3レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第3章</span><span class="cname">法律・著作権・ハルシネーション</span><span class="ccnt">3レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson9');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">09</span><span class="lname">AIと個人情報保護法の関係</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson10');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">10</span><span class="lname">著作権侵害になるケース・ならないケース</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson11');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">11</span><span class="lname">ハルシネーションと法的責任</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson9');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">09</span><span class="lname">AIと個人情報保護法の関係</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson10');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">10</span><span class="lname">著作権侵害になるケース・ならないケース</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson11');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">11</span><span class="lname">ハルシネーションと法的責任</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
+
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第4章</span><span class="cname">会社・チームとして整備すること</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第4章</span><span class="cname">組織・ガイドライン整備</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson12');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">12</span><span class="lname">AI利用ガイドライン作成テンプレート（DL可）</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson13');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">13</span><span class="lname">インシデント発生時の初動対応フロー</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson14');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">14</span><span class="lname">中小企業でもできる最低限の体制づくり</span><span class="badge bl">受講者限定</span></div>
-        <div class="lrow" onclick="switchTab('lesson15');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">15</span><span class="lname">【まとめ】今日からできる10のアクション</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson12');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">12</span><span class="lname">AI利用ガイドライン作成テンプレート（DL可）</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson13');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">13</span><span class="lname">インシデント発生時の初動対応フロー</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson14');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">14</span><span class="lname">中小企業でもできる最低限の体制づくり</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson15');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">15</span><span class="lname">【まとめ】今日からできる10のアクション</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
+
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第5章</span><span class="cname">よくある事例と実践ケーススタディ</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第5章</span><span class="cname">実践：事例研究とツール比較</span><span class="ccnt">2レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson16');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">16</span><span class="lname">業種・シーン別 よくある事例集（20事例）</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson16');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">16</span><span class="lname">業種・シーン別 よくある事例集（20事例）</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" onclick="switchTab('lesson17');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">17</span><span class="lname">ChatGPT / Gemini / Claude / Genspark / Manus / NotebookLM 完全比較</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
+
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第6章</span><span class="cname">主要AIツール 徹底比較</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第6章</span><span class="cname">AI攻撃手口と防衛策 <span style="font-size:10px;background:#0ea5e9;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Standard+</span></span><span class="ccnt">5レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="switchTab('lesson17');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">17</span><span class="lname">ChatGPT / Gemini / Claude / Genspark / Manus / NotebookLM の使い分けと注意点</span><span class="badge bl">受講者限定</span></div>
+        <div class="lrow" onclick="switchTab('lesson18');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">18</span><span class="lname">AIを使ったフィッシング詐欺——攻撃者の手口と見分け方</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" onclick="switchTab('lesson19');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">19</span><span class="lname">プロンプトインジェクション攻撃——AIそのものを武器に変える手口</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" onclick="switchTab('lesson20');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">20</span><span class="lname">ディープフェイクと音声詐欺——「見た目」も「声」も信用できない時代</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" onclick="switchTab('lesson21');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">21</span><span class="lname">AIエージェント・自動化ツールのリスク</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" onclick="switchTab('lesson22');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">22</span><span class="lname">インシデント対応ロールプレイ——「もし今、漏洩が起きたら」を体験する</span><span class="badge bs">Standard+</span></div>
+      </div>
+    </div>
+
+    <div class="chapter" onclick="toggleCh(this)">
+      <div class="chd"><span class="ctag">第7章</span><span class="cname">AI技術とセキュリティの深層 <span style="font-size:10px;background:#8b5cf6;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Premium</span></span><span class="ccnt">5レッスン</span><span class="carr">▼</span></div>
+      <div class="cbd">
+        <div class="lrow" onclick="switchTab('lesson23');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">23</span><span class="lname">LLMの仕組み入門——なぜAIは「嘘」をつくのか</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" onclick="switchTab('lesson24');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">24</span><span class="lname">プロンプトエンジニアリング基礎——安全で精度の高い指示の書き方</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" onclick="switchTab('lesson25');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">25</span><span class="lname">RAG・ファインチューニングのリスク——社内データをAIに学習させる前に</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" onclick="switchTab('lesson26');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">26</span><span class="lname">業種別AIロードマップ——職種ごとの安全活用と禁止事項</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" onclick="switchTab('lesson27');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})" style="cursor:pointer"><span class="ln">27</span><span class="lname">MCPとAIエージェント最前線——2025年以降のAI活用とセキュリティ</span><span class="badge bp">Premium</span></div>
       </div>
     </div>
   </div>
@@ -2657,7 +2681,7 @@
     <!-- ===== L17 ===== -->
     <div class="tcon" id="tab-lesson17">
       <div class="lc">
-        <div class="leye">CHAPTER 06 // LESSON 17</div>
+        <div class="leye">CHAPTER 05 // LESSON 17</div>
         <h1 class="ltit">主要AIツール完全比較ガイド<br>ChatGPT / Gemini / Claude / Genspark / Manus / NotebookLM</h1>
         <div class="lmeta"><span class="lmi">📖 読了時間：約18分</span><span class="lmi">🎯 難易度：中級〜応用</span></div>
         <div class="lb">
@@ -2813,7 +2837,7 @@
     <!-- ===== L18 ===== -->
     <div class="tcon" id="tab-lesson18">
       <div class="lc">
-        <div class="leye">CHAPTER 05 // LESSON 18</div>
+        <div class="leye">CHAPTER 06 // LESSON 18</div>
         <h1 class="ltit">AIを使ったフィッシング詐欺<br>——攻撃者の手口と見分け方</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約15分</span>
@@ -2909,7 +2933,7 @@
     <!-- ===== L19 ===== -->
     <div class="tcon" id="tab-lesson19">
       <div class="lc">
-        <div class="leye">CHAPTER 05 // LESSON 19</div>
+        <div class="leye">CHAPTER 06 // LESSON 19</div>
         <h1 class="ltit">プロンプトインジェクション攻撃<br>——AIそのものを武器に変える手口</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約15分</span>
@@ -2992,7 +3016,7 @@
     <!-- ===== L20 ===== -->
     <div class="tcon" id="tab-lesson20">
       <div class="lc">
-        <div class="leye">CHAPTER 05 // LESSON 20</div>
+        <div class="leye">CHAPTER 06 // LESSON 20</div>
         <h1 class="ltit">ディープフェイクと音声詐欺<br>——「見た目」も「声」も信用できない時代</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約15分</span>
@@ -3074,7 +3098,7 @@
     <!-- ===== L21 ===== -->
     <div class="tcon" id="tab-lesson21">
       <div class="lc">
-        <div class="leye">CHAPTER 05 // LESSON 21</div>
+        <div class="leye">CHAPTER 06 // LESSON 21</div>
         <h1 class="ltit">AIエージェント・自動化ツールのリスク<br>——「自律的に動くAI」の落とし穴</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約15分</span>
@@ -3154,7 +3178,7 @@
     <!-- ===== L22 ===== -->
     <div class="tcon" id="tab-lesson22">
       <div class="lc">
-        <div class="leye">CHAPTER 05 // LESSON 22</div>
+        <div class="leye">CHAPTER 06 // LESSON 22</div>
         <h1 class="ltit">インシデント対応ロールプレイ<br>——「もし今、漏洩が起きたら」を体験する</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約20分</span>
@@ -3279,7 +3303,7 @@
     <!-- ===== L23 ===== -->
     <div class="tcon" id="tab-lesson23">
       <div class="lc">
-        <div class="leye">CHAPTER 06 // LESSON 23</div>
+        <div class="leye">CHAPTER 07 // LESSON 23</div>
         <h1 class="ltit">LLMの仕組み入門<br>——なぜAIは「嘘」をつくのか</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約18分</span>
@@ -3371,7 +3395,7 @@
     <!-- ===== L24 ===== -->
     <div class="tcon" id="tab-lesson24">
       <div class="lc">
-        <div class="leye">CHAPTER 06 // LESSON 24</div>
+        <div class="leye">CHAPTER 07 // LESSON 24</div>
         <h1 class="ltit">プロンプトエンジニアリング基礎<br>——安全で精度の高い指示の書き方</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約18分</span>
@@ -3469,7 +3493,7 @@
     <!-- ===== L25 ===== -->
     <div class="tcon" id="tab-lesson25">
       <div class="lc">
-        <div class="leye">CHAPTER 06 // LESSON 25</div>
+        <div class="leye">CHAPTER 07 // LESSON 25</div>
         <h1 class="ltit">RAG・ファインチューニングのリスク<br>——社内データをAIに学習させる前に知ること</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約18分</span>
@@ -3581,7 +3605,7 @@
     <!-- ===== L26 ===== -->
     <div class="tcon" id="tab-lesson26">
       <div class="lc">
-        <div class="leye">CHAPTER 06 // LESSON 26</div>
+        <div class="leye">CHAPTER 07 // LESSON 26</div>
         <h1 class="ltit">業種別AIロードマップ<br>——あなたの職種での安全な活用と禁止事項</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約20分</span>
@@ -3681,7 +3705,7 @@
     <!-- ===== L27 ===== -->
     <div class="tcon" id="tab-lesson27">
       <div class="lc">
-        <div class="leye">CHAPTER 06 // LESSON 27</div>
+        <div class="leye">CHAPTER 07 // LESSON 27</div>
         <h1 class="ltit">MCPとAIエージェント最前線<br>——2025年以降のAI活用とセキュリティ</h1>
         <div class="lmeta">
           <span class="lmi">📖 読了時間：約20分</span>
