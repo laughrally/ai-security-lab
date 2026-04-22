@@ -982,19 +982,8 @@
   #sb-overlay.show { display: block; }
 
   /* モバイル：メニューボタン */
-  #sb-menu-btn {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 36px; height: 36px;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    color: var(--text2);
-    flex-shrink: 0;
-  }
+  #sb-menu-btn { display: none; }
+  #nav-menu-btn { display: none; flex-shrink: 0; }
 
   /* タブレット（〜860px） */
   @media (max-width: 860px) {
@@ -1020,7 +1009,7 @@
     }
 
     /* メニューボタン表示 */
-    #sb-menu-btn { display: flex; }
+    #nav-menu-btn { display: flex !important; }
 
     /* メイン全幅 */
     #learn-main { width: 100%; }
@@ -1224,6 +1213,7 @@
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="switchTab('certificate');document.getElementById('lessons').scrollIntoView({behavior:'smooth'});return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/27</button>
+    <button id="nav-menu-btn" onclick="toggleSbDrawer()" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;color:var(--text2);align-items:center;gap:6px;white-space:nowrap">≡ カリキュラム</button>
     <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
@@ -4390,7 +4380,6 @@
   <div id="learn-main">
     <!-- 上部バー -->
     <div id="learn-topbar">
-      <button id="sb-menu-btn" onclick="toggleSbDrawer()">☰</button>
       <div id="learn-breadcrumb"></div>
       <div id="learn-nav-btns">
         <button class="learn-nav-btn" id="learn-prev-btn" onclick="lessonNav(-1)">← 前へ</button>
@@ -4777,6 +4766,8 @@ function updateAuthUI(){
     if(navLogin)      navLogin.style.display   = 'none';
     if(navProblem)    navProblem.style.display  = 'none';
     if(navProg)       navProg.style.display    = 'inline-flex';
+    const navMenuBtn = document.getElementById('nav-menu-btn');
+    if(navMenuBtn) navMenuBtn.style.display = '';
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
     const hero = document.getElementById('top');
@@ -4796,6 +4787,8 @@ function updateAuthUI(){
     if(navLogin)      navLogin.style.display   = '';
     if(navProblem)    navProblem.style.display  = '';
     if(navProg)       navProg.style.display    = 'none';
+    const navMenuBtn2 = document.getElementById('nav-menu-btn');
+    if(navMenuBtn2) navMenuBtn2.style.display = 'none';
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
     const hero2 = document.getElementById('top');
