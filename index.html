@@ -4308,7 +4308,6 @@
           <li>L01〜L17（第1〜5章）全17レッスン</li>
           <li>各章末 理解度テスト</li>
           <li>AI利用ガイドラインテンプレート（DL）</li>
-          <li>修了証PDF メール自動送信</li>
           <li>コンテンツ更新通知</li>
         </ul>
         <button class="pcbtn bpo" onclick="openFormModal('ベーシック 9800円')">申し込む</button>
@@ -4762,8 +4761,8 @@ function updateCertificateUI(){
       box.id = 'cert-upgrade-notice';
       box.style.cssText = 'background:var(--bg2);border:1.5px solid var(--amber,#f59e0b);border-radius:12px;padding:24px 28px;text-align:center;margin-top:16px;';
       box.innerHTML = '<div style="font-size:22px;margin-bottom:10px">🎓</div>'
-        + '<div style="font-weight:600;font-size:15px;margin-bottom:8px">修了証はSTANDARD以上のプランで発行できます</div>'
-        + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">BASICプランでは全レッスンの受講が可能です。<br>修了証PDF発行はSTANDARD（¥59,800）以上にアップグレードしてください。</div>'
+        + '<div style="font-weight:600;font-size:15px;margin-bottom:8px">修了証はStandard・Premiumプランの特典です</div>'
+        + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">Basicプランは修了証の発行対象外です。<br>Standard（¥59,800）以上にアップグレードすると修了証PDFを取得できます。</div>'
         + '<a href="#pricing" onclick="document.getElementById(\'pricing\').style.display=\'block\';switchTab(\'intro\')" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none">プランをアップグレードする →</a>';
       formBox.parentNode.insertBefore(box, formBox);
     }
@@ -5144,13 +5143,16 @@ function updateCompletionUI(){
   const pct = completed.length / ALL_LESSONS_LIST.length * 100;
   if(fill)  fill.style.width = pct + '%';
   if(count) count.textContent = completed.length;
-  // プランごとの修了条件
+  // プランごとの修了条件（Basicは修了証なし）
   const plan = currentUserPlan || 'basic';
+  if(plan === 'basic'){
+    if(notice) notice.style.display = 'none';
+    if(submitBtn){ submitBtn.disabled = true; submitBtn.style.opacity = '.4'; }
+    return;
+  }
   const planLessons = plan === 'premium'
-    ? ALL_LESSONS_LIST                                          // 27本
-    : plan === 'standard'
-    ? ALL_LESSONS_LIST.slice(0, 22)                            // 22本
-    : ALL_LESSONS_LIST.slice(0, 17);                           // 17本
+    ? ALL_LESSONS_LIST           // 27本
+    : ALL_LESSONS_LIST.slice(0, 22); // 22本（standard）
   const allDone = planLessons.every(id => completed.includes(id));
   const certDesc = document.querySelector('.cert-desc');
   if(certDesc){
