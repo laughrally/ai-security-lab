@@ -969,15 +969,76 @@
   .sb-dash-dot:hover { border-color: var(--border2); color: var(--text2); }
   .sb-dash-dot.done { background: var(--green-l); border-color: rgba(22,163,74,.3); color: var(--green); }
 
+  /* ===== 学習UI レスポンシブ ===== */
+
+  /* タブレット〜（〜860px） */
   @media (max-width: 860px) {
-    #learn-wrapper.show { top: 64px; flex-direction: column; }
-    #learn-sidebar { width: 100%; height: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); }
+    #learn-wrapper.show {
+      top: 56px;
+      flex-direction: column;
+    }
+
+    /* サイドバーを上部の横スクロールナビに変換 */
+    #learn-sidebar {
+      width: 100%;
+      height: auto;
+      flex-direction: column;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      max-height: 240px;
+    }
     #sb-header { display: none; }
     #sb-footer { display: none; }
-    #sb-tabs { border-bottom: none; }
+    #sb-tabs {
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
     #sb-scroll { max-height: 180px; }
-    #learn-content-inner { padding: 24px 20px; }
-    #learn-topbar { padding: 8px 20px; }
+
+    /* メイン */
+    #learn-topbar { padding: 8px 16px; gap: 8px; }
+    #learn-breadcrumb { font-size: 11px; }
+    #learn-nav-btns { gap: 4px; }
+    .learn-nav-btn { padding: 4px 10px; font-size: 11px; }
+    #learn-content-inner { padding: 24px 16px; }
+  }
+
+  /* スマホ（〜600px） */
+  @media (max-width: 600px) {
+    /* サイドバーをコンパクトに */
+    #learn-sidebar { max-height: 200px; }
+    #sb-tabs .sb-tab { font-size: 11px; padding: 8px 4px; }
+    #sb-scroll { max-height: 148px; }
+
+    /* レッスン行を小さく */
+    .sb-ch-label { padding: 8px 12px 2px; font-size: 9px; }
+    .sb-row { padding: 7px 12px; font-size: 12px; gap: 8px; }
+    .sb-row-num { font-size: 9px; min-width: 18px; }
+
+    /* 上部バー */
+    #learn-topbar { padding: 7px 12px; min-height: 40px; }
+    #learn-breadcrumb { font-size: 10px; gap: 4px; }
+    #learn-breadcrumb .bc-sep { display: none; }
+    #learn-breadcrumb .bc-ch { display: none; }
+    .learn-nav-btn { padding: 4px 8px; font-size: 11px; }
+
+    /* コンテンツ */
+    #learn-content-inner { padding: 20px 14px; }
+  }
+
+  /* 超小型（〜375px） */
+  @media (max-width: 375px) {
+    #learn-sidebar { max-height: 180px; }
+    #sb-scroll { max-height: 128px; }
+    #learn-content-inner { padding: 16px 12px; }
+    #learn-topbar { padding: 6px 10px; }
+    .learn-nav-btn { padding: 3px 7px; font-size: 10px; }
+  }
+
+  /* ナビバーの高さ調整（スマホ時56px） */
+  @media (max-width: 768px) {
+    #learn-wrapper.show { top: 56px; }
+    #guide-toggle-btn { width: 32px; height: 32px; font-size: 13px; }
   }
 </style>
 </head>
