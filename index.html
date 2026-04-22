@@ -5365,12 +5365,17 @@ window.setSbTab = setSbTab;
 
 // カリキュラムからレッスンへ飛ぶ共通関数
 function goLesson(tabId){
-  switchTab(tabId);
-  // ログイン後はlearn-wrapperへ、未ログインはlessonsセクションへ
   if(currentUser){
-    const w = document.getElementById('learn-wrapper');
-    if(w) w.scrollIntoView({behavior:'smooth'});
+    // ログイン後：先にUIを表示してからレッスンをマウント
+    showLearnUI();
+    showActiveLesson(tabId);
+    const completed = loadCompleted();
+    buildSideNav(completed);
+    // learn-wrapperの先頭へスクロール
+    window.scrollTo({top: 0, behavior: 'smooth'});
   } else {
+    // 未ログイン：通常のswitchTab
+    switchTab(tabId);
     const s = document.getElementById('lessons');
     if(s) s.scrollIntoView({behavior:'smooth'});
   }
