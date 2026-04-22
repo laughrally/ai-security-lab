@@ -971,73 +971,84 @@
 
   /* ===== 学習UI レスポンシブ ===== */
 
-  /* タブレット〜（〜860px） */
+  /* モバイルドロワー用オーバーレイ */
+  #sb-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    z-index: 149;
+  }
+  #sb-overlay.show { display: block; }
+
+  /* モバイル：メニューボタン */
+  #sb-menu-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 36px; height: 36px;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text2);
+    flex-shrink: 0;
+  }
+
+  /* タブレット（〜860px） */
   @media (max-width: 860px) {
     #learn-wrapper.show {
       top: 56px;
-      flex-direction: column;
+      flex-direction: row;
     }
 
-    /* サイドバーを上部の横スクロールナビに変換 */
+    /* サイドバーをドロワー化 */
     #learn-sidebar {
-      width: 100%;
-      height: auto;
-      flex-direction: column;
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-      max-height: 240px;
+      position: fixed;
+      top: 56px; left: 0;
+      width: 280px;
+      height: calc(100vh - 56px);
+      z-index: 150;
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      border-right: 1px solid var(--border);
+      border-bottom: none;
     }
-    #sb-header { display: none; }
-    #sb-footer { display: none; }
-    #sb-tabs {
-      border-bottom: 1px solid var(--border);
-      flex-shrink: 0;
+    #learn-sidebar.open {
+      transform: translateX(0);
     }
-    #sb-scroll { max-height: 180px; }
 
-    /* メイン */
-    #learn-topbar { padding: 8px 16px; gap: 8px; }
+    /* メニューボタン表示 */
+    #sb-menu-btn { display: flex; }
+
+    /* メイン全幅 */
+    #learn-main { width: 100%; }
+    #learn-topbar { padding: 8px 14px; gap: 8px; }
     #learn-breadcrumb { font-size: 11px; }
-    #learn-nav-btns { gap: 4px; }
-    .learn-nav-btn { padding: 4px 10px; font-size: 11px; }
+    .learn-nav-btn { padding: 5px 10px; font-size: 11px; }
     #learn-content-inner { padding: 24px 16px; }
   }
 
-  /* スマホ（〜600px） */
-  @media (max-width: 600px) {
-    /* サイドバーをコンパクトに */
-    #learn-sidebar { max-height: 200px; }
-    #sb-tabs .sb-tab { font-size: 11px; padding: 8px 4px; }
-    #sb-scroll { max-height: 148px; }
-
-    /* レッスン行を小さく */
-    .sb-ch-label { padding: 8px 12px 2px; font-size: 9px; }
-    .sb-row { padding: 7px 12px; font-size: 12px; gap: 8px; }
-    .sb-row-num { font-size: 9px; min-width: 18px; }
-
-    /* 上部バー */
-    #learn-topbar { padding: 7px 12px; min-height: 40px; }
-    #learn-breadcrumb { font-size: 10px; gap: 4px; }
-    #learn-breadcrumb .bc-sep { display: none; }
+  /* スマホ（〜480px） */
+  @media (max-width: 480px) {
+    #learn-wrapper.show { top: 56px; }
+    #learn-sidebar { width: 260px; }
+    #learn-topbar { padding: 7px 12px; min-height: 42px; }
+    #learn-breadcrumb { font-size: 10px; }
     #learn-breadcrumb .bc-ch { display: none; }
-    .learn-nav-btn { padding: 4px 8px; font-size: 11px; }
-
-    /* コンテンツ */
+    .learn-nav-btn { padding: 4px 8px; font-size: 10px; }
     #learn-content-inner { padding: 20px 14px; }
   }
 
   /* 超小型（〜375px） */
   @media (max-width: 375px) {
-    #learn-sidebar { max-height: 180px; }
-    #sb-scroll { max-height: 128px; }
+    #learn-sidebar { width: 240px; }
     #learn-content-inner { padding: 16px 12px; }
-    #learn-topbar { padding: 6px 10px; }
-    .learn-nav-btn { padding: 3px 7px; font-size: 10px; }
   }
 
-  /* ナビバーの高さ調整（スマホ時56px） */
+  /* ナビバー高さ（スマホ56px） */
   @media (max-width: 768px) {
-    #learn-wrapper.show { top: 56px; }
     #guide-toggle-btn { width: 32px; height: 32px; font-size: 13px; }
   }
 </style>
@@ -4345,6 +4356,8 @@
 
 <!-- ===== ログイン後 学習エリア ===== -->
 <div id="learn-wrapper">
+  <!-- モバイル：ドロワーオーバーレイ -->
+  <div id="sb-overlay" onclick="closeSbDrawer()"></div>
   <!-- 左サイドバー -->
   <div id="learn-sidebar">
     <!-- ヘッダー -->
@@ -4377,6 +4390,7 @@
   <div id="learn-main">
     <!-- 上部バー -->
     <div id="learn-topbar">
+      <button id="sb-menu-btn" onclick="toggleSbDrawer()">☰</button>
       <div id="learn-breadcrumb"></div>
       <div id="learn-nav-btns">
         <button class="learn-nav-btn" id="learn-prev-btn" onclick="lessonNav(-1)">← 前へ</button>
@@ -5566,6 +5580,29 @@ function setSbTab(tab, btn){
 }
 window.setSbTab = setSbTab;
 
+// モバイル：ドロワー開閉
+function toggleSbDrawer(){
+  const sb = document.getElementById('learn-sidebar');
+  const ov = document.getElementById('sb-overlay');
+  if(!sb) return;
+  const isOpen = sb.classList.contains('open');
+  if(isOpen){ closeSbDrawer(); } else { openSbDrawer(); }
+}
+function openSbDrawer(){
+  const sb = document.getElementById('learn-sidebar');
+  const ov = document.getElementById('sb-overlay');
+  if(sb) sb.classList.add('open');
+  if(ov) ov.classList.add('show');
+}
+function closeSbDrawer(){
+  const sb = document.getElementById('learn-sidebar');
+  const ov = document.getElementById('sb-overlay');
+  if(sb) sb.classList.remove('open');
+  if(ov) ov.classList.remove('show');
+}
+window.toggleSbDrawer = toggleSbDrawer;
+window.closeSbDrawer  = closeSbDrawer;
+
 // カリキュラムからレッスンへ飛ぶ共通関数
 function goLesson(tabId){
   if(currentUser){
@@ -5677,7 +5714,7 @@ function buildSideNav(completed){
       const raw = LESSON_LABELS[id] || id;
       const title = raw.replace(/^L\d+[：:]/,'').replace(/^序章[：:]/,'').replace(/^【序章】/,'');
       const num = id === 'intro' ? '00' : id.replace('lesson','').padStart(2,'0');
-      html += `<div class="sb-row${active?' active':''}${done?' done':''}" onclick="switchTab('${id}')">
+      html += `<div class="sb-row${active?' active':''}${done?' done':''}" onclick="switchTab('${id}');closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">${num}</span>
         <span class="sb-row-title">${title}</span>
