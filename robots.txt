@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# パスワード設定用のユーティリティページ。検索結果に出す意味がない。
+Disallow: /reset-password.html
+
+Sitemap: https://ai-security-lab.com/sitemap.xml
