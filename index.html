@@ -126,9 +126,9 @@
         }
       ],
       "offers": [
-        { "@type": "Offer", "name": "Basic", "category": "Paid", "price": "9800", "priceCurrency": "JPY", "availability": "https://schema.org/InStock", "url": "https://ai-security-lab.com/#pricing" },
-        { "@type": "Offer", "name": "Standard", "category": "Paid", "price": "59800", "priceCurrency": "JPY", "availability": "https://schema.org/InStock", "url": "https://ai-security-lab.com/#pricing" },
-        { "@type": "Offer", "name": "Premium", "category": "Paid", "price": "149800", "priceCurrency": "JPY", "availability": "https://schema.org/InStock", "url": "https://ai-security-lab.com/#pricing" }
+        { "@type": "Offer", "name": "Basic", "category": "Paid", "price": "9800", "priceCurrency": "JPY", "availability": "https://schema.org/InStock", "url": "https://ai-security-lab.com/#plans" },
+        { "@type": "Offer", "name": "Standard", "category": "Paid", "price": "59800", "priceCurrency": "JPY", "availability": "https://schema.org/InStock", "url": "https://ai-security-lab.com/#plans" },
+        { "@type": "Offer", "name": "Premium", "category": "Paid", "price": "149800", "priceCurrency": "JPY", "availability": "https://schema.org/InStock", "url": "https://ai-security-lab.com/#plans" }
       ]
     }
   ]
@@ -856,7 +856,7 @@
   /* ヘッダーは position:fixed の62px。これが無いとアンカーで飛んだときに
      セクションの上62pxがヘッダーの下へ潜り、見出しが切れて本文から始まって見える。
      ログイン後はさらに #auth-user-bar（約38px）が乗るので次の2行で上書きする。 */
-  #top,#problem,#curriculum,#lessons,#pricing,#subsidy{scroll-margin-top:78px}
+  #top,#problem,#curriculum,#lessons,#pricing,#plans,#subsidy{scroll-margin-top:78px}
   body.logged-in #curriculum{scroll-margin-top:100px}
   body.logged-in #lessons{scroll-margin-top:100px}
   #auth-user-bar button{
@@ -1607,8 +1607,8 @@
     <a href="#problem" id="nav-problem">なぜ必要か</a>
     <a href="#curriculum" id="nav-curriculum" onclick="return navGo('curriculum')">カリキュラム</a>
     <a href="#lessons" id="nav-lessons" onclick="return navGo('lessons')">レッスン</a>
-    <a href="#pricing" id="nav-pricing">料金</a>
-    <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
+    <a href="#plans" id="nav-pricing">料金</a>
+    <a href="#plans" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="openProgressPanel();return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/0</button>
     <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
@@ -2845,7 +2845,7 @@
       </p>
     </div>
 
-    <div class="seye">// PRICING</div>
+    <div class="seye" id="plans">// PRICING</div>
     <h2 class="stit">シンプルな料金体系</h2>
     <p class="sdesc">買い切り・永久アクセス。Standard以上は修了後に修了証PDFを発行できます。</p>
     <div class="pgcards">
@@ -3420,7 +3420,7 @@ function updateCertificateUI(){
       box.innerHTML = '<div style="font-size:22px;margin-bottom:10px">🎓</div>'
         + '<div style="font-weight:600;font-size:15px;margin-bottom:8px">修了証はStandard・Premiumプランの特典です</div>'
         + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">Basicプランは修了証の発行対象外です。<br>Standard（¥59,800）以上にアップグレードすると修了証PDFを取得できます。</div>'
-        + '<a href="#pricing" onclick="document.getElementById(\'pricing\').style.display=\'block\';switchTab(\'intro\')" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none">プランをアップグレードする →</a>';
+        + '<a href="#plans" onclick="document.getElementById(\'pricing\').style.display=\'block\';switchTab(\'intro\')" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none">プランをアップグレードする →</a>';
       formBox.parentNode.insertBefore(box, formBox);
     }
   } else {
