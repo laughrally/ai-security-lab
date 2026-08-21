@@ -21,8 +21,9 @@
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' data: https://fonts.gstatic.com;
   img-src 'self' data: https:;
+  media-src 'self';
   connect-src 'self' https://zektuwdsmqpdbbslxyal.supabase.co wss://zektuwdsmqpdbbslxyal.supabase.co https://ai-security-lab-stripe.laughrally.workers.dev https://cdn.jsdelivr.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
-  frame-src https://drive.google.com;
+  frame-src 'none';
   object-src 'none';
   base-uri 'self';
   form-action 'self';
@@ -558,7 +559,7 @@
   .pod-play-btn{width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:16px;cursor:pointer;flex-shrink:0;transition:background .2s;display:flex;align-items:center;justify-content:center}
   .pod-play-btn:hover{background:#b91c1c}
   .pod-progress-wrap{flex:1;display:flex;flex-direction:column;gap:4px}
-  .pod-time-wrap{display:flex;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
+  .pod-time-wrap{display:flex;justify-content:space-between;width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
   .pod-seek{width:100%;accent-color:var(--red);height:4px;cursor:pointer}
   .pod-bottom{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
   .pod-vol-wrap{display:flex;align-items:center;gap:8px}
@@ -571,19 +572,10 @@
   .pod-spd:hover{border-color:var(--text3);color:var(--text)}
   .pod-spd.active{background:var(--red);border-color:var(--red);color:#fff}
   @media(max-width:480px){.pod-vol{width:60px}.pod-speeds{flex-wrap:wrap}}
-  .podcast-controls{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:12px}
-  .pod-btn{padding:9px 20px;border-radius:8px;border:none;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
-  .pod-play{background:var(--red);color:#fff;min-width:90px}
-  .pod-play:hover{background:#b91c1c}
-  .pod-play.playing{background:var(--text3)}
-  .pod-speed-wrap{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-  .pod-speed-btns{display:flex;gap:4px}
-  .pod-speed{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s}
-  .pod-speed:hover{border-color:var(--text3);color:var(--text)}
-  .pod-speed.active{background:var(--red);border-color:var(--red);color:#fff}
-  .pod-progress-wrap{display:flex;align-items:center;gap:8px}
-  .pod-time{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);min-width:36px;text-align:center}
-  .pod-progress{flex:1;accent-color:var(--red);height:4px;cursor:pointer}
+  /* 上の .pod-* が現行のプレーヤー。以前の世代のCSS（.podcast-controls / .pod-btn /
+     .pod-play / .pod-speed / .pod-time / .pod-progress と、重複していた
+     .pod-progress-wrap）は 2026-08-21 に削除した。重複定義が後勝ちで
+     flex-direction:column を打ち消し、経過時間の位置が崩れていた。 */
 
 
   /* ===== 法的ページモーダル ===== */
@@ -2150,14 +2142,39 @@
         <div class="podcast-box">
           <div class="podcast-label">// PODCAST</div>
           <div class="podcast-title">🎙 序章：音声で聴く「AI Security Lab」</div>
-          <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。（約17分）</div>
-          <iframe
-            src="https://drive.google.com/file/d/1GfvcrJhrxu87Mh5b-1usYo7JmV4yK4NN/preview"
-            style="width:100%;height:100px;border:none;border-radius:8px;display:block"
-            allow="autoplay">
-          </iframe>
-          <p style="font-size:11px;color:var(--text4);margin-top:8px;text-align:center">⏱ 再生ボタンを押してから音声が流れるまで5〜10秒ほどかかります</p>
-          <p style="font-size:11px;color:var(--text4);margin-top:4px;text-align:center">※ 再生速度はプレーヤー右側のメニューから変更できます</p>
+          <div class="podcast-desc">このレッスンの内容を対話形式の音声で聴けます。通勤・移動中などにご活用ください。</div>
+          <!-- 2026-08-21：Google Drive の埋め込みから自前プレーヤーへ変更。
+               Drive は別ドメインのiframeなので再生ボタンの大きさ・色・余白を制御できず、
+               再生開始まで5〜10秒待たされていた。音声は audio/intro.mp3 に同梱する。 -->
+          <div class="pod-player">
+            <audio id="pod-audio" preload="metadata" src="audio/intro.mp3"></audio>
+            <div class="pod-top">
+              <button class="pod-play-btn" id="pod-play" onclick="podToggle()" aria-label="再生 / 一時停止">▶</button>
+              <div class="pod-progress-wrap">
+                <input type="range" class="pod-seek" id="pod-seek" min="0" max="1000" step="1" value="0"
+                       oninput="podSeek(this.value)" aria-label="再生位置">
+                <div class="pod-time-wrap"><span id="pod-cur">0:00</span><span id="pod-dur">--:--</span></div>
+              </div>
+            </div>
+            <div class="pod-bottom">
+              <div class="pod-vol-wrap">
+                <button class="pod-mute-btn" id="pod-mute" onclick="podMute()" aria-label="ミュート切替">🔊</button>
+                <input type="range" class="pod-vol" id="pod-vol" min="0" max="1" step="0.05" value="1"
+                       oninput="podVol(this.value)" aria-label="音量">
+              </div>
+              <div class="pod-speed-wrap">
+                <span class="pod-speed-label">再生速度</span>
+                <div class="pod-speeds">
+                  <button class="pod-spd" onclick="podSpeed(0.75,this)">0.75×</button>
+                  <button class="pod-spd active" onclick="podSpeed(1,this)">1×</button>
+                  <button class="pod-spd" onclick="podSpeed(1.25,this)">1.25×</button>
+                  <button class="pod-spd" onclick="podSpeed(1.5,this)">1.5×</button>
+                  <button class="pod-spd" onclick="podSpeed(2,this)">2×</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p style="font-size:11px;color:var(--text4);margin-top:10px;text-align:center">※ 再生位置は自動で保存され、次回は続きから再生できます</p>
         </div>
 
         <div class="lb">
@@ -5406,6 +5423,112 @@ function setSbTab(tab, btn){
 }
 window.setSbTab = setSbTab;
 
+/* ===== 序章のポッドキャスト（自前プレーヤー） =====
+ * Google Drive の埋め込みは別ドメインのiframeで見た目を一切制御できず、
+ * 再生開始まで5〜10秒かかっていた。音声を audio/intro.mp3 として同梱し、
+ * CSSに用意済みだった .pod-* のデザインで自前のプレーヤーを組む。
+ */
+const POD_KEY = 'asl_pod_intro';   // 再生位置の保存先
+function podAudio(){ return document.getElementById('pod-audio'); }
+
+function podFmt(sec){
+  if(!isFinite(sec) || sec < 0) return '--:--';
+  const s = Math.floor(sec);
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+
+function podToggle(){
+  const a = podAudio();
+  if(!a) return;
+  if(a.paused){
+    a.play().catch(e => {
+      const t = document.getElementById('pod-cur');
+      if(t) t.textContent = '再生できません';
+      console.warn('音声を再生できませんでした:', e.message);
+    });
+  } else {
+    a.pause();
+  }
+}
+function podSeek(v){
+  const a = podAudio();
+  if(a && isFinite(a.duration)) a.currentTime = a.duration * (v / 1000);
+}
+function podVol(v){
+  const a = podAudio();
+  if(!a) return;
+  a.volume = Number(v);
+  a.muted = Number(v) === 0;
+  podSyncMute();
+}
+function podMute(){
+  const a = podAudio();
+  if(!a) return;
+  a.muted = !a.muted;
+  podSyncMute();
+}
+function podSyncMute(){
+  const a = podAudio(), btn = document.getElementById('pod-mute');
+  if(!a || !btn) return;
+  btn.textContent = (a.muted || a.volume === 0) ? '🔇' : '🔊';
+}
+function podSpeed(rate, btn){
+  const a = podAudio();
+  if(a) a.playbackRate = rate;
+  document.querySelectorAll('.pod-spd').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+function initPodcast(){
+  const a = podAudio();
+  if(!a || a.dataset.wired === '1') return;
+  a.dataset.wired = '1';
+  const seek = document.getElementById('pod-seek');
+  const cur  = document.getElementById('pod-cur');
+  const dur  = document.getElementById('pod-dur');
+  const play = document.getElementById('pod-play');
+
+  const onMeta = () => {
+    if(dur) dur.textContent = podFmt(a.duration);
+    // 前回の続きから（最後まで聴き終えていた場合は先頭に戻す）
+    try{
+      const saved = parseFloat(localStorage.getItem(POD_KEY) || '0');
+      if(saved > 0 && isFinite(a.duration) && saved < a.duration - 5) a.currentTime = saved;
+    }catch(e){ /* localStorageが使えない環境は無視 */ }
+  };
+  a.addEventListener('loadedmetadata', onMeta);
+  // preload="metadata" のため、この関数が動く時点で既に読み込み済みのことがある。
+  // その場合 loadedmetadata は二度と発火せず、長さが '--:--' のままになる。
+  if(a.readyState >= 1) onMeta();
+  a.addEventListener('timeupdate', () => {
+    if(cur) cur.textContent = podFmt(a.currentTime);
+    if(seek && isFinite(a.duration) && a.duration > 0){
+      seek.value = String(Math.round(a.currentTime / a.duration * 1000));
+    }
+    // 5秒ごとに保存する。毎回書くとtimeupdateの頻度ぶん無駄に書き込む。
+    if(Math.floor(a.currentTime) % 5 === 0){
+      try{ localStorage.setItem(POD_KEY, String(a.currentTime)); }catch(e){ /* noop */ }
+    }
+  });
+  a.addEventListener('play',  () => { if(play){ play.textContent = '❚❚'; play.setAttribute('aria-label','一時停止'); } });
+  a.addEventListener('pause', () => { if(play){ play.textContent = '▶';  play.setAttribute('aria-label','再生'); } });
+  a.addEventListener('ended', () => {
+    if(play) play.textContent = '▶';
+    if(seek) seek.value = '0';
+    try{ localStorage.removeItem(POD_KEY); }catch(e){ /* noop */ }
+  });
+  a.addEventListener('error', () => {
+    if(cur) cur.textContent = '読み込み失敗';
+    console.warn('音声ファイルを読み込めませんでした: audio/intro.mp3');
+  });
+  podSyncMute();
+}
+window.podToggle = podToggle;
+window.podSeek   = podSeek;
+window.podVol    = podVol;
+window.podMute   = podMute;
+window.podSpeed  = podSpeed;
+
 /**
  * ヘッダーのロゴ・カリキュラム・レッスンの遷移先。
  *
@@ -5787,7 +5910,7 @@ function initQuizLocks(){
 }
 window.unlockCompleteBtn = unlockCompleteBtn;
 
-document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); });
+document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); initPodcast(); });
 setTimeout(()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); }, 800);
 
 
