@@ -853,6 +853,10 @@
   }
   #auth-user-bar.show{display:flex}
   body.logged-in #how-to-use{padding-top:108px}
+  /* ヘッダーは position:fixed の62px。これが無いとアンカーで飛んだときに
+     セクションの上62pxがヘッダーの下へ潜り、見出しが切れて本文から始まって見える。
+     ログイン後はさらに #auth-user-bar（約38px）が乗るので次の2行で上書きする。 */
+  #top,#problem,#curriculum,#lessons,#pricing,#subsidy{scroll-margin-top:78px}
   body.logged-in #curriculum{scroll-margin-top:100px}
   body.logged-in #lessons{scroll-margin-top:100px}
   #auth-user-bar button{
@@ -1133,7 +1137,9 @@
 
   /* モバイル：メニューボタン */
   #sb-menu-btn { display: none; }
-  #nav-menu-btn { display: none; flex-shrink: 0; }
+  /* #nav-menu-btn は 2026-08-21 に削除。CSSで常に display:none だったため
+     デスクトップでもモバイルでも一度も表示されない死にボタンだった。
+     モバイルは左下の #sb-fab が同じ役割を果たしている。 */
 
   /* モバイル FAB（左下丸ボタン） */
   #sb-fab {
@@ -1181,8 +1187,6 @@
     }
 
     /* FABはJSで制御 */
-    #nav-menu-btn { display: none !important; }
-
     /* メイン全幅 */
     #learn-main { width: 100%; }
     #learn-topbar { padding: 8px 14px; gap: 8px; }
@@ -1595,16 +1599,18 @@
 </div>
 
 <nav>
-  <a href="#top" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <!-- ログイン後は #learn-wrapper が position:fixed で画面全体を覆うため、
+       LPのセクションへスクロールしても見た目が変わらない。
+       そのためログイン中は学習UI側の操作に振り替える（navGo）。 -->
+  <a href="#top" class="nlogo" onclick="return navGo('top')">AI<span class="r">Security</span>Lab</a>
   <div class="nright">
     <a href="#problem" id="nav-problem">なぜ必要か</a>
-    <a href="#curriculum" id="nav-curriculum">カリキュラム</a>
-    <a href="#lessons" id="nav-lessons">レッスン</a>
+    <a href="#curriculum" id="nav-curriculum" onclick="return navGo('curriculum')">カリキュラム</a>
+    <a href="#lessons" id="nav-lessons" onclick="return navGo('lessons')">レッスン</a>
     <a href="#pricing" id="nav-pricing">料金</a>
     <a href="#pricing" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="openProgressPanel();return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/0</button>
-    <button id="nav-menu-btn" onclick="toggleSbDrawer()" style="display:none;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Noto Sans JP',sans-serif;color:var(--text2);align-items:center;gap:6px;white-space:nowrap">≡ カリキュラム</button>
     <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
@@ -2792,7 +2798,7 @@
          「対象です」とは書かない。制度ごとの要件と交付団体の判断によるため、
          当社が判断・保証できる事柄ではない。ここに書いてよいのは
          「本講座が備えている機能」という検証可能な事実だけ。 -->
-    <div id="subsidy" style="scroll-margin-top:80px">
+    <div id="subsidy">
       <div class="seye">// FOR SUBSIDY APPLICANTS</div>
       <h2 class="stit">補助金・助成金をご検討の方へ</h2>
       <p class="sdesc" style="margin-bottom:20px">
@@ -3442,8 +3448,6 @@ function updateAuthUI(){
     if(navLogin)      navLogin.style.display   = 'none';
     if(navProblem)    navProblem.style.display  = 'none';
     if(navProg)       navProg.style.display    = 'inline-flex';
-    const navMenuBtn = document.getElementById('nav-menu-btn');
-    if(navMenuBtn) navMenuBtn.style.display = '';
     // FABはCSSのlearn-wrapper.show連動で制御（JS側では触らない）
     if(progBar)       progBar.classList.add('show');
     if(pricingSection) pricingSection.style.display = 'none';
@@ -3464,8 +3468,6 @@ function updateAuthUI(){
     if(navLogin)      navLogin.style.display   = '';
     if(navProblem)    navProblem.style.display  = '';
     if(navProg)       navProg.style.display    = 'none';
-    const navMenuBtn2 = document.getElementById('nav-menu-btn');
-    if(navMenuBtn2) navMenuBtn2.style.display = 'none';
     // FABはCSSのlearn-wrapper.show連動で制御
     if(progBar)       progBar.classList.remove('show');
     if(pricingSection) pricingSection.style.display = '';
@@ -5403,6 +5405,43 @@ function setSbTab(tab, btn){
   }
 }
 window.setSbTab = setSbTab;
+
+/**
+ * ヘッダーのロゴ・カリキュラム・レッスンの遷移先。
+ *
+ * 未ログイン時は今までどおり LP のアンカーへ飛ばす（return true）。
+ * ログイン後は #learn-wrapper（position:fixed・画面全体・z-index 50）が
+ * LPを覆っているため、ページをスクロールさせても見た目が一切変わらない。
+ * さらに #top と #lessons は updateAuthUI / showLearnUI が display:none に
+ * するので、アンカーとしても機能しない。
+ * そこでログイン中は学習UI側の操作へ振り替える。
+ */
+function navGo(where){
+  if(!currentUser) return true;   // 未ログインは通常のアンカー動作
+
+  if(where === 'curriculum'){
+    // サイドバーの「📖 学習」タブ＝レッスン一覧がカリキュラムそのもの
+    const lessonsTab = document.querySelector('#sb-tabs .sb-tab:nth-child(1)');
+    if(lessonsTab) setSbTab('lessons', lessonsTab);
+    if(window.innerWidth <= 860) openSbDrawer();
+    showLearnUI();
+    return false;
+  }
+
+  if(where === 'top'){
+    // ロゴ＝学習の先頭（序章）へ戻す
+    window.switchTab('intro');
+    return false;
+  }
+
+  // 'lessons'：今開いているレッスンの先頭まで戻す
+  showLearnUI();
+  const lc = document.getElementById('learn-content');
+  if(lc) lc.scrollTo({ top: 0, behavior: 'smooth' });
+  if(window.innerWidth <= 860) closeSbDrawer();
+  return false;
+}
+window.navGo = navGo;
 
 // 進捗ボタン → サイドバーの進捗タブを開く
 function openProgressPanel(){
