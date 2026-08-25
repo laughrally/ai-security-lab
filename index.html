@@ -6188,8 +6188,10 @@ async function submitCertificate(){
     if(msg){
       msg.style.display = 'block';
       msg.style.color = 'var(--green)';
-      msg.innerHTML = '✅ 申請を受け付けました。修了証PDFを <strong>' + (r.email || 'ご登録のメールアドレス') +
-                      '</strong> 宛にお送りします。<br>証明書番号：' + (r.certNo || '') ;
+      // サーバ応答をそのまま連結していたので、エスケープしてから埋める
+      const escCert = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+      msg.innerHTML = '✅ 申請を受け付けました。修了証PDFを <strong>' + escCert(r.email || 'ご登録のメールアドレス') +
+                      '</strong> 宛にお送りします。<br>証明書番号：' + escCert(r.certNo || '') ;
     }
     btn.textContent = '申請済み';
   } catch(e) {
