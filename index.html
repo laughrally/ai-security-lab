@@ -3718,14 +3718,70 @@ function shuffleQuizOptions(tabId){
 }
 window.shuffleQuizOptions = shuffleQuizOptions;
 
-// レッスンを開いた時刻。受講時間の実測に使う。
-const lessonStartedAt = {};
+// ---- 受講時間の実測（2026-08-26 全面改修）----
+// 旧実装は「初めて開いた時刻」から「受講済みを押した時刻」までの単純な経過時間で、
+// 複数レッスンを開くと同じ時間帯が何重にも計上され、離席分も加算され、
+// リロードで消えていた。実績が実稼働の3.2倍に膨らむ例が出ていた。
+// 新実装は「表示されていて、かつ操作がある間」だけを積算する。
+const ACTIVE_KEY = 'asl_active_seconds';   // { lessonId: 累計秒 }
+const START_KEY  = 'asl_lesson_started';   // { lessonId: 最初に開いたISO時刻 }
+const IDLE_MS    = 3 * 60 * 1000;          // 3分無操作で停止（読書中に削らない目安）
+const MAX_TICK_S = 30;                     // 1回の加算上限。スリープ復帰の跳ねを抑える
+const MAX_TOTAL_S = 86400;                 // Worker 側の範囲チェックに合わせる
+
+let activeLesson = null;   // いま表示しているレッスン（レッスン以外を開いたら null）
+let tickAt       = null;   // 前回の加算時刻
+let lastInputAt  = Date.now();
+let wasVisible   = (document.visibilityState === 'visible');
+
+function loadActive(){ try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}'); } catch(e){ return {}; } }
+function saveActive(o){ try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(o)); } catch(e){} }
+function loadStarts(){ try { return JSON.parse(localStorage.getItem(START_KEY) || '{}'); } catch(e){ return {}; } }
+
+// 前回の加算時刻から現在までを確定する。
+// 可視判定は「その区間で表示されていたか」を見るため、遷移後の状態ではなく
+// 直前の状態（wasVisible）を使う。そうしないと非表示になる瞬間の分が落ちる。
+function flushActive(){
+  if(activeLesson && tickAt !== null){
+    const now  = Date.now();
+    const idle = (now - lastInputAt) > IDLE_MS;
+    if(wasVisible && !idle){
+      const d = Math.min(Math.floor((now - tickAt) / 1000), MAX_TICK_S);
+      if(d > 0){
+        const o = loadActive();
+        o[activeLesson] = Math.min((o[activeLesson] || 0) + d, MAX_TOTAL_S);
+        saveActive(o);
+      }
+    }
+    tickAt = now;
+  }
+  wasVisible = (document.visibilityState === 'visible');
+}
+
+// タブを開いたときに呼ばれる。レッスン以外へ移ったら計測を止める。
 function markLessonStart(tabId){
-  if(/^lesson\d+$/.test(tabId) && !lessonStartedAt[tabId]){
-    lessonStartedAt[tabId] = Date.now();
+  flushActive();                       // 直前のレッスン分を確定してから切り替える
+  if(/^lesson\d+$/.test(tabId)){
+    activeLesson = tabId;
+    tickAt = Date.now();
+    const st = loadStarts();
+    if(!st[tabId]){                    // 「最初に開いた時刻」は初回だけ記録して保持する
+      st[tabId] = new Date().toISOString();
+      try { localStorage.setItem(START_KEY, JSON.stringify(st)); } catch(e){}
+    }
+  } else {
+    activeLesson = null;               // ダッシュボード等では加算しない
+    tickAt = null;
   }
 }
 window.markLessonStart = markLessonStart;
+
+['mousemove','keydown','scroll','click','touchstart'].forEach(ev =>
+  window.addEventListener(ev, () => { lastInputAt = Date.now(); }, { passive: true })
+);
+document.addEventListener('visibilitychange', flushActive);
+window.addEventListener('pagehide', flushActive);
+setInterval(flushActive, 15000);       // 15秒ごとに確定。リロードで失う分を最小化する
 
 async function apiFetch(path, options){
   if(!_supabase) throw new Error('Supabaseが未初期化です');
@@ -4756,13 +4812,15 @@ function markComplete(tabId){
   updateDashboard();
   // 受講記録はWorker経由で保存する（受講日時はサーバー時刻で確定）
   if(currentUser){
-    const startMs = lessonStartedAt[tabId];
+    flushActive();                              // 押した瞬間までを確定してから送る
+    const secs    = loadActive()[tabId] || null;
+    const startIso = loadStarts()[tabId] || null;
     apiFetch('/api/lesson/complete', {
       method: 'POST',
       body: JSON.stringify({
         lessonId: tabId,
-        startedAt: startMs ? new Date(startMs).toISOString() : null,
-        durationSeconds: startMs ? Math.floor((Date.now() - startMs) / 1000) : null,
+        startedAt: startIso,
+        durationSeconds: secs,
       }),
     }).catch(e => console.warn('受講記録の保存に失敗:', e.message));
   }
