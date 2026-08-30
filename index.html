@@ -3829,7 +3829,12 @@ async function apiFetch(path, options){
     },
   });
   const body = await res.json().catch(()=>({}));
-  if(!res.ok) throw new Error(body.error || ('通信に失敗しました（' + res.status + '）'));
+  if(!res.ok){
+    const err = new Error(body.error || ('通信に失敗しました（' + res.status + '）'));
+    err.status = res.status;      // 呼び出し側で 429 などを判別できるようにする
+    err.body = body;
+    throw err;
+  }
   return body;
 }
 window.apiFetch = apiFetch;
@@ -6217,9 +6222,18 @@ async function submitExam(){
       updateCertificateUI();
     }
   } catch(e) {
-    alert('採点結果を受け取れませんでした。\n' + (e.message || '') + '\n\n解答は保持しています。通信環境をご確認のうえ、もう一度「提出する」を押してください。');
-    renderExam();                 // 解答を保持したまま試験画面に戻す
-    if(examState.remaining > 0) startExamTimer();
+    if(e && e.status === 429){
+      // 再受験の間隔制限。もう一度押しても通らないので、やり直しを促さない。
+      alert(e.message || '次の受験まで時間をおいてください。');
+      examState.active = false;
+      const introEl = document.getElementById('examIntro');
+      if(container) container.style.display = 'none';
+      if(introEl) introEl.style.display = 'block';
+    } else {
+      alert('採点結果を受け取れませんでした。\n' + (e.message || '') + '\n\n解答は保持しています。通信環境をご確認のうえ、もう一度「提出する」を押してください。');
+      renderExam();               // 解答を保持したまま試験画面に戻す
+      if(examState.remaining > 0) startExamTimer();
+    }
   } finally {
     examState.sending = false;
   }
@@ -6252,26 +6266,53 @@ function renderExamResult(res){
       <div style="color:var(--muted);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
       ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
     </div>
-    <div style="font-weight:700;font-size:18px;margin-bottom:16px">📋 全問題の解答と解説</div>
   `;
-  // 受験者が見た順（出題順）で並べる
-  QS.forEach((q, idx) => {
-    const r = resById[q.id];
-    if(!r) return;
-    const optText = n => {
-      const hit = q.o.find(x => x.orig === n);
-      return hit ? hit.text : '—';
-    };
-    const bg = r.isCorrect ? 'rgba(34,197,94,0.05)' : 'rgba(239,68,68,0.05)';
-    const bc = r.isCorrect ? '#22c55e' : 'var(--red)';
-    html += `<div style="margin-bottom:16px;padding:16px;background:${bg};border-left:4px solid ${bc};border-radius:8px">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">問題 ${idx+1} [${q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
-      <div style="font-weight:700;margin-bottom:8px">${q.q}</div>
-      <div style="font-size:14px;margin-bottom:4px"><strong>あなたの解答:</strong> ${r.selected !== null && r.selected !== undefined ? optText(r.selected) : '未回答'}</div>
-      <div style="font-size:14px;margin-bottom:8px;color:#22c55e"><strong>正解:</strong> ${optText(r.correctIndex)}</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.6"><strong>解説:</strong> ${r.explanation || ''}</div>
-    </div>`;
-  });
+
+  if(passed){
+    // 合格者にだけ全問の解答と解説を出す。
+    html += `<div style="font-weight:700;font-size:18px;margin-bottom:16px">📋 全問題の解答と解説</div>`;
+    // 受験者が見た順（出題順）で並べる
+    QS.forEach((q, idx) => {
+      const r = resById[q.id];
+      if(!r) return;
+      const optText = n => {
+        const hit = q.o.find(x => x.orig === n);
+        return hit ? hit.text : '—';
+      };
+      const bg = r.isCorrect ? 'rgba(34,197,94,0.05)' : 'rgba(239,68,68,0.05)';
+      const bc = r.isCorrect ? '#22c55e' : 'var(--red)';
+      html += `<div style="margin-bottom:16px;padding:16px;background:${bg};border-left:4px solid ${bc};border-radius:8px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">問題 ${idx+1} [${q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
+        <div style="font-weight:700;margin-bottom:8px">${q.q}</div>
+        <div style="font-size:14px;margin-bottom:4px"><strong>あなたの解答:</strong> ${r.selected !== null && r.selected !== undefined ? optText(r.selected) : '未回答'}</div>
+        <div style="font-size:14px;margin-bottom:8px;color:#22c55e"><strong>正解:</strong> ${optText(r.correctIndex)}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6"><strong>解説:</strong> ${r.explanation || ''}</div>
+      </div>`;
+    });
+  } else {
+    // 不合格のときは正解も解説も出さない。1回受ければ答えが全部手に入る状態だと
+    // 2回目は必ず満点になり、修了証が受講を証明しなくなる。
+    // サーバーも不合格時は correctIndex / explanation を返していない。
+    // 復習の手がかりとして、誤答した設問の該当レッスンだけを示す。
+    const wrongLessons = {};
+    QS.forEach(q => {
+      const r = resById[q.id];
+      if(r && !r.isCorrect){ wrongLessons[q.lesson] = (wrongLessons[q.lesson] || 0) + 1; }
+    });
+    const keys = Object.keys(wrongLessons).sort();
+    html += `<div style="font-weight:700;font-size:18px;margin-bottom:12px">📚 復習が必要なレッスン</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 16px">
+        公平な認定のため、正解と解説は表示していません。誤答のあったレッスンを読み直してから、あらためて受験してください。
+      </p>`;
+    if(keys.length){
+      html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
+        keys.map(L => `<span style="background:rgba(239,68,68,0.08);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600">${L}<span style="opacity:.7;font-weight:400">　${wrongLessons[L]}問</span></span>`).join('') +
+        `</div>`;
+    }
+    html += `<p style="color:var(--muted);font-size:13px;line-height:1.8;margin:0">
+      3回目以降の受験は、前回から24時間の間隔をいただいています。
+    </p>`;
+  }
   container.innerHTML = html;
 }
 
