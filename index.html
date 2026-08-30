@@ -3723,34 +3723,66 @@ window.shuffleQuizOptions = shuffleQuizOptions;
 // 複数レッスンを開くと同じ時間帯が何重にも計上され、離席分も加算され、
 // リロードで消えていた。実績が実稼働の3.2倍に膨らむ例が出ていた。
 // 新実装は「表示されていて、かつ操作がある間」だけを積算する。
-const ACTIVE_KEY = 'asl_active_seconds';   // { lessonId: 累計秒 }
-const START_KEY  = 'asl_lesson_started';   // { lessonId: 最初に開いたISO時刻 }
-const IDLE_MS    = 3 * 60 * 1000;          // 3分無操作で停止（読書中に削らない目安）
+const ACTIVE_KEY = 'asl_active_seconds';   // { lessonN|workN: 累計秒 }
+const START_KEY  = 'asl_lesson_started';   // { lessonN|workN: 最初に開いたISO時刻 }
+const SYNC_KEY   = 'asl_synced_seconds';   // { lessonN: 最後にサーバへ送った秒数 }
+const IDLE_LESSON_MS = 3 * 60 * 1000;      // レッスンは読むので3分
+const IDLE_WORK_MS   = 5 * 60 * 1000;      // ワークは書くので5分（考える時間を削らない）
+const RESYNC_STEP_S  = 60;                 // 完了済みレッスンは60秒たまるごとに送り直す
 const MAX_TICK_S = 30;                     // 1回の加算上限。スリープ復帰の跳ねを抑える
 const MAX_TOTAL_S = 86400;                 // Worker 側の範囲チェックに合わせる
+const TRACK_RE = /^(lesson\d+|work[1-7])$/;
 
-let activeLesson = null;   // いま表示しているレッスン（レッスン以外を開いたら null）
-let tickAt       = null;   // 前回の加算時刻
-let lastInputAt  = Date.now();
-let wasVisible   = (document.visibilityState === 'visible');
+let activeItem  = null;   // いま表示している lessonN / workN（それ以外は null）
+let tickAt      = null;   // 前回の加算時刻
+let lastInputAt = Date.now();
+let wasVisible  = (document.visibilityState === 'visible');
 
 function loadActive(){ try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}'); } catch(e){ return {}; } }
 function saveActive(o){ try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(o)); } catch(e){} }
 function loadStarts(){ try { return JSON.parse(localStorage.getItem(START_KEY) || '{}'); } catch(e){ return {}; } }
+function loadSynced(){ try { return JSON.parse(localStorage.getItem(SYNC_KEY) || '{}'); } catch(e){ return {}; } }
+function saveSynced(o){ try { localStorage.setItem(SYNC_KEY, JSON.stringify(o)); } catch(e){} }
+
+// 完了済みレッスンを学習し直したぶんをサーバへ反映する。
+// 受講済みボタンは pointer-events:none で二度と押せないため、
+// これが無いと復習の時間は localStorage に溜まるだけでサーバに届かない。
+// lesson_logs は upsert なので、送り直せば duration_seconds が上書きされる。
+function syncStudiedAgain(itemId, secs){
+  if(!/^lesson\d+$/.test(itemId)) return;
+  if(typeof currentUser === 'undefined' || !currentUser) return;
+  let completed = [];
+  try { completed = loadCompleted(); } catch(e){ return; }
+  if(!completed.includes(itemId)) return;          // 未完了なら markComplete が送る
+  const sy = loadSynced();
+  if(secs - (sy[itemId] || 0) < RESYNC_STEP_S) return;
+  sy[itemId] = secs; saveSynced(sy);
+  apiFetch('/api/lesson/complete', {
+    method: 'POST',
+    body: JSON.stringify({
+      lessonId: itemId,
+      startedAt: loadStarts()[itemId] || null,
+      durationSeconds: secs,
+    }),
+  }).catch(e => console.warn('復習時間の反映に失敗:', e.message));
+}
 
 // 前回の加算時刻から現在までを確定する。
 // 可視判定は「その区間で表示されていたか」を見るため、遷移後の状態ではなく
 // 直前の状態（wasVisible）を使う。そうしないと非表示になる瞬間の分が落ちる。
 function flushActive(){
-  if(activeLesson && tickAt !== null){
+  if(activeItem && tickAt !== null){
     const now  = Date.now();
-    const idle = (now - lastInputAt) > IDLE_MS;
+    const limit = activeItem.startsWith('work') ? IDLE_WORK_MS : IDLE_LESSON_MS;
+    const idle = (now - lastInputAt) > limit;
     if(wasVisible && !idle){
       const d = Math.min(Math.floor((now - tickAt) / 1000), MAX_TICK_S);
       if(d > 0){
         const o = loadActive();
-        o[activeLesson] = Math.min((o[activeLesson] || 0) + d, MAX_TOTAL_S);
+        const v = Math.min((o[activeItem] || 0) + d, MAX_TOTAL_S);
+        o[activeItem] = v;
         saveActive(o);
+        syncStudiedAgain(activeItem, v);
       }
     }
     tickAt = now;
@@ -3758,11 +3790,11 @@ function flushActive(){
   wasVisible = (document.visibilityState === 'visible');
 }
 
-// タブを開いたときに呼ばれる。レッスン以外へ移ったら計測を止める。
+// タブを開いたときに呼ばれる。レッスン／ワーク以外へ移ったら計測を止める。
 function markLessonStart(tabId){
-  flushActive();                       // 直前のレッスン分を確定してから切り替える
-  if(/^lesson\d+$/.test(tabId)){
-    activeLesson = tabId;
+  flushActive();                       // 直前の項目ぶんを確定してから切り替える
+  if(TRACK_RE.test(tabId)){
+    activeItem = tabId;
     tickAt = Date.now();
     const st = loadStarts();
     if(!st[tabId]){                    // 「最初に開いた時刻」は初回だけ記録して保持する
@@ -3770,7 +3802,7 @@ function markLessonStart(tabId){
       try { localStorage.setItem(START_KEY, JSON.stringify(st)); } catch(e){}
     }
   } else {
-    activeLesson = null;               // ダッシュボード等では加算しない
+    activeItem = null;                 // ダッシュボード等では加算しない
     tickAt = null;
   }
 }
@@ -4492,10 +4524,15 @@ async function submitWorkChapter(ch){
   }
   const t = await workToken();
   try{
+    // 章末ワークに費やした実時間を送る。Worker 側はすでに durationSeconds を
+    // 受け取れる実装になっており（chapter_works.duration_seconds）、
+    // これまではフロントが送っていなかったため常に NULL だった。
+    flushActive();
+    const workSecs = loadActive()['work' + ch] || null;
     const r = await fetch(`${WORK_API}/api/work/submit`, {
       method:'POST',
       headers:{ Authorization:'Bearer '+t, 'Content-Type':'application/json' },
-      body: JSON.stringify({ chapter: ch })
+      body: JSON.stringify({ chapter: ch, durationSeconds: workSecs })
     });
     const d = await r.json();
     if(!r.ok){
@@ -4995,6 +5032,19 @@ function fmtDuration(sec){
 }
 
 // 受講記録をサーバーから取得し、レポート用に整形する
+// 受講時間の計測を作り直した時刻（2026-08-30 18:32 JST 本番反映）。
+// これより前の duration_seconds は旧方式（開いた時刻→完了を押した時刻）で
+// 記録されており、実態の3.8倍に膨らんだ例がある。数値として信用できないため
+// レポートには出さない。DBの値は書き換えず、表示だけ伏せる。
+const MEASURE_FIXED_AT = Date.parse('2026-08-30T19:00:00+09:00');
+function reportableDuration(log){
+  const d = (log.duration_seconds === undefined || log.duration_seconds === null) ? null : log.duration_seconds;
+  if(d === null) return null;
+  const c = log.completed_at ? Date.parse(log.completed_at) : null;
+  if(c !== null && c < MEASURE_FIXED_AT) return null;   // 旧方式の記録は伏せる
+  return d;
+}
+
 async function fetchRecordData(){
   const data = await apiFetch('/api/records', { method: 'GET' });
   const meta = PLAN_LABELS_JA[data.plan] || PLAN_LABELS_JA.basic;
@@ -5013,7 +5063,7 @@ async function fetchRecordData(){
       title: (LESSON_LABELS[id] || id),
       startedAt:   log.started_at   || null,
       completedAt: log.completed_at || null,
-      duration:    (log.duration_seconds === undefined ? null : log.duration_seconds),
+      duration:    reportableDuration(log),
       answered:    !!q,
       selected:    q ? q.selected + 1 : null,       // 表示は1始まり
       correctNo:   q ? q.correct_index + 1 : null,
@@ -5039,6 +5089,8 @@ async function fetchRecordData(){
       goal: info.goal || '',
       submitted: items.some(i => i.status === 'submitted'),
       submittedAt: (items.find(i => i.submitted_at) || {}).submitted_at || null,
+      // duration_seconds は章内の全行に同じ値が入る仕様なので、合計せず最大を取る
+      duration: items.reduce((a,i) => Math.max(a, i.duration_seconds || 0), 0) || null,
       answers: items.map(i => ({
         questionId: i.question_id,
         question: ((typeof WORK_QUESTIONS !== 'undefined' && WORK_QUESTIONS[i.question_id]) || {}).q || '',
@@ -5120,6 +5172,15 @@ async function openRecordReport(){
       </tr>`).join('');
 
     const rate = s.quizAnswered ? Math.round(s.quizCorrect / s.quizAnswered * 1000)/10 : 0;
+
+    // 集計は Worker の totalSeconds を使わず、レポートに出せる値だけで積み直す。
+    // Worker 側は旧方式の記録も合算してしまうため。
+    const lessonSecs = d.rows.reduce((a,r) => a + (r.duration || 0), 0);
+    const workSecs   = (d.works || []).reduce((a,w) => a + (w.duration || 0), 0);
+    const hiddenN    = d.rows.filter(r => r.completedAt && r.duration === null).length;
+    const measureNote = hiddenN > 0
+      ? `<p class="mnote">※ ${hiddenN}件のレッスンは、2026年8月30日の計測方式の改修より前に受講されたものです。当時の記録方式では受講時間を正確に計測できていなかったため、受講時間の表示を差し控えています（受講の事実・完了日時・理解度チェックの結果は記録のとおりです）。</p>`
+      : '';
     const today = fmtDateTime(new Date().toISOString()).split(' ')[0];
 
     // 章末ワーク（記述式）の出力
@@ -5168,6 +5229,7 @@ async function openRecordReport(){
         <div class="wch">
           <h3>第${w.chapter}章　${esc(w.goal)}
             <span class="wst ${w.submitted?'ok':''}">${w.submitted ? '提出済み' + (w.submittedAt ? '（' + fmtDateTime(w.submittedAt) + '）' : '') : '未提出'}</span>
+            ${w.duration ? `<span class="wst">所要 ${fmtDuration(w.duration)}</span>` : ''}
           </h3>
           ${qs || '<div class="wq-a">（未記入）</div>'}
         </div>`;
@@ -5201,6 +5263,7 @@ ${blocks}`;
   h2{font-size:14px;margin:24px 0 10px;padding-left:8px;border-left:4px solid #c0392b}
   @media print{ body{padding:0} .noprint{display:none} table{font-size:10.5px} }
   .btn{background:#c0392b;color:#fff;border:0;padding:10px 20px;border-radius:6px;font-size:14px;cursor:pointer;margin-bottom:20px}
+  .mnote{font-size:12px;color:#555;line-height:1.7;margin:10px 0 0;padding:10px 12px;background:#f6f6f6;border-left:3px solid #bbb}
   .wnote{font-size:12px;color:#555;margin:0 0 14px}
   tfoot th{background:#f4f4f4;text-align:left;border:1px solid #ccc;padding:7px 9px}
   .wch{border:1px solid #ccc;border-radius:6px;padding:14px 16px;margin-bottom:14px;page-break-inside:avoid}
@@ -5234,13 +5297,15 @@ ${blocks}`;
 <h2>集計</h2>
 <div class="sum">
   <div><span class="lbl">受講済みレッスン</span><b>${s.lessonsCompleted} / ${s.lessonsTotal}</b></div>
-  <div><span class="lbl">累計学習時間（実測）</span><b>${fmtDuration(s.totalSeconds)}</b></div>
+  <div><span class="lbl">レッスン学習時間（実測）</span><b>${lessonSecs ? fmtDuration(lessonSecs) : '—'}</b></div>
+  ${chTotal ? `<div><span class="lbl">章末ワーク所要時間（実測）</span><b>${workSecs ? fmtDuration(workSecs) : '—'}</b></div>` : ''}
   <div><span class="lbl">理解度テスト回答数</span><b>${s.quizAnswered} 問</b></div>
   <div><span class="lbl">正答数 / 正答率</span><b>${s.quizCorrect} 問 / ${rate}%</b></div>
   ${chTotal ? `<div><span class="lbl">章末ワーク提出</span><b>${chDone} / ${chTotal} 章</b></div>` : ''}
   ${s.testTotal ? `<div><span class="lbl">章末確認テスト</span><b>${s.testCorrect||0} / ${s.testTotal} 問</b></div>` : ''}
   <div><span class="lbl">修了状況</span><b>${s.completed ? '修了' : '受講中'}</b></div>
 </div>
+${measureNote}
 
 <h2>レッスン別 受講履歴および理解度テスト結果</h2>
 <table>
@@ -5341,7 +5406,7 @@ async function downloadRecordCSV(){
 
     const s = d.summary;
     lines.push('', ['集計','受講済み','累計学習時間(秒)','理解度チェック回答数','同 正答数','章末確認テスト正答','章末ワーク提出','修了状況'].map(q).join(','));
-    lines.push(['', `${s.lessonsCompleted}/${s.lessonsTotal}`, s.totalSeconds,
+    lines.push(['', `${s.lessonsCompleted}/${s.lessonsTotal}`, d.rows.reduce((a,r)=>a+(r.duration||0),0),
                 s.quizAnswered, s.quizCorrect,
                 s.testTotal ? `${s.testCorrect||0}/${s.testTotal}` : '対象外',
                 s.chaptersTotal ? `${s.chaptersSubmitted||0}/${s.chaptersTotal}` : '対象外',
