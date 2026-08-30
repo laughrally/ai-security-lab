@@ -6170,10 +6170,24 @@ function fmtTime(sec){
   return m + ':' + String(s).padStart(2,'0');
 }
 
-function startExam(){
+async function startExam(){
   if(currentUserPlan !== 'premium'){
     alert('認定試験はPremiumプランの受講者のみ受験できます。');
     return;
+  }
+  // 開始前にクールダウンを確認する。
+  // 提出時にしか確認しないと、60分かけて解答したあとに弾かれ、その労力が失われる。
+  // 通信できないときは開始を妨げない（提出時にサーバー側で改めて判定される）。
+  try {
+    const st = await apiFetch('/api/exam/status', { method: 'GET' });
+    if(st && st.canStart === false && st.reason === 'cooldown'){
+      alert('次の受験まで、あと約' + st.retryAfterHours + '時間お待ちください。\n\n' +
+            '3回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
+            'これまでの受験回数：' + st.attempts + '回');
+      return;
+    }
+  } catch(e) {
+    console.warn('受験状況を確認できませんでした:', e.message);
   }
   const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
   if(!confirmed) return;
@@ -6295,12 +6309,11 @@ async function submitExam(){
     }
   } catch(e) {
     if(e && e.status === 429){
-      // 再受験の間隔制限。もう一度押しても通らないので、やり直しを促さない。
-      alert(e.message || '次の受験まで時間をおいてください。');
-      examState.active = false;
-      const introEl = document.getElementById('examIntro');
-      if(container) container.style.display = 'none';
-      if(introEl) introEl.style.display = 'block';
+      // 再受験の間隔制限。開始前にも確認しているので通常ここには来ないが、
+      // 来た場合は解答を保持したまま試験画面に戻す（60分の労力を捨てない）。
+      alert((e.message || '次の受験まで時間をおいてください。') +
+            '\n\n解答はこの画面に保持しています。時間をおいてから、あらためて「提出する」を押してください。');
+      renderExam();
     } else {
       alert('採点結果を受け取れませんでした。\n' + (e.message || '') + '\n\n解答は保持しています。通信環境をご確認のうえ、もう一度「提出する」を押してください。');
       renderExam();               // 解答を保持したまま試験画面に戻す
