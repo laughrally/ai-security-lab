@@ -2866,6 +2866,39 @@
           </ul>
         </div>
       </div>
+
+      <!-- 通信制（自習型）の講座に求められる「課題の提出」「評価結果の表示」
+           「実績報告時の提出」の3点について、本講座が備えている機能を事実として掲載する。
+           対象可否の判断はしない（このセクション全体の方針）。 -->
+      <div class="pgcards" style="margin-top:20px">
+        <div class="pc">
+          <div class="pcname" style="color:var(--text)">📝 課題の提出が必要です</div>
+          <ul class="pcf" style="margin-top:14px">
+            <li><span>各レッスンに<strong>理解度チェック（4肢択一）</strong>があり、<strong>正解するまで「受講済み」にできません</strong></span></li>
+            <li><span>Standard以上は<strong>章末ワーク（記述式・各章4問／150字または200字以上）の提出</strong>が必要です</span></li>
+            <li><span>あわせて<strong>章末確認テスト（各章5問・4問以上で合格）</strong>の合格が必要です</span></li>
+            <li><span>これらは<strong>修了証の発行条件</strong>であり、任意の課題ではありません</span></li>
+          </ul>
+        </div>
+        <div class="pc">
+          <div class="pcname" style="color:var(--text)">📈 評価結果が表示されます</div>
+          <ul class="pcf" style="margin-top:14px">
+            <li><span>選択式は<strong>正誤と解説をその場で表示</strong>します（採点は当社サーバー）</span></li>
+            <li><span>記述式は必要文字数を満たしているかを<strong>システムが判定</strong>したうえで提出できます</span></li>
+            <li><span>受講画面の<strong>「進捗」で受講状況を随時確認</strong>できます</span></li>
+            <li><span>章末確認テストは<strong>初回正答・最終正答・受験回数</strong>を記録します</span></li>
+          </ul>
+        </div>
+        <div class="pc">
+          <div class="pcname" style="color:var(--text)">📤 回答と評価結果を提出できます</div>
+          <ul class="pcf" style="margin-top:14px">
+            <li><span><strong>受講実績レポート</strong>に、設問ごとの<strong>回答内容と正誤</strong>を出力します</span></li>
+            <li><span>章末ワークは<strong>回答全文</strong>と提出日時を出力します</span></li>
+            <li><span>章末確認テストは<strong>章別の成績と合否</strong>を出力します</span></li>
+            <li><span>PDF・CSVの2形式で、<strong>実績報告にそのまま添付できます</strong></span></li>
+          </ul>
+        </div>
+      </div>
       <p style="font-size:13px;color:var(--text3);line-height:1.9;margin-bottom:56px">
         ※ 記載はいずれも実装済みの機能です。制度が求める様式が別にある場合は個別にご相談ください。<br>
         ※ 法人でのお申込み・お見積り・お支払い方法のご相談は、ページ下部のお問い合わせよりご連絡ください。
@@ -3873,6 +3906,14 @@ async function doQ(btn, selected, id){
       document.getElementById(id+'-ok').classList.add('show');
       document.getElementById(id+'-ng').classList.remove('show');
       unlockCompleteBtn(tabId);
+      // 正解した設問を控えておく。レッスンを開き直したときに再回答させないため。
+      // 正解の位置はサーバーにしかないので、doQ が送る「元の選択肢番号」を保存する
+      // （表示順はシャッフルされるが、この番号は QUIZ_ANSWER_KEY と対応している）。
+      try {
+        const done = JSON.parse(localStorage.getItem(QUIZ_DONE_KEY) || '{}');
+        done[id] = selected;
+        localStorage.setItem(QUIZ_DONE_KEY, JSON.stringify(done));
+      } catch(e){}
     } else {
       // 不正解：この選択肢だけ無効化。他は引き続き選べる。
       btn.style.pointerEvents = 'none';
@@ -6029,7 +6070,38 @@ function updateBreadcrumb(tabId){ updateLearnTopBar(tabId); }
 
 
 /* ===== クイズ未正解時は受講済みボタンをロック ===== */
+const QUIZ_DONE_KEY = 'asl_quiz_done';   // { 設問ID: 正解した元の選択肢番号 }
+
+/**
+ * 正解済みの設問を、開き直したあとも回答済みの見た目に戻す。
+ * これが無いと、レッスンを開き直すたびに同じ設問へ再回答でき、
+ * quiz_answers に余分な行が積み上がる（採点は attempt_no の初回で行うため
+ * 成績には影響しないが、受講記録が読みにくくなる）。
+ */
+function restoreQuizLocks(){
+  let done = {};
+  try { done = JSON.parse(localStorage.getItem(QUIZ_DONE_KEY) || '{}'); } catch(e){ return; }
+  Object.keys(done).forEach(id => {
+    const okEl = document.getElementById(id + '-ok');
+    if(!okEl) return;                      // そのレッスンがまだ読み込まれていない
+    const quiz = okEl.closest('.quiz');
+    const qopts = quiz ? quiz.querySelector('.qopts') : null;
+    if(!qopts || qopts.dataset.restored === '1') return;
+    qopts.querySelectorAll('.qopt').forEach(b => {
+      b.style.pointerEvents = 'none';
+      const m = (b.getAttribute('onclick') || '').match(/doQ\(this,(\d+),/);
+      if(m && Number(m[1]) === done[id]) b.classList.add('ok');
+    });
+    okEl.classList.add('show');
+    const ngEl = document.getElementById(id + '-ng');
+    if(ngEl) ngEl.classList.remove('show');
+    qopts.dataset.restored = '1';
+  });
+}
+window.restoreQuizLocks = restoreQuizLocks;
+
 function initQuizLocks(){
+  restoreQuizLocks();
   const ALL_IDS = ALL_LESSONS_LIST;
   ALL_IDS.forEach(tabId => {
     const btn = document.getElementById('complete-' + tabId);
