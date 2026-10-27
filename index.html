@@ -713,12 +713,11 @@
 
   /* スマホ（〜480px） */
   @media(max-width:480px){
-    /* ヘッダーが1行に収まらず、CTAがロゴに重なっていた。
-       幅の優先順位は CTA > ログイン > ダークモード。使い方ガイドは本文からも開ける */
+    /* ヘッダーが1行に収まらず、CTAがロゴに重なっていた（375px幅で発生）。
+       .ncta の white-space:nowrap と、ここでの縮小で1行に収まる */
     nav{padding:0 12px}
     .nright{gap:8px;flex:0 0 auto}
     .nlogo{font-size:13px;flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
-    #guide-toggle{display:none}
     .ncta{padding:6px 11px;font-size:11.5px!important}
     #nav-login{font-size:11.5px!important;white-space:nowrap}
     .hero{padding:90px 16px 48px}
