@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>生成AIの「学習させない設定」で防げること、防げないこと｜AI Security Lab</title>
+<meta name="description" content="ChatGPTの「学習させない設定」をオフにしても、入力した情報は送信されサーバーに残ります。設定で防げる範囲と防げない範囲、法人プランとの違い、そのうえで社内で決めるべきことを中小企業向けに整理しました。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/gakushu-sasenai-settei-genkai.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/gakushu-sasenai-settei-genkai.html">
+<meta property="og:title" content="生成AIの「学習させない設定」で防げること、防げないこと">
+<meta property="og:description" content="ChatGPTの「学習させない設定」をオフにしても、入力した情報は送信されサーバーに残ります。設定で防げる範囲と防げない範囲、法人プランとの違い、そのうえで社内で決めるべきことを中小企業向けに整理しました。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="生成AIの「学習させない設定」で防げること、防げないこと">
+<meta name="twitter:description" content="ChatGPTの「学習させない設定」をオフにしても、入力した情報は送信されサーバーに残ります。設定で防げる範囲と防げない範囲、法人プランとの違い、そのうえで社内で決めるべきことを中小企業向けに整理しました。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "生成AIの「学習させない設定」で防げること、防げないこと"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "生成AIの「学習させない設定」で防げること、防げないこと",
+      "description": "ChatGPTの「学習させない設定」をオフにしても、入力した情報は送信されサーバーに残ります。設定で防げる範囲と防げない範囲、法人プランとの違い、そのうえで社内で決めるべきことを中小企業向けに整理しました。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/gakushu-sasenai-settei-genkai.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "学習させない設定にすれば、入力した情報は送信されなくなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。学習に使われるかどうかの設定であって、送信そのものは止まりません。入力した内容はAI提供事業者のサーバーに届き、一定期間保存されます。設定で変わるのはモデルの学習に使われるかどうかだけです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "法人向けプランなら設定は不要ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ChatGPTのBusiness・Enterprise・APIなどの法人向け提供は、既定で入力内容を学習に使わない扱いとされています。ただし保存期間や管理者が会話を閲覧できる範囲は契約内容によって変わるため、契約しているプランの規約で確認してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "設定をオフにすれば、過去に入力した内容も学習対象から外れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "さかのぼりません。設定は以降の入力に適用されます。過去分の扱いは各サービスのデータ削除手続きを確認する必要があります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">設定</span><span class="tag">ChatGPT</span><span class="tag">基礎</span></div>
+  <h1>生成AIの「学習させない設定」で防げること、防げないこと</h1>
+  <div class="meta">公開 2026-10-27</div>
+  <p class="lede">「学習させない設定にしてあるので大丈夫です」。社内でこの説明を聞いたら、半分だけ正しいと思ってください。設定で消えるリスクと、設定をどういじっても動かないリスクがあります。混ぜて考えると判断を間違えます。</p>
+  <article>
+<h2>設定が動かしているのは「学習に使うか」だけ</h2>
+
+<p>ChatGPTの設定画面には、入力した会話をモデルの改善に使うかどうかを選ぶ項目があります。日本語では「すべての人のためにモデルを改善する」という名前で、データ管理（データコントロール）の中にあります。これをオフにする操作が、いわゆるオプトアウトです。</p>
+
+<p>ここで止まる説明が多いのですが、大事なのはこの設定が何を動かしていないかのほうです。</p>
+
+<p>オフにしても、入力した文章はOpenAIのサーバーに送信されます。送信は止まりません。送られた内容は一定期間保存されます。不正利用の監視や法令対応のために、事業者側が保持する仕組みは残ります。つまり「社外に出た」という事実そのものは変わりません。</p>
+
+<div class="box warn">
+  <div class="box-t">⚠ よくある誤解</div>
+  <p>「学習させない設定＝入力した情報が外に出ない」ではありません。学習に使われるかどうかと、社外のサーバーに送信されるかどうかは、別の話です。</p>
+</div>
+
+<p>社内で説明するときは、ここを分けて言わないと伝わりません。「設定したから何を入れてもいい」という理解が広まると、むしろ危なくなります。設定を入れた直後がいちばん油断が出ます。</p>
+
+<h2>設定で消えるリスク、残るリスク</h2>
+
+<p>整理するとこうなります。</p>
+
+<div class="tblwrap">
+<table>
+  <thead>
+    <tr><th>リスク</th><th>学習オフで</th><th>補足</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>入力内容がモデルの学習に使われ、他人への回答に出てくる</td>
+      <td>減る</td>
+      <td>設定が効く範囲。ただし過去の入力にはさかのぼりません</td>
+    </tr>
+    <tr>
+      <td>入力内容が事業者のサーバーに送信され、保存される</td>
+      <td>変わらない</td>
+      <td>保存期間は各サービスの規約による</td>
+    </tr>
+    <tr>
+      <td>事業者側の障害や不正アクセスで、入力内容が外部に出る</td>
+      <td>変わらない</td>
+      <td>預けている以上ゼロにはできません</td>
+    </tr>
+    <tr>
+      <td>アカウントが乗っ取られ、会話履歴を読まれる</td>
+      <td>変わらない</td>
+      <td>多要素認証の話で、学習設定とは無関係</td>
+    </tr>
+    <tr>
+      <td>社員が共有PCでログアウトせず、履歴を他人に見られる</td>
+      <td>変わらない</td>
+      <td>いちばん現実に起きるのはこれ</td>
+    </tr>
+    <tr>
+      <td>そもそも入れてはいけない情報を入れてしまう</td>
+      <td>変わらない</td>
+      <td>設定では一切防げない領域</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>表の下4行は、設定をどういじっても動きません。ここが本体だと思っています。</p>
+
+<h2>法人向けプランは扱いが違う</h2>
+
+<p>ChatGPTのBusiness、Enterprise、それからAPI経由の利用は、既定で入力内容をモデルの学習に使わない扱いとされています。利用者側でオプトアウト操作をしなくてよい、という設計です。GoogleのWorkspace版Gemini、MicrosoftのMicrosoft 365 Copilotも、契約者のデータを基盤モデルの学習に使わないと説明しています。</p>
+
+<p>ただ、学習に使われないことと、どこにも保存されないことは別です。法人プランでは管理者が会話ログを閲覧できる設定が用意されていることがあります。退職者のアカウントに残った履歴をどう扱うかも、契約内容で変わります。</p>
+
+<div class="box note">
+  <div class="box-t">◆ 確認すべきこと</div>
+  <p>契約前に見るのは次の3点です。入力データを学習に使うか。保存期間は何日か。管理者が会話内容を見られるか。どれも規約やデータ処理契約に書いてあります。営業担当の口頭説明ではなく、文書で確認してください。</p>
+</div>
+
+<p>画面の名称やメニューの位置は、サービス側の更新でわりと頻繁に変わります。この記事に書いた名前も、読んでいる時点では違っているかもしれません。設定名を暗記するより、「学習に使うかを選ぶ項目がどこかにあるはずだ」と知っているほうが長持ちします。</p>
+
+<h2>無料プランを業務で使っている場合</h2>
+
+<p>中小企業でいちばん多いのが、社員が個人の無料アカウントで業務に使っている状態です。会社としては契約していないので、規約上は個人利用。何かあっても会社から事業者に問い合わせる筋がありません。</p>
+
+<p>この状態で学習オフだけ案内しても、片手落ちです。少なくとも次のどれかに倒す必要があります。</p>
+
+<ol>
+  <li>会社として法人プランを契約し、個人アカウントでの業務利用をやめさせる</li>
+  <li>無料アカウントの利用を認めたうえで、入れてよい情報の範囲を明確に限定する</li>
+  <li>業務での生成AI利用自体を認めない（ただし実際には使われます。<a href="/articles/shadow-ai-mitsukekata.html">シャドーAIの話</a>に続きます）</li>
+</ol>
+
+<p>1番が理想ですが、予算の都合で2番を選ぶ会社も多い。それ自体は悪くないと思います。悪いのは、2番を選んだのに「入れてよい情報の範囲」を決めないまま放置することです。</p>
+
+<h2>結局、設定は前提条件でしかない</h2>
+
+<p>学習オフは、やらないよりやったほうがいい。これは間違いありません。10秒で終わります。</p>
+
+<p>ただ、それで対策が終わったと思うと危ない。設定で防げるのは表の1行目だけで、残りは人の判断と運用の話です。顧客名簿を貼るかどうかは、設定画面のどこにも書いていません。</p>
+
+<p>自分が会社に入るとしたら、設定の説明より先に「何を入れたらアウトか」の例を10個見せてほしい。そっちのほうが効きます。</p>
+  </article>
+<div class="cta">
+  <h2>「設定したから大丈夫」で止まらないために</h2>
+  <p>設定の限界まで理解している人が社内に一人いるかどうかで、事故が起きたときの被害はかなり変わります。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html"><div class="rt">生成AIに社外秘を入れてしまった。最初の1時間にやること</div><div class="rd">やってしまった後にまずすべきなのは、履歴の削除ではありません。順番を間違えると、後から何も説明できなくなります。</div></a>
+  <a href="/articles/seisei-ai-guideline-template.html"><div class="rt">社内の生成AI利用ガイドライン、最低限これだけ書けばいい</div><div class="rd">立派な規程を作ろうとして止まるくらいなら、A4一枚で今週から回したほうがいい。そのまま使える文面を置いておきます。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>

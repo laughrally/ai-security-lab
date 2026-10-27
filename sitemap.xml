@@ -1,11 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 単一ページ構成のため実質2URL。ページを増やしたらここにも追加すること。 -->
+<!-- articles 配下は articles-src/build.py が生成する。手で足さない。 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://ai-security-lab.com/</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-10-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/gakushu-sasenai-settei-genkai.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/seisei-ai-guideline-template.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/shadow-ai-mitsukekata.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/kojin-joho-hogoho-seisei-ai.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/chusho-kigyo-nerawareru.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://ai-security-lab.com/tokusho.html</loc>

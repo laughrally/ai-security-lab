@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>生成AIに社外秘を入れてしまった。最初の1時間にやること｜AI Security Lab</title>
+<meta name="description" content="ChatGPTなどの生成AIに顧客情報や社外秘を入力してしまったときの初動手順。削除より先に記録を取る理由、報告の判断基準、個人データが含まれていた場合の個人情報保護法上の対応までを中小企業向けにまとめました。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html">
+<meta property="og:title" content="生成AIに社外秘を入れてしまった。最初の1時間にやること">
+<meta property="og:description" content="ChatGPTなどの生成AIに顧客情報や社外秘を入力してしまったときの初動手順。削除より先に記録を取る理由、報告の判断基準、個人データが含まれていた場合の個人情報保護法上の対応までを中小企業向けにまとめました。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="生成AIに社外秘を入れてしまった。最初の1時間にやること">
+<meta name="twitter:description" content="ChatGPTなどの生成AIに顧客情報や社外秘を入力してしまったときの初動手順。削除より先に記録を取る理由、報告の判断基準、個人データが含まれていた場合の個人情報保護法上の対応までを中小企業向けにまとめました。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "生成AIに社外秘を入れてしまった。最初の1時間にやること"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "生成AIに社外秘を入れてしまった。最初の1時間にやること",
+      "description": "ChatGPTなどの生成AIに顧客情報や社外秘を入力してしまったときの初動手順。削除より先に記録を取る理由、報告の判断基準、個人データが含まれていた場合の個人情報保護法上の対応までを中小企業向けにまとめました。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-27",
+      "dateModified": "2026-10-27",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">インシデント</span><span class="tag">初動</span><span class="tag">実務</span></div>
+  <h1>生成AIに社外秘を入れてしまった。最初の1時間にやること</h1>
+  <div class="meta">公開 2026-10-27</div>
+  <p class="lede">入れてしまった直後、ほとんどの人が最初にやるのは履歴の削除です。気持ちはわかります。ただ、順番としては間違っています。消すのは最後。先にやることがあります。</p>
+  <article>
+<h2>最初にやるのは記録。削除はその後</h2>
+
+<p>履歴を消したくなるのは、消せばなかったことになる気がするからです。なりません。入力した内容はすでに事業者のサーバーに届いていて、画面から消えても手元の記録が消えるだけです。</p>
+
+<p>そして消した瞬間、何を入れたのかを誰も説明できなくなります。後から「どの顧客の、どの項目が、いつ出たのか」を聞かれたときに答えられない。これが一番まずい。</p>
+
+<div class="box warn">
+  <div class="box-t">⚠ 消す前に</div>
+  <p>画面をスクリーンショットで残してください。入力したプロンプト全文、日時、使ったサービス名とアカウント、返ってきた内容。この4点が揃っていれば、後の判断はだいたいできます。</p>
+</div>
+
+<p>スクリーンショットは個人のスマホではなく、会社の共有フォルダか担当者のPCに置きます。あとで本人が退職しても残るようにしておく、という意味です。</p>
+
+<h2>30分以内に、何が出たかを確定させる</h2>
+
+<p>記録が取れたら、中身を分類します。ここで必要なのは正確さより速さです。完璧に分類しようとして時間を使うより、ざっくり分けて次に進んだほうがいい。</p>
+
+<div class="tblwrap">
+<table>
+  <thead>
+    <tr><th>入っていたもの</th><th>影響</th><th>この後</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>氏名・住所・電話・メールなど、特定の個人がわかる情報</td>
+      <td>大きい</td>
+      <td>個人情報保護法の検討が必要。件数を数える</td>
+    </tr>
+    <tr>
+      <td>病歴・信条・犯罪歴など要配慮個人情報</td>
+      <td>とても大きい</td>
+      <td>上に加えて、より慎重な扱いが要る</td>
+    </tr>
+    <tr>
+      <td>取引先の社名入りの見積や契約条件</td>
+      <td>大きい</td>
+      <td>秘密保持契約の確認。報告義務があることが多い</td>
+    </tr>
+    <tr>
+      <td>自社の設計図・ソースコード・原価</td>
+      <td>中〜大</td>
+      <td>社内判断。営業秘密としての管理状況を確認</td>
+    </tr>
+    <tr>
+      <td>社内の会議メモで、固有名詞を含まないもの</td>
+      <td>小さい</td>
+      <td>記録だけ残して様子を見る、で足りることが多い</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>件数を数えるのを忘れがちです。「顧客情報を入れました」と「顧客情報を1,200件入れました」では、この後の対応がまったく変わります。</p>
+
+<h2>報告するかどうかの線引き</h2>
+
+<p>社内で止めるか、外に報告するか。ここで迷って一晩置く会社が多いのですが、置くほど選択肢が減ります。</p>
+
+<p>個人データが漏れた、あるいは漏れたおそれがある場合、個人情報保護法では個人情報保護委員会への報告と本人への通知が求められる類型が定められています。要配慮個人情報が含まれる場合、財産的被害のおそれがある場合、不正の目的によるおそれがある場合、そして1,000人を超える場合。このどれかに当たりそうなら、早い段階で弁護士か、委員会の相談窓口に当たってください。</p>
+
+<div class="box info">
+  <div class="box-t">◆ 判断に迷ったら</div>
+  <p>個人情報保護委員会は相談窓口を設けています。「報告が必要か分からない」という段階で聞いて構いません。自社だけで「たぶん大丈夫」と判断して、後から指摘されるほうがダメージが大きい。</p>
+</div>
+
+<p>取引先の情報が出た場合は、秘密保持契約を読み直します。多くの契約に「漏えいまたはそのおそれが生じた場合は直ちに通知する」という条項が入っています。黙っていて後から発覚すると、情報が出たこと自体より、報告しなかったことのほうが問題になります。</p>
+
+<h2>やってしまった本人を責めない</h2>
+
+<p>実務としていちばん効くのはこれだと思っています。</p>
+
+<p>本人が怒られると、次から報告が上がってこなくなります。報告されない事故は、対処もされません。半年後に取引先から指摘されて初めて知る、というのが最悪の展開です。</p>
+
+<p>生成AIへの入力は、メールの誤送信と同じで、誰でもやります。手が滑ったことを責めるのではなく、報告が早かったことを評価する。そういう運用にしておかないと、情報が集まらない。</p>
+
+<p>実際、報告が30分で上がってくる会社と、3日後に上がってくる会社では、使える手の数が全然違います。</p>
+
+<h2>ここまで終わってから、削除する</h2>
+
+<p>記録を取り、中身を分類し、報告の要否を判断した。ここまで来てようやく削除です。</p>
+
+<p>各サービスには会話の削除機能があります。ただし削除してもすぐに消えるわけではなく、事業者側のバックアップから消えるまでには期間があるのが普通です。「削除したので解決」と報告書に書くと、後で揉めます。</p>
+
+<p>学習に使われるかどうかは、削除では変わりません。入力時点の設定で決まっています。だから<a href="/articles/gakushu-sasenai-settei-genkai.html">設定は事前に</a>やっておく必要があります。</p>
+
+<h2>一度やると、だいたい覚える</h2>
+
+<p>ここまで読んで「面倒だな」と思ったなら、それが正しい感想です。面倒です。</p>
+
+<p>ただ、この順番を一度でも通しておくと、本番で迷いません。逆に知らないままだと、最初の30分で履歴を消して、記録もなく、報告もできない状態になります。そこから挽回するのはかなりきつい。</p>
+
+<p>紙に書いて、生成AIを使う人の見える場所に貼っておくくらいでちょうどいいと思います。</p>
+  </article>
+<div class="cta">
+  <h2>初動は、起きてから考えると間に合わない</h2>
+  <p>手順を知らない状態で事故に遭うと、最初の30分でだいたい間違えます。先に一度通しておくだけで結果が変わります。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/gakushu-sasenai-settei-genkai.html"><div class="rt">生成AIの「学習させない設定」で防げること、防げないこと</div><div class="rd">オプトアウトすれば安全、という理解は半分しか当たっていない。設定で消えるリスクと、設定では一切動かないリスクを分けて整理します。</div></a>
+  <a href="/articles/kojin-joho-hogoho-seisei-ai.html"><div class="rt">顧客情報を生成AIに入れると、個人情報保護法上どうなるか</div><div class="rd">入力した瞬間に即違法、という話ではありません。何が問題になるのか、どこで線が引かれるのかを条文に沿って整理します。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>
