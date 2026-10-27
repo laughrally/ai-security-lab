@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' https://fonts.gstatic.com;
+  img-src 'self' data: https:;
+  connect-src 'self' https://ai-security-lab-stripe.laughrally.workers.dev https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
+  frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';
+  upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>生成AIに入れてはいけない情報 チェックリスト｜印刷して配れるA4一枚</title>
+<meta name="description" content="生成AIに入力してはいけない情報を、現場が判断できる具体名で並べたA4一枚のチェックリスト。印刷してPCの横に貼れます。登録不要でそのまま使えます。中小企業向け。">
+<link rel="canonical" href="https://ai-security-lab.com/checklist.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/checklist.html">
+<meta property="og:title" content="生成AIに入れてはいけない情報 チェックリスト（A4一枚）">
+<meta property="og:description" content="現場が判断できる具体名で並べたA4一枚。印刷してPCの横に貼れます。登録不要。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "生成AIに入れてはいけない情報の判断",
+  "description": "生成AIを業務で使うときに、入力してよい情報といけない情報を現場で判断するための手順。",
+  "inLanguage": "ja",
+  "publisher": {
+    "@type": "Organization",
+    "name": "合同会社LaughRally",
+    "url": "https://ai-security-lab.com/"
+  },
+  "step": [
+    { "@type": "HowToStep", "name": "入れてはいけないものに当たらないか確認する",
+      "text": "お客様から届いたメールの本文、見積書・契約書・請求書、取引先の社名が入った資料、人事情報、健康に関する情報、図面やソースコード、未公表の情報、IDとパスワード。これらに当たるものは入力しない。" },
+    { "@type": "HowToStep", "name": "固有名詞と数字を外せないか考える",
+      "text": "社名を「A社」、金額を比率、日付を相対表現に置き換える。多くの相談はこれで成立する。" },
+    { "@type": "HowToStep", "name": "迷ったら入れずに聞く",
+      "text": "判断がつかないものは入れない。社内の相談先に確認してから使う。" },
+    { "@type": "HowToStep", "name": "入れてしまったら、消す前に記録する",
+      "text": "画面をスクリーンショットで残し、すぐ担当者に連絡する。履歴を先に消すと、何が出たか説明できなくなる。" }
+  ]
+}
+</script>
+
+<script>
+(function(){try{var s=localStorage.getItem('theme');
+var d=window.matchMedia('(prefers-color-scheme:dark)').matches;
+if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;700;900&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --green:#16a34a; --green-l:#dcfce7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg2);color:var(--text);font-family:'Noto Sans JP',sans-serif;line-height:1.8;
+     -webkit-text-size-adjust:100%;text-size-adjust:100%}
+
+nav{background:var(--bg);border-bottom:1px solid var(--border);height:60px;display:flex;
+    align-items:center;padding:0 22px;justify-content:space-between;gap:14px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:16px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff!important;font-weight:700;padding:8px 18px;border-radius:6px;font-size:13px}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+.wrap{max-width:860px;margin:0 auto;padding:30px 20px 0}
+.intro h1{font-family:'Noto Serif JP',serif;font-size:clamp(22px,3.6vw,30px);line-height:1.45;
+          font-weight:900;margin-bottom:14px}
+.intro p{font-size:15px;color:var(--text2);line-height:1.95;margin-bottom:12px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0 28px}
+.btn{border:none;border-radius:7px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;
+     font-family:inherit;text-decoration:none;display:inline-block}
+.btn-p{background:var(--red);color:#fff}
+.btn-p:hover{background:#b91c1c}
+.btn-s{background:var(--bg);color:var(--text);border:1px solid var(--border2)}
+.btn-s:hover{background:var(--bg3)}
+
+/* ===== 印刷するA4の紙 ===== */
+.sheet{background:#fff;color:#0f172a;border:1px solid var(--border);border-radius:10px;
+       padding:32px 34px;box-shadow:0 4px 16px rgba(0,0,0,.07)}
+body.dark .sheet{border-color:#2a3347}
+.sheet .sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;
+               border-bottom:2px solid #0f172a;padding-bottom:12px;margin-bottom:18px}
+.sheet h2{font-family:'Noto Serif JP',serif;font-size:21px;font-weight:900;line-height:1.4;color:#0f172a}
+.sheet .sh-sub{font-size:11px;color:#64748b;margin-top:5px;line-height:1.6}
+.sheet .sh-logo{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;
+                color:#0f172a;white-space:nowrap;text-align:right;line-height:1.7}
+.sheet .sh-logo span{color:#dc2626}
+.sheet .sh-logo em{font-style:normal;color:#64748b;font-size:10px}
+
+.blk{margin-bottom:16px}
+.blk-h{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.06em;
+       padding:5px 10px;border-radius:4px;display:inline-block;margin-bottom:9px}
+.blk-ng .blk-h{background:#fee2e2;color:#b91c1c}
+.blk-ok .blk-h{background:#dcfce7;color:#15803d}
+.blk-if .blk-h{background:#fef3c7;color:#b45309}
+.blk-sos .blk-h{background:#dbeafe;color:#1d4ed8}
+
+.items{display:grid;grid-template-columns:1fr 1fr;gap:3px 20px}
+.item{font-size:12.5px;color:#1e293b;line-height:1.65;display:flex;gap:7px;align-items:flex-start;
+      padding:2px 0}
+.item .bx{flex:0 0 11px;height:11px;border:1.4px solid #94a3b8;border-radius:2px;margin-top:4px}
+.blk-ng .item .bx{border-color:#dc2626}
+.blk-ok .item .bx{border-color:#16a34a}
+
+.rule{font-size:12.5px;color:#1e293b;line-height:1.8;background:#f8fafc;border-left:3px solid #d97706;
+      padding:10px 13px;border-radius:0 5px 5px 0}
+.rule b{color:#0f172a}
+
+.sos{font-size:12.5px;color:#1e293b;line-height:1.75;background:#f8fafc;border-left:3px solid #2563eb;
+     padding:10px 13px;border-radius:0 5px 5px 0}
+.sos ol{margin:6px 0 0 1.25em}
+.sos li{margin-bottom:2px}
+.fill{border-bottom:1px dashed #94a3b8;display:inline-block;min-width:150px}
+
+.sh-foot{border-top:1px solid #cbd5e1;margin-top:16px;padding-top:10px;display:flex;
+         justify-content:space-between;gap:14px;font-size:10.5px;color:#64748b;line-height:1.6}
+
+/* ===== メール登録 ===== */
+.optin{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:26px 26px;
+       margin:34px 0 0}
+.optin h3{font-family:'Noto Serif JP',serif;font-size:18px;font-weight:800;margin-bottom:10px;line-height:1.5}
+.optin p{font-size:13.5px;color:var(--text3);line-height:1.9;margin-bottom:8px}
+.optin .row{display:flex;flex-wrap:wrap;gap:9px;margin-top:16px}
+.optin input{flex:1 1 230px;padding:12px 14px;border:1px solid var(--border2);border-radius:7px;
+             font-size:14px;font-family:inherit;background:var(--bg);color:var(--text)}
+.optin input:focus{outline:none;border-color:var(--blue)}
+.optin .fine{font-size:11.5px;color:var(--text4);line-height:1.8;margin-top:12px}
+.optin .fine a{color:var(--text3)}
+.msg{font-size:13.5px;margin-top:12px;line-height:1.8;display:none}
+.msg.ok{color:var(--green);display:block}
+.msg.ng{color:var(--red);display:block}
+
+footer{margin-top:60px;border-top:1px solid var(--border);padding:30px 20px 40px;text-align:center;
+       background:var(--bg)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;margin-bottom:14px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:700px){
+  .items{grid-template-columns:1fr}
+  .sheet{padding:22px 18px}
+  .wrap{padding:22px 16px 0}
+  nav{padding:0 14px}
+  .nright .hide-sp{display:none}
+}
+
+/* ===== 印刷：紙だけを出す ===== */
+@media print{
+  @page{size:A4 portrait;margin:11mm}
+  nav,.intro,.actions,.optin,footer,.noprint{display:none!important}
+  body{background:#fff!important;color:#000!important}
+  .wrap{max-width:none;padding:0;margin:0}
+  .sheet{border:none;box-shadow:none;border-radius:0;padding:0;background:#fff!important;
+         color:#0f172a!important}
+  .items{grid-template-columns:1fr 1fr}
+  .item,.rule,.sos{font-size:10.5pt}
+  .sheet h2{font-size:15pt}
+  a{text-decoration:none;color:#0f172a}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav class="noprint">
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="intro">
+    <h1>生成AIに入れてはいけない情報<br>チェックリスト（A4一枚）</h1>
+    <p>そのまま印刷して、生成AIを使う人のPCの横に貼れます。<strong>登録もダウンロードも不要</strong>です。社名を入れ替えて、社内で配ってもらって構いません。</p>
+    <p>抽象的な原則を並べても守られないので、現場が手に持っているものの名前で書いています。</p>
+    <div class="actions">
+      <button class="btn btn-p" onclick="window.print()">印刷 / PDFで保存</button>
+      <a class="btn btn-s" href="/articles/seisei-ai-guideline-template.html">社内ルールのひな形も見る</a>
+    </div>
+  </div>
+
+  <div class="sheet" id="sheet">
+    <div class="sh-top">
+      <div>
+        <h2>生成AIに入れてはいけない情報</h2>
+        <div class="sh-sub">ChatGPT・Gemini・Claude・Copilot・議事録ツール・翻訳ツール・AI-OCR など、<br>
+          入力した内容が社外のサーバーで処理されるものすべてが対象です。</div>
+      </div>
+      <div class="sh-logo">AI<span>Security</span>Lab<br><em>ai-security-lab.com</em></div>
+    </div>
+
+    <div class="blk blk-ng">
+      <div class="blk-h">入れない</div>
+      <div class="items">
+        <div class="item"><span class="bx"></span>お客様から届いたメールの本文</div>
+        <div class="item"><span class="bx"></span>お客様の氏名・住所・電話・メール</div>
+        <div class="item"><span class="bx"></span>見積書・注文書・契約書・請求書</div>
+        <div class="item"><span class="bx"></span>取引先の社名が入った資料</div>
+        <div class="item"><span class="bx"></span>取引先から預かった図面・仕様書</div>
+        <div class="item"><span class="bx"></span>社員の人事情報・給与・評価</div>
+        <div class="item"><span class="bx"></span>健康診断の結果・通院や休職の記録</div>
+        <div class="item"><span class="bx"></span>自社の図面・ソースコード・原価</div>
+        <div class="item"><span class="bx"></span>まだ公表していない商品・企画・投資</div>
+        <div class="item"><span class="bx"></span>各種のID・パスワード・APIキー</div>
+        <div class="item"><span class="bx"></span>採用応募書類・履歴書</div>
+        <div class="item"><span class="bx"></span>顧客リスト・注文データのCSV</div>
+      </div>
+    </div>
+
+    <div class="blk blk-ok">
+      <div class="blk-h">入れてよい</div>
+      <div class="items">
+        <div class="item"><span class="bx"></span>一般に公開されている情報</div>
+        <div class="item"><span class="bx"></span>自分で書いた文章の推敲・誤字チェック</div>
+        <div class="item"><span class="bx"></span>固有名詞を伏せた一般的な相談</div>
+        <div class="item"><span class="bx"></span>法令・規格・公表資料の読み込み</div>
+        <div class="item"><span class="bx"></span>社内マニュアルの下書き</div>
+        <div class="item"><span class="bx"></span>一般的な調べもの</div>
+      </div>
+    </div>
+
+    <div class="blk blk-if">
+      <div class="blk-h">迷ったら</div>
+      <div class="rule">
+        <b>固有名詞と数字を外せば、たいていの相談は通ります。</b><br>
+        社名は「A社」に、金額は「全体の○%」に、日付は「契約から○日後」に置き換える。手間は30秒です。<br>
+        それでも判断がつかないときは、<b>入れずに聞く</b>。急いでいても、聞いたほうが早く済みます。
+      </div>
+    </div>
+
+    <div class="blk blk-sos">
+      <div class="blk-h">入れてしまったら</div>
+      <div class="sos">
+        <b>履歴を消す前に、やることがあります。</b>
+        <ol>
+          <li>画面をスクリーンショットで残す（入力した文章・日時・サービス名・返ってきた内容）</li>
+          <li>すぐに連絡する　→　連絡先：<span class="fill">&nbsp;</span>　（内線 <span class="fill" style="min-width:70px">&nbsp;</span>）</li>
+          <li>IDやパスワードを入れた場合は、その鍵を失効させて作り直す</li>
+          <li>会話の削除は、記録を取って報告したあとで</li>
+        </ol>
+        報告が早いほど、打てる手が増えます。<b>報告したことで不利益な扱いはしません。</b>
+      </div>
+    </div>
+
+    <div class="sh-foot">
+      <div>社内配布可。社名・連絡先を記入してお使いください。<br>最新版：ai-security-lab.com/checklist.html</div>
+      <div style="text-align:right;white-space:nowrap">制定日　　年　月　日<br>作成：合同会社LaughRally</div>
+    </div>
+  </div>
+
+  <div class="optin noprint">
+    <h3>現場で起きたことを、月に1回だけ送ります</h3>
+    <p>生成AIまわりで実際に起きた事故と、社内でどう手当てするか。中小企業の現場目線で、月1回のメールにまとめています。</p>
+    <p>売り込みのメールは送りません。いつでも1クリックで解除できます。</p>
+    <div class="row">
+      <input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" maxlength="200">
+      <button class="btn btn-p" id="lead-btn" onclick="subscribe()">受け取る</button>
+    </div>
+    <div class="msg" id="lead-msg"></div>
+    <p class="fine">
+      いただいたメールアドレスは、上記の情報配信にのみ使用します。第三者に提供しません。<br>
+      取扱いの詳細は<a href="https://ai-security-lab.com/#top" onclick="sessionStorage.setItem('openLegal','privacy')">プライバシーポリシー</a>をご覧ください。
+    </p>
+  </div>
+</div>
+
+<footer class="noprint">
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  if(document.documentElement.getAttribute('data-pre')==='dark'){
+    document.body.classList.add('dark');
+    var b=document.getElementById('dt'); if(b)b.textContent='\u{1F319}';
+  }
+})();
+function tg(){
+  var d=document.body.classList.toggle('dark');
+  document.getElementById('dt').textContent=d?'\u{1F319}':'☀️';
+  try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}
+}
+
+var WORKER='https://ai-security-lab-stripe.laughrally.workers.dev';
+function subscribe(){
+  var el=document.getElementById('lead-email');
+  var btn=document.getElementById('lead-btn');
+  var msg=document.getElementById('lead-msg');
+  var v=(el.value||'').trim();
+  msg.className='msg';
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){
+    msg.textContent='メールアドレスの形式を確認してください。';
+    msg.className='msg ng'; return;
+  }
+  btn.disabled=true; btn.textContent='送信中…';
+  fetch(WORKER+'/api/subscribe',{
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({email:v, source:'checklist'})
+  }).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+  .then(function(res){
+    if(res.ok){
+      msg.textContent='登録しました。次回の配信からお送りします。';
+      msg.className='msg ok'; el.value='';
+      if(window.gtag) gtag('event','subscribe',{method:'checklist'});
+    }else{
+      msg.textContent=(res.j && res.j.error) ? res.j.error : '送信できませんでした。時間をおいてお試しください。';
+      msg.className='msg ng';
+    }
+  }).catch(function(){
+    msg.textContent='送信できませんでした。通信環境をご確認ください。';
+    msg.className='msg ng';
+  }).finally(function(){
+    btn.disabled=false; btn.textContent='受け取る';
+  });
+}
+document.getElementById('lead-email').addEventListener('keydown',function(e){
+  if(e.key==='Enter') subscribe();
+});
+</script>
+</body>
+</html>

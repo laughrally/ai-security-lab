@@ -212,7 +212,20 @@ figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-t
 .tmpl p{font-size:14px;margin-bottom:14px}
 .tmpl p:last-child{margin-bottom:0}
 
-.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+.sheet-cta{margin:60px 0 0;border:1px solid var(--border);border-radius:13px;overflow:hidden;
+           background:var(--bg)}
+.sheet-cta .sc-tag{background:var(--green-l);color:var(--green);font-size:11px;font-weight:700;
+                   font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;padding:7px 20px}
+.sheet-cta .sc-body{padding:20px 22px 24px}
+.sheet-cta .sc-t{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;line-height:1.55;
+                 margin-bottom:10px}
+.sheet-cta .sc-d{font-size:13.5px;color:var(--text3);line-height:1.9;margin-bottom:16px}
+.sheet-cta .sc-btn{display:inline-block;background:var(--bg3);color:var(--text);font-weight:700;
+                   font-size:13.5px;padding:11px 24px;border-radius:7px;text-decoration:none;
+                   border:1px solid var(--border2)}
+.sheet-cta .sc-btn:hover{background:var(--border);color:var(--text)}
+
+.cta{margin:40px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
      border:1px solid var(--border)}
 .cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
         padding:0;border:none;line-height:1.55}
@@ -430,6 +443,15 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <p>要約と質問案作りだけでも、十分に時間は減ります。判断まで任せるのは、規制と相場が固まってからで遅くない。急いで先頭を走る必要のない領域です。</p>
   </article>
+<div class="sheet-cta">
+  <div class="sc-tag">無料・登録不要</div>
+  <div class="sc-body">
+    <div class="sc-t">生成AIに入れてはいけない情報 チェックリスト</div>
+    <div class="sc-d">この記事で書いた判断を、A4一枚にまとめてあります。
+      そのまま印刷して、生成AIを使う人のPCの横に貼れます。社名を入れ替えて社内で配っても構いません。</div>
+    <a class="sc-btn" href="https://ai-security-lab.com/checklist.html">チェックリストを開く</a>
+  </div>
+</div>
 <div class="cta">
   <h2>急いで先頭を走らなくていい領域</h2>
   <p>効率化の誘惑が強い割に、失敗したときの損害が大きい。要約と質問案作りだけでも十分に時間は減ります。</p>
@@ -452,6 +474,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <div class="flinks">
     <a href="https://ai-security-lab.com/">トップ</a>
     <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/checklist.html">チェックリスト</a>
     <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
     <a href="mailto:info@laughrally.tech">お問い合わせ</a>
   </div>
