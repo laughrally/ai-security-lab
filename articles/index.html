@@ -31,6 +31,48 @@
   "hasPart": [
     {
       "@type": "Article",
+      "headline": "ChatGPTの「一時チャット」は本当に残らないのか",
+      "url": "https://ai-security-lab.com/articles/chatgpt-ichiji-chat.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
+      "headline": "ChatGPTのカスタム指示に、会社の情報を書いていいか",
+      "url": "https://ai-security-lab.com/articles/chatgpt-custom-instructions.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
+      "headline": "GPTs（マイGPT）に社内資料をアップロードするリスク",
+      "url": "https://ai-security-lab.com/articles/gpts-shanai-shiryo.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
+      "headline": "NotebookLMに社内資料を入れていいか",
+      "url": "https://ai-security-lab.com/articles/notebooklm-shanai-shiryo.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
+      "headline": "危ないAIブラウザ拡張の見分け方",
+      "url": "https://ai-security-lab.com/articles/ai-kakucho-minowake.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
+      "headline": "退職者のAIアカウントをどう止めるか",
+      "url": "https://ai-security-lab.com/articles/taishokusha-ai-account.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
+      "headline": "業務委託・フリーランスの生成AI利用をどう縛るか",
+      "url": "https://ai-security-lab.com/articles/gyomu-itaku-ai-shibari.html",
+      "datePublished": "2026-10-28"
+    },
+    {
+      "@type": "Article",
       "headline": "生成AIの「学習させない設定」で防げること、防げないこと",
       "url": "https://ai-security-lab.com/articles/gakushu-sasenai-settei-genkai.html",
       "datePublished": "2026-10-27"
@@ -196,6 +238,39 @@ th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-
 th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
 td{color:var(--text2)}
 
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
 .tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
       padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
 .tmpl p{font-size:14px;margin-bottom:14px}
@@ -275,6 +350,41 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <h1>記事</h1>
   <div class="meta">生成AIと情報漏洩について、中小企業の現場で起きることを書いています</div>
   <div class="cards">
+    <a class="card" href="/articles/chatgpt-ichiji-chat.html">
+      <div class="ct">ChatGPTの「一時チャット」は本当に残らないのか</div>
+      <div class="cd">履歴に出ないのと、送信されないのは別です。守っている相手が違う。</div>
+      <div class="cm">2026-10-28　ChatGPT / 設定 / 長尾</div>
+    </a>
+    <a class="card" href="/articles/chatgpt-custom-instructions.html">
+      <div class="ct">ChatGPTのカスタム指示に、会社の情報を書いていいか</div>
+      <div class="cd">一度書いた文章が、以降すべての会話に自動で付きます。天気を聞いた会話にも。</div>
+      <div class="cm">2026-10-28　ChatGPT / 設定 / 長尾</div>
+    </a>
+    <a class="card" href="/articles/gpts-shanai-shiryo.html">
+      <div class="ct">GPTs（マイGPT）に社内資料をアップロードするリスク</div>
+      <div class="cd">会話を消してもナレッジのファイルは消えません。そして公開範囲の設定を1つ間違えると、本当に外に出ます。</div>
+      <div class="cm">2026-10-28　ChatGPT / GPTs / 長尾</div>
+    </a>
+    <a class="card" href="/articles/notebooklm-shanai-shiryo.html">
+      <div class="ct">NotebookLMに社内資料を入れていいか</div>
+      <div class="cd">資料を入れないと何もできないツールです。つまり使い始めた瞬間に、判断が必要になります。</div>
+      <div class="cm">2026-10-28　NotebookLM / ツール / 長尾</div>
+    </a>
+    <a class="card" href="/articles/ai-kakucho-minowake.html">
+      <div class="ct">危ないAIブラウザ拡張の見分け方</div>
+      <div class="cd">「すべてのサイトのデータの読み取りと変更」を許可した拡張は、あなたが開く全画面を読めます。</div>
+      <div class="cm">2026-10-28　ブラウザ拡張 / シャドーAI / 長尾</div>
+    </a>
+    <a class="card" href="/articles/taishokusha-ai-account.html">
+      <div class="ct">退職者のAIアカウントをどう止めるか</div>
+      <div class="cd">PCも入館証もメールも止めている会社が、AIだけ止めていません。中身は在職中の業務の会話です。</div>
+      <div class="cm">2026-10-28　退職手続き / 体制 / 長尾</div>
+    </a>
+    <a class="card" href="/articles/gyomu-itaku-ai-shibari.html">
+      <div class="ct">業務委託・フリーランスの生成AI利用をどう縛るか</div>
+      <div class="cd">社内規程は委託先に届きません。そして渡している機密の量は、社員より多いことがあります。</div>
+      <div class="cm">2026-10-28　委託先管理 / 契約 / 長尾</div>
+    </a>
     <a class="card" href="/articles/gakushu-sasenai-settei-genkai.html">
       <div class="ct">生成AIの「学習させない設定」で防げること、防げないこと</div>
       <div class="cd">オプトアウトすれば安全、という理解は半分しか当たっていない。設定で消えるリスクと、設定では一切動かないリスクを分けて整理します。</div>

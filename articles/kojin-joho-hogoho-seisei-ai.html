@@ -203,6 +203,39 @@ th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-
 th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
 td{color:var(--text2)}
 
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
 .tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
       padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
 .tmpl p{font-size:14px;margin-bottom:14px}
