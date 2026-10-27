@@ -221,7 +221,25 @@
   .nright{display:flex;align-items:center;gap:28px}
   .nright a{font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s}
   .nright a:hover{color:var(--text)}
-  .ncta{background:var(--red)!important;color:#fff!important;font-weight:700!important;padding:8px 20px;border-radius:6px;font-size:13px!important;transition:background .2s!important}
+  .ncta{background:var(--red)!important;color:#fff!important;font-weight:700!important;padding:8px 20px;border-radius:6px;font-size:13px!important;transition:background .2s!important;white-space:nowrap;flex:0 0 auto}
+
+  /* 「今は買わない人」の受け皿。LPには買うか離れるかの二択しかなかった */
+  .freebox{background:var(--bg2,#f8f9fb);border:1px solid var(--border);border-radius:14px;
+           padding:34px 30px;margin:0 auto;max-width:900px}
+  body.dark .freebox{background:rgba(255,255,255,.03)}
+  .freebox .fb-eye{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);
+                   letter-spacing:.18em;margin-bottom:12px}
+  .freebox h3{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.4vw,24px);font-weight:900;
+              line-height:1.5;margin-bottom:10px;letter-spacing:-.01em}
+  .freebox .fb-lead{font-size:14px;color:var(--text3);line-height:1.95;margin-bottom:22px}
+  .fb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .fb-card{display:block;background:var(--bg);border:1px solid var(--border);border-radius:10px;
+           padding:18px 18px 16px;text-decoration:none;transition:border-color .2s,transform .2s}
+  .fb-card:hover{border-color:var(--red);transform:translateY(-2px)}
+  .fb-ic{font-size:22px;line-height:1;margin-bottom:10px}
+  .fb-t{font-size:14px;font-weight:700;color:var(--text);line-height:1.5;margin-bottom:5px}
+  .fb-d{font-size:12px;color:var(--text4);line-height:1.7}
+  @media(max-width:700px){.fb-grid{grid-template-columns:1fr}.freebox{padding:26px 20px}}
   .ncta:hover{background:#b91c1c!important}
 
   .hero{padding:140px 32px 100px;max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
@@ -695,8 +713,14 @@
 
   /* スマホ（〜480px） */
   @media(max-width:480px){
-    nav{padding:0 14px}
-    .nright{gap:10px}
+    /* ヘッダーが1行に収まらず、CTAがロゴに重なっていた。
+       幅の優先順位は CTA > ログイン > ダークモード。使い方ガイドは本文からも開ける */
+    nav{padding:0 12px}
+    .nright{gap:8px;flex:0 0 auto}
+    .nlogo{font-size:13px;flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
+    #guide-toggle{display:none}
+    .ncta{padding:6px 11px;font-size:11.5px!important}
+    #nav-login{font-size:11.5px!important;white-space:nowrap}
     .hero{padding:90px 16px 48px}
     .hleft{order:1 !important}
     .hright{order:2 !important;grid-template-columns:1fr}
@@ -1751,6 +1775,33 @@
       <div class="pcard"><div class="pcard-head"><span class="pbadge pb6">06</span><div class="pttl">万が一情報漏洩が起きたとき、最初に何をすればいいかわからない</div></div><div class="ptxt">初動対応の遅れが被害を拡大させます。事後対応を知っておくことは必須です。</div></div>
     </div>
     <div class="sbanner">東京商工リサーチの調査（2026年4月公表）によると、生成AIの活用について<strong>「方針を決めていない」企業は37.5%</strong>。また総務省「情報通信白書 令和7年版」では、生成AIを業務に活用している従業員は<strong>全体の約35%</strong>にとどまります。<strong>ルールも教育も整備しないまま、社員が個別にAIを使っている</strong>——多くの企業がこの状態にあります。このeラーニングは、その空白を埋めるために作られました。</div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="conw">
+    <div class="freebox">
+      <div class="fb-eye">// FREE</div>
+      <h3>いきなり受講しなくて大丈夫です。</h3>
+      <p class="fb-lead">まず無料のところから試してください。序章とレッスン01は登録なしで読めますし、下の3つも費用はかかりません。</p>
+      <div class="fb-grid">
+        <a class="fb-card" href="/checklist.html">
+          <div class="fb-ic">📋</div>
+          <div class="fb-t">入れてはいけない情報<br>チェックリスト</div>
+          <div class="fb-d">A4一枚。印刷して席に貼れます</div>
+        </a>
+        <a class="fb-card" href="/articles/">
+          <div class="fb-ic">📖</div>
+          <div class="fb-t">記事を読む（全42本）</div>
+          <div class="fb-d">業種別・場面別。登録は要りません</div>
+        </a>
+        <a class="fb-card" href="https://lin.ee/Zw4aNjn" target="_blank" rel="noopener noreferrer">
+          <div class="fb-ic">💬</div>
+          <div class="fb-t">LINEで相談する</div>
+          <div class="fb-d">平日10:00〜18:00に返します</div>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -3070,6 +3121,33 @@
       </details>
     </div>
 
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0">
+  <div class="conw">
+    <div class="freebox">
+      <div class="fb-eye">// NEXT STEP</div>
+      <h3>決めるのは、中身を見てからで構いません。</h3>
+      <p class="fb-lead">料金を見て迷われたなら、先に無料のものを使ってみてください。社内で配れるものばかりです。</p>
+      <div class="fb-grid">
+        <a class="fb-card" href="/checklist.html">
+          <div class="fb-ic">📋</div>
+          <div class="fb-t">入れてはいけない情報<br>チェックリスト</div>
+          <div class="fb-d">A4一枚。印刷して席に貼れます</div>
+        </a>
+        <a class="fb-card" href="/articles/">
+          <div class="fb-ic">📖</div>
+          <div class="fb-t">記事を読む（全42本）</div>
+          <div class="fb-d">業種別・場面別。登録は要りません</div>
+        </a>
+        <a class="fb-card" href="https://lin.ee/Zw4aNjn" target="_blank" rel="noopener noreferrer">
+          <div class="fb-ic">💬</div>
+          <div class="fb-t">LINEで相談する</div>
+          <div class="fb-d">平日10:00〜18:00に返します</div>
+        </a>
+      </div>
+    </div>
   </div>
 </section>
 

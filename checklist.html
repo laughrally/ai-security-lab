@@ -170,6 +170,13 @@ footer{margin-top:60px;border-top:1px solid var(--border);padding:30px 20px 40px
        background:var(--bg)}
 .flinks{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center;margin-bottom:14px}
 .flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.linebox{margin:22px 0 16px;padding:18px 20px;border:1px solid var(--border);border-radius:10px;
+         background:rgba(6,199,85,.05)}
+.lb-t{font-size:14px;font-weight:700;margin-bottom:6px}
+.lb-d{font-size:12.5px;color:var(--text3);line-height:1.85;margin-bottom:14px}
+.lb-btn{display:inline-block;background:#06c755;color:#fff;font-size:13px;font-weight:700;
+        text-decoration:none;padding:10px 22px;border-radius:7px;transition:opacity .2s}
+.lb-btn:hover{opacity:.85}
 .fcopy{font-size:11px;color:var(--text4)}
 
 @media(max-width:700px){
@@ -298,9 +305,17 @@ footer{margin-top:60px;border-top:1px solid var(--border);padding:30px 20px 40px
     <p>売り込みのメールは送りません。いつでも1クリックで解除できます。</p>
     <div class="row">
       <input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" maxlength="200">
+      <!-- ボットよけ。人には見えない。埋まっていたらWorker側が黙って捨てる -->
+      <input type="text" id="lead-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"
+             style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
       <button class="btn btn-p" id="lead-btn" onclick="subscribe()">受け取る</button>
     </div>
     <div class="msg" id="lead-msg"></div>
+    <div class="linebox">
+      <div class="lb-t">メールより LINE がよければ</div>
+      <p class="lb-d">同じ内容を LINE でも受け取れます。「これ入れていいのか」の相談も、そのまま送ってください。平日10:00〜18:00に返します。</p>
+      <a class="lb-btn" href="https://lin.ee/Zw4aNjn" target="_blank" rel="noopener noreferrer">LINEで友だち追加</a>
+    </div>
     <p class="fine">
       いただいたメールアドレスは、上記の情報配信にのみ使用します。第三者に提供しません。<br>
       取扱いの詳細は<a href="https://ai-security-lab.com/#top" onclick="sessionStorage.setItem('openLegal','privacy')">プライバシーポリシー</a>をご覧ください。
@@ -346,7 +361,8 @@ function subscribe(){
   btn.disabled=true; btn.textContent='送信中…';
   fetch(WORKER+'/api/subscribe',{
     method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({email:v, source:'checklist'})
+    body:JSON.stringify({email:v, source:'checklist',
+      website:(document.getElementById('lead-website')||{}).value||''})
   }).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
   .then(function(res){
     if(res.ok){
