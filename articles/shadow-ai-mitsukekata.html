@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>シャドーAIの見つけ方。禁止しても使われている前提で探す｜AI Security Lab</title>
-<meta name="description" content="会社が把握していない生成AIの業務利用（シャドーAI）を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。">
+<title>会社が把握していないAIの見つけ方｜AI Security Lab</title>
+<meta name="description" content="会社が把握していない生成AIの業務利用を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。禁止令が実態を見えなくする理由も整理しました。">
 <link rel="canonical" href="https://ai-security-lab.com/articles/shadow-ai-mitsukekata.html">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -17,12 +17,12 @@
 <meta property="og:site_name" content="AI Security Lab">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:url" content="https://ai-security-lab.com/articles/shadow-ai-mitsukekata.html">
-<meta property="og:title" content="シャドーAIの見つけ方。禁止しても使われている前提で探す">
-<meta property="og:description" content="会社が把握していない生成AIの業務利用（シャドーAI）を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。">
+<meta property="og:title" content="会社が把握していないAIの見つけ方">
+<meta property="og:description" content="会社が把握していない生成AIの業務利用を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。禁止令が実態を見えなくする理由も整理しました。">
 <meta property="og:image" content="https://ai-security-lab.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="シャドーAIの見つけ方。禁止しても使われている前提で探す">
-<meta name="twitter:description" content="会社が把握していない生成AIの業務利用（シャドーAI）を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。">
+<meta name="twitter:title" content="会社が把握していないAIの見つけ方">
+<meta name="twitter:description" content="会社が把握していない生成AIの業務利用を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。禁止令が実態を見えなくする理由も整理しました。">
 <meta name="twitter:image" content="https://ai-security-lab.com/og.png">
 
 <script type="application/ld+json">
@@ -47,14 +47,14 @@
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "シャドーAIの見つけ方。禁止しても使われている前提で探す"
+          "name": "会社が把握していないAIの見つけ方"
         }
       ]
     },
     {
       "@type": "Article",
-      "headline": "シャドーAIの見つけ方。禁止しても使われている前提で探す",
-      "description": "会社が把握していない生成AIの業務利用（シャドーAI）を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。",
+      "headline": "会社が把握していないAIの見つけ方",
+      "description": "会社が把握していない生成AIの業務利用を見つける具体的な方法。通信ログ・ブラウザ拡張・経費精算・成果物の変化といった現実的な手がかりと、見つけた後に取るべき対応を中小企業向けに解説します。禁止令が実態を見えなくする理由も整理しました。",
       "inLanguage": "ja",
       "datePublished": "2026-10-27",
       "dateModified": "2026-10-27",
@@ -283,8 +283,8 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </nav>
 <main>
   <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
-  <div class="tagrow"><span class="tag">シャドーAI</span><span class="tag">実態把握</span><span class="tag">実務</span></div>
-  <h1>シャドーAIの見つけ方。禁止しても使われている前提で探す</h1>
+  <div class="tagrow"><span class="tag">社内ルール</span><span class="tag">実態調査</span></div>
+  <h1>会社が把握していないAIの見つけ方</h1>
   <div class="meta">公開 2026-10-27</div>
   <p class="lede">「うちは生成AIを禁止しています」と言う会社ほど、実際には使われています。禁止したから使われていないのではなく、禁止したから見えなくなっただけ。見えない利用は、ルールも設定も効きません。</p>
   <article>
@@ -300,7 +300,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <p>いちばん確実なのはここです。社内ネットワークから主要な生成AIサービスのドメインへの通信があるかを見ます。</p>
 
-<p>UTMやファイアウォール、プロキシのログが残っていれば、宛先ドメインの一覧を出すだけで分かります。chatgpt.com、claude.ai、gemini.google.com あたりを見れば、だいたいの利用状況はつかめます。</p>
+<p>社内ネットワークの出入口に置いている機器（UTM、ファイアウォール、プロキシなど）のログが残っていれば、宛先ドメインの一覧を出すだけで分かります。chatgpt.com、claude.ai、gemini.google.com あたりを見れば、だいたいの利用状況はつかめます。</p>
 
 <div class="box note">
   <div class="box-t">◆ 限界</div>

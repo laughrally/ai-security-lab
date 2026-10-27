@@ -283,7 +283,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </nav>
 <main>
   <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
-  <div class="tagrow"><span class="tag">医療</span><span class="tag">業種別</span><span class="tag">長尾</span></div>
+  <div class="tagrow"><span class="tag">医療</span></div>
   <h1>医療機関・クリニックで生成AIを使うときの線引き</h1>
   <div class="meta">公開 2026-10-29</div>
   <p class="lede">病歴も診断名も検査結果も要配慮個人情報です。加えて資格法に基づく守秘義務がある。それでも使える場面は、思っているより広い。</p>
@@ -308,7 +308,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <text class="s-mono" x="36" y="28">入れない</text>
   <text class="s-xs" x="36" y="50">患者氏名・生年月日・患者ID・住所</text>
   <text class="s-xs" x="36" y="70">カルテの記載、診療情報提供書</text>
-  <text class="s-xs" x="36" y="90">検査結果、画像データ（DICOM含む）</text>
+  <text class="s-xs" x="36" y="90">検査結果、レントゲンやCTの画像</text>
   <text class="s-xs" x="36" y="110">処方内容、レセプト</text>
   <text class="s-cr" x="36" y="128">職員の健康診断結果も同じ扱い</text>
 
@@ -346,7 +346,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <div class="box warn">
   <div class="box-t">⚠ 画像は外さない</div>
-  <p>レントゲンやCTの画像には、画像内に氏名やIDが焼き込まれていることがあります。DICOMファイルには撮影日や施設名がメタデータとして入っています。画像は原則としてアップロードしない、と割り切るほうが安全です。</p>
+  <p>レントゲンやCTの画像には、画像内に氏名やIDが焼き込まれていることがあります。医療用画像の形式（DICOM）には、撮影日や施設名がファイルの中に記録されています。画像は原則としてアップロードしない、と割り切るほうが安全です。</p>
 </div>
 
 <h2>電子カルテ連携をうたう製品の確認点</h2>

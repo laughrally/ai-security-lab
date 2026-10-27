@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>生成AIの利用ログを、どこまで取るべきか｜AI Security Lab</title>
-<meta name="description" content="生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
+<meta name="description" content="生成AIの利用ログをどの粒度で取るか。入力した文章を全部記録する運用が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
 <link rel="canonical" href="https://ai-security-lab.com/articles/ai-riyo-log-kanshi.html">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -18,11 +18,11 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:url" content="https://ai-security-lab.com/articles/ai-riyo-log-kanshi.html">
 <meta property="og:title" content="生成AIの利用ログを、どこまで取るべきか">
-<meta property="og:description" content="生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
+<meta property="og:description" content="生成AIの利用ログをどの粒度で取るか。入力した文章を全部記録する運用が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
 <meta property="og:image" content="https://ai-security-lab.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="生成AIの利用ログを、どこまで取るべきか">
-<meta name="twitter:description" content="生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
+<meta name="twitter:description" content="生成AIの利用ログをどの粒度で取るか。入力した文章を全部記録する運用が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
 <meta name="twitter:image" content="https://ai-security-lab.com/og.png">
 
 <script type="application/ld+json">
@@ -54,7 +54,7 @@
     {
       "@type": "Article",
       "headline": "生成AIの利用ログを、どこまで取るべきか",
-      "description": "生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。",
+      "description": "生成AIの利用ログをどの粒度で取るか。入力した文章を全部記録する運用が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。",
       "inLanguage": "ja",
       "datePublished": "2026-10-29",
       "dateModified": "2026-10-29",
@@ -283,16 +283,16 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </nav>
 <main>
   <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
-  <div class="tagrow"><span class="tag">ログ</span><span class="tag">労務</span><span class="tag">長尾</span></div>
+  <div class="tagrow"><span class="tag">社内ルール</span><span class="tag">労務</span></div>
   <h1>生成AIの利用ログを、どこまで取るべきか</h1>
   <div class="meta">公開 2026-10-29</div>
-  <p class="lede">全部のプロンプトを記録して管理者が読める状態にする。安全のためには合理的に見えます。ところが実際にやると、社員は会社のアカウントを使わなくなります。</p>
+  <p class="lede">入力した文章を全部記録して、管理者が読める状態にする。安全のためには合理的に見えます。ところが実際にやると、社員は会社のアカウントを使わなくなります。</p>
   <article>
 <h2>取りすぎると使われなくなる</h2>
 
 <p>生成AIの利用ログをどこまで取るか。これは技術の問題ではなく、信頼の問題です。</p>
 
-<p>全部のプロンプトを記録して管理者が読める状態にする。安全のためには合理的に見えます。ところが実際にやると、社員は使わなくなります。正確には、<strong>会社のアカウントでは使わなくなります</strong>。</p>
+<p>入力した文章を全部記録して、管理者が読める状態にする。安全のためには合理的に見えます。ところが実際にやると、社員は使わなくなります。正確には、<strong>会社のアカウントでは使わなくなります</strong>。</p>
 
 <p>個人のスマホで続きをやります。そして会社からは完全に見えなくなる。監視を強めたことで、把握できる範囲が狭まる。</p>
 
@@ -313,7 +313,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <text class="s-cg" x="324" y="176" text-anchor="end">把握できる範囲が最大</text>
 
   <rect class="s-red" x="20" y="190" width="320" height="78" rx="8"/>
-  <text class="s-s" x="36" y="212">③ 全プロンプトを記録して管理者が読む</text>
+  <text class="s-s" x="36" y="212">③ 入力内容を全部記録して管理者が読む</text>
   <text class="s-xs" x="36" y="232">安全に見えるが、会社のアカウントが使われなくなる</text>
   <text class="s-xs" x="36" y="250">個人スマホに移動し、ログがゼロになる</text>
   <text class="s-cr" x="324" y="262" text-anchor="end">実質、把握できない</text>
@@ -338,7 +338,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
     <tr><td>どのサービスが使われているか知る</td><td>サービス名とアカウント</td><td>要らない</td></tr>
     <tr><td>利用が定着しているか測る</td><td>利用回数、部署別の分布</td><td>要らない</td></tr>
     <tr><td>事故が起きたとき範囲を特定する</td><td>日時、利用者、できれば入力の概要</td><td>場合による</td></tr>
-    <tr><td>規程違反を見つける</td><td>プロンプト本文</td><td>要る</td></tr>
+    <tr><td>規程違反を見つける</td><td>入力した文章そのもの</td><td>要る</td></tr>
   </tbody>
 </table>
 </div>
@@ -349,7 +349,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <h2>法律上の論点</h2>
 
-<p>従業員のプロンプトを記録して閲覧する行為は、労務管理の文脈で整理が要ります。</p>
+<p>従業員が入力した文章を記録して閲覧する行為は、労務管理の文脈で整理が要ります。</p>
 
 <p>一般に、業務用に貸与した端末やアカウントの利用状況をモニタリングすること自体は、目的が正当で、方法が相当で、<strong>事前に周知されていれば</strong>許容されると整理されています。逆に、周知せず秘密裏に行うと問題になりやすい。</p>
 
@@ -391,7 +391,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 <p><strong>生成AI利用のモニタリングについて（周知文の例）</strong></p>
 <p>会社が提供する生成AIサービスについて、以下の情報を記録します。</p>
 <p>　・利用者、利用日時、利用したサービス名、利用回数</p>
-<p>入力した内容（プロンプト）は、平常時には確認しません。<br>
+<p>入力した内容は、平常時には確認しません。<br>
 次の場合に限り、情報システム責任者と総務責任者の2名の承認のうえで確認します。</p>
 <p>　・情報の漏えいが疑われる事象が発生したとき<br>
 　・取引先または外部機関から調査の要請があったとき<br>
@@ -410,7 +410,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <p>だから順番としては、<strong>ログ設計より先に、会社のアカウントで使える状態を作る</strong>ほうが先です。取れないログの設計を議論しても意味がない。</p>
 
-<p>実態の把握方法は<a href="/articles/shadow-ai-mitsukekata.html">シャドーAIの記事</a>に、会社として何を用意するかは<a href="/articles/seisei-ai-guideline-template.html">ガイドラインのひな形</a>に書きました。</p>
+<p>実態の把握方法は<a href="/articles/shadow-ai-mitsukekata.html">会社が把握していないAIの見つけ方</a>に、会社として何を用意するかは<a href="/articles/seisei-ai-guideline-template.html">ガイドラインのひな形</a>に書きました。</p>
 
 <h2>信用を削ると、情報が止まる</h2>
 
@@ -431,8 +431,8 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </div>
 <div class="rel">
   <h2>あわせて読む</h2>
-  <a href="/articles/shanai-chatbot-rag-kengen.html"><div class="rt">社内AIチャットボットのRAGと権限設計</div><div class="rd">導入が失敗する原因は精度ではありません。権限です。検索の段階で絞らないと、回答の段階では止められない。</div></a>
-  <a href="/articles/shadow-ai-mitsukekata.html"><div class="rt">シャドーAIの見つけ方。禁止しても使われている前提で探す</div><div class="rd">会社が許可していないAIを、社員が勝手に使っている状態。禁止令を出すと見えなくなるだけで、なくなりはしません。</div></a>
+  <a href="/articles/shanai-chatbot-rag-kengen.html"><div class="rt">社内AIチャットボットの権限設計</div><div class="rd">失敗する原因は精度ではありません。見せたくない文書を検索の対象から外していないことです。</div></a>
+  <a href="/articles/shadow-ai-mitsukekata.html"><div class="rt">会社が把握していないAIの見つけ方</div><div class="rd">社員が勝手に使っているAIのこと。禁止令を出すと見えなくなるだけで、なくなりはしません。</div></a>
   <a href="/articles/incident-houkokusho-hinagata.html"><div class="rt">生成AIのインシデント報告書の書き方（ひな形つき）</div><div class="rd">原因分析から書き始めると、事実が推測に引きずられます。先に事実を固定する。</div></a>
 </div>
 </main>

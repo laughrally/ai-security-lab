@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>営業リストの作成・整理に生成AIを使うとき｜AI Security Lab</title>
-<meta name="description" content="営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、スクレイピングの論点、CRMのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。">
+<meta name="description" content="営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、ウェブから自動収集する場合の論点、営業支援システムのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。">
 <link rel="canonical" href="https://ai-security-lab.com/articles/eigyo-list-ai.html">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -18,11 +18,11 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:url" content="https://ai-security-lab.com/articles/eigyo-list-ai.html">
 <meta property="og:title" content="営業リストの作成・整理に生成AIを使うとき">
-<meta property="og:description" content="営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、スクレイピングの論点、CRMのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。">
+<meta property="og:description" content="営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、ウェブから自動収集する場合の論点、営業支援システムのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。">
 <meta property="og:image" content="https://ai-security-lab.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="営業リストの作成・整理に生成AIを使うとき">
-<meta name="twitter:description" content="営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、スクレイピングの論点、CRMのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。">
+<meta name="twitter:description" content="営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、ウェブから自動収集する場合の論点、営業支援システムのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。">
 <meta name="twitter:image" content="https://ai-security-lab.com/og.png">
 
 <script type="application/ld+json">
@@ -54,7 +54,7 @@
     {
       "@type": "Article",
       "headline": "営業リストの作成・整理に生成AIを使うとき",
-      "description": "営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、スクレイピングの論点、CRMのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。",
+      "description": "営業活動で生成AIを使うときの判断基準。個人データと公開企業情報の切り分け、利用目的の範囲を超えやすい場面、ウェブから自動収集する場合の論点、営業支援システムのAI機能で確認すべき4点、安全に使える6つの用途を整理しました。",
       "inLanguage": "ja",
       "datePublished": "2026-10-30",
       "dateModified": "2026-10-30",
@@ -283,7 +283,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </nav>
 <main>
   <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
-  <div class="tagrow"><span class="tag">営業</span><span class="tag">個人情報</span><span class="tag">長尾</span></div>
+  <div class="tagrow"><span class="tag">営業</span><span class="tag">個人情報</span></div>
   <h1>営業リストの作成・整理に生成AIを使うとき</h1>
   <div class="meta">公開 2026-10-30</div>
   <p class="lede">名刺交換で得た担当者の連絡先は個人データです。企業サイトの代表電話は公開情報です。同じ「営業リスト」で括ると、扱いを間違えます。</p>
@@ -323,7 +323,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <h2>利用目的を超えやすい領域</h2>
 
-<p>個人情報保護委員会は2023年6月の注意喚起で、個人データを含むプロンプトを入力する場合、特定した利用目的を達成するために必要な範囲内かを十分に確認するよう求めています。</p>
+<p>個人情報保護委員会は2023年6月の注意喚起で、個人データを含むプロンプト（AIに入力する文章）を入力する場合、特定した利用目的を達成するために必要な範囲内かを十分に確認するよう求めています。</p>
 
 <p>営業リストは、ここに引っかかりやすい。</p>
 
@@ -336,7 +336,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <p>名刺の裏や問い合わせフォームに書いている利用目的の文言を、一度確認してください。生成AIを使った分析を想定していない文言のままなら、そこを直すのが先です。社労士や弁護士に相談してください。</p>
 </div>
 
-<h2>スクレイピングで集める場合</h2>
+<h2>ウェブから自動で集める場合</h2>
 
 <p>AIに「〇〇業界の企業リストを作って」と頼む、あるいはウェブから情報を自動収集する。ここは別の論点が重なります。</p>
 
@@ -368,11 +368,11 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <p>3番目が効きます。文面のパターンを5通り作って、宛先ごとに差し込む。氏名を入れずに作業が完結します。</p>
 
-<h2>CRMとの連携機能に注意する</h2>
+<h2>営業支援システムのAI機能に注意する</h2>
 
-<p>SFAやCRMにAI機能が付くようになりました。商談内容の自動要約、次アクションの提案、受注確度の予測。</p>
+<p>営業支援システム（SFA）や顧客管理システム（CRM）に、AI機能が付くようになりました。商談内容の自動要約、次アクションの提案、受注確度の予測。</p>
 
-<p>便利ですが、これは<strong>蓄積した顧客データをAIが処理している</strong>状態です。自分でプロンプトに貼っていないだけで、構造は同じです。</p>
+<p>便利ですが、これは<strong>蓄積した顧客データをAIが処理している</strong>状態です。自分で貼り付けていないだけで、構造は同じです。</p>
 
 <p>確認すべき点を挙げます。</p>
 

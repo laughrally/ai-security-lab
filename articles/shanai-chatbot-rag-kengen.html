@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>社内AIチャットボットのRAGと権限設計｜AI Security Lab</title>
-<meta name="description" content="社内文書を読み込ませるRAG型チャットボットの権限設計。プロンプトで禁止しても回避される理由、インデックスの分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答根拠の表示を必須にする理由を解説します。">
+<title>社内AIチャットボットの権限設計｜AI Security Lab</title>
+<meta name="description" content="社内文書を読み込ませるAIチャットボットの権限設計。指示文で禁止しても回避される理由、検索できる範囲の分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答の根拠表示を必須にする理由を解説します。">
 <link rel="canonical" href="https://ai-security-lab.com/articles/shanai-chatbot-rag-kengen.html">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -17,12 +17,12 @@
 <meta property="og:site_name" content="AI Security Lab">
 <meta property="og:locale" content="ja_JP">
 <meta property="og:url" content="https://ai-security-lab.com/articles/shanai-chatbot-rag-kengen.html">
-<meta property="og:title" content="社内AIチャットボットのRAGと権限設計">
-<meta property="og:description" content="社内文書を読み込ませるRAG型チャットボットの権限設計。プロンプトで禁止しても回避される理由、インデックスの分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答根拠の表示を必須にする理由を解説します。">
+<meta property="og:title" content="社内AIチャットボットの権限設計">
+<meta property="og:description" content="社内文書を読み込ませるAIチャットボットの権限設計。指示文で禁止しても回避される理由、検索できる範囲の分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答の根拠表示を必須にする理由を解説します。">
 <meta property="og:image" content="https://ai-security-lab.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="社内AIチャットボットのRAGと権限設計">
-<meta name="twitter:description" content="社内文書を読み込ませるRAG型チャットボットの権限設計。プロンプトで禁止しても回避される理由、インデックスの分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答根拠の表示を必須にする理由を解説します。">
+<meta name="twitter:title" content="社内AIチャットボットの権限設計">
+<meta name="twitter:description" content="社内文書を読み込ませるAIチャットボットの権限設計。指示文で禁止しても回避される理由、検索できる範囲の分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答の根拠表示を必須にする理由を解説します。">
 <meta name="twitter:image" content="https://ai-security-lab.com/og.png">
 
 <script type="application/ld+json">
@@ -47,14 +47,14 @@
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "社内AIチャットボットのRAGと権限設計"
+          "name": "社内AIチャットボットの権限設計"
         }
       ]
     },
     {
       "@type": "Article",
-      "headline": "社内AIチャットボットのRAGと権限設計",
-      "description": "社内文書を読み込ませるRAG型チャットボットの権限設計。プロンプトで禁止しても回避される理由、インデックスの分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答根拠の表示を必須にする理由を解説します。",
+      "headline": "社内AIチャットボットの権限設計",
+      "description": "社内文書を読み込ませるAIチャットボットの権限設計。指示文で禁止しても回避される理由、検索できる範囲の分け方、入れてはいけない文書、フォルダ棚卸しの必要性、回答の根拠表示を必須にする理由を解説します。",
       "inLanguage": "ja",
       "datePublished": "2026-10-29",
       "dateModified": "2026-10-29",
@@ -283,8 +283,8 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </nav>
 <main>
   <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
-  <div class="tagrow"><span class="tag">チャットボット</span><span class="tag">RAG</span><span class="tag">長尾</span></div>
-  <h1>社内AIチャットボットのRAGと権限設計</h1>
+  <div class="tagrow"><span class="tag">社内チャットボット</span></div>
+  <h1>社内AIチャットボットの権限設計</h1>
   <div class="meta">公開 2026-10-29</div>
   <p class="lede">「有給の繰越は何日まで？」と聞けば答えてくれる。便利です。ただ、作り方を間違えるとパート社員が役員報酬を聞き出せる状態になります。</p>
   <article>
@@ -309,7 +309,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <text class="s-xs" x="103" y="86" text-anchor="middle">業務マニュアル</text>
   <rect class="s-box" x="190" y="68" width="134" height="26" rx="5"/>
   <text class="s-xs" x="257" y="86" text-anchor="middle">人事評価シート</text>
-  <text class="s-cr" x="180" y="116" text-anchor="middle">全部まとめて1つの検索インデックスへ</text>
+  <text class="s-cr" x="180" y="116" text-anchor="middle">全部まとめて1つの検索対象へ</text>
   <text class="s-xs" x="180" y="130" text-anchor="middle">誰が聞いても、全部から探して答える</text>
 
   <path class="s-lnr" d="M180 134 V152"/>
@@ -326,12 +326,12 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <rect class="s-grn" x="20" y="304" width="320" height="26" rx="7"/>
   <text class="s-s" x="180" y="322" text-anchor="middle">見えない人には、最初から検索されない</text>
 </svg>
-<figcaption>RAGは検索してから答える仕組み。検索の段階で絞らないと、回答の段階では止められない。「答えないでください」という指示は、言い換えで回避される。</figcaption>
+<figcaption>RAGは検索してから答える仕組み。検索の段階で絞らないと、回答の段階では止められない。「答えないでください」という指示は、言い換えで回避される</figcaption>
 </figure>
 
-<h2>プロンプトで止めるのは無理</h2>
+<h2>指示文で止めるのは無理</h2>
 
-<p>よくある対処が、システムプロンプトに「給与に関する質問には答えないでください」と書く方法です。</p>
+<p>よくある対処が、AIへの指示文（システムプロンプト）に「給与に関する質問には答えないでください」と書く方法です。</p>
 
 <p>これは効きません。言い換えればすり抜けます。</p>
 
@@ -339,7 +339,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <div class="box warn">
   <div class="box-t">⚠ 原則</div>
-  <p>見せたくないものは、<strong>検索インデックスに入れない</strong>。入れたうえで「答えないで」と指示するのは、鍵をかけずに「開けないでください」と貼り紙をするのと同じです。</p>
+  <p>見せたくないものは、<strong>検索の対象に入れない</strong>。入れたうえで「答えないで」と指示するのは、鍵をかけずに「開けないでください」と貼り紙をするのと同じです。</p>
 </div>
 
 <h2>権限をどう引き継ぐか</h2>
@@ -348,12 +348,12 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 
 <p><strong>既存の権限をそのまま使う。</strong>Microsoft 365 CopilotやGoogle WorkspaceのGeminiは、もともとファイルの権限を引き継ぐ設計です。自前で作らずにこれを使うのが、いちばん確実で安い。詳しくは<a href="/articles/copilot-gyomu-riyo.html">こちらの記事</a>に書きました。</p>
 
-<p><strong>自前で作る。</strong>どうしても必要なら、インデックスを分けます。</p>
+<p><strong>自前で作る。</strong>どうしても必要なら、検索の範囲を分けます。</p>
 
 <div class="tblwrap">
 <table>
   <thead>
-    <tr><th>インデックス</th><th>入れる文書</th><th>使える人</th></tr>
+    <tr><th>検索の範囲</th><th>入れる文書</th><th>使える人</th></tr>
   </thead>
   <tbody>
     <tr><td>全社</td><td>就業規則、業務マニュアル、社内用語集、FAQ</td><td>全員</td></tr>
@@ -364,11 +364,11 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </table>
 </div>
 
-<p>最初は全社インデックスだけで始めるのを勧めます。それだけでも問い合わせはかなり減ります。欲張って全部入れると、設計が追いつきません。</p>
+<p>最初は全社の範囲だけで始めるのを勧めます。それだけでも問い合わせはかなり減ります。欲張って全部入れると、設計が追いつきません。</p>
 
 <h2>入れてはいけない文書</h2>
 
-<p>インデックスを分けるとしても、そもそも入れない文書があります。</p>
+<p>範囲を分けるとしても、そもそも入れない文書があります。</p>
 
 <ol>
   <li>健康情報、病歴、休職の記録（要配慮個人情報にあたりうる）</li>
@@ -378,11 +378,11 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <li>顧客の個人データそのもの</li>
 </ol>
 
-<p>3番が見落とされます。社内の共有フォルダには、取引先から預かった図面や仕様書が混ざっています。インデックスを作るときにフォルダごと指定すると、一緒に入ります。</p>
+<p>3番が見落とされます。社内の共有フォルダには、取引先から預かった図面や仕様書が混ざっています。検索の対象を決めるときにフォルダごと指定すると、一緒に入ります。</p>
 
 <p>この話は<a href="/articles/seizogyo-zumen-ai.html">製造業の記事</a>にも書きました。預かりものは自社の判断で出せません。</p>
 
-<h2>インデックスを作る前に、フォルダを棚卸しする</h2>
+<h2>検索の対象を決める前に、フォルダを棚卸しする</h2>
 
 <p>これが実務上いちばん時間がかかる工程です。そして飛ばせません。</p>
 
@@ -406,7 +406,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 <h2>運用で決めておくこと</h2>
 
 <ol>
-  <li>インデックスに何が入っているかの一覧を維持する</li>
+  <li>検索の対象に何が入っているかの一覧を維持する</li>
   <li>文書を追加するときの承認者を決める</li>
   <li>質問と回答のログを取る（誰が何を聞いたか）</li>
   <li>定期的に、出てはいけない文書が参照されていないか確認する</li>
@@ -436,7 +436,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 <div class="rel">
   <h2>あわせて読む</h2>
   <a href="/articles/copilot-gyomu-riyo.html"><div class="rt">Microsoft 365 Copilot を業務で使うときに確認すること</div><div class="rd">データは社外に出ません。代わりに、社内で見えてはいけないものが社内の人に見えるようになります。</div></a>
-  <a href="/articles/gpts-shanai-shiryo.html"><div class="rt">GPTs（マイGPT）に社内資料をアップロードするリスク</div><div class="rd">会話を消してもナレッジのファイルは消えません。そして公開範囲の設定を1つ間違えると、本当に外に出ます。</div></a>
+  <a href="/articles/gpts-shanai-shiryo.html"><div class="rt">GPTs（マイGPT）に社内資料をアップロードするリスク</div><div class="rd">会話を消しても、登録した資料は消えません。そして公開範囲の設定を1つ間違えると、本当に外に出ます。</div></a>
   <a href="/articles/ai-riyo-log-kanshi.html"><div class="rt">生成AIの利用ログを、どこまで取るべきか</div><div class="rd">監視を強めるほど把握できる範囲は狭くなります。直感に反しますが、中庸が一番情報を得られる。</div></a>
 </div>
 </main>

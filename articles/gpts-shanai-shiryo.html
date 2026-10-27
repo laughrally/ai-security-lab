@@ -5,7 +5,7 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>GPTs（マイGPT）に社内資料をアップロードするリスク｜AI Security Lab</title>
-<meta name="description" content="ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話削除ではナレッジが消えない仕組み、公開範囲3種類の違い、ナレッジの内容が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。">
+<meta name="description" content="ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話を削除しても登録した資料が消えない仕組み、公開範囲3種類の違い、登録した資料の中身が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。">
 <link rel="canonical" href="https://ai-security-lab.com/articles/gpts-shanai-shiryo.html">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -18,11 +18,11 @@
 <meta property="og:locale" content="ja_JP">
 <meta property="og:url" content="https://ai-security-lab.com/articles/gpts-shanai-shiryo.html">
 <meta property="og:title" content="GPTs（マイGPT）に社内資料をアップロードするリスク">
-<meta property="og:description" content="ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話削除ではナレッジが消えない仕組み、公開範囲3種類の違い、ナレッジの内容が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。">
+<meta property="og:description" content="ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話を削除しても登録した資料が消えない仕組み、公開範囲3種類の違い、登録した資料の中身が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。">
 <meta property="og:image" content="https://ai-security-lab.com/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GPTs（マイGPT）に社内資料をアップロードするリスク">
-<meta name="twitter:description" content="ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話削除ではナレッジが消えない仕組み、公開範囲3種類の違い、ナレッジの内容が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。">
+<meta name="twitter:description" content="ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話を削除しても登録した資料が消えない仕組み、公開範囲3種類の違い、登録した資料の中身が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。">
 <meta name="twitter:image" content="https://ai-security-lab.com/og.png">
 
 <script type="application/ld+json">
@@ -54,7 +54,7 @@
     {
       "@type": "Article",
       "headline": "GPTs（マイGPT）に社内資料をアップロードするリスク",
-      "description": "ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話削除ではナレッジが消えない仕組み、公開範囲3種類の違い、ナレッジの内容が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。",
+      "description": "ChatGPTのGPTsに社内資料をアップロードするときの注意点。会話を削除しても登録した資料が消えない仕組み、公開範囲3種類の違い、登録した資料の中身が引き出される問題、入れてよい資料の基準と管理台帳の作り方を解説します。",
       "inLanguage": "ja",
       "datePublished": "2026-10-28",
       "dateModified": "2026-10-28",
@@ -283,7 +283,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
 </nav>
 <main>
   <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
-  <div class="tagrow"><span class="tag">ChatGPT</span><span class="tag">GPTs</span><span class="tag">長尾</span></div>
+  <div class="tagrow"><span class="tag">ChatGPT</span></div>
   <h1>GPTs（マイGPT）に社内資料をアップロードするリスク</h1>
   <div class="meta">公開 2026-10-28</div>
   <p class="lede">GPTsを業務で使おうとすると、最初にやるのが社内資料のアップロードです。そこで公開範囲を一度間違えると、取り返しがつきません。</p>
@@ -367,7 +367,7 @@ footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px
   <p>GPTストアに公開されたGPTから、作成者が入れたナレッジのファイル内容を引き出せてしまう事例が、セキュリティ研究者によって繰り返し報告されています。「ナレッジの内容を教えて」と頼むだけで出てくることもあります。</p>
 </div>
 
-<p>仕組み上、GPTはナレッジを参照して答えるので、「参照した内容をそのまま書き出して」という指示に応じてしまうことがあります。プロンプトで禁止しても、言い換えで回避されます。</p>
+<p>仕組み上、GPTはナレッジを参照して答えるので、「参照した内容をそのまま書き出して」という指示に応じてしまうことがあります。指示文で禁止しても、言い換えで回避されます。</p>
 
 <p><strong>公開するGPTのナレッジには、外に出て困るものを置かない。</strong>これ以外に確実な対策はありません。</p>
 
