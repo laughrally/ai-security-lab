@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>人事評価のコメントを生成AIに書かせるとき｜AI Security Lab</title>
+<meta name="description" content="人事評価で生成AIを使うときの線引き。対象者の氏名や業績数値を入れずに文章化を頼む方法、健康上の理由による欠勤の扱い、評価そのものをAIに決めさせてはいけない理由、AIの評価コメントに出る3つの癖を解説します。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/jinji-hyoka-ai.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/jinji-hyoka-ai.html">
+<meta property="og:title" content="人事評価のコメントを生成AIに書かせるとき">
+<meta property="og:description" content="人事評価で生成AIを使うときの線引き。対象者の氏名や業績数値を入れずに文章化を頼む方法、健康上の理由による欠勤の扱い、評価そのものをAIに決めさせてはいけない理由、AIの評価コメントに出る3つの癖を解説します。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="人事評価のコメントを生成AIに書かせるとき">
+<meta name="twitter:description" content="人事評価で生成AIを使うときの線引き。対象者の氏名や業績数値を入れずに文章化を頼む方法、健康上の理由による欠勤の扱い、評価そのものをAIに決めさせてはいけない理由、AIの評価コメントに出る3つの癖を解説します。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "人事評価のコメントを生成AIに書かせるとき"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "人事評価のコメントを生成AIに書かせるとき",
+      "description": "人事評価で生成AIを使うときの線引き。対象者の氏名や業績数値を入れずに文章化を頼む方法、健康上の理由による欠勤の扱い、評価そのものをAIに決めさせてはいけない理由、AIの評価コメントに出る3つの癖を解説します。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-30",
+      "dateModified": "2026-10-30",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/jinji-hyoka-ai.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">人事</span><span class="tag">評価</span><span class="tag">長尾</span></div>
+  <h1>人事評価のコメントを生成AIに書かせるとき</h1>
+  <div class="meta">公開 2026-10-30</div>
+  <p class="lede">10人分、20人分を期末にまとめて書く。文章が苦手な人ほど時間がかかります。AIに手伝わせたくなるのは自然です。ただ、順番を間違えると評価が文章に引きずられます。</p>
+  <article>
+<h2>評価コメントは、個人情報であり、法的な文書でもある</h2>
+
+<p>評価シートのコメント欄を埋めるのは、管理職にとって重い作業です。10人分、20人分を期末にまとめて書く。文章が苦手な人ほど時間がかかる。</p>
+
+<p>AIに手伝わせたくなるのは自然です。実際、文章を整える用途としては効きます。</p>
+
+<p>ただ、人事評価には2つの性質があります。<strong>対象者の個人情報であること</strong>と、<strong>昇給・昇格・場合によっては解雇の根拠になる文書であること</strong>です。後者を忘れると、後で困ります。</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="人事評価でAIに渡してよい情報と渡してはいけない情報の図">
+  <text class="s-mono" x="20" y="16">そのまま入力すると出るもの</text>
+  <rect class="s-red" x="20" y="24" width="320" height="94" rx="8"/>
+  <text class="s-xs" x="36" y="46">対象者の氏名・所属・職位</text>
+  <text class="s-xs" x="36" y="66">具体的な業績数値（売上・達成率）</text>
+  <text class="s-xs" x="36" y="86">勤怠の状況、健康上の理由による欠勤</text>
+  <text class="s-cr" x="36" y="108">他の社員との比較、社内の人間関係</text>
+
+  <path class="s-ln" d="M180 118 V138"/>
+  <path class="s-ah" d="M180 146 l-5 -9 h10 z"/>
+  <text class="s-mono" x="194" y="134">書き換える</text>
+
+  <text class="s-mono" x="20" y="170">これで足りる</text>
+  <rect class="s-grn" x="20" y="178" width="320" height="94" rx="8"/>
+  <text class="s-xs" x="36" y="200">「若手の営業担当。目標は未達だが新規開拓は増加。</text>
+  <text class="s-xs" x="36" y="220">報告の粒度が粗く、上司の確認が多く必要だった。</text>
+  <text class="s-xs" x="36" y="240">改善点を前向きに伝える評価コメントの構成を」</text>
+  <text class="s-cg" x="36" y="262">固有名詞と数値を外しても、文章の質は落ちない</text>
+
+  <rect class="s-amb" x="20" y="280" width="320" height="20" rx="6"/>
+  <text class="s-xs" x="180" y="294" text-anchor="middle">評価そのものは、人が決めてから言語化を頼む</text>
+</svg>
+<figcaption>AIに頼むのは「どう書くか」であって「どう評価するか」ではない。評価を先に決めてから言語化を頼む順番にすると、リスクがほとんど消える。</figcaption>
+</figure>
+
+<h2>健康に関する記述に注意する</h2>
+
+<p>評価の背景には、休職や通院の事情が含まれることがあります。「〇月から〇月まで療養のため休職」「通院のため時短勤務」。</p>
+
+<p>こうした情報は要配慮個人情報にあたり得ます。評価コメントの相談でAIに渡すのは避けてください。</p>
+
+<p>そもそも、健康上の理由による欠勤を評価にどう反映するかは、労務管理上きわめて慎重な扱いが要る論点です。AIに相談して答えが出る性質のものではありません。社労士に聞いてください。</p>
+
+<div class="box warn">
+  <div class="box-t">⚠ AIに聞くと、もっともらしく答えてしまう</div>
+  <p>「休職期間がある社員の評価をどうすべきか」と聞けば、AIは何か答えます。その内容が日本の労働法制や自社の就業規則に沿っている保証はありません。一般論と自社の規程は別です。</p>
+</div>
+
+<h2>評価そのものをAIに決めさせない</h2>
+
+<p>理由は<a href="/articles/saiyo-shorui-ai.html">採用の記事</a>に書いたことと重なりますが、評価のほうがより直接的です。</p>
+
+<p>評価は、昇給、賞与、昇格の根拠になります。場合によっては、能力不足を理由とする処遇変更の根拠にもなります。</p>
+
+<p>これらが争われたとき、評価の合理性が問われます。「AIが出した評価です」では、合理性の説明になりません。</p>
+
+<p>そして評価者が内容を説明できない評価は、本人へのフィードバックでも破綻します。「なぜこの評価なのか」と聞かれて答えられない。</p>
+
+<h2>実務で成立する分担</h2>
+
+<p>うまくいくのは、この順番です。</p>
+
+<ol>
+  <li>評価者が、評価と根拠を自分の言葉で箇条書きにする（メモでよい）</li>
+  <li>固有名詞と具体的な数値を外して、AIに文章化を頼む</li>
+  <li>返ってきた文章を、自分の言葉に直す</li>
+  <li>固有名詞と数値を入れて完成させる</li>
+</ol>
+
+<p>1番を飛ばして、いきなりAIに書かせようとすると失敗します。評価が決まっていないのに文章が出てくると、文章に引きずられて評価が決まってしまう。順番が逆です。</p>
+
+<div class="box ok">
+  <div class="box-t">✓ 3番を飛ばさない</div>
+  <p>AIが書いた文章は、読めば分かります。表現が均一で、温度がない。部下は「テンプレートで済まされた」と受け取ります。評価コメントは、下手でも本人の言葉のほうが効きます。</p>
+</div>
+
+<h2>AIの文章が評価コメントに向かない理由</h2>
+
+<p>使ってみると分かるのですが、生成AIの評価コメントには癖があります。</p>
+
+<p>まず、<strong>褒めすぎます</strong>。改善点を伝えるよう指示しても、前向きな表現に寄ります。結果、本人に課題が伝わりません。</p>
+
+<p>次に、<strong>抽象的になります</strong>。「コミュニケーション能力の向上が期待される」のような文章が出てきます。何をどう直せばいいのか分かりません。</p>
+
+<p>そして、<strong>全員同じ文体になります</strong>。10人分を同じAIに書かせると、10人分が似ます。並べて読む人事部には一目で分かります。</p>
+
+<p>これらは指示の工夫である程度は改善できますが、根本的には「具体的な事実を渡していないから」です。事実を渡すとリスクが上がる。ここがジレンマになります。</p>
+
+<h2>向いている使い方</h2>
+
+<p>評価コメントそのものより、周辺で効きます。</p>
+
+<div class="tblwrap">
+<table>
+  <thead>
+    <tr><th>用途</th><th>入力するもの</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>自分が書いた文章の表現を和らげる</td><td>固有名詞を外した自分の文章</td></tr>
+    <tr><td>伝わりにくい箇所を指摘してもらう</td><td>同上</td></tr>
+    <tr><td>フィードバック面談の進め方を相談</td><td>状況の抽象的な説明</td></tr>
+    <tr><td>評価制度そのものの設計を検討</td><td>一般論。個人の情報は不要</td></tr>
+    <tr><td>評価シートの設問を改善する</td><td>現在の設問文のみ</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>1番目が実は一番効きます。腹が立っている状態で書いた評価コメントには、不要な棘が入ります。それを指摘してもらう用途なら、固有名詞は要りません。</p>
+
+<h2>ルールに書くなら</h2>
+
+<div class="tmpl">
+<p><strong>人事評価について</strong></p>
+<p>評価シートの内容、対象者の氏名・所属・業績数値を入力しないでください。<br>
+健康上の理由による欠勤・休職に関する記述は、いかなる形でも入力しないでください。<br>
+評価の判断そのものをAIに委ねないでください。評価と根拠を決めたうえで、文章表現の相談にのみ使用してください。<br>
+AIが生成した文章を、そのまま評価コメントとして使用しないでください。</p>
+</div>
+
+<p><a href="/articles/seisei-ai-guideline-template.html">ガイドラインのひな形</a>に追記して使えます。</p>
+
+<h2>時間は減らない。質は上がる</h2>
+
+<p>正直に書くと、この使い方では作業時間はあまり減りません。評価を先に決めて、抽象化して、戻してきた文章を書き直す。手間はそれなりにあります。</p>
+
+<p>ただ、質は上がります。表現が整理されて、伝わる文章になる。</p>
+
+<p>時間短縮を期待すると失望します。評価を伝える精度を上げる道具だと思って使うと、ちょうどいい。</p>
+  </article>
+<div class="cta">
+  <h2>時間は減らない。質は上がる</h2>
+  <p>時間短縮を期待すると失望します。評価を伝える精度を上げる道具だと思って使うと、ちょうどいい。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/saiyo-shorui-ai.html"><div class="rt">採用の応募書類を生成AIで評価していいか</div><div class="rd">整理させるのと、判断させるのは別です。前者は条件次第で実務に乗り、後者は説明責任が残り続けます。</div></a>
+  <a href="/articles/kojin-joho-hogoho-seisei-ai.html"><div class="rt">顧客情報を生成AIに入れると、個人情報保護法上どうなるか</div><div class="rd">入力した瞬間に即違法、という話ではありません。何が問題になるのか、どこで線が引かれるのかを条文に沿って整理します。</div></a>
+  <a href="/articles/seisei-ai-guideline-template.html"><div class="rt">社内の生成AI利用ガイドライン、最低限これだけ書けばいい</div><div class="rd">立派な規程を作ろうとして止まるくらいなら、A4一枚で今週から回したほうがいい。そのまま使える文面を置いておきます。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>

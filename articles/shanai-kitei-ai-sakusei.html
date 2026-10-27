@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>社内規程・マニュアルを生成AIで作るとき｜AI Security Lab</title>
+<meta name="description" content="社内規程や業務マニュアルを生成AIで作成する方法。抜けに気づくための聞き方、そのまま配ると形骸化する理由、実態に合わせる5段階の手順、専門家の確認が必要な領域、ベテランの暗黙知を文書化する使い方を解説します。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/shanai-kitei-ai-sakusei.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/shanai-kitei-ai-sakusei.html">
+<meta property="og:title" content="社内規程・マニュアルを生成AIで作るとき">
+<meta property="og:description" content="社内規程や業務マニュアルを生成AIで作成する方法。抜けに気づくための聞き方、そのまま配ると形骸化する理由、実態に合わせる5段階の手順、専門家の確認が必要な領域、ベテランの暗黙知を文書化する使い方を解説します。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="社内規程・マニュアルを生成AIで作るとき">
+<meta name="twitter:description" content="社内規程や業務マニュアルを生成AIで作成する方法。抜けに気づくための聞き方、そのまま配ると形骸化する理由、実態に合わせる5段階の手順、専門家の確認が必要な領域、ベテランの暗黙知を文書化する使い方を解説します。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "社内規程・マニュアルを生成AIで作るとき"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "社内規程・マニュアルを生成AIで作るとき",
+      "description": "社内規程や業務マニュアルを生成AIで作成する方法。抜けに気づくための聞き方、そのまま配ると形骸化する理由、実態に合わせる5段階の手順、専門家の確認が必要な領域、ベテランの暗黙知を文書化する使い方を解説します。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-30",
+      "dateModified": "2026-10-30",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/shanai-kitei-ai-sakusei.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">規程</span><span class="tag">マニュアル</span><span class="tag">長尾</span></div>
+  <h1>社内規程・マニュアルを生成AIで作るとき</h1>
+  <div class="meta">公開 2026-10-30</div>
+  <p class="lede">顧客情報も取引先の資料も要らないので、リスクが小さい。そして効果が大きい。規程類はゼロから書くのが本当に大変です。</p>
+  <article>
+<h2>規程づくりは、AIが向いている作業</h2>
+
+<p>ここまでの記事では「入れないでください」という話が多かったので、今回は向いている使い方の話をします。</p>
+
+<p>社内規程、業務マニュアル、手順書。これらをAIで作るのは、情報漏洩の観点からはリスクが小さい。自社で書く文章であって、顧客情報も取引先の資料も要らないからです。</p>
+
+<p>そして効果が大きい。規程類は、ゼロから書くのが本当に大変です。</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 272" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="規程作成でAIに任せる部分と人がやる部分の分担図">
+  <text class="s-mono" x="20" y="16">AIに任せてよい</text>
+  <rect class="s-grn" x="20" y="24" width="320" height="86" rx="8"/>
+  <text class="s-xs" x="36" y="46">章立て・条文の構成を出す</text>
+  <text class="s-xs" x="36" y="66">一般的な規程に入っている項目を列挙する</text>
+  <text class="s-xs" x="36" y="86">書いた文章を、読みやすい日本語に直す</text>
+  <text class="s-xs" x="36" y="104">用語の統一、表記ゆれの指摘</text>
+
+  <text class="s-mono" x="20" y="140">人がやる</text>
+  <rect class="s-red" x="20" y="148" width="320" height="86" rx="8"/>
+  <text class="s-xs" x="36" y="170">自社の実態に合っているかの判断</text>
+  <text class="s-xs" x="36" y="190">法令・就業規則との整合の確認</text>
+  <text class="s-xs" x="36" y="210">罰則・不利益処分に関わる条文</text>
+  <text class="s-xs" x="36" y="228">労基署への届出が要るかの判断</text>
+
+  <rect class="s-amb" x="20" y="244" width="320" height="28" rx="7"/>
+  <text class="s-xs" x="180" y="263" text-anchor="middle">たたき台は10分。中身の確認に数日かける</text>
+</svg>
+<figcaption>規程づくりの大変さは、骨格を作る段階と中身を詰める段階に分かれる。AIが効くのは前者で、後者は短縮できない。</figcaption>
+</figure>
+
+<h2>一番の効用は「抜けに気づく」</h2>
+
+<p>自分で書くと、自分が知っている項目しか書けません。</p>
+
+<p>「中小企業の情報セキュリティ規程に一般的に含まれる項目を列挙して」と聞くと、考えていなかった項目が出てきます。委託先の管理、持ち出しの手続き、廃棄の方法、違反時の対応。</p>
+
+<p>出てきた項目を全部入れる必要はありません。見て「うちには要らない」と判断するだけでも、検討した証跡になります。</p>
+
+<div class="box ok">
+  <div class="box-t">✓ 聞き方のコツ</div>
+  <p>「規程を作って」ではなく「一般的に含まれる項目を列挙して、それぞれ1行で説明して」と聞く。完成品を出させるより、チェックリストを出させたほうが使えます。</p>
+</div>
+
+<h2>そのまま使うと、必ず分かる</h2>
+
+<p>AIが出した規程をそのまま配ると、読む側に伝わります。</p>
+
+<p>理由は単純で、<strong>自社の実態と合っていないから</strong>です。</p>
+
+<p>存在しない部署名が出てくる。使っていないシステムの名前が書いてある。従業員30人の会社に、部門長・統括責任者・監査担当という役職が3つ並ぶ。</p>
+
+<p>読んだ社員は「これ、うちの話じゃないな」と判断して、以降は読まなくなります。規程が形骸化する原因の多くはこれです。</p>
+
+<h2>実態に合わせる作業</h2>
+
+<p>たたき台ができたら、次の順で直します。</p>
+
+<ol>
+  <li>登場する役職・部署を、実在するものに置き換える（兼務なら「総務担当」のように)</li>
+  <li>実際にやっていない手続きを削る</li>
+  <li>すでにやっているのに書いていないことを足す</li>
+  <li>「速やかに」「適切に」を具体的な表現に直す</li>
+  <li>社内の誰が読んでも分かる言葉にする</li>
+</ol>
+
+<p>2番が重要です。やっていない手続きを規程に書くと、<strong>規程違反の状態が常態化します</strong>。監査や事故のときに、守られていない規程があるほうが印象は悪い。</p>
+
+<p>4番も効きます。「速やかに報告する」ではなく「気づいた当日中に、総務の〇〇に連絡する」。これなら守れているかどうかが判定できます。</p>
+
+<h2>法令が絡む部分は必ず確認する</h2>
+
+<p>ここは省略できません。</p>
+
+<p>AIは、古い法令で答えることがあります。改正前の条文、廃止されたガイドライン、変更前の数値。もっともらしく書かれるので、知らないと気づけません。</p>
+
+<p>特に次の領域は、専門家の確認が要ります。</p>
+
+<div class="tblwrap">
+<table>
+  <thead>
+    <tr><th>内容</th><th>確認先</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>懲戒・不利益処分に関わる条文</td><td>社労士・弁護士</td></tr>
+    <tr><td>就業規則との整合、労基署への届出</td><td>社労士</td></tr>
+    <tr><td>個人情報の取扱い、委託先の監督</td><td>弁護士</td></tr>
+    <tr><td>モニタリング・ログ取得の範囲</td><td>社労士</td></tr>
+    <tr><td>業種固有の規制（建設業法、薬機法等）</td><td>業種の専門家</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>AIで作ったたたき台を専門家に見てもらうほうが、ゼロから依頼するより費用も時間も抑えられます。白紙から作ってもらうのではなく、たたき台のレビューを依頼する形にしてください。</p>
+
+<div class="box warn">
+  <div class="box-t">⚠ 既存規程をアップロードする前に</div>
+  <p>「今の規程を読ませて改訂案を出したい」という使い方があります。就業規則や情報セキュリティ規程には、自社の体制や取引先名が書かれていることがあります。アップロードする前に中身を確認してください。</p>
+</div>
+
+<h2>マニュアル・手順書はもっと向いている</h2>
+
+<p>規程より、業務マニュアルのほうが相性がいい。法令の確認が要らないぶん、気楽に使えます。</p>
+
+<p>特に効くのが、<strong>ベテランの頭の中を文書にする</strong>作業です。</p>
+
+<p>熟練者に口頭で手順を話してもらい、それを文字起こしして、AIに整理させる。箇条書きに直して、順番を整えて、抜けを指摘してもらう。</p>
+
+<p>これをやると、属人化していた業務が形になります。本人が書くと時間がかかって進まない作業が、聞き取り1時間と整理30分で終わる。</p>
+
+<p>ただし、<a href="/articles/gijiroku-ai-otoshiana.html">文字起こしツールを使う場合</a>は、録音データの扱いを確認してください。</p>
+
+<h2>生成AIの利用ルール自体も作れる</h2>
+
+<p>メタな話ですが、生成AIの社内ルールもAIで作れます。</p>
+
+<p>ただ、出てくる文章は抽象的になりがちです。「機密情報を入力しない」「個人情報を入力しない」。これだと守られません。</p>
+
+<p>具体名で書く必要があります。<a href="/articles/seisei-ai-guideline-template.html">ガイドラインのひな形</a>は、そのまま使える形で書いてあるので、こちらをベースにしたほうが早いと思います。</p>
+
+<h2>作った後が本番</h2>
+
+<p>規程は、作って配って終わりにすると3ヶ月で忘れられます。</p>
+
+<p>読み合わせをする、質問を受ける、実際に起きた事例を追記する。この繰り返しで定着します。</p>
+
+<p>AIで作成時間が短くなったぶん、定着のほうに時間を使ってください。そこは短縮できないし、短縮すると意味がなくなる部分です。</p>
+  </article>
+<div class="cta">
+  <h2>作った後が本番</h2>
+  <p>作成時間が短くなったぶん、定着のほうに時間を使ってください。そこは短縮できません。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/seisei-ai-guideline-template.html"><div class="rt">社内の生成AI利用ガイドライン、最低限これだけ書けばいい</div><div class="rd">立派な規程を作ろうとして止まるくらいなら、A4一枚で今週から回したほうがいい。そのまま使える文面を置いておきます。</div></a>
+  <a href="/articles/ai-riyo-shinsei-flow.html"><div class="rt">AIツールの利用申請フローは、どこまで作るべきか</div><div class="rd">厳しくするほど申請されなくなります。目的は止めることではなく、知ることです。</div></a>
+  <a href="/articles/gijiroku-ai-otoshiana.html"><div class="rt">議事録AI・文字起こしツールの落とし穴</div><div class="rd">入力している自覚がないまま、社内で一番濃い情報を外に出している。録音ボタンひとつで起きます。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>

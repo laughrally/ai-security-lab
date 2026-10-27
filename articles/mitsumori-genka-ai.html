@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>見積・原価を生成AIに入れてはいけない理由｜AI Security Lab</title>
+<meta name="description" content="見積書や原価情報を生成AIに入力するリスク。個人情報と違い事故として認識されないまま利益率が下がる構造、断片から原価が読める場面、金額を比率に直して相談する方法、AIに相場を聞いてはいけない理由を解説します。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/mitsumori-genka-ai.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/mitsumori-genka-ai.html">
+<meta property="og:title" content="見積・原価を生成AIに入れてはいけない理由">
+<meta property="og:description" content="見積書や原価情報を生成AIに入力するリスク。個人情報と違い事故として認識されないまま利益率が下がる構造、断片から原価が読める場面、金額を比率に直して相談する方法、AIに相場を聞いてはいけない理由を解説します。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="見積・原価を生成AIに入れてはいけない理由">
+<meta name="twitter:description" content="見積書や原価情報を生成AIに入力するリスク。個人情報と違い事故として認識されないまま利益率が下がる構造、断片から原価が読める場面、金額を比率に直して相談する方法、AIに相場を聞いてはいけない理由を解説します。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "見積・原価を生成AIに入れてはいけない理由"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "見積・原価を生成AIに入れてはいけない理由",
+      "description": "見積書や原価情報を生成AIに入力するリスク。個人情報と違い事故として認識されないまま利益率が下がる構造、断片から原価が読める場面、金額を比率に直して相談する方法、AIに相場を聞いてはいけない理由を解説します。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-30",
+      "dateModified": "2026-10-30",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/mitsumori-genka-ai.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">見積</span><span class="tag">原価</span><span class="tag">長尾</span></div>
+  <h1>見積・原価を生成AIに入れてはいけない理由</h1>
+  <div class="meta">公開 2026-10-30</div>
+  <p class="lede">自社の情報なので、入力しても法令違反にはなりません。それでも入れてはいけないのは、商売で損をするからです。そしてこちらのほうが損害は大きいことがあります。</p>
+  <article>
+<h2>原価は、法令ではなく商売で痛い</h2>
+
+<p>これまでの記事では個人情報や契約上の義務を扱ってきましたが、原価は性質が違います。</p>
+
+<p>自社の情報なので、入力しても法令違反にはなりません。報告義務も生じません。誰にも怒られない。</p>
+
+<p>それでも入れてはいけない理由は、<strong>商売で損をするから</strong>です。そしてこちらのほうが、実際には会社の損害が大きいことがあります。</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 282" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="原価情報が漏れた場合の影響範囲を示す図">
+  <rect class="s-red" x="20" y="6" width="320" height="42" rx="8"/>
+  <text class="s-t" x="180" y="28" text-anchor="middle">原価の内訳が外に出る</text>
+  <text class="s-xs" x="180" y="44" text-anchor="middle">法令違反ではない。報告義務もない</text>
+
+  <path class="s-ln" d="M180 48 V66"/>
+  <path class="s-ah" d="M180 74 l-5 -9 h10 z"/>
+
+  <rect class="s-amb" x="20" y="78" width="155" height="56" rx="8"/>
+  <text class="s-s" x="97" y="100" text-anchor="middle">価格交渉で</text>
+  <text class="s-xs" x="97" y="118" text-anchor="middle">値下げ余地を</text>
+  <text class="s-xs" x="97" y="132" text-anchor="middle">読まれる</text>
+
+  <rect class="s-amb" x="185" y="78" width="155" height="56" rx="8"/>
+  <text class="s-s" x="262" y="100" text-anchor="middle">競合に</text>
+  <text class="s-xs" x="262" y="118" text-anchor="middle">入札価格を</text>
+  <text class="s-xs" x="262" y="132" text-anchor="middle">合わせられる</text>
+
+  <rect class="s-amb" x="20" y="142" width="155" height="56" rx="8"/>
+  <text class="s-s" x="97" y="164" text-anchor="middle">仕入先に</text>
+  <text class="s-xs" x="97" y="182" text-anchor="middle">他社の単価を</text>
+  <text class="s-xs" x="97" y="196" text-anchor="middle">知られる</text>
+
+  <rect class="s-amb" x="185" y="142" width="155" height="56" rx="8"/>
+  <text class="s-s" x="262" y="164" text-anchor="middle">社内で</text>
+  <text class="s-xs" x="262" y="182" text-anchor="middle">見せたくない層に</text>
+  <text class="s-xs" x="262" y="196" text-anchor="middle">見える</text>
+
+  <path class="s-ln" d="M180 198 V220"/>
+  <path class="s-ah" d="M180 228 l-5 -9 h10 z"/>
+
+  <rect class="s-box" x="20" y="232" width="320" height="50" rx="8"/>
+  <text class="s-s" x="180" y="254" text-anchor="middle">誰も謝らなくていい。でも利益は減る</text>
+  <text class="s-xs" x="180" y="272" text-anchor="middle">事故として認識されないまま、じわじわ効く</text>
+</svg>
+<figcaption>個人情報の漏えいと違い、原価の流出は事故として扱われない。報告も謝罪も発生しないかわりに、気づかないまま利益率が下がる。</figcaption>
+</figure>
+
+<h2>何が原価情報にあたるか</h2>
+
+<p>「原価表を貼らなければいい」と思いがちですが、断片からも読めます。</p>
+
+<div class="tblwrap">
+<table>
+  <thead>
+    <tr><th>入力しがちなもの</th><th>そこから読めること</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>見積書のPDF</td><td>項目の立て方、諸経費の率、値引きの幅</td></tr>
+    <tr><td>実行予算書</td><td>想定利益、下請への支払単価</td></tr>
+    <tr><td>仕入先からの請求書</td><td>仕入単価、取引先の構成</td></tr>
+    <tr><td>「この単価は妥当か」という質問</td><td>自社の仕入値そのもの</td></tr>
+    <tr><td>歩掛り・標準工数の表</td><td>生産性と原価構造</td></tr>
+    <tr><td>値引き可否の相談</td><td>利益率の目安</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>4行目が盲点です。「鋼材をキロ180円で仕入れているが高くないか」と聞いた時点で、仕入単価を出しています。質問の形をしていても、情報の提供です。</p>
+
+<h2>社内で見える範囲も変わる</h2>
+
+<p>社内チャットボットに見積や原価の資料を読み込ませると、権限の設計次第で全社員が見られる状態になります。</p>
+
+<p>営業担当が他部署の原価を見られる。パート社員が利益率を知る。悪意がなくても、知った人が増えるほど外に出る確率は上がります。</p>
+
+<p>この設計の話は<a href="/articles/shanai-chatbot-rag-kengen.html">RAGと権限設計の記事</a>に詳しく書きました。</p>
+
+<h2>数字を出さずに相談する</h2>
+
+<p>実務で使える形は、比率と構造だけを渡す方法です。</p>
+
+<div class="tmpl">
+<p><strong>そのまま聞く場合</strong><br>
+鋼材 1,850,000円、加工外注 920,000円、社内工数 240時間、諸経費 15%、<br>
+見積総額 4,200,000円で提出予定です。妥当でしょうか</p>
+
+<p><strong>構造だけ聞く場合</strong><br>
+金属加工の受注案件で見積を作っています。<br>
+構成は、材料費が全体の約45%、外注加工が約22%、社内工数が約18%、諸経費15%。<br>
+この構成比で、見落としがちな原価項目はありますか。<br>
+また、諸経費の中に入れておくべき項目を挙げてください</p>
+</div>
+
+<p>後者のほうが、むしろ実用的な答えが返ってきます。金額を見せても、AIは相場を知りません。構成比の抜けを指摘してもらうほうが価値があります。</p>
+
+<div class="box ok">
+  <div class="box-t">✓ 比率に直すだけ</div>
+  <p>金額を全体に対する%に直す。これだけで、原価情報ではなくなります。手間は数分で、相談の質は落ちません。</p>
+</div>
+
+<h2>AIに単価の相場を聞かない</h2>
+
+<p>もうひとつ、精度の問題があります。</p>
+
+<p>「この地域の〇〇工事の相場は」と聞くと、AIは数字を答えます。もっともらしい数字が出ます。</p>
+
+<p>ただ、その数字の根拠は不明です。何年前の、どの地域の、どういう条件のものか分かりません。鋼材価格も人件費も、ここ数年で大きく動いています。</p>
+
+<p>この数字を根拠に見積を出すと、安すぎて赤字になるか、高すぎて失注します。</p>
+
+<p>相場は、業界団体の公表資料、取引先からの情報、自社の過去実績で確認してください。AIに聞く対象ではありません。</p>
+
+<h2>見積作成で実際に効くこと</h2>
+
+<p>金額を入れなくても、見積業務は楽になります。</p>
+
+<ol>
+  <li>見積項目の抜け漏れチェック（構成比だけ渡す）</li>
+  <li>見積書の説明文・前提条件の書き方を整える</li>
+  <li>顧客への提案理由の文章化</li>
+  <li>失注時の振り返りの整理（金額は伏せる）</li>
+  <li>見積書のテンプレート自体の改善</li>
+</ol>
+
+<p>2番が効きます。前提条件や除外事項の書き方が曖昧だと、後から追加費用で揉めます。文章を整えるだけで、トラブルが減ります。</p>
+
+<h2>ルールに1行</h2>
+
+<div class="tmpl">
+<p><strong>見積・原価について</strong></p>
+<p>見積書、実行予算書、仕入先からの請求書を、ファイル・本文を問わずAIに入力しないでください。<br>
+単価や金額を質問文の中に書かないでください。<br>
+相談したい場合は、金額を全体に対する比率に直して書いてください。<br>
+AIが答えた相場や単価を、見積の根拠に使わないでください。</p>
+</div>
+
+<p><a href="/articles/seisei-ai-guideline-template.html">ガイドラインのひな形</a>に追記して使えます。製造業の図面の扱いは<a href="/articles/seizogyo-zumen-ai.html">こちら</a>、建設業は<a href="/articles/kensetsugyo-ai.html">こちら</a>に書きました。</p>
+
+<h2>気づかない損は、対策されない</h2>
+
+<p>個人情報が漏れれば、報告して、謝って、対策します。痛いけれど、改善につながります。</p>
+
+<p>原価が漏れても、誰も気づきません。来期の利益率が少し下がるだけです。原因は分かりません。</p>
+
+<p>だからこそ、先に決めておく価値があります。起きてから気づく仕組みがない領域は、手前で止めるしかない。</p>
+  </article>
+<div class="cta">
+  <h2>気づかない損は、対策されない</h2>
+  <p>原価が漏れても誰も気づきません。来期の利益率が少し下がるだけ。原因は分かりません。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/seizogyo-zumen-ai.html"><div class="rt">製造業で図面や仕様書を生成AIに入れる前に</div><div class="rd">手元にある図面の多くは預かりものです。自社の判断では出せません。ここが他の業種と違う。</div></a>
+  <a href="/articles/kensetsugyo-ai.html"><div class="rt">建設業で生成AIを使うとき、現場と事務所で分けて考える</div><div class="rd">事務所は書類、現場は写真。起きる事故の形が違うので、同じルールではどちらにも効きません。</div></a>
+  <a href="/articles/press-release-ai.html"><div class="rt">プレスリリースを生成AIで書くとき、未公表情報をどう守るか</div><div class="rd">発表日の1週間前に原稿を貼る。その時点では、未公表の情報を外部に送っています。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>
