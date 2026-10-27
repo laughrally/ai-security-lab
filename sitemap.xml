@@ -50,6 +50,42 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://ai-security-lab.com/articles/ai-rouei-jirei.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/gijiroku-ai-otoshiana.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/seizogyo-zumen-ai.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/shigyo-komonsaki-ai.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/copilot-gyomu-riyo.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ai-security-lab.com/articles/kyoiku-jisshi-shomei.html</loc>
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://ai-security-lab.com/tokusho.html</loc>
     <lastmod>2026-08-21</lastmod>
     <changefreq>yearly</changefreq>
