@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>生成AIの利用ログを、どこまで取るべきか｜AI Security Lab</title>
+<meta name="description" content="生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/ai-riyo-log-kanshi.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/ai-riyo-log-kanshi.html">
+<meta property="og:title" content="生成AIの利用ログを、どこまで取るべきか">
+<meta property="og:description" content="生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="生成AIの利用ログを、どこまで取るべきか">
+<meta name="twitter:description" content="生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "生成AIの利用ログを、どこまで取るべきか"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "生成AIの利用ログを、どこまで取るべきか",
+      "description": "生成AIの利用ログをどの粒度で取るか。全プロンプト記録が逆効果になる理由、目的別に必要なログの一覧、モニタリングに関する法律上の留意点、2名承認で中身を確認する運用、周知文のひな形を掲載しました。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-29",
+      "dateModified": "2026-10-29",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/ai-riyo-log-kanshi.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">ログ</span><span class="tag">労務</span><span class="tag">長尾</span></div>
+  <h1>生成AIの利用ログを、どこまで取るべきか</h1>
+  <div class="meta">公開 2026-10-29</div>
+  <p class="lede">全部のプロンプトを記録して管理者が読める状態にする。安全のためには合理的に見えます。ところが実際にやると、社員は会社のアカウントを使わなくなります。</p>
+  <article>
+<h2>取りすぎると使われなくなる</h2>
+
+<p>生成AIの利用ログをどこまで取るか。これは技術の問題ではなく、信頼の問題です。</p>
+
+<p>全部のプロンプトを記録して管理者が読める状態にする。安全のためには合理的に見えます。ところが実際にやると、社員は使わなくなります。正確には、<strong>会社のアカウントでは使わなくなります</strong>。</p>
+
+<p>個人のスマホで続きをやります。そして会社からは完全に見えなくなる。監視を強めたことで、把握できる範囲が狭まる。</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 296" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="監視の強さと実際に把握できる範囲の関係を示す図">
+  <text class="s-mono" x="20" y="16">監視を強めるほど、把握できる範囲は狭くなる</text>
+
+  <rect class="s-box" x="20" y="26" width="320" height="70" rx="8"/>
+  <text class="s-s" x="36" y="48">① ログを取らない</text>
+  <text class="s-xs" x="36" y="68">会社のアカウントで自由に使う。何が起きても追えない</text>
+  <text class="s-cr" x="324" y="88" text-anchor="end">事故時に説明できない</text>
+
+  <rect class="s-grn" x="20" y="104" width="320" height="78" rx="8"/>
+  <text class="s-s" x="36" y="126">② 使った事実だけ記録する</text>
+  <text class="s-xs" x="36" y="146">誰が・いつ・どのサービスを使ったか。中身は見ない</text>
+  <text class="s-xs" x="36" y="164">社員は会社のアカウントを使い続ける</text>
+  <text class="s-cg" x="324" y="176" text-anchor="end">把握できる範囲が最大</text>
+
+  <rect class="s-red" x="20" y="190" width="320" height="78" rx="8"/>
+  <text class="s-s" x="36" y="212">③ 全プロンプトを記録して管理者が読む</text>
+  <text class="s-xs" x="36" y="232">安全に見えるが、会社のアカウントが使われなくなる</text>
+  <text class="s-xs" x="36" y="250">個人スマホに移動し、ログがゼロになる</text>
+  <text class="s-cr" x="324" y="262" text-anchor="end">実質、把握できない</text>
+
+  <rect class="s-amb" x="20" y="274" width="320" height="22" rx="6"/>
+  <text class="s-xs" x="180" y="289" text-anchor="middle">②が最も多くの情報を得られる。これは直感に反する</text>
+</svg>
+<figcaption>監視の強度と把握できる情報量は比例しない。強くしすぎると利用そのものが見えない場所へ移る。中庸が最も情報を得られる。</figcaption>
+</figure>
+
+<h2>目的から決める</h2>
+
+<p>何のためにログを取るのか。目的によって必要な粒度が変わります。</p>
+
+<div class="tblwrap">
+<table>
+  <thead>
+    <tr><th>目的</th><th>必要なログ</th><th>中身まで要るか</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>取引先に教育実施を示す</td><td>受講記録。AI利用ログは不要</td><td>要らない</td></tr>
+    <tr><td>どのサービスが使われているか知る</td><td>サービス名とアカウント</td><td>要らない</td></tr>
+    <tr><td>利用が定着しているか測る</td><td>利用回数、部署別の分布</td><td>要らない</td></tr>
+    <tr><td>事故が起きたとき範囲を特定する</td><td>日時、利用者、できれば入力の概要</td><td>場合による</td></tr>
+    <tr><td>規程違反を見つける</td><td>プロンプト本文</td><td>要る</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>上の4つは中身が要りません。大半の目的は、中身なしで達成できます。</p>
+
+<p>中身が要るのは最後の1行だけ。そして、この目的を掲げた瞬間に監視になります。<strong>やるなら覚悟を決めて、やらないなら最初から取らない。</strong>中途半端が一番よくない。</p>
+
+<h2>法律上の論点</h2>
+
+<p>従業員のプロンプトを記録して閲覧する行為は、労務管理の文脈で整理が要ります。</p>
+
+<p>一般に、業務用に貸与した端末やアカウントの利用状況をモニタリングすること自体は、目的が正当で、方法が相当で、<strong>事前に周知されていれば</strong>許容されると整理されています。逆に、周知せず秘密裏に行うと問題になりやすい。</p>
+
+<p>個人情報保護委員会も、従業者の監督に関してモニタリングを実施する場合の留意点を示しています。実施責任者と権限の明確化、あらかじめ定めたルールの周知、実施状況の確認といった観点です。</p>
+
+<div class="box note">
+  <div class="box-t">◆ 最低限やること</div>
+  <p>何を記録するか、誰が見られるか、どういう場合に見るか。この3つを文書にして周知する。就業規則やセキュリティ規程に紐づけるなら、社労士に確認してください。</p>
+</div>
+
+<h2>現実的な落としどころ</h2>
+
+<p>中小企業で回るのは、だいたいこの形です。</p>
+
+<ol>
+  <li>平常時は、使った事実だけを記録する（誰が・いつ・どのサービス）</li>
+  <li>中身は見ない。見ないことを明言する</li>
+  <li>事故の申告があったとき、または外部から指摘があったときに限り、責任者2名の承認で中身を確認する</li>
+  <li>確認した場合は、本人に事後に通知する</li>
+</ol>
+
+<p>3番の「2名の承認」が効きます。一人で見られる状態だと、社員は信用しません。歯止めが見える形になっていることが大事です。</p>
+
+<p>4番も入れておいてください。見たことを隠すと、後で分かったときに致命的です。</p>
+
+<h2>法人プランで取れるもの</h2>
+
+<p>主要なサービスの管理機能で、だいたい次のようなものが取れます。</p>
+
+<p>利用者ごとのアクティビティ、会話数、使われた日時。管理者が会話内容にアクセスできる設定を持つものもあります。</p>
+
+<p>導入時に、<strong>管理者が中身を見られる設定になっているかを確認</strong>してください。見られる状態で運用するなら、その事実を周知する必要があります。見られることを知らされていない状態が一番まずい。</p>
+
+<h2>ログを取る前に決めること</h2>
+
+<p>取り始めてから考えると、後戻りできません。先に決めてください。</p>
+
+<div class="tmpl">
+<p><strong>生成AI利用のモニタリングについて（周知文の例）</strong></p>
+<p>会社が提供する生成AIサービスについて、以下の情報を記録します。</p>
+<p>　・利用者、利用日時、利用したサービス名、利用回数</p>
+<p>入力した内容（プロンプト）は、平常時には確認しません。<br>
+次の場合に限り、情報システム責任者と総務責任者の2名の承認のうえで確認します。</p>
+<p>　・情報の漏えいが疑われる事象が発生したとき<br>
+　・取引先または外部機関から調査の要請があったとき<br>
+　・本人から確認の依頼があったとき</p>
+<p>確認を行った場合は、対象となった本人に事後に通知します。<br>
+記録の保存期間は〇年とし、期間経過後に削除します。</p>
+</div>
+
+<p>文面は顧問の社労士に確認してから使ってください。既存の規程との整合が要ります。</p>
+
+<h2>個人アカウントは、そもそもログが取れない</h2>
+
+<p>ここまで書いてきた話は、会社がサービスを契約している前提です。</p>
+
+<p>社員が個人のアカウントで使っている場合、ログは1件も取れません。何を入れたかも、そもそも使っているかも分かりません。</p>
+
+<p>だから順番としては、<strong>ログ設計より先に、会社のアカウントで使える状態を作る</strong>ほうが先です。取れないログの設計を議論しても意味がない。</p>
+
+<p>実態の把握方法は<a href="/articles/shadow-ai-mitsukekata.html">シャドーAIの記事</a>に、会社として何を用意するかは<a href="/articles/seisei-ai-guideline-template.html">ガイドラインのひな形</a>に書きました。</p>
+
+<h2>信用を削ると、情報が止まる</h2>
+
+<p>監視を強めた会社で何が起きるか。事故の報告が上がってこなくなります。</p>
+
+<p>「入れてしまった」と言った瞬間にログを全部見られる、と思われたら、誰も言いません。黙って様子を見ます。そして発覚が半年遅れる。</p>
+
+<p>ログを取る目的が「事故に早く気づくこと」なら、報告しやすさのほうが効きます。矛盾しているようですが、ここは本当にそうだと思っています。</p>
+  </article>
+<div class="cta">
+  <h2>信用を削ると、情報が止まる</h2>
+  <p>ログを取る目的が「事故に早く気づくこと」なら、報告しやすさのほうが効きます。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/shanai-chatbot-rag-kengen.html"><div class="rt">社内AIチャットボットのRAGと権限設計</div><div class="rd">導入が失敗する原因は精度ではありません。権限です。検索の段階で絞らないと、回答の段階では止められない。</div></a>
+  <a href="/articles/shadow-ai-mitsukekata.html"><div class="rt">シャドーAIの見つけ方。禁止しても使われている前提で探す</div><div class="rd">会社が許可していないAIを、社員が勝手に使っている状態。禁止令を出すと見えなくなるだけで、なくなりはしません。</div></a>
+  <a href="/articles/incident-houkokusho-hinagata.html"><div class="rt">生成AIのインシデント報告書の書き方（ひな形つき）</div><div class="rd">原因分析から書き始めると、事実が推測に引きずられます。先に事実を固定する。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>生成AIのインシデント報告書の書き方（ひな形つき）｜AI Security Lab</title>
+<meta name="description" content="生成AIに情報を入力してしまった場合の報告書の作り方。事実の確定から再発防止まで5段階の書く順番、そのまま使えるA4のひな形、「本人の注意不足」で終わらせない原因欄の書き方、取引先提出版との作り分けを解説します。">
+<link rel="canonical" href="https://ai-security-lab.com/articles/incident-houkokusho-hinagata.html">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="/favicon.ico">
+<link rel="apple-touch-icon" href="/apple-icon.png">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AI Security Lab">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:url" content="https://ai-security-lab.com/articles/incident-houkokusho-hinagata.html">
+<meta property="og:title" content="生成AIのインシデント報告書の書き方（ひな形つき）">
+<meta property="og:description" content="生成AIに情報を入力してしまった場合の報告書の作り方。事実の確定から再発防止まで5段階の書く順番、そのまま使えるA4のひな形、「本人の注意不足」で終わらせない原因欄の書き方、取引先提出版との作り分けを解説します。">
+<meta property="og:image" content="https://ai-security-lab.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="生成AIのインシデント報告書の書き方（ひな形つき）">
+<meta name="twitter:description" content="生成AIに情報を入力してしまった場合の報告書の作り方。事実の確定から再発防止まで5段階の書く順番、そのまま使えるA4のひな形、「本人の注意不足」で終わらせない原因欄の書き方、取引先提出版との作り分けを解説します。">
+<meta name="twitter:image" content="https://ai-security-lab.com/og.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://ai-security-lab.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "記事",
+          "item": "https://ai-security-lab.com/articles/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "生成AIのインシデント報告書の書き方（ひな形つき）"
+        }
+      ]
+    },
+    {
+      "@type": "Article",
+      "headline": "生成AIのインシデント報告書の書き方（ひな形つき）",
+      "description": "生成AIに情報を入力してしまった場合の報告書の作り方。事実の確定から再発防止まで5段階の書く順番、そのまま使えるA4のひな形、「本人の注意不足」で終わらせない原因欄の書き方、取引先提出版との作り分けを解説します。",
+      "inLanguage": "ja",
+      "datePublished": "2026-10-29",
+      "dateModified": "2026-10-29",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://ai-security-lab.com/articles/incident-houkokusho-hinagata.html"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "合同会社LaughRally",
+        "url": "https://ai-security-lab.com/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://ai-security-lab.com/icon-512.png"
+        }
+      },
+      "image": "https://ai-security-lab.com/og.png"
+    }
+  ]
+}
+</script>
+
+<script>(function(){try{var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme:dark)').matches;if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');}catch(e){}})();</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
+  --border:#e5e7eb; --border2:#d1d5db;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+  --red:#dc2626; --red-l:#fee2e2;
+  --amber:#d97706; --amber-l:#fef3c7;
+  --blue:#2563eb; --blue-l:#dbeafe;
+  --green:#16a34a; --green-l:#dcfce7;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
+}
+body.dark{
+  --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
+  --border:#2a3347; --border2:#374155;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --red:#f87171; --red-l:rgba(248,113,113,.12);
+  --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
+  --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
+  --green:#34d399; --green-l:rgba(52,211,153,.12);
+  --sh:0 1px 3px rgba(0,0,0,.3),0 1px 2px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.2);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;
+     line-height:1.9;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+img{max-width:100%;height:auto}
+
+nav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);
+    height:62px;display:flex;align-items:center;padding:0 24px;justify-content:space-between;gap:16px}
+.nlogo{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--text);
+       text-decoration:none;letter-spacing:-.02em;white-space:nowrap}
+.nlogo .r{color:var(--red)}
+.nright{display:flex;align-items:center;gap:18px}
+.nright a{font-size:13px;color:var(--text3);text-decoration:none}
+.nright a:hover{color:var(--text)}
+.ncta{background:var(--red);color:#fff;font-weight:700;padding:8px 18px;border-radius:6px;
+      font-size:13px;white-space:nowrap}
+.ncta:hover{background:#b91c1c;color:#fff}
+.dark-toggle{background:none;border:1px solid var(--border);border-radius:6px;cursor:pointer;
+             font-size:14px;padding:5px 9px;line-height:1}
+
+main{max-width:760px;margin:0 auto;padding:44px 24px 0}
+.crumb{font-size:12px;color:var(--text4);margin-bottom:22px}
+.crumb a{color:var(--text3);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:18px}
+.tag{font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.04em;
+     background:var(--bg3);color:var(--text3);padding:4px 11px;border-radius:100px;
+     border:1px solid var(--border)}
+h1{font-family:'Noto Serif JP',serif;font-size:clamp(25px,4.4vw,36px);line-height:1.42;
+   font-weight:900;letter-spacing:-.02em;margin-bottom:18px}
+.meta{font-size:12px;color:var(--text4);font-family:'IBM Plex Mono',monospace;
+      padding-bottom:30px;border-bottom:1px solid var(--border);margin-bottom:38px}
+.lede{font-size:16px;color:var(--text2);line-height:1.95;margin-bottom:40px}
+
+article h2{font-family:'Noto Serif JP',serif;font-size:clamp(19px,2.9vw,24px);font-weight:800;
+           line-height:1.5;margin:56px 0 20px;padding-left:14px;border-left:4px solid var(--red)}
+article h3{font-size:16px;font-weight:700;margin:36px 0 12px;color:var(--text)}
+article p{font-size:15px;color:var(--text2);line-height:1.98;margin-bottom:20px}
+article strong{color:var(--text);font-weight:700}
+article a{color:var(--blue)}
+article ul,article ol{margin:0 0 22px 1.35em}
+article li{font-size:15px;color:var(--text2);line-height:1.9;margin-bottom:9px}
+article hr{border:none;border-top:1px solid var(--border);margin:44px 0}
+
+.box{border:1px solid var(--border);border-radius:10px;padding:20px 22px;margin:28px 0;
+     background:var(--bg2)}
+.box p:last-child{margin-bottom:0}
+.box-t{font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;letter-spacing:.07em;
+       margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.box.warn{background:var(--red-l);border-color:transparent}
+.box.warn .box-t{color:var(--red)}
+.box.note{background:var(--amber-l);border-color:transparent}
+.box.note .box-t{color:var(--amber)}
+.box.ok{background:var(--green-l);border-color:transparent}
+.box.ok .box-t{color:var(--green)}
+.box.info{background:var(--blue-l);border-color:transparent}
+.box.info .box-t{color:var(--blue)}
+
+.tblwrap{overflow-x:auto;margin:26px 0;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:14px;min-width:460px}
+th,td{border:1px solid var(--border);padding:11px 14px;text-align:left;vertical-align:top;
+      line-height:1.75}
+th{background:var(--bg3);font-weight:700;font-size:13px;color:var(--text)}
+td{color:var(--text2)}
+
+/* ===== 図版 =====
+   🔒 viewBox の幅は 360 に統一する（縦は自由）。箱は x=20 / width=320 が基準。
+   理由: スマホでSVGに使える幅は実測301px。viewBox 440 で作ると 0.68倍まで縮み、
+   14px の文字が実効9.6pxになって読めない。360 なら 0.84倍で約11.7px残る。
+   デスクトップは max-width 470px で 1.31倍（約18px）。
+   横長の図はスマホで潰れるので、迷ったら縦に積む。 */
+figure.fig{margin:32px 0;padding:24px 18px 18px;border:1px solid var(--border);
+           border-radius:12px;background:var(--bg2)}
+figure.fig svg{display:block;width:100%;height:auto;max-width:470px;margin:0 auto}
+figure.fig figcaption{font-size:12px;color:var(--text4);line-height:1.8;margin-top:16px;
+                      padding-top:14px;border-top:1px solid var(--border);text-align:left}
+.fig .s-box{fill:var(--bg);stroke:var(--border2);stroke-width:1.4}
+.fig .s-red{fill:var(--red-l);stroke:var(--red);stroke-width:1.4}
+.fig .s-grn{fill:var(--green-l);stroke:var(--green);stroke-width:1.4}
+.fig .s-blu{fill:var(--blue-l);stroke:var(--blue);stroke-width:1.4}
+.fig .s-amb{fill:var(--amber-l);stroke:var(--amber);stroke-width:1.4}
+.fig .s-fill{fill:var(--bg3);stroke:none}
+.fig .s-t{fill:var(--text);font-size:14px;font-weight:700;
+          font-family:'Noto Sans JP',sans-serif}
+.fig .s-s{fill:var(--text2);font-size:12px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-xs{fill:var(--text3);font-size:11px;font-family:'Noto Sans JP',sans-serif}
+.fig .s-mono{fill:var(--text3);font-size:11px;font-family:'IBM Plex Mono',monospace;
+             letter-spacing:.04em}
+.fig .s-cr{fill:var(--red);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-cg{fill:var(--green);font-size:12px;font-weight:700;
+           font-family:'Noto Sans JP',sans-serif}
+.fig .s-ln{stroke:var(--border2);stroke-width:1.4;fill:none}
+.fig .s-dash{stroke:var(--border2);stroke-width:1.4;fill:none;stroke-dasharray:4 4}
+.fig .s-ah{fill:var(--text3);stroke:none}
+.fig .s-ahr{fill:var(--red);stroke:none}
+.fig .s-lnr{stroke:var(--red);stroke-width:1.6;fill:none}
+
+.tmpl{background:var(--bg3);border:1px solid var(--border);border-radius:10px;
+      padding:20px 22px;margin:26px 0;font-size:14px;line-height:1.95;color:var(--text2)}
+.tmpl p{font-size:14px;margin-bottom:14px}
+.tmpl p:last-child{margin-bottom:0}
+
+.cta{margin:68px 0 0;padding:34px 30px;border-radius:14px;background:var(--bg2);
+     border:1px solid var(--border)}
+.cta h2{font-family:'Noto Serif JP',serif;font-size:20px;font-weight:800;margin:0 0 14px;
+        padding:0;border:none;line-height:1.55}
+.cta p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:12px}
+.cta .btn{display:inline-block;background:var(--red);color:#fff;font-weight:700;font-size:14px;
+          padding:13px 30px;border-radius:7px;text-decoration:none;margin-top:12px}
+.cta .btn:hover{background:#b91c1c}
+.cta .fine{font-size:12px;color:var(--text4);margin:14px 0 0;line-height:1.8}
+/* ダークでは --red が #f87171 に変わるため、白文字のボタンだけコントラストが落ちる。
+   ボタンの地色だけライトと同じ濃い赤に固定する。 */
+body.dark .ncta,body.dark .cta .btn{background:#dc2626;color:#fff}
+body.dark .ncta:hover,body.dark .cta .btn:hover{background:#b91c1c}
+
+.rel{margin:60px 0 0;padding-top:34px;border-top:1px solid var(--border)}
+.rel h2{font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.07em;
+        color:var(--text3);margin:0 0 18px;padding:0;border:none;font-weight:700}
+.rel a{display:block;padding:15px 17px;border:1px solid var(--border);border-radius:9px;
+       margin-bottom:11px;text-decoration:none;background:var(--bg)}
+.rel a:hover{border-color:var(--border2);background:var(--bg2)}
+.rel .rt{font-size:14px;font-weight:700;color:var(--text);line-height:1.6;margin-bottom:5px}
+.rel .rd{font-size:12px;color:var(--text4);line-height:1.7}
+
+.cards{display:grid;gap:14px;margin-bottom:10px}
+.card{display:block;padding:22px 24px;border:1px solid var(--border);border-radius:11px;
+      text-decoration:none;background:var(--bg)}
+.card:hover{border-color:var(--border2);background:var(--bg2)}
+.card .ct{font-family:'Noto Serif JP',serif;font-size:17px;font-weight:800;color:var(--text);
+          line-height:1.55;margin-bottom:9px}
+.card .cd{font-size:13px;color:var(--text3);line-height:1.85;margin-bottom:11px}
+.card .cm{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--text4)}
+
+footer{margin-top:84px;border-top:1px solid var(--border);padding:34px 24px 44px;
+       text-align:center;background:var(--bg2)}
+.flogo{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;margin-bottom:14px}
+.flogo span{color:var(--red)}
+.flinks{display:flex;flex-wrap:wrap;gap:8px 22px;justify-content:center;margin-bottom:16px}
+.flinks a{font-size:12px;color:var(--text3);text-decoration:none}
+.flinks a:hover{color:var(--text)}
+.fcopy{font-size:11px;color:var(--text4)}
+
+@media(max-width:640px){
+  nav{padding:0 16px;gap:10px}
+  .nright{gap:12px}
+  .nright .hide-sp{display:none}
+  main{padding:30px 18px 0}
+  article h2{margin:44px 0 16px}
+  .cta{padding:26px 22px;border-radius:12px}
+  .box{padding:17px 18px}
+}
+</style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-38D23PV2DV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-38D23PV2DV');
+</script>
+</head>
+<body>
+<nav>
+  <a href="https://ai-security-lab.com/" class="nlogo">AI<span class="r">Security</span>Lab</a>
+  <div class="nright">
+    <a href="/articles/" class="hide-sp">記事一覧</a>
+    <a href="https://ai-security-lab.com/#curriculum" class="hide-sp">カリキュラム</a>
+    <button class="dark-toggle" id="dt" onclick="tg()" aria-label="配色を切り替える">&#9728;&#65039;</button>
+    <a href="https://ai-security-lab.com/#plans" class="ncta">受講を始める</a>
+  </div>
+</nav>
+<main>
+  <div class="crumb"><a href="https://ai-security-lab.com/">ホーム</a> ／ <a href="/articles/">記事</a></div>
+  <div class="tagrow"><span class="tag">インシデント</span><span class="tag">ひな形</span><span class="tag">長尾</span></div>
+  <h1>生成AIのインシデント報告書の書き方（ひな形つき）</h1>
+  <div class="meta">公開 2026-10-29</div>
+  <p class="lede">読むのは上長、取引先、場合によっては監督官庁です。知りたいのは「何が出たか」と「今どうなっているか」で、「なぜ起きたか」はその次です。</p>
+  <article>
+<h2>報告書は、書く順番で質が決まる</h2>
+
+<p>生成AIに情報を入れてしまった。社内で報告書を作ることになった。ここで多くの人が、原因の分析から書き始めます。</p>
+
+<p>順番が逆です。<strong>先に事実を固定し、その後に評価する。</strong>混ぜて書くと、後から読んだ人が事実と推測を区別できなくなります。</p>
+
+<p>報告書を読むのは、上長、取引先、場合によっては監督官庁です。読み手が知りたいのは「何が出たか」と「今どうなっているか」で、「なぜ起きたか」はその次です。</p>
+
+<figure class="fig">
+<svg viewBox="0 0 360 318" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="インシデント報告書を書く順番を示す図">
+  <rect class="s-box" x="20" y="6" width="320" height="42" rx="8"/>
+  <text class="s-t" x="180" y="26" text-anchor="middle">① 事実の確定</text>
+  <text class="s-xs" x="180" y="42" text-anchor="middle">いつ・誰が・何を・どのサービスに。推測を混ぜない</text>
+
+  <path class="s-ln" d="M180 48 V64"/><path class="s-ah" d="M180 72 l-5 -9 h10 z"/>
+
+  <rect class="s-box" x="20" y="76" width="320" height="42" rx="8"/>
+  <text class="s-t" x="180" y="96" text-anchor="middle">② 範囲の特定</text>
+  <text class="s-xs" x="180" y="112" text-anchor="middle">件数を数える。誰の情報か。要配慮情報は含まれるか</text>
+
+  <path class="s-ln" d="M180 118 V134"/><path class="s-ah" d="M180 142 l-5 -9 h10 z"/>
+
+  <rect class="s-amb" x="20" y="146" width="320" height="42" rx="8"/>
+  <text class="s-t" x="180" y="166" text-anchor="middle">③ 法令・契約上の義務の判断</text>
+  <text class="s-xs" x="180" y="182" text-anchor="middle">報告義務があるか。NDAの通知条項に該当するか</text>
+
+  <path class="s-ln" d="M180 188 V204"/><path class="s-ah" d="M180 212 l-5 -9 h10 z"/>
+
+  <rect class="s-box" x="20" y="216" width="320" height="42" rx="8"/>
+  <text class="s-t" x="180" y="236" text-anchor="middle">④ 実施した対応</text>
+  <text class="s-xs" x="180" y="252" text-anchor="middle">やったことを時系列で。やっていないことも書く</text>
+
+  <path class="s-ln" d="M180 258 V274"/><path class="s-ah" d="M180 282 l-5 -9 h10 z"/>
+
+  <rect class="s-grn" x="20" y="286" width="320" height="32" rx="8"/>
+  <text class="s-t" x="180" y="308" text-anchor="middle">⑤ 原因と再発防止</text>
+</svg>
+<figcaption>原因分析を最初に書くと、事実が推測に引きずられる。①〜④が固まってから⑤を書く。読み手の関心の順番でもある。</figcaption>
+</figure>
+
+<h2>そのまま使えるひな形</h2>
+
+<p>A4で1〜2枚に収まる形にしてあります。項目を削らず、該当しない欄は「該当なし」と書いてください。空欄にすると、検討したのか忘れたのかが分かりません。</p>
+
+<div class="tmpl">
+<p><strong>生成AIへの情報入力に関する報告書</strong></p>
+<p>報告日：2026年〇月〇日　／　報告者：〇〇部 〇〇<br>
+受領者：〇〇部長　／　整理番号：AI-2026-00〇</p>
+
+<p><strong>1. 発生の事実</strong><br>
+発生日時：2026年〇月〇日 〇時〇分ごろ<br>
+発覚日時：2026年〇月〇日 〇時〇分（発覚の経緯：本人の申告／上長の指摘／外部からの指摘）<br>
+入力者：〇〇部 〇〇<br>
+使用したサービス：〇〇（プラン：法人契約／個人アカウント／不明）<br>
+入力の方法：本文の貼り付け／ファイルの添付／画像のアップロード<br>
+入力した内容の概要：（推測を入れず、事実のみ）</p>
+
+<p><strong>2. 入力された情報の範囲</strong><br>
+情報の種類：□個人データ　□要配慮個人情報　□取引先から受領した情報　□自社の技術情報　□認証情報　□その他（　　）<br>
+対象件数：〇件（確定／概算）<br>
+対象者：（顧客／従業員／取引先の担当者など）<br>
+特定可能性：氏名・連絡先など個人を特定できる項目が含まれていたか<br>
+件数の根拠：（どうやって数えたか）</p>
+
+<p><strong>3. 外部への影響の評価</strong><br>
+当該サービスの学習利用設定：オフ／オン／不明<br>
+当該サービスのデータ保存期間：〇日／不明<br>
+第三者が閲覧可能な状態であったか：（共有リンク、公開GPT等の有無）<br>
+現時点で二次被害は確認されているか：有／無</p>
+
+<p><strong>4. 法令・契約上の検討</strong><br>
+個人情報保護法上の報告対象に該当するか：該当／非該当／検討中<br>
+（判断の根拠：要配慮個人情報の有無、財産的被害のおそれ、不正目的のおそれ、1,000人超の該当）<br>
+秘密保持契約の通知義務に該当するか：該当／非該当／該当なし（契約名：　　）<br>
+相談先：（弁護士／個人情報保護委員会の窓口／該当なし）<br>
+相談日と回答の要旨：</p>
+
+<p><strong>5. 実施した対応（時系列）</strong><br>
+〇月〇日 〇時〇分　入力画面のスクリーンショットを取得し、〇〇に保存<br>
+〇月〇日 〇時〇分　上長に報告<br>
+〇月〇日 〇時〇分　該当する認証情報を失効させ、再発行（該当する場合）<br>
+〇月〇日 〇時〇分　会話履歴およびアップロードしたファイルを削除<br>
+〇月〇日 〇時〇分　取引先〇〇へ通知<br>
+※未実施の項目があれば、その理由を記載すること</p>
+
+<p><strong>6. 原因</strong><br>
+直接の原因：<br>
+背景にある要因：（ルールの不在／周知の不足／代替手段がなかった／急いでいた等）<br>
+※個人の注意不足のみを原因とする記載はしない。再発防止につながらないため</p>
+
+<p><strong>7. 再発防止策</strong><br>
+即時に実施すること：<br>
+〇か月以内に実施すること：<br>
+実施責任者：<br>
+効果の確認方法と確認時期：</p>
+
+<p><strong>8. 本人への対応</strong><br>
+報告の経路と所要時間：発生から報告まで〇時間<br>
+※早期の報告であった場合は、その旨を明記する</p>
+</div>
+
+<h2>6番の書き方で、会社の体質が出る</h2>
+
+<p>原因の欄に「本人の注意不足」と書いて終わる報告書をよく見ます。これは事実かもしれませんが、再発防止には何もつながりません。</p>
+
+<p>注意すれば防げるなら、次も注意すれば防げるはずです。でも実際には、また起きます。注意力に依存した対策は対策ではない。</p>
+
+<p>掘るべきなのは背景です。</p>
+
+<ul>
+  <li>入れてはいけないと知っていたか。知らなかったなら、なぜ伝わっていなかったか</li>
+  <li>代わりの手段はあったか。なかったなら、それを用意しなかったのは誰か</li>
+  <li>急いでいたか。その締切は妥当だったか</li>
+  <li>聞ける相手はいたか。聞きにくい空気はなかったか</li>
+</ul>
+
+<p>ここまで書くと、対策が具体的になります。</p>
+
+<div class="box note">
+  <div class="box-t">◆ 8番を必ず入れる</div>
+  <p>発生から報告までの時間を書く欄です。30分で上がってきたのか、3日後だったのか。早かった場合は、そのことを評価として明記してください。報告書が「報告した人が損をする文書」になると、次から報告が来なくなります。</p>
+</div>
+
+<h2>取引先に出す版は、別に作る</h2>
+
+<p>社内版をそのまま外に出さないでください。社内版には、個人名や社内の揉めごとが入っています。</p>
+
+<p>外部提出版では、入力者の氏名を「当社従業員1名」に、社内の経緯を簡潔にまとめます。削る理由は隠蔽ではなく、相手が必要としない情報だからです。</p>
+
+<p>相手が知りたいのは、自社の情報が含まれていたか、含まれていたなら何が、今どうなっているか、今後どうするか。この4点です。</p>
+
+<h2>書く前に、初動を済ませる</h2>
+
+<p>報告書は、初動が終わってから書くものです。先に書き始めると、記録を取る前に履歴を消したりします。</p>
+
+<p>入れてしまった直後に何をするかは<a href="/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html">初動の記事</a>にまとめました。削除は最後です。</p>
+
+<p>法令上の判断については<a href="/articles/kojin-joho-hogoho-seisei-ai.html">個人情報保護法の記事</a>を参照してください。</p>
+
+<h2>ひな形は、先に配っておく</h2>
+
+<p>起きてから作ると、項目を考えている間に時間が過ぎます。</p>
+
+<p>今のうちに共有フォルダに置いて、<a href="/articles/seisei-ai-guideline-template.html">ガイドライン</a>から場所をリンクしておいてください。使わずに済めば、それでいい。</p>
+
+<p>個人的には、ひな形があること自体が予防になると思っています。「こういう報告書を書くことになる」と想像できると、手前で止まります。</p>
+  </article>
+<div class="cta">
+  <h2>ひな形があること自体が予防になる</h2>
+  <p>「こういう報告書を書くことになる」と想像できると、手前で止まります。</p>
+  <p>AI Security Lab は、生成AIを業務で使う会社向けの eラーニングです。
+     何を入力してはいけないか、設定で防げる範囲はどこまでか、漏れたときに最初に何をするか。
+     中小企業の現場で実際に起きることを前提に組んでいます。</p>
+  <a class="btn" href="https://ai-security-lab.com/#plans">講座の内容と料金を見る</a>
+  <p class="fine">序章とレッスン01は無料で読めます。登録は不要です。</p>
+</div>
+<div class="rel">
+  <h2>あわせて読む</h2>
+  <a href="/articles/chatgpt-kimitsu-joho-nyuryoku-shita.html"><div class="rt">生成AIに社外秘を入れてしまった。最初の1時間にやること</div><div class="rd">やってしまった後にまずすべきなのは、履歴の削除ではありません。順番を間違えると、後から何も説明できなくなります。</div></a>
+  <a href="/articles/kojin-joho-hogoho-seisei-ai.html"><div class="rt">顧客情報を生成AIに入れると、個人情報保護法上どうなるか</div><div class="rd">入力した瞬間に即違法、という話ではありません。何が問題になるのか、どこで線が引かれるのかを条文に沿って整理します。</div></a>
+  <a href="/articles/ai-riyo-log-kanshi.html"><div class="rt">生成AIの利用ログを、どこまで取るべきか</div><div class="rd">監視を強めるほど把握できる範囲は狭くなります。直感に反しますが、中庸が一番情報を得られる。</div></a>
+</div>
+</main>
+<footer>
+  <div class="flogo"><span>AI</span>SecurityLab</div>
+  <div class="flinks">
+    <a href="https://ai-security-lab.com/">トップ</a>
+    <a href="/articles/">記事一覧</a>
+    <a href="https://ai-security-lab.com/tokusho.html">特定商取引法に基づく表記</a>
+    <a href="mailto:info@laughrally.tech">お問い合わせ</a>
+  </div>
+  <div class="fcopy">&copy; 2026 LaughRally LLC. All rights reserved.</div>
+</footer>
+<script>(function(){if(document.documentElement.getAttribute('data-pre')==='dark'){document.body.classList.add('dark');var b=document.getElementById('dt');if(b)b.textContent='\u{1F319}';}})();function tg(){var d=document.body.classList.toggle('dark');document.getElementById('dt').textContent=d?'\u{1F319}':'\u2600\uFE0F';try{localStorage.setItem('theme',d?'dark':'light');}catch(e){}}</script>
+</body>
+</html>
