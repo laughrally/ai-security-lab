@@ -437,6 +437,11 @@
   #sb-user{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:11px;color:var(--text3)}
   #sb-user span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #sb-user button{flex-shrink:0;background:none;border:1px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text2);cursor:pointer;min-height:32px}
+  /* トップページの序章（未ログイン）は途中まで */
+  .lb.lb-collapsed{max-height:1100px;overflow:hidden;position:relative}
+  .lb.lb-collapsed::after{content:'';position:absolute;left:0;right:0;bottom:0;height:160px;background:linear-gradient(to bottom,transparent,var(--bg))}
+  .lb-more{text-align:center;margin:8px 0 28px}
+  .lb-more button{background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
   /* キーボード操作の位置を見えるように */
   :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
   .sb-row:focus-visible,.lrow:focus-visible,.chd:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
@@ -2096,7 +2101,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-1"></div>
           <div class="test-summary" id="test-summary-1"></div>
         </div>
@@ -2132,7 +2137,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-2"></div>
           <div class="test-summary" id="test-summary-2"></div>
         </div>
@@ -2168,7 +2173,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-3"></div>
           <div class="test-summary" id="test-summary-3"></div>
         </div>
@@ -2204,7 +2209,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-4"></div>
           <div class="test-summary" id="test-summary-4"></div>
         </div>
@@ -2240,7 +2245,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-5"></div>
           <div class="test-summary" id="test-summary-5"></div>
         </div>
@@ -2276,7 +2281,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-6"></div>
           <div class="test-summary" id="test-summary-6"></div>
         </div>
@@ -2312,7 +2317,7 @@
             <span class="lmi">📊 全5問・4肢択一</span>
             <span class="lmi">🎯 合格ライン：4問以上</span>
           </div>
-          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます（初回の回答は理解度の記録として保持されます）。</p>
+          <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-7"></div>
           <div class="test-summary" id="test-summary-7"></div>
         </div>
@@ -3098,6 +3103,19 @@
       </button>
       <div id="admin-export-result" style="margin-top:12px;font-size:14px;color:var(--green)"></div>
     </div>
+    <!-- 管理者の二段階認証（2026-11-22）。登録すると、管理者の操作は認証アプリのコードを入れたログインのときだけ通る -->
+    <div id="admin-mfa" style="background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:16px">
+      <div style="font-weight:700;margin-bottom:8px">🔐 管理者の二段階認証（認証アプリ）</div>
+      <div id="admin-mfa-status" style="font-size:14px;color:var(--text2);line-height:1.8">確認中…</div>
+      <div id="admin-mfa-enroll" style="display:none;margin-top:14px">
+        <p style="font-size:13.5px;color:var(--text2);line-height:1.8;margin:0 0 10px">Google Authenticator・Microsoft Authenticator・1Password などで下の QR コードを読み取り、表示された6桁のコードを入れてください。</p>
+        <img id="admin-mfa-qr" alt="二段階認証の登録用 QR コード" style="width:180px;height:180px;background:#fff;border-radius:8px;padding:8px">
+        <div style="font-size:12px;color:var(--text3);margin:8px 0">読み取れない場合のキー：<code id="admin-mfa-secret" style="word-break:break-all"></code></div>
+        <input id="admin-mfa-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6桁のコード" style="font-size:16px;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;width:160px;background:var(--bg);color:var(--text)">
+        <button onclick="adminMfaVerify()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;margin-left:8px">登録する</button>
+      </div>
+      <button id="admin-mfa-start" onclick="adminMfaEnroll()" style="display:none;margin-top:12px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer">認証アプリを登録する</button>
+    </div>
 
     <!-- ===== 法人申込の一覧と請求書送信 ===== -->
     <h2 style="font-size:22px;font-weight:700;margin:40px 0 8px">法人申込</h2>
@@ -3334,7 +3352,7 @@
         <strong>受講者は、業務で個人情報や機密を扱う方から</strong>始めるのがおすすめです（経理・営業事務・顧客対応・人事など）。手順が変わる効果が出やすく、助成金をご検討の場合も、職務との関連を説明しやすくなります。対象可否は制度と交付団体の判断によります。<a href="/articles/ai-kenshu-joseikin-2026.html">2026年8月の改正点</a>
       </p>
       <button class="pcbtn bpr" style="max-width:340px;margin:0 auto" onclick="openCorpModal()">法人・複数名でお申し込み</button>
-      <div style="font-size:12px;color:var(--text4);margin-top:14px">アカウントは受講者1名につき1つ発行いたします</div>
+      <div style="font-size:12px;color:var(--text4);margin-top:14px">アカウントは受講者1名につき1つ発行いたします。ご担当者さまには、受講者全員の進捗（レッスン・章末ワーク・確認テスト・修了証）を一覧と CSV で確認できるアカウントをお渡しします</div>
     </div>
 
 
@@ -3843,6 +3861,7 @@ async function fetchUserPlan(){
     console.warn('プランを取得できませんでした:', error && error.message);
     alert('ご契約プランの情報を読み込めませんでした。通信環境をご確認のうえ、ページを再読み込みしてください。');
   }
+  if(!window._corpLoaded){ window._corpLoaded = true; loadCorpProgress(); }
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
     apiFetch('/api/records', { method: 'GET' })
       .then(r => { window._recSummary = r?.summary || null; currentCertifiedEarlier = !!r?.summary?.certifiedEarlier; updateCompletionUI(); })
@@ -4307,7 +4326,12 @@ window.apiFetch = apiFetch;
  * 初回回答が評価対象として記録される。
  */
 async function doQ(btn, selected, id){
-  if(!currentUser){ openAuthModal(); return; }
+  if(!currentUser){
+    const tq = btn.closest('.tcon');
+    const tid = tq ? tq.id.replace('tab-','') : '';
+    if(FREE_TABS.includes(tid)) return doQGuest(btn, selected, id);
+    openAuthModal(); return;
+  }
 
   const qopts = btn.closest('.qopts');
   const quiz  = btn.closest('.quiz');
@@ -4363,6 +4387,52 @@ async function doQ(btn, selected, id){
     qopts.dataset.sending = '';
   }
 }
+
+// 未ログインで無料公開レッスンの設問に答えたとき（2026-11-22）。答え合わせと解説だけを出し、記録はしない
+async function doQGuest(btn, selected, id){
+  const qopts = btn.closest('.qopts');
+  if(!qopts || qopts.dataset.sending === '1') return;
+  qopts.dataset.sending = '1';
+  try {
+    const tq = btn.closest('.tcon');
+    const tabId = tq ? tq.id.replace('tab-','') : '';
+    const res = await fetch(WORKER_URL + '/api/quiz/answer', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lessonId: tabId, questionId: id, selected }),
+    });
+    const r = await res.json().catch(() => ({}));
+    if(!res.ok) throw new Error(r.error || '通信に失敗しました');
+    const escQ = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    const fb = document.getElementById(id + (r.isCorrect ? '-ok' : '-ng'));
+    const note = '<br><span style="font-size:12px;opacity:.8">※ 未ログインのため記録はされません。ご購入後は回答と受講記録が残ります。</span>';
+    if(fb) fb.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escQ(r.explanation || '') + note;
+    if(r.isCorrect){
+      qopts.querySelectorAll('.qopt').forEach(b => { b.style.pointerEvents = 'none'; });
+      btn.classList.add('ok');
+      document.getElementById(id + '-ok').classList.add('show');
+      document.getElementById(id + '-ng').classList.remove('show');
+    } else {
+      btn.style.pointerEvents = 'none';
+      btn.classList.add('ng');
+      document.getElementById(id + '-ng').classList.add('show');
+    }
+  } catch(e) {
+    alert('答え合わせができませんでした。\n' + (e.message || ''));
+  } finally {
+    qopts.dataset.sending = '';
+  }
+}
+window.doQGuest = doQGuest;
+
+// 章末ワークのページを開き、確認テストの位置まで移動する
+function goChapterTest(ch){
+  window.switchTab('work' + ch);
+  setTimeout(() => {
+    const el = document.getElementById('test-body-' + ch);
+    if(el) el.scrollIntoView({ block:'start', behavior:'smooth' });
+  }, 400);
+}
+window.goChapterTest = goChapterTest;
 
 function unlockCompleteBtn(tabId){
   const btn = document.getElementById('complete-' + tabId);
@@ -4733,7 +4803,144 @@ function applyAdminVisibility(){
   const sec = document.getElementById('admin-dashboard');
   if(!sec) return;
   sec.style.display = isAdminUser() ? 'block' : 'none';
+  if(isAdminUser() && !window._mfaChecked){ window._mfaChecked = true; adminMfaChallengeIfNeeded().then(adminMfaRefresh); }
 }
+// ===== 管理者の二段階認証（2026-11-22） =====
+let _mfaEnrollId = null;
+async function adminMfaRefresh(){
+  const st = document.getElementById('admin-mfa-status');
+  const startBtn = document.getElementById('admin-mfa-start');
+  if(!st || !_supabase || !isAdminUser()) return;
+  try {
+    const { data } = await _supabase.auth.mfa.listFactors();
+    const verified = (data && data.totp || []).filter(f => f.status === 'verified');
+    const { data: aal } = await _supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if(verified.length){
+      st.innerHTML = '✅ 登録済みです。管理者の操作は、ログイン時に認証アプリのコードを入れた場合だけ使えます。' +
+        (aal && aal.currentLevel === 'aal2' ? '<br>（いまのログインはコード入力済みです）' : '<br>⚠️ いまのログインはコード未入力です。管理者の操作を使うには、ページを再読み込みしてコードを入れてください。');
+      if(startBtn) startBtn.style.display = 'none';
+    } else {
+      st.textContent = '未登録です。登録すると、パスワードが漏れても管理者の操作（レッスン本文の投入など）は使えなくなります。';
+      if(startBtn) startBtn.style.display = '';
+    }
+  } catch(e) {
+    st.textContent = '状態を確認できませんでした：' + (e.message || '');
+  }
+}
+async function adminMfaEnroll(){
+  try {
+    const { data, error } = await _supabase.auth.mfa.enroll({ factorType: 'totp', friendlyName: 'ASL admin ' + new Date().toISOString().slice(0,10) });
+    if(error) throw error;
+    _mfaEnrollId = data.id;
+    document.getElementById('admin-mfa-qr').src = data.totp.qr_code;
+    document.getElementById('admin-mfa-secret').textContent = data.totp.secret;
+    document.getElementById('admin-mfa-enroll').style.display = '';
+    document.getElementById('admin-mfa-start').style.display = 'none';
+  } catch(e) { alert('登録を始められませんでした：' + (e.message || '')); }
+}
+async function adminMfaVerify(){
+  const code = (document.getElementById('admin-mfa-code').value || '').trim();
+  if(!/^\d{6}$/.test(code)){ alert('6桁の数字を入れてください'); return; }
+  try {
+    const { error } = await _supabase.auth.mfa.challengeAndVerify({ factorId: _mfaEnrollId, code });
+    if(error) throw error;
+    document.getElementById('admin-mfa-enroll').style.display = 'none';
+    alert('登録しました。次回から、ログイン後に認証アプリのコードを入れてください。');
+    adminMfaRefresh();
+  } catch(e) { alert('コードを確認できませんでした：' + (e.message || '')); }
+}
+// 登録済みの管理者がコード未入力でログインしているときは、コードを求める
+async function adminMfaChallengeIfNeeded(){
+  if(!_supabase || !isAdminUser()) return;
+  try {
+    const { data: aal } = await _supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+    if(!aal || aal.nextLevel !== 'aal2' || aal.currentLevel === 'aal2') return;
+    const { data } = await _supabase.auth.mfa.listFactors();
+    const f = (data && data.totp || []).find(x => x.status === 'verified');
+    if(!f) return;
+    const code = prompt('管理者の操作には、認証アプリの6桁のコードが必要です。コードを入れてください（受講だけなら「キャンセル」で構いません）');
+    if(!code) return;
+    const { error } = await _supabase.auth.mfa.challengeAndVerify({ factorId: f.id, code: code.trim() });
+    if(error) alert('コードを確認できませんでした：' + error.message);
+    adminMfaRefresh();
+  } catch(e) { console.warn('二段階認証の確認に失敗:', e.message); }
+}
+window.adminMfaEnroll = adminMfaEnroll;
+window.adminMfaVerify = adminMfaVerify;
+
+// ===== 法人の担当者：受講者の進捗（2026-11-22） =====
+let _corpApps = null;
+async function loadCorpProgress(){
+  try {
+    const r = await apiFetch('/api/corporate/progress', { method: 'GET' });
+    _corpApps = (r && r.applications) || [];
+  } catch(e) { _corpApps = []; }
+  if(_corpApps.length){
+    try { buildProgressPanel(); } catch(e){}
+    // 担当者専用のアカウント（受講プランなし）なら、ログイン直後に進捗を開く
+    if((currentUserPlan || 'free') === 'free') openCorpProgress();
+  }
+}
+function corpRows(){
+  const rows = [];
+  (_corpApps || []).forEach(a => (a.participants || []).forEach(p => rows.push({ a, p })));
+  return rows;
+}
+function openCorpProgress(){
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const fmt = d => d ? new Date(d).toLocaleDateString('ja-JP') : '—';
+  const hrs = s => s ? (Math.round(s / 360) / 10) + '時間' : '—';
+  let html = '<div style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:8px">// CORPORATE</div>' +
+    '<h2 style="font-size:20px;font-weight:700;margin:0 0 6px">受講者の進捗</h2>' +
+    '<p style="font-size:13px;color:var(--text3);margin:0 0 16px">お申し込みの担当者として登録されているメールアドレスでログインしたときに表示されます。回答の内容は表示しません。</p>';
+  (_corpApps || []).forEach(a => {
+    const statusJa = { invoiced: 'お支払い待ち', paid: 'アカウント発行中', provisioned: '受講中' }[a.status] || a.status;
+    html += `<div style="margin:18px 0 8px;font-weight:700">${esc(a.company)}　<span style="font-weight:400;color:var(--text3);font-size:13px">${esc(a.appNo)} ／ ${esc(a.plan)} ${a.seats}名 ／ ${statusJa}</span></div>` +
+      '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:640px">' +
+      '<tr style="text-align:left;color:var(--text3)"><th style="padding:6px">氏名</th><th>レッスン</th><th>章末ワーク</th><th>確認テスト</th><th>試験</th><th>学習時間</th><th>最終受講</th><th>修了証</th></tr>';
+    (a.participants || []).forEach(p => {
+      const td = v => `<td style="padding:6px;border-top:1px solid var(--border)">${v}</td>`;
+      if(!p.registered){ html += '<tr>' + td(esc(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">アカウント未発行（お支払い確認後に発行されます）</td></tr>`; return; }
+      html += '<tr>' + td(esc(p.name || p.email)) + td(`${p.lessonsDone} / ${a.lessonsTotal}`) +
+        td(a.chapters ? `${p.worksDone} / ${a.chapters}章` : '—') + td(a.chapters ? `${p.testsPassed} / ${a.chapters}章` : '—') +
+        td(a.plan === 'premium' ? (p.examPassed ? '合格' : '未') : '—') + td(hrs(p.totalSeconds)) + td(fmt(p.lastActivity)) +
+        td(p.certificateIssuedAt ? '発行済（' + fmt(p.certificateIssuedAt) + '）' : '—') + '</tr>';
+    });
+    html += '</table></div>';
+  });
+  html += '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button onclick="downloadCorpCsv()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:11px 18px;font-weight:600;cursor:pointer;min-height:44px">📥 CSVをダウンロード</button>' +
+    '<button onclick="closeCorpProgress()" style="background:var(--bg2);color:var(--text2);border:1px solid var(--border2);border-radius:8px;padding:11px 18px;cursor:pointer;min-height:44px">閉じる</button></div>';
+  let ov = document.getElementById('corp-progress-overlay');
+  if(!ov){
+    ov = document.createElement('div');
+    ov.id = 'corp-progress-overlay';
+    ov.setAttribute('role', 'dialog');
+    ov.setAttribute('aria-modal', 'true');
+    ov.style.cssText = 'position:fixed;inset:0;z-index:600;background:rgba(15,23,42,.55);display:flex;align-items:flex-start;justify-content:center;padding:70px 16px 24px;overflow-y:auto';
+    ov.addEventListener('click', e => { if(e.target === ov) closeCorpProgress(); });
+    document.body.appendChild(ov);
+  }
+  ov.innerHTML = '<div style="background:var(--bg);color:var(--text);border-radius:14px;max-width:980px;width:100%;padding:24px">' + html + '</div>';
+  ov.style.display = 'flex';
+}
+function closeCorpProgress(){ const ov = document.getElementById('corp-progress-overlay'); if(ov) ov.style.display = 'none'; }
+function downloadCorpCsv(){
+  const q = v => { let t = String(v == null ? '' : v); if(/^[=+\-@]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; };
+  const lines = [['会社名','申込番号','プラン','氏名','メールアドレス','レッスン完了','レッスン総数','章末ワーク提出章','確認テスト合格章','章数','認定試験','学習時間(秒)','最終受講','修了証発行日'].map(q).join(',')];
+  corpRows().forEach(({a, p}) => lines.push([a.company, a.appNo, a.plan, p.name, p.email, p.registered ? p.lessonsDone : '', a.lessonsTotal,
+    p.registered ? p.worksDone : '', p.registered ? p.testsPassed : '', a.chapters, a.plan === 'premium' ? (p.examPassed ? '合格' : '未') : '',
+    p.registered ? p.totalSeconds : '', p.lastActivity || '', p.certificateIssuedAt || ''].map(q).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ASL_受講者進捗_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+window.openCorpProgress = openCorpProgress;
+window.closeCorpProgress = closeCorpProgress;
+window.downloadCorpCsv = downloadCorpCsv;
+
 window.applyAdminVisibility = applyAdminVisibility;
 
 async function adminExportLogs(){
@@ -5197,6 +5404,8 @@ async function answerTest(qid, idx){
     const d = await r.json();
     if(!r.ok){
       if(box) box.querySelectorAll('.test-opt').forEach(b=>b.disabled = false);
+      // 以前はエラー（回数の上限など）を何も表示しなかった（2026-11-22）
+      alert(d.error || '回答を記録できませんでした。時間をおいてもう一度お試しください。');
       return;
     }
     _testAnswered[qid] = true;
@@ -5209,6 +5418,7 @@ async function answerTest(qid, idx){
     updateTestSummary(ch);
   }catch(e){
     if(box) box.querySelectorAll('.test-opt').forEach(b=>b.disabled = false);
+    alert('回答を送信できませんでした。通信環境をご確認のうえ、もう一度お試しください。');
   }
 }
 
@@ -6299,6 +6509,9 @@ window.goLesson = goLesson;
 function showLearnUI(){
   const w = document.getElementById('learn-wrapper');
   if(w) w.classList.add('show');
+  // トップページ用に畳んだ序章を、学習画面では全文に戻す
+  document.querySelectorAll('.lb.lb-collapsed').forEach(el => el.classList.remove('lb-collapsed'));
+  document.querySelectorAll('.lb-more').forEach(el => el.remove());
   // タブバー非表示
   const tw = document.getElementById('tabs-wrap');
   if(tw) tw.classList.add('hidden');
@@ -6535,6 +6748,13 @@ function buildSideNav(completed){
         <span class="sb-row-num">W${chNo}</span>
         <span class="sb-row-title">章末ワーク：${WORK_CHAPTERS[chNo].goal}</span>
       </div>`;
+      // 確認テストを別の行に（2026-11-22）。以前はワークと同じ1行だけで、テストを見落としやすかった
+      const tpass = !!(_testResultCh[chNo] && _testResultCh[chNo].passed);
+      html += `<div class="sb-row sb-row-work${tpass?' done':''}" tabindex="0" role="button" onclick="goChapterTest(${chNo});closeSbDrawer()">
+        <div class="sb-row-dot"></div>
+        <span class="sb-row-num">T${chNo}</span>
+        <span class="sb-row-title">章末確認テスト（5問）</span>
+      </div>`;
     }
   });
   list.innerHTML = html;
@@ -6630,6 +6850,15 @@ function buildProgressPanel(){
       <span class="sb-row-title">修了証の申請</span>
     </div>`;
   }
+  // 法人の担当者：受講者の進捗
+  if(_corpApps && _corpApps.length){
+    html += `<div class="sb-ch-label" style="margin-top:14px">法人のお申し込み</div>
+    <div class="sb-row" tabindex="0" role="button" onclick="openCorpProgress()">
+      <div class="sb-row-dot"></div>
+      <span class="sb-row-num">👥</span>
+      <span class="sb-row-title">受講者の進捗（担当者用）</span>
+    </div>`;
+  }
   // 受講記録（実績レポート）への導線
   html += `<div class="sb-ch-label" style="margin-top:14px">記録の出力</div>
     <div class="sb-row" onclick="switchTab('records');closeSbDrawer()">
@@ -6714,6 +6943,17 @@ document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); update
 // キーボードで操作できるように（2026-11-22）：クリックで動く div にフォーカスを与え、Enter / Space で押せるようにする
 document.addEventListener('DOMContentLoaded', ()=>{
   document.querySelectorAll('.lrow[onclick], .chd').forEach(el => { el.tabIndex = 0; el.setAttribute('role','button'); });
+});
+// トップページが長すぎる（序章の全文が LP の中にある）ので、未ログインでは途中で畳む（2026-11-22）
+document.addEventListener('DOMContentLoaded', ()=>{
+  const lb = document.querySelector('#tab-intro .lb');
+  if(!lb || document.body.classList.contains('logged-in')) return;
+  lb.classList.add('lb-collapsed');
+  const more = document.createElement('div');
+  more.className = 'lb-more';
+  more.innerHTML = '<button type="button">序章の続きを読む（無料）</button>';
+  more.querySelector('button').addEventListener('click', () => { lb.classList.remove('lb-collapsed'); more.remove(); });
+  lb.after(more);
 });
 document.addEventListener('keydown', (e)=>{
   if(e.key !== 'Enter' && e.key !== ' ') return;
