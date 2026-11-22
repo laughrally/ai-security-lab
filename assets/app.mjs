@@ -31,6 +31,14 @@ function escHtml(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, c => 
 // CSV の1セル：数式として解釈されうる先頭（= + - @ タブ 改行）を無害化し、ダブルクォートで囲む
 function csvCell(v){ let t = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; }
 window.escHtml = escHtml;
+// 端末への保存（localStorage）の読み書き。サイトデータを止めた環境では読むだけで例外になり、
+// 以前はページ全体のスクリプトが止まって、どのボタンも効かなくなった（2026-11-23）
+const store = {
+  get(k, def = null){ try { const v = localStorage.getItem(k); return v == null ? def : v; } catch(e){ return def; } },
+  getJSON(k, def){ try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch(e){ return def; } },
+  set(k, v){ try { localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); } catch(e){} },
+  remove(k){ try { localStorage.removeItem(k); } catch(e){} },
+};
 
 // バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。
 // Supabase のライブラリは自前で配信する（/assets/vendor/supabase-js-2.112.3.js。2026-11-23）。
@@ -152,18 +160,10 @@ document.getElementById('form-overlay').addEventListener('click', function(e){
 function toggleDark(){
   const isDark = document.body.classList.toggle('dark');
   document.getElementById('dark-toggle').textContent = isDark ? '🌙' : '☀️';
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  store.set('theme', isDark ? 'dark' : 'light');
 }
-// 前回の設定を復元
-(function(){
-  const saved = localStorage.getItem('theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme:dark)').matches;
-  if(saved === 'dark' || (!saved && prefersDark)){
-    document.body.classList.add('dark');
-    const btn = document.getElementById('dark-toggle');
-    if(btn) btn.textContent = '🌙';
-  }
-})();
+// 前回の設定は index.html の先頭で本文の描画前に当てている。ここではボタンの表示だけ合わせる
+{ const btn = document.getElementById('dark-toggle'); if(btn && document.body.classList.contains('dark')) btn.textContent = '🌙'; }
 
 /* ============================================================
    ▼ STEP 1: Supabaseの設定値をここに貼り付けてください
@@ -281,7 +281,18 @@ function initSupabase(){
 // この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。
 // 別の人がログインしたら先に消す（2026-11-23）。ログアウトせずにセッションが切れたあと、
 // 次の人の受講済みや学習時間に前の人の分が混ざらないように
-const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab'];
+const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab','asl_lesson_served'];
+// 本文を受け取った時刻の署名（Worker が付ける）。受講済みにするときに送り返し、受講時間の上限に使われる。
+// 最初に受け取ったものを残す（開き直しで時刻が新しくなると、それまでの受講時間が短く数えられるため）
+const SERVED_KEY = 'asl_lesson_served';
+function rememberServed(lessonId, served){
+  if(!served || !served.at || !served.sig) return;
+  const all = store.getJSON(SERVED_KEY, {}) || {};
+  if(all[lessonId] && all[lessonId].at <= served.at) return;
+  all[lessonId] = served;
+  store.set(SERVED_KEY, all);
+}
+function servedFor(lessonId){ return (store.getJSON(SERVED_KEY, {}) || {})[lessonId] || null; }
 function claimLocalData(uid){
   if(!uid) return;
   try {
@@ -315,7 +326,8 @@ async function _fetchUserPlan(){
     currentUserPlan = data.plan ?? 'free';
     currentExamPassed = data.exam_passed ?? false;
   } else {
-    currentUserPlan = currentUserPlan || 'basic';
+    // 読めなかったときは Worker と同じく「プランなし」に倒す（以前は画面だけ Basic 扱いで、本文の取得で弾かれた）
+    currentUserPlan = currentUserPlan || 'free';
     currentExamPassed = false;
     console.warn('プランを取得できませんでした:', error && error.message);
     alert('ご契約プランの情報を読み込めませんでした。通信環境をご確認のうえ、ページを再読み込みしてください。');
@@ -365,7 +377,7 @@ function updateCertificateUI(){
   const formBox   = document.querySelector('.cert-form-box');
   const upgradeBox = document.getElementById('cert-upgrade-notice');
   if(!formBox) return;
-  if(currentUserPlan === 'basic'){
+  if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium'){
     formBox.style.display = 'none';
     if(!upgradeBox){
       const box = document.createElement('div');
@@ -373,7 +385,7 @@ function updateCertificateUI(){
       box.style.cssText = 'background:var(--bg2);border:1.5px solid var(--amber,#f59e0b);border-radius:12px;padding:24px 28px;text-align:center;margin-top:16px;';
       box.innerHTML = '<div style="font-size:22px;margin-bottom:10px">🎓</div>'
         + '<div style="font-weight:600;font-size:15px;margin-bottom:8px">修了証はStandard・Premiumプランの特典です</div>'
-        + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">Basicプランは修了証の発行対象外です。<br>Standard（' + yen(COURSE.prices.standard) + '）以上で修了証PDFを取得できます。</div>'
+        + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">ご契約のプランは修了証の発行対象外です。<br>Standard（' + yen(COURSE.prices.standard) + '）以上で修了証PDFを取得できます。</div>'
         + '<button type="button" class="form-submit" onclick="showPlans()" style="width:auto;padding:10px 28px">料金プランを見る →</button>';
       formBox.parentNode.insertBefore(box, formBox);
     }
@@ -455,12 +467,22 @@ function lockPaidTabs(lock){
 function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
     const onclick = el.getAttribute('onclick') || '';
-    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/);
+    // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
+    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/goChapterTest\((\d+)\)/);
+    // キーボード・読み上げで使えるように（2026-11-23。認定試験・修了証・レポートの行に無かった）
+    if(el.classList.contains('sb-row') && onclick){
+      if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
+      if(!el.hasAttribute('role')) el.setAttribute('role', 'button');
+      if(el.classList.contains('active')) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
+      const t = el.querySelector('.sb-row-title');
+      if(t && el.classList.contains('done') && !t.querySelector('.sr-only')) t.insertAdjacentHTML('beforeend', '<span class="sr-only">（受講済み）</span>');
+    }
     if(!m) return;
-    const r = currentUser ? tabDenyReason(m[1]) : null;
+    const id = /^\d+$/.test(m[1]) ? 'work' + m[1] : m[1];
+    const r = currentUser ? tabDenyReason(id) : null;
     const locked = !!(r && r !== 'login');
     el.classList.toggle('plan-locked', locked);
-    el.style.opacity = locked ? '0.45' : '';
+    el.style.opacity = '';
     el.style.pointerEvents = '';
     el.title = locked ? r.msg : '';
     if(locked) el.setAttribute('aria-disabled', 'true'); else el.removeAttribute('aria-disabled');
@@ -575,8 +597,9 @@ async function signOut(){
 }
 
 /* ===== タブ切り替え（認証チェック付き） ===== */
-function switchTab(name){
-  // 開けるかどうかは window.switchTab（下）が canAccessTab で判定済み。ここでは表示だけを切り替える
+// 未ログインのときのタブ表示の切り替え（トップページのタブ）。開けるかどうかは window.switchTab が判定済み。
+// 以前は同じ switchTab という名前で、上書き版と2つあった（2026-11-23 に名前を分けた）
+function showTabGuest(name){
   document.querySelectorAll('.tab').forEach(t=>{
     const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
     if(m) t.classList.toggle('active', m[1]===name);
@@ -634,7 +657,7 @@ const IDLE_LESSON_MS = 3 * 60 * 1000;      // レッスンは読むので3分
 const IDLE_WORK_MS   = 5 * 60 * 1000;      // ワークは書くので5分（考える時間を削らない）
 const RESYNC_STEP_S  = 60;                 // 完了済みレッスンは60秒たまるごとに送り直す
 const MAX_TICK_S = 30;                     // 1回の加算上限。スリープ復帰の跳ねを抑える
-const MAX_TOTAL_S = 86400;                 // Worker 側の範囲チェックに合わせる
+const MAX_TOTAL_S = 3 * 3600;              // 1レッスンの上限（Worker の LESSON_MAX_SECONDS と同じ）
 const TRACK_RE = /^(lesson\d+|work\d+)$/;
 
 let activeItem  = null;   // いま表示している lessonN / workN（それ以外は null）
@@ -665,6 +688,7 @@ function syncStudiedAgain(itemId, secs){
     method: 'POST',
     body: JSON.stringify({
       lessonId: itemId,
+      served: servedFor(itemId),
       startedAt: loadStarts()[itemId] || null,
       durationSeconds: secs,
     }),
@@ -778,9 +802,8 @@ async function doQ(btn, selected, id){
 
     // 解説はレッスン本文に無く、回答した後にサーバーから返ってくる。
     // 先読みされないよう、受け取ってから流し込む。
-    const escQ = escHtml;
     const fbEl = document.getElementById(id + (r.isCorrect ? '-ok' : '-ng'));
-    if(fbEl && r.explanation) fbEl.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escQ(r.explanation);
+    if(fbEl && r.explanation) fbEl.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escHtml(r.explanation);
 
     if(r.isCorrect){
       qopts.querySelectorAll('.qopt').forEach(b => { b.style.pointerEvents = 'none'; });
@@ -801,14 +824,30 @@ async function doQ(btn, selected, id){
       btn.style.pointerEvents = 'none';
       btn.classList.add('ng');
       document.getElementById(id+'-ng').classList.add('show');
+      if(r.attemptsLeft === 0) quizAttemptsUsedUp(qopts, id, tabId);
     }
   } catch(e) {
     btn.style.opacity = '';
     btn.textContent = prevText;
+    if(e.status === 429){ quizAttemptsUsedUp(qopts, id, tabId); return; }
     alert('回答を記録できませんでした。\n' + (e.message || '') + '\n通信環境をご確認のうえ、もう一度お試しください。');
   } finally {
     qopts.dataset.sending = '';
   }
+}
+
+// 理解度チェックは1問3回まで（Worker の QUIZ_MAX_ATTEMPTS）。使い切ったら選択肢を閉じ、受講済みにできるようにする
+function quizAttemptsUsedUp(qopts, id, tabId){
+  qopts.querySelectorAll('.qopt').forEach(b => { b.style.pointerEvents = 'none'; b.setAttribute('aria-disabled', 'true'); });
+  const ng = document.getElementById(id + '-ng');
+  if(ng){
+    ng.classList.add('show');
+    const note = document.createElement('div');
+    note.className = 'q-used-up';
+    note.textContent = '回答できる回数（3回）を使い切りました。レッスンを読み直してから、受講済みにしてください（正誤は受講実績レポートに記録されます）。';
+    if(!ng.querySelector('.q-used-up')) ng.appendChild(note);
+  }
+  unlockCompleteBtn(tabId);
 }
 
 // 未ログインで無料公開レッスンの設問に答えたとき（2026-11-22）。答え合わせと解説だけを出し、記録はしない
@@ -825,10 +864,9 @@ async function doQGuest(btn, selected, id){
     });
     const r = await res.json().catch(() => ({}));
     if(!res.ok) throw new Error(r.error || '通信に失敗しました');
-    const escQ = escHtml;
     const fb = document.getElementById(id + (r.isCorrect ? '-ok' : '-ng'));
     const note = '<br><span style="font-size:12px;opacity:.8">※ 未ログインのため記録はされません。ご購入後は回答と受講記録が残ります。</span>';
-    if(fb) fb.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escQ(r.explanation || '') + note;
+    if(fb) fb.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escHtml(r.explanation || '') + note;
     if(r.isCorrect){
       qopts.querySelectorAll('.qopt').forEach(b => { b.style.pointerEvents = 'none'; });
       btn.classList.add('ok');
@@ -913,7 +951,6 @@ lockPaidTabs(true);
 initSupabase();
 
 /* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
-window.switchTab = switchTab;
 
 // ---- プランによるアクセス判定（全ての遷移経路で必ず通す） ----
 // 以前は上書き版 switchTab が showActiveLesson を直接呼んでおり、
@@ -925,7 +962,7 @@ window.switchTab = switchTab;
 function tabDenyReason(name){
   if(FREE_TABS.includes(name)) return null;
   if(!currentUser) return 'login';
-  const plan = currentUserPlan || 'basic';
+  const plan = currentUserPlan || 'free';
   const paid = plan === 'basic' || plan === 'standard' || plan === 'premium';
   if(name === 'records') return null;
   if(name === 'exam') return plan === 'premium' ? null : { msg: '認定試験は Premium プランで受験できます。', upgrade: true };
@@ -942,13 +979,14 @@ function canAccessTab(name){
   const r = tabDenyReason(name);
   if(!r) return true;
   if(r === 'login'){ openAuthModal(); return false; }
-  if(r.upgrade && confirm(r.msg + '\n\n料金プランのご案内を開きますか？')) showPlans();
-  else if(!r.upgrade) alert(r.msg);
+  // ブラウザの確認ダイアログではなく、画面内のプラン案内に理由を添えて出す（2026-11-23）
+  if(r.upgrade) showPlans(r.msg);
+  else alert(r.msg);
   return false;
 }
 // 料金プランの案内。ログイン中は学習画面がトップページの料金欄を隠しているので、
 // 今のプランより上のプランだけを小さな画面に出し、そこから申込フォームを開けるようにする（2026-11-23）
-function showPlans(){
+function showPlans(reason){
   if(!currentUser){ const p = document.getElementById('plans'); if(p) p.scrollIntoView({ behavior: 'smooth' }); return; }
   closePlanPick();
   const order = ['basic', 'standard', 'premium'];
@@ -961,7 +999,8 @@ function showPlans(){
   ov.id = 'plan-pick-overlay';
   ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'pp-title');
   ov.innerHTML = `<div class="pp-box"><button type="button" class="pp-close" onclick="closePlanPick()" aria-label="閉じる">×</button>
-    <div class="pp-title" id="pp-title">受講範囲を広げる</div>
+    <div class="pp-title" id="pp-title">${reason ? '🔒 ' + escHtml(reason) : '受講範囲を広げる'}</div>
+    ${reason ? '<p class="pp-lead">上のプランにお申し込みいただくと受講できます。</p>' : ''}
     ${rows || '<p class="pp-desc">いまのプランで全レッスンを受講できます。</p>'}
     <p class="pp-note">お支払いは決済画面（Stripe）で行います。ご不明点はお問い合わせください。</p></div>`;
   ov.addEventListener('click', e => { if(e.target === ov) closePlanPick(); });
@@ -1360,7 +1399,6 @@ function corpRows(){
   return rows;
 }
 function openCorpProgress(){
-  const esc = escHtml;
   const fmt = d => d ? new Date(d).toLocaleDateString('ja-JP') : '—';
   const hrs = s => s ? (Math.round(s / 360) / 10) + '時間' : '—';
   let html = '<div style="font-family:IBM Plex Mono,monospace;font-size:11px;color:var(--red);letter-spacing:.15em;margin-bottom:8px">// CORPORATE</div>' +
@@ -1368,13 +1406,15 @@ function openCorpProgress(){
     '<p style="font-size:13px;color:var(--text3);margin:0 0 16px">お申し込みの担当者として登録されているメールアドレスでログインしたときに表示されます。回答の内容は表示しません。</p>';
   (_corpApps || []).forEach(a => {
     const statusJa = { invoiced: 'お支払い待ち', paid: 'アカウント発行中', provisioned: '受講中' }[a.status] || a.status;
-    html += `<div style="margin:18px 0 8px;font-weight:700">${esc(a.company)}　<span style="font-weight:400;color:var(--text3);font-size:13px">${esc(a.appNo)} ／ ${esc(a.plan)} ${a.seats}名 ／ ${statusJa}</span></div>` +
+    html += `<div style="margin:18px 0 8px;font-weight:700">${escHtml(a.company)}　<span style="font-weight:400;color:var(--text3);font-size:13px">${escHtml(a.appNo)} ／ ${escHtml(a.plan)} ${a.seats}名 ／ ${statusJa}</span></div>` +
       '<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:13px;min-width:640px">' +
       '<tr style="text-align:left;color:var(--text3)"><th style="padding:6px">氏名</th><th>レッスン</th><th>章末ワーク</th><th>確認テスト</th><th>試験</th><th>学習時間</th><th>最終受講</th><th>修了証</th></tr>';
     (a.participants || []).forEach(p => {
       const td = v => `<td style="padding:6px;border-top:1px solid var(--border)">${v}</td>`;
-      if(!p.registered){ html += '<tr>' + td(esc(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">アカウント未発行（お支払い確認後に発行されます）</td></tr>`; return; }
-      html += '<tr>' + td(esc(p.name || p.email)) + td(`${p.lessonsDone} / ${a.lessonsTotal}`) +
+      // 申込より前からご本人が持っていたアカウントは、Worker が進捗を返さない（ご本人の同意が要るため。2026-11-23）
+      if(p.existingAccount){ html += '<tr>' + td(escHtml(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">お申込み前からのアカウントのため、進捗は表示しません（表示にはご本人の同意が必要です。運営までご連絡ください）</td></tr>`; return; }
+      if(!p.registered){ html += '<tr>' + td(escHtml(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">アカウント未発行（お支払い確認後に発行されます）</td></tr>`; return; }
+      html += '<tr>' + td(escHtml(p.name || p.email)) + td(`${p.lessonsDone} / ${a.lessonsTotal}`) +
         td(a.chapters ? `${p.worksDone} / ${a.chapters}章` : '—') + td(a.chapters ? `${p.testsPassed} / ${a.chapters}章` : '—') +
         td(a.plan === 'premium' ? (p.examPassed ? '合格' : '未') : '—') + td(hrs(p.totalSeconds)) + td(fmt(p.lastActivity)) +
         td(p.certificateIssuedAt ? '発行済（' + fmt(p.certificateIssuedAt) + '）' : '—') + '</tr>';
@@ -1400,7 +1440,7 @@ function closeCorpProgress(){ const ov = document.getElementById('corp-progress-
 function downloadCorpCsv(){
   const q = csvCell;
   const lines = [['会社名','申込番号','プラン','氏名','メールアドレス','レッスン完了','レッスン総数','章末ワーク提出章','確認テスト合格章','章数','認定試験','学習時間(秒)','最終受講','修了証発行日'].map(q).join(',')];
-  corpRows().forEach(({a, p}) => lines.push([a.company, a.appNo, a.plan, p.name, p.email, p.registered ? p.lessonsDone : '', a.lessonsTotal,
+  corpRows().forEach(({a, p}) => lines.push([a.company, a.appNo, a.plan, p.name, p.email, p.registered && !p.existingAccount ? p.lessonsDone : '', a.lessonsTotal,
     p.registered ? p.worksDone : '', p.registered ? p.testsPassed : '', a.chapters, a.plan === 'premium' ? (p.examPassed ? '合格' : '未') : '',
     p.registered ? p.totalSeconds : '', p.lastActivity || '', p.certificateIssuedAt || ''].map(q).join(',')));
   const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
@@ -1851,8 +1891,7 @@ function lockTestQuestion(qid, selected, isCorrect, explanation){
   });
   if(exp){
     exp.className = 'test-exp is-open ' + (isCorrect ? 'ok' : 'ng');
-    const esc = escHtml;
-    exp.innerHTML = `<div class="test-verdict">${isCorrect ? '正解' : '不正解'}</div><div>${esc(explanation)}</div>`;
+    exp.innerHTML = `<div class="test-verdict">${isCorrect ? '正解' : '不正解'}</div><div>${escHtml(explanation)}</div>`;
   }
 }
 
@@ -1931,6 +1970,12 @@ function updateTestSummary(ch){
 }
 
 // 間違えた設問だけを未回答に戻し、参照レッスンへの導線を出す
+// 章のレッスンへのリンク（番号と題名）。以前は「章の最初のレッスンへ」の1つだけだった（2026-11-23）
+function chapterLessonLinks(ch){
+  const c = COURSE.chapters.find(x => x.no === ch);
+  if(!c) return '';
+  return c.lessons.map(id => `<button type="button" class="work-nav-btn" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
+}
 function retryTestChapter(ch){
   const r = _testResultCh[ch] || {};
   // 回答回数を使い切った設問は戻さない（戻しても送信時に 429 で弾かれる。2026-11-23）
@@ -1953,8 +1998,8 @@ function retryTestChapter(ch){
   const el = document.getElementById('test-summary-'+ch);
   if(el){
     el.innerHTML = `<div class="test-retry-box">
-      <p class="test-retry-msg">学び直しモードです。該当レッスンを確認してから、下の問題に再挑戦してください。</p>
-      <button class="work-nav-btn" onclick="switchTab('lesson${CH_FIRST_LESSON[ch]}')">第${ch}章の最初のレッスンへ</button>
+      <p class="test-retry-msg">学び直しモードです。間違えた ${wrong.length} 問の範囲を、第${ch}章のレッスンで確かめてから再挑戦してください。</p>
+      <div class="test-retry-links">${chapterLessonLinks(ch)}</div>
     </div>`;
   }
   const first = document.getElementById('tq-'+wrong[0]);
@@ -1970,7 +2015,6 @@ window.loadTestChapter = loadTestChapter;
 
 
 // switchTab後にサイドバー・学習UIを更新
-const _origSwitchTab = switchTab;
 window.switchTab = function(name){
   if(!canAccessTab(name)) return;
   if(window._aslTestFocus && name !== 'work' + window._aslTestFocus) window._aslTestFocus = 0;
@@ -1984,7 +2028,7 @@ window.switchTab = function(name){
     const lc = document.getElementById('learn-content');
     if(lc) lc.scrollTop = 0;
   } else {
-    _origSwitchTab(name);
+    showTabGuest(name);
   }
   // 章末ワークタブなら内容を読み込む
   if(/^work\d+$/.test(name)){
@@ -2003,17 +2047,11 @@ window.updatePassword      = updatePassword;
 window.submitForm      = submitForm;
 
 /* ===== 受講済み管理・修了証 ===== */
-// 受講順（章の並び）。2026-11 に内部ID lesson28〜lesson36 を追加。内部IDは追加順なので、並びはID順ではない。
-//   第5章：lesson16, 17, 28〜32 ／ 第6章：lesson18〜22, 33, 34 ／ 第7章：lesson23〜27, 35, 36
-//   画面に出す番号はこの並びの順（lessonNo()：1〜36）。本文の番号は asl-worker/articles-src/renumber.py で付け替える
-// Worker の LESSON_ORDER と同じ並びにすること（プランの範囲はこの先頭からの件数で決まる）
-
-// ---- プラン別の受講範囲（進捗の分母は必ずここから取る） ----
-// Basic=序章＋第1〜5章（22本） / Standard=第1〜6章（29本） / Premium=第1〜7章（36本）
-// 画面に出すレッスン番号は受講順（1〜36）。内部ID（lesson28 等）とは別。renumbered-2026-11
+// 受講順・章・プランの範囲は course.json が正本（ファイル先頭の COURSE ブロック）。ここに件数や並びを書かないこと。
+// 内部ID（lesson28 など）は追加順で、画面の番号（lessonNo()）は受講順。Worker の LESSON_ORDER も同じ正本から作る。
 function lessonNo(id){ const i = ALL_LESSONS_LIST.indexOf(id); return i < 0 ? '' : String(i + 1).padStart(2,'0'); }
 function getPlanLessons(){
-  const plan = currentUserPlan || 'basic';
+  const plan = currentUserPlan || 'free';
   // 未知のプラン（無料登録のみの 'free' など）は0本。Worker と同じく拒否側に倒す（2026-11-22）
   return ALL_LESSONS_LIST.slice(0, PLAN_LESSON_COUNT[plan] || 0);
 }
@@ -2026,7 +2064,7 @@ function loadCompleted(){
     return arr;
   }catch(e){ return []; }
 }
-function saveCompleted(arr){ localStorage.setItem('asl_completed', JSON.stringify(arr)); }
+function saveCompleted(arr){ store.set('asl_completed', arr); }
 
 function markComplete(tabId){
   if(!currentUser){ openAuthModal(); return; }
@@ -2044,6 +2082,7 @@ function markComplete(tabId){
       method: 'POST',
       body: JSON.stringify({
         lessonId: tabId,
+        served: servedFor(tabId),
         startedAt: startIso,
         durationSeconds: secs,
       }),
@@ -2071,8 +2110,12 @@ function updateCompletionUI(){
       else { btn.classList.remove('done'); }
     }
     if(note){
-      const pl = getPlanLessons();
-      note.innerHTML = '<span>' + pl.filter(x => completed.includes(x)).length + '</span> / ' + pl.length + ' レッスン完了';
+      // 理解度チェックが未了で押せないあいだは、その理由を残す（2026-11-23。以前は件数で上書きして理由が消えた）
+      if(btn && btn.classList.contains('quiz-locked')) note.textContent = '理解度チェックに正解すると受講済みにできます';
+      else {
+        const pl = getPlanLessons();
+        note.innerHTML = '<span>' + pl.filter(x => completed.includes(x)).length + '</span> / ' + pl.length + ' レッスン完了';
+      }
     }
   });
   const fill = document.getElementById('cert-bar-fill');
@@ -2080,7 +2123,7 @@ function updateCompletionUI(){
   const notice = document.getElementById('cert-locked-notice');
   const submitBtn = document.getElementById('cert-submit-btn');
   // プランごとの受講範囲（PLAN_LESSON_COUNT / PLAN_RANGE_LABEL）
-  const plan = currentUserPlan || 'basic';
+  const plan = currentUserPlan || 'free';
   const planLessons = getPlanLessons();
   const planDone = planLessons.filter(id => completed.includes(id));
   const planTotal = planLessons.length;
@@ -2102,8 +2145,9 @@ function updateCompletionUI(){
   if(navProg)  navProg.textContent = '📊 進捗 ' + planDone.length + '/' + planTotal;
   if(progFill) progFill.style.width = pct + '%';
 
-  // Basicは修了証の発行対象外
-  if(plan === 'basic'){
+  // 修了証は Standard・Premium だけ（Basic と無料登録は対象外。無料登録は受講対象が0本で
+  // 「全部受講済み」と判定され、申請ボタンが押せる表示になっていた。2026-11-23）
+  if(plan !== 'standard' && plan !== 'premium'){
     if(notice) notice.style.display = 'none';
     if(submitBtn){ submitBtn.disabled = true; submitBtn.style.opacity = '.4'; }
     return;
@@ -2130,13 +2174,12 @@ function updateCompletionUI(){
   const canApply = plan === 'premium' ? (allDone && examPassed) : allDone;
   const certDesc = document.querySelector('.cert-desc');
   if(certDesc){
-    const count = planLessons.length;
-    if(plan === 'premium'){
-      certDesc.innerHTML = `全${count}レッスン受講済み ＋ 認定試験合格で修了証・合格証を申請できます。<br>申請後、修了証PDFをメールでお送りします。`;
-    } else {
-      certDesc.innerHTML = `全${count}レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、修了証PDFをメールでお送りします。`;
-    }
+    // 説明は修了の条件（下の一覧）と同じ内容にする（2026-11-23。以前は「全レッスン受講で申請できる」とだけ書いていた）
+    const chs = COURSE.workChapters[plan] || 0;
+    const conds = [`全${planLessons.length}レッスンの受講`].concat(chs ? [`章末ワークの提出（全${chs}章）`, `章末確認テストの合格（全${chs}章）`] : []).concat(plan === 'premium' ? ['認定試験の合格'] : []);
+    certDesc.innerHTML = escHtml(conds.join('・')) + 'で、修了証を申請できます。<br>申請後、修了証PDFをメールでお送りします。';
   }
+
   // まだ満たしていない最初の条件を示す（2026-11-23。以前はワークやテストが足りなくても「全レッスンを…」と出た）
   let noticeText = `⚠️ ${PLAN_RANGE_LABEL[plan] || ''}の全${planTotal}レッスンを受講済みにしてから申請してください（いま ${planDone.length} / ${planTotal}）。`;
   const _sm = window._recSummary;
@@ -2163,66 +2206,66 @@ function updateCompletionUI(){
 // クライアントは選択した「元の選択肢番号」を id とともに送り、採点結果を受け取る。
 // id は Worker 側のキーと1対1で対応する。並べ替えても id を変えないこと。
 const EXAM_QUESTIONS = [
-  {id:"e1", lesson:"L06", q:"Claudeの利用規約上、企業利用時にデータ学習を無効化するために必要なものはどれか？", o:["API利用またはTeamsプランへの加入","アカウント設定画面での学習オフの切り替え","利用開始時に日本語での利用目的の申請","無料プランでも初回ログイン時に自動適用"]},
-  {id:"e2", lesson:"L01", q:"「ChatGPT Business」（旧 Team）プランでデータ学習がオフになる条件として正しいものはどれか？", o:["管理者の設定が必要","毎回の手動解除が必要","自動的にオフになる","日本国内では常にオフ"]},
-  {id:"e3", lesson:"L33", q:"医療・介護分野でAIを活用する際に最も注意すべき法規制はどれか？", o:["個人情報保護法（要配慮個人情報の取り扱い）","著作権法（学習データの利用と権利処理）","景品表示法（サービス広告の表示規制）","電気通信事業法（通信の秘密の保護義務）"]},
-  {id:"e4", lesson:"L04", q:"クラウドAIとオンプレAIの最大の違いは何か？", o:["応答が返るまでの処理速度","利用画面の操作性の設計","障害時の問い合わせ体制","データの保管・管理場所"]},
-  {id:"e5", lesson:"L24", q:"プロンプトインジェクション攻撃とはどのような攻撃か？", o:["悪意のある指示をAIに混入させてAIの行動を乗っ取る","学習済みモデルの重みを外部から複製して持ち出す","外部のAIサーバーに物理的に侵入して機器を奪い取る","AIに大量の要求を送り応答できない状態に追い込む"]},
-  {id:"e6", lesson:"L31", q:"プロンプトエンジニアリングにおいて「Few-shot」とはどのような手法か？", o:["音声で読み上げてAIに指示を伝える手法","指示文をできるだけ短く区切って渡す手法","少人数のチームでAIを共同利用する手法","具体的な例を複数示してから指示する手法"]},
-  {id:"e7", lesson:"L24", q:"企業がAIエージェントを導入する際、プロンプトインジェクション対策として最も重要なものはどれか？", o:["社内のすべての業務においてAIエージェントの利用を全面的に禁止する","外部コンテンツをそのままAIに処理させない・サンドボックス化","エージェントの応答速度を落として処理の負荷を下げる","エージェントを利用できる従業員の人数を上限まで絞る"]},
-  {id:"e8", lesson:"L07", q:"AIに入力してはいけない情報として「個人情報」に該当するものはどれか？", o:["公開済みのプレスリリース","顧客の氏名・住所・電話番号","業界全体の市場統計データ","製品の一般的な仕様説明"]},
-  {id:"e9", lesson:"L25", q:"ディープフェイクを使った詐欺の代表的な事例はどれか？", o:["AIが本人確認を通過して口座から自動で送金した事例","音声合成AIが電子契約書に本人の署名を代行した事例","偽の経営者映像でCFOに送金を指示した香港の事件","AIが偽の身分証を生成して銀行口座を開設した事例"]},
-  {id:"e10", lesson:"L08", q:"不動産業でAIを使う際に特に注意すべき情報として正しいものはどれか？", o:["公開中の物件の間取り図","建物の築年数と構造の種別","地域ごとの相場価格の推移","顧客の収入情報や家族構成"]},
-  {id:"e11", lesson:"L34", q:"AIエージェント時代に企業が備えるべきセキュリティ対策として最も重要なものはどれか？", o:["判断を伴う業務をすべてエージェントに移管する","エージェントが自律的に守るため対策は不要になる","業務でのエージェント利用を全面的に取りやめる","エージェントの行動ログを記録し権限を最小化する"]},
-  {id:"e12", lesson:"L32", q:"RAG（Retrieval-Augmented Generation）の主なリスクはどれか？", o:["参照する文書が増えるほど回答が短く要約されてしまう","検索対象の社内データベースへの不正アクセスが発生しうる","検索の仕組みが日本語の社内文書に対応していない","検索対象にした社内文書をAIが自動的に学習して記憶してしまう"]},
-  {id:"e13", lesson:"L11", q:"ハルシネーションとは何か？", o:["AIが人間の感情を模倣して共感的に応答する現象","AIが学習時点より古いデータだけを参照する現象","AIが指示より長い文章を繰り返し生成する現象","AIが事実に基づかない情報を自信を持って出力すること"]},
-  {id:"e14", lesson:"L34", q:"MCP（Model Context Protocol）とは何か？", o:["AIとの通信内容を暗号化して第三者から保護するための標準規格","AIが利用者の意図と感情を推定するための標準規格","AIと外部ツール・データソースを接続するための標準規格","AIの推論にかかる計算量を削減するための技術"]},
-  {id:"e15", lesson:"L15", q:"AIセキュリティ教育を効果的に行うための方法として最も適切なものはどれか？", o:["具体的な事例を使った定期的な研修","年1回の全社メールによる通知","外部の専門家に対応をすべて委託する","条文をそのまま読み合わせる勉強会"]},
-  {id:"e16", lesson:"L09", q:"生成AIに個人情報を入力する行為が個人情報保護法上問題になり得るケースはどれか？", o:["匿名化して個人を特定できない統計値を入力する","公開済みの情報を事実確認のために入力する","本人の同意なく第三者の個人情報を入力する","自分自身の連絡先を業務の下書きに入力する"]},
-  {id:"e17", lesson:"L16", q:"飲食業でAIを活用する際に注意すべき情報漏洩リスクとして最も適切なものはどれか？", o:["AIの提案による食材の発注数量の誤り","AIが厨房機器を操作して調理を始める","自店の定番レシピが検索結果に出ること","アレルギー情報など顧客の個人情報の漏洩"]},
-  {id:"e18", lesson:"L27", q:"漏洩インシデント発生後に「やってはいけないこと」はどれか？", o:["事実を隠蔽して様子を見る","関係者に事実を報告する","ログなどの証拠を保全する","使用していたAIツールを停止する"]},
-  {id:"e19", lesson:"L32", q:"社内データでファインチューニングを行う前に確認すべき最重要事項はどれか？", o:["学習の実行にかかる費用と所要時間の見積もり","利用者に提示する画面の設計と操作手順の整理","学習データに個人情報・機密情報が含まれていないか","利用するAIモデルのバージョンと更新の頻度"]},
-  {id:"e20", lesson:"L02", q:"ChatGPTで「チャット履歴とトレーニング」をオフにした場合の正しい説明はどれか？", o:["30日後に会話データが削除される","過去の会話履歴が一切残らない","他のユーザーと会話の内容が共有される","入力データがOpenAIに送信されなくなる"]},
-  {id:"e21", lesson:"L10", q:"AIが生成した画像を商業利用する際に注意すべき著作権上のリスクはどれか？", o:["生成された画像の著作権は自動的にAI開発事業者へ帰属する","生成された画像の商業利用は法令によって一律に禁止されている","学習データに含まれる既存著作物に酷似した画像が生成されるリスク","AI自身が著作者として登録され権利を主張できることになる"]},
-  {id:"e22", lesson:"L09", q:"個人情報保護法における「匿名加工情報」の説明として正しいものはどれか？", o:["医療分野で取り扱う情報だけを指す区分のこと","氏名や連絡先によって個人を特定できる情報","社内規程によって社外秘に分類されている情報","特定の個人を識別できないよう加工された情報"]},
-  {id:"e23", lesson:"L26", q:"業務自動化にAIエージェントを使う前に確認すべき最重要事項はどれか？", o:["利用するプランが無料か有料かどうかの確認","利用するAIが最新のモデルであるかどうかの確認","エージェントがアクセスできる範囲と権限の最小化","操作画面が現場の担当者にとって使いやすいか"]},
-  {id:"e24", lesson:"L31", q:"セキュリティ観点でプロンプト設計時に注意すべき点はどれか？", o:["機密情報や個人情報をプロンプトに含めない","指示は日本語ではなく必ず英語で書くこと","同じ指示を避け毎回異なる文面を使うこと","指示文をできるだけ長く詳細に書き込むこと"]},
-  {id:"e25", lesson:"L12", q:"AI利用ガイドラインを策定した後に行うべき重要なアクションはどれか？", o:["自社サイトで外部に全文を公開すること","法務部だけが内容を管理して保管すること","定期的な見直しと全社員への周知・教育","策定した時点で完了として保管しておくこと"]},
-  {id:"e26", lesson:"L26", q:"AIエージェントが自律的に動作することの主なリスクはどれか？", o:["担当者の業務量が減り管理が緩むこと","意図しないデータ送信・操作が発生する","処理の待ち時間が業務全体で伸びること","利用料金が想定より下がりすぎること"]},
-  {id:"e27", lesson:"L07", q:"「社外秘」に分類すべき情報として最も適切なものはどれか？", o:["公開している営業時間","登記済みの代表者氏名","未発表の新製品情報","登記されている本店所在地"]},
-  {id:"e28", lesson:"L33", q:"法律・税務士業でAIを使う場合、倫理的に特に問題になりうるケースはどれか？", o:["公開されている判例をAIを使って検索する","依頼人との相談内容を無断でAIに入力する","公開済み文書の誤字脱字をAIで修正する","社内会議の議事録作成をAIに補助させる"]},
-  {id:"e29", lesson:"L14", q:"中小企業がまず取り組むべき最低限のAIセキュリティ対策として正しいものはどれか？", o:["専任のAI担当者を新たに雇用すること","入力禁止情報のルール化と全社周知","業務でのAI利用を一切禁止すること","高額なセキュリティ製品を先に導入すること"]},
-  {id:"e30", lesson:"L04", q:"中小企業がオンプレAIを導入する際の主なデメリットとして正しいものはどれか？", o:["初期コストと保守コストが高い","クラウド型より性能が著しく低い","国内の法律で導入が禁止されている","データが必ず外部に送信される"]},
-  {id:"e31", lesson:"L06", q:"Microsoft Copilot（M365）のセキュリティ上の特徴として正しいものはどれか？", o:["組織の設定によらず無条件で外部に共有される仕組み","国内の個人情報保護法の適用対象から外れる仕組み","入力内容がすべてOpenAI社へ直接送信される","既存のM365セキュリティポリシーが適用される"]},
-  {id:"e32", lesson:"L14", q:"「5つのことで8割のリスクを下げる」対策のひとつとして正しいものはどれか？", o:["AIの利用ログをすべて定期的に削除する","全社員のパスワードを毎日変更する","業務用と個人用AIアカウントの分離","社内でのAIツール利用を全面的に禁止する"]},
-  {id:"e33", lesson:"L05", q:"ChatGPT無料版を業務で使う場合のリスクとして最も適切なものはどれか？", o:["有料版に比べて回答の質が著しく低くなる","社員が業務上の判断をAIに依存しすぎてしまう","入力内容がモデル改善に使われる可能性がある","混雑する時間帯には接続速度が大きく低下してしまう"]},
-  {id:"e34", lesson:"L01", q:"ChatGPTの無料版（Plus未加入）でデータ学習をオフにしていない場合、入力した情報はどうなるか？", o:["OpenAI社によって企業秘密として保護される","OpenAIのモデル改善に使われる可能性がある","日本の個人情報保護法によって自動的に保護される","送信後ただちにサーバーから完全に削除される"]},
-  {id:"e35", lesson:"L16", q:"不動産業でのAI情報漏洩事例として実際に起きやすいシナリオはどれか？", o:["AIが法務局の登記情報を書き換えてしまう","顧客の査定情報をAIに入力し外部に漏洩","AIが所有者に無断で物件を売却してしまう","AIが市場の不動産価格を操作してしまう"]},
-  {id:"e36", lesson:"L10", q:"文化庁のガイドラインで「著作権侵害になりうる」とされているAIの使い方はどれか？", o:["AIが既存の著作物に似た表現を大量生成して市場を代替する","AIに社内向けの企画のアイデアを複数出させて検討する","AIに自分で書いた文章の誤字脱字をまとめて修正させる","AIに社内会議で使う資料の要約を作らせて共有する"]},
-  {id:"e37", lesson:"L32", q:"「ベクトルデータベース」がRAGシステムで使われる目的として正しいものはどれか？", o:["利用者のパスワードを暗号化して管理する","社内で扱う画像ファイルをまとめて保存する","社内文書のファイルを暗号化して保護しておく","文章の意味的な類似度で関連情報を高速検索する"]},
-  {id:"e38", lesson:"L27", q:"インシデント対応ロールプレイで学ぶ最重要の教訓はどれか？", o:["そもそもAIを業務に使わなければ事故は起きなかった","法律の専門家に任せておけば問題はすべて解決する","十分な手順さえ整えておけばインシデントは必ず防ぐことができる","事前に対応手順を決めておくことで、有事の初動が速くなる"]},
-  {id:"e39", lesson:"L08", q:"介護事業者がAIを活用する際のリスクとして最も注意すべきものはどれか？", o:["利用者の健康情報・介護記録の漏洩","AIが感情を持ち自律的に動くリスク","介護サービスの品質が低下すること","スタッフがAIに過度に依存すること"]},
-  {id:"e40", lesson:"L25", q:"音声・映像が本物かどうか確認するための対策として最も有効なものはどれか？", o:["画質や音質が十分に高ければ本物と判断する","AI判定ツールの結果だけで真偽を最終的に判断する","送信者のメールアドレスの表記だけを確認して判断する","別の通信手段（電話・直接確認）で本人確認を取る"]},
-  {id:"e41", lesson:"L16", q:"士業（弁護士・税理士等）のAI利用で特に注意すべき点はどれか？", o:["AI利用にかかる費用が事務所の経営を圧迫するほど大きすぎる","AIが士業の独占業務をそのまま代替してしまうリスク","依頼人の機密情報をAIに入力することによる守秘義務違反","AI自身が国家資格を取得して独立した業務を行うようになるリスク"]},
-  {id:"e42", lesson:"L05", q:"ChatGPT Businessプランの主な特徴として正しいものはどれか？", o:["日本語には対応していない","データ学習がデフォルトでオフ","追加の費用なく無料で利用できる","個人での利用だけに限定されている"]},
-  {id:"e43", lesson:"L13", q:"AI起因の情報漏洩が疑われる場合、最初の1時間に最優先でやるべきことはどれか？", o:["漏洩が起きた原因を詳しく調べて特定する","報道機関へ配布するプレスリリースの作成","経営層および役員への状況の報告","該当AIツールの使用停止と証拠保全"]},
-  {id:"e44", lesson:"L25", q:"ディープフェイク対策として企業が導入すべき「コードワード」制度とはどれか？", o:["重要な指示の際に事前に決めた合言葉で本人確認を行う仕組み","全社員のパスワードを定期的に複雑なものへ変更させる社内ルール","ビデオ会議の通信内容をすべて暗号化して守る仕組み","AIとの会話内容を暗号化して第三者に読ませない仕組み"]},
-  {id:"e45", lesson:"L02", q:"「学習オフ」設定をしてもなお残るリスクとして正しいものはどれか？", o:["AIが回答を生成する際に社内システムに接触する","設定が一定期間で自動的に元に戻る","入力データがサーバーに送信される","会話履歴が一時的にサーバーに残る"]},
-  {id:"e46", lesson:"L11", q:"AIのハルシネーションによる法的リスクとして最も適切なものはどれか？", o:["誤った法的情報に基づいて行動し損害が発生する","AIが業務の途中で接続を拒否して停止してしまう","利用にかかるコストが想定より大きく増加してしまう","AIが過剰に正直になり不都合な事実まで述べてしまう"]},
-  {id:"e47", lesson:"L09", q:"個人情報保護法において「要配慮個人情報」に該当するものはどれか？", o:["メールアドレス","病歴・診療情報","生年月日と性別","氏名と勤務先名"]},
-  {id:"e48", lesson:"L13", q:"個人情報漏洩が発生した場合、個人情報保護委員会への報告義務が生じる条件として正しいものはどれか？", o:["要配慮個人情報が含まれるなど一定の条件を満たす場合","社内で漏洩に気づいた段階で直ちに報告するべきとされる場合","報道機関が漏洩の事実を外部へ報道してしまっていた場合","漏洩が1件でも発生していれば例外なく該当することになる"]},
-  {id:"e49", lesson:"L03", q:"シャドーAIが特に危険な理由として最も適切なものはどれか？", o:["利用コストが想定よりかかりすぎる","利用しているAIの性能が低い","会社が情報漏洩を把握できない","社員のAIスキルが上がりすぎてしまう"]},
-  {id:"e50", lesson:"L23", q:"AIを使ったフィッシング詐欺の特徴として正しいものはどれか？", o:["送信元のメールアドレスが必ず海外のものになる","文章が不自然なため受信者が容易に見破ることができる","自然な日本語で個人に最適化された偽メールを大量生成できる","実行形式の添付ファイルが必ず含まれているため判別しやすい"]},
-  {id:"e51", lesson:"L23", q:"AIフィッシングを見破るための最も効果的な方法はどれか？", o:["本文の日本語が自然かどうかだけを見て真偽を判断する","そのメールにそのまま返信して本物かどうかを直接尋ねる","添付ファイルを実際に開いて中身を確認したうえで本物かどうか判断する","URLの確認・送信元ドメインの確認・公式サイトへの直接アクセス"]},
-  {id:"e52", lesson:"L15", q:"「今日からできる10のアクション」のうち、最も即効性が高い対策はどれか？", o:["新しいAIシステムの導入","社外に向けた情報の公開","AIツールの全面的な撤廃","社内のAI利用実態調査"]},
-  {id:"e53", lesson:"L17", q:"Gemini Notebook（旧 NotebookLM）が他の生成AIツールと大きく異なる特徴はどれか？", o:["アップロードしたドキュメントだけを情報源として回答する","音声による入力だけですべての操作ができる点","法人契約をした企業だけが利用できる点","回答を作るたびに常にインターネット検索を行って情報を集める点"]},
-  {id:"e54", lesson:"L10", q:"AIで生成した文章の著作権について正しい説明はどれか？", o:["生成された時点で著作権は一切発生しないとされる","人間の創作的寄与がある場合に利用者に帰属しうる","常にAIを開発した事業者に自動的に帰属することになる","入力の内容にかかわらず常に利用者に帰属する"]},
-  {id:"e55", lesson:"L03", q:"「シャドーAI」とは何か？", o:["会社が公式に導入しているAIツールの総称","会社の許可なく従業員が業務に使うAI","AIが人の指示なく自律的に行動している状態","サイバー攻撃に悪用されているAIのこと"]},
-  {id:"e56", lesson:"序章", q:"生成AIが日本のビジネス現場に急速に普及した主な契機はどれか？", o:["2022年11月のChatGPT公開","製造現場への産業用AIロボットの導入","政府によるAI推進のための新しい法律の施行","スマートフォンの世界的な急速な普及"]},
-  {id:"e57", lesson:"L17", q:"GensparkやManusなどの「AIエージェント型」ツールのリスクとして正しいものはどれか？", o:["生成される回答が業務で使うには短すぎてしまう","自律的に行動するため予期しないデータアクセスが発生しうる","操作画面も生成される回答も日本語に対応していない","月あたりの利用料が他のツールと比べて著しく高い"]},
-  {id:"e58", lesson:"L30", q:"LLM（大規模言語モデル）がハルシネーションを起こす根本的な理由はどれか？", o:["日本語の文法や語彙の扱いがそもそも苦手にできているから","確率的なパターン予測で文章を生成するため、事実確認をしていないから","文章を生成するために必要な計算能力が不足しているから","常時インターネットに接続して最新の情報を取得していないから"]},
-  {id:"e59", lesson:"L12", q:"社内AI利用ガイドラインに必ず含めるべき項目として最も重要なものはどれか？", o:["AI技術のこれまでの発展の歴史","入力禁止情報の具体的なリスト","同業他社における導入事例の紹介","主要なAIツールの利用料金の一覧"]},
-  {id:"e60", lesson:"L30", q:"トランスフォーマーアーキテクチャの「Attention機構」の役割はどれか？", o:["入力された文章を画像のデータに変換して出力する","回答が返ってくるまでの処理速度を引き上げる","文章中の単語間の関係性・重要度を計算する","AIを外部のインターネットへ常時接続させる仕組み"]}
+  {id:"e1", lesson:"lesson6", q:"Claudeの利用規約上、企業利用時にデータ学習を無効化するために必要なものはどれか？", o:["API利用またはTeamsプランへの加入","アカウント設定画面での学習オフの切り替え","利用開始時に日本語での利用目的の申請","無料プランでも初回ログイン時に自動適用"]},
+  {id:"e2", lesson:"lesson1", q:"「ChatGPT Business」（旧 Team）プランでデータ学習がオフになる条件として正しいものはどれか？", o:["管理者の設定が必要","毎回の手動解除が必要","自動的にオフになる","日本国内では常にオフ"]},
+  {id:"e3", lesson:"lesson26", q:"医療・介護分野でAIを活用する際に最も注意すべき法規制はどれか？", o:["個人情報保護法（要配慮個人情報の取り扱い）","著作権法（学習データの利用と権利処理）","景品表示法（サービス広告の表示規制）","電気通信事業法（通信の秘密の保護義務）"]},
+  {id:"e4", lesson:"lesson4", q:"クラウドAIとオンプレAIの最大の違いは何か？", o:["応答が返るまでの処理速度","利用画面の操作性の設計","障害時の問い合わせ体制","データの保管・管理場所"]},
+  {id:"e5", lesson:"lesson19", q:"プロンプトインジェクション攻撃とはどのような攻撃か？", o:["悪意のある指示をAIに混入させてAIの行動を乗っ取る","学習済みモデルの重みを外部から複製して持ち出す","外部のAIサーバーに物理的に侵入して機器を奪い取る","AIに大量の要求を送り応答できない状態に追い込む"]},
+  {id:"e6", lesson:"lesson24", q:"プロンプトエンジニアリングにおいて「Few-shot」とはどのような手法か？", o:["音声で読み上げてAIに指示を伝える手法","指示文をできるだけ短く区切って渡す手法","少人数のチームでAIを共同利用する手法","具体的な例を複数示してから指示する手法"]},
+  {id:"e7", lesson:"lesson19", q:"企業がAIエージェントを導入する際、プロンプトインジェクション対策として最も重要なものはどれか？", o:["社内のすべての業務においてAIエージェントの利用を全面的に禁止する","外部コンテンツをそのままAIに処理させない・サンドボックス化","エージェントの応答速度を落として処理の負荷を下げる","エージェントを利用できる従業員の人数を上限まで絞る"]},
+  {id:"e8", lesson:"lesson7", q:"AIに入力してはいけない情報として「個人情報」に該当するものはどれか？", o:["公開済みのプレスリリース","顧客の氏名・住所・電話番号","業界全体の市場統計データ","製品の一般的な仕様説明"]},
+  {id:"e9", lesson:"lesson20", q:"ディープフェイクを使った詐欺の代表的な事例はどれか？", o:["AIが本人確認を通過して口座から自動で送金した事例","音声合成AIが電子契約書に本人の署名を代行した事例","偽の経営者映像でCFOに送金を指示した香港の事件","AIが偽の身分証を生成して銀行口座を開設した事例"]},
+  {id:"e10", lesson:"lesson8", q:"不動産業でAIを使う際に特に注意すべき情報として正しいものはどれか？", o:["公開中の物件の間取り図","建物の築年数と構造の種別","地域ごとの相場価格の推移","顧客の収入情報や家族構成"]},
+  {id:"e11", lesson:"lesson27", q:"AIエージェント時代に企業が備えるべきセキュリティ対策として最も重要なものはどれか？", o:["判断を伴う業務をすべてエージェントに移管する","エージェントが自律的に守るため対策は不要になる","業務でのエージェント利用を全面的に取りやめる","エージェントの行動ログを記録し権限を最小化する"]},
+  {id:"e12", lesson:"lesson25", q:"RAG（Retrieval-Augmented Generation）の主なリスクはどれか？", o:["参照する文書が増えるほど回答が短く要約されてしまう","検索対象の社内データベースへの不正アクセスが発生しうる","検索の仕組みが日本語の社内文書に対応していない","検索対象にした社内文書をAIが自動的に学習して記憶してしまう"]},
+  {id:"e13", lesson:"lesson11", q:"ハルシネーションとは何か？", o:["AIが人間の感情を模倣して共感的に応答する現象","AIが学習時点より古いデータだけを参照する現象","AIが指示より長い文章を繰り返し生成する現象","AIが事実に基づかない情報を自信を持って出力すること"]},
+  {id:"e14", lesson:"lesson27", q:"MCP（Model Context Protocol）とは何か？", o:["AIとの通信内容を暗号化して第三者から保護するための標準規格","AIが利用者の意図と感情を推定するための標準規格","AIと外部ツール・データソースを接続するための標準規格","AIの推論にかかる計算量を削減するための技術"]},
+  {id:"e15", lesson:"lesson15", q:"AIセキュリティ教育を効果的に行うための方法として最も適切なものはどれか？", o:["具体的な事例を使った定期的な研修","年1回の全社メールによる通知","外部の専門家に対応をすべて委託する","条文をそのまま読み合わせる勉強会"]},
+  {id:"e16", lesson:"lesson9", q:"生成AIに個人情報を入力する行為が個人情報保護法上問題になり得るケースはどれか？", o:["匿名化して個人を特定できない統計値を入力する","公開済みの情報を事実確認のために入力する","本人の同意なく第三者の個人情報を入力する","自分自身の連絡先を業務の下書きに入力する"]},
+  {id:"e17", lesson:"lesson16", q:"飲食業でAIを活用する際に注意すべき情報漏洩リスクとして最も適切なものはどれか？", o:["AIの提案による食材の発注数量の誤り","AIが厨房機器を操作して調理を始める","自店の定番レシピが検索結果に出ること","アレルギー情報など顧客の個人情報の漏洩"]},
+  {id:"e18", lesson:"lesson22", q:"漏洩インシデント発生後に「やってはいけないこと」はどれか？", o:["事実を隠蔽して様子を見る","関係者に事実を報告する","ログなどの証拠を保全する","使用していたAIツールを停止する"]},
+  {id:"e19", lesson:"lesson25", q:"社内データでファインチューニングを行う前に確認すべき最重要事項はどれか？", o:["学習の実行にかかる費用と所要時間の見積もり","利用者に提示する画面の設計と操作手順の整理","学習データに個人情報・機密情報が含まれていないか","利用するAIモデルのバージョンと更新の頻度"]},
+  {id:"e20", lesson:"lesson2", q:"ChatGPTで「チャット履歴とトレーニング」をオフにした場合の正しい説明はどれか？", o:["30日後に会話データが削除される","過去の会話履歴が一切残らない","他のユーザーと会話の内容が共有される","入力データがOpenAIに送信されなくなる"]},
+  {id:"e21", lesson:"lesson10", q:"AIが生成した画像を商業利用する際に注意すべき著作権上のリスクはどれか？", o:["生成された画像の著作権は自動的にAI開発事業者へ帰属する","生成された画像の商業利用は法令によって一律に禁止されている","学習データに含まれる既存著作物に酷似した画像が生成されるリスク","AI自身が著作者として登録され権利を主張できることになる"]},
+  {id:"e22", lesson:"lesson9", q:"個人情報保護法における「匿名加工情報」の説明として正しいものはどれか？", o:["医療分野で取り扱う情報だけを指す区分のこと","氏名や連絡先によって個人を特定できる情報","社内規程によって社外秘に分類されている情報","特定の個人を識別できないよう加工された情報"]},
+  {id:"e23", lesson:"lesson21", q:"業務自動化にAIエージェントを使う前に確認すべき最重要事項はどれか？", o:["利用するプランが無料か有料かどうかの確認","利用するAIが最新のモデルであるかどうかの確認","エージェントがアクセスできる範囲と権限の最小化","操作画面が現場の担当者にとって使いやすいか"]},
+  {id:"e24", lesson:"lesson24", q:"セキュリティ観点でプロンプト設計時に注意すべき点はどれか？", o:["機密情報や個人情報をプロンプトに含めない","指示は日本語ではなく必ず英語で書くこと","同じ指示を避け毎回異なる文面を使うこと","指示文をできるだけ長く詳細に書き込むこと"]},
+  {id:"e25", lesson:"lesson12", q:"AI利用ガイドラインを策定した後に行うべき重要なアクションはどれか？", o:["自社サイトで外部に全文を公開すること","法務部だけが内容を管理して保管すること","定期的な見直しと全社員への周知・教育","策定した時点で完了として保管しておくこと"]},
+  {id:"e26", lesson:"lesson21", q:"AIエージェントが自律的に動作することの主なリスクはどれか？", o:["担当者の業務量が減り管理が緩むこと","意図しないデータ送信・操作が発生する","処理の待ち時間が業務全体で伸びること","利用料金が想定より下がりすぎること"]},
+  {id:"e27", lesson:"lesson7", q:"「社外秘」に分類すべき情報として最も適切なものはどれか？", o:["公開している営業時間","登記済みの代表者氏名","未発表の新製品情報","登記されている本店所在地"]},
+  {id:"e28", lesson:"lesson26", q:"法律・税務士業でAIを使う場合、倫理的に特に問題になりうるケースはどれか？", o:["公開されている判例をAIを使って検索する","依頼人との相談内容を無断でAIに入力する","公開済み文書の誤字脱字をAIで修正する","社内会議の議事録作成をAIに補助させる"]},
+  {id:"e29", lesson:"lesson14", q:"中小企業がまず取り組むべき最低限のAIセキュリティ対策として正しいものはどれか？", o:["専任のAI担当者を新たに雇用すること","入力禁止情報のルール化と全社周知","業務でのAI利用を一切禁止すること","高額なセキュリティ製品を先に導入すること"]},
+  {id:"e30", lesson:"lesson4", q:"中小企業がオンプレAIを導入する際の主なデメリットとして正しいものはどれか？", o:["初期コストと保守コストが高い","クラウド型より性能が著しく低い","国内の法律で導入が禁止されている","データが必ず外部に送信される"]},
+  {id:"e31", lesson:"lesson6", q:"Microsoft Copilot（M365）のセキュリティ上の特徴として正しいものはどれか？", o:["組織の設定によらず無条件で外部に共有される仕組み","国内の個人情報保護法の適用対象から外れる仕組み","入力内容がすべてOpenAI社へ直接送信される","既存のM365セキュリティポリシーが適用される"]},
+  {id:"e32", lesson:"lesson14", q:"「5つのことで8割のリスクを下げる」対策のひとつとして正しいものはどれか？", o:["AIの利用ログをすべて定期的に削除する","全社員のパスワードを毎日変更する","業務用と個人用AIアカウントの分離","社内でのAIツール利用を全面的に禁止する"]},
+  {id:"e33", lesson:"lesson5", q:"ChatGPT無料版を業務で使う場合のリスクとして最も適切なものはどれか？", o:["有料版に比べて回答の質が著しく低くなる","社員が業務上の判断をAIに依存しすぎてしまう","入力内容がモデル改善に使われる可能性がある","混雑する時間帯には接続速度が大きく低下してしまう"]},
+  {id:"e34", lesson:"lesson1", q:"ChatGPTの無料版（Plus未加入）でデータ学習をオフにしていない場合、入力した情報はどうなるか？", o:["OpenAI社によって企業秘密として保護される","OpenAIのモデル改善に使われる可能性がある","日本の個人情報保護法によって自動的に保護される","送信後ただちにサーバーから完全に削除される"]},
+  {id:"e35", lesson:"lesson16", q:"不動産業でのAI情報漏洩事例として実際に起きやすいシナリオはどれか？", o:["AIが法務局の登記情報を書き換えてしまう","顧客の査定情報をAIに入力し外部に漏洩","AIが所有者に無断で物件を売却してしまう","AIが市場の不動産価格を操作してしまう"]},
+  {id:"e36", lesson:"lesson10", q:"文化庁のガイドラインで「著作権侵害になりうる」とされているAIの使い方はどれか？", o:["AIが既存の著作物に似た表現を大量生成して市場を代替する","AIに社内向けの企画のアイデアを複数出させて検討する","AIに自分で書いた文章の誤字脱字をまとめて修正させる","AIに社内会議で使う資料の要約を作らせて共有する"]},
+  {id:"e37", lesson:"lesson25", q:"「ベクトルデータベース」がRAGシステムで使われる目的として正しいものはどれか？", o:["利用者のパスワードを暗号化して管理する","社内で扱う画像ファイルをまとめて保存する","社内文書のファイルを暗号化して保護しておく","文章の意味的な類似度で関連情報を高速検索する"]},
+  {id:"e38", lesson:"lesson22", q:"インシデント対応ロールプレイで学ぶ最重要の教訓はどれか？", o:["そもそもAIを業務に使わなければ事故は起きなかった","法律の専門家に任せておけば問題はすべて解決する","十分な手順さえ整えておけばインシデントは必ず防ぐことができる","事前に対応手順を決めておくことで、有事の初動が速くなる"]},
+  {id:"e39", lesson:"lesson8", q:"介護事業者がAIを活用する際のリスクとして最も注意すべきものはどれか？", o:["利用者の健康情報・介護記録の漏洩","AIが感情を持ち自律的に動くリスク","介護サービスの品質が低下すること","スタッフがAIに過度に依存すること"]},
+  {id:"e40", lesson:"lesson20", q:"音声・映像が本物かどうか確認するための対策として最も有効なものはどれか？", o:["画質や音質が十分に高ければ本物と判断する","AI判定ツールの結果だけで真偽を最終的に判断する","送信者のメールアドレスの表記だけを確認して判断する","別の通信手段（電話・直接確認）で本人確認を取る"]},
+  {id:"e41", lesson:"lesson16", q:"士業（弁護士・税理士等）のAI利用で特に注意すべき点はどれか？", o:["AI利用にかかる費用が事務所の経営を圧迫するほど大きすぎる","AIが士業の独占業務をそのまま代替してしまうリスク","依頼人の機密情報をAIに入力することによる守秘義務違反","AI自身が国家資格を取得して独立した業務を行うようになるリスク"]},
+  {id:"e42", lesson:"lesson5", q:"ChatGPT Businessプランの主な特徴として正しいものはどれか？", o:["日本語には対応していない","データ学習がデフォルトでオフ","追加の費用なく無料で利用できる","個人での利用だけに限定されている"]},
+  {id:"e43", lesson:"lesson13", q:"AI起因の情報漏洩が疑われる場合、最初の1時間に最優先でやるべきことはどれか？", o:["漏洩が起きた原因を詳しく調べて特定する","報道機関へ配布するプレスリリースの作成","経営層および役員への状況の報告","該当AIツールの使用停止と証拠保全"]},
+  {id:"e44", lesson:"lesson20", q:"ディープフェイク対策として企業が導入すべき「コードワード」制度とはどれか？", o:["重要な指示の際に事前に決めた合言葉で本人確認を行う仕組み","全社員のパスワードを定期的に複雑なものへ変更させる社内ルール","ビデオ会議の通信内容をすべて暗号化して守る仕組み","AIとの会話内容を暗号化して第三者に読ませない仕組み"]},
+  {id:"e45", lesson:"lesson2", q:"「学習オフ」設定をしてもなお残るリスクとして正しいものはどれか？", o:["AIが回答を生成する際に社内システムに接触する","設定が一定期間で自動的に元に戻る","入力データがサーバーに送信される","会話履歴が一時的にサーバーに残る"]},
+  {id:"e46", lesson:"lesson11", q:"AIのハルシネーションによる法的リスクとして最も適切なものはどれか？", o:["誤った法的情報に基づいて行動し損害が発生する","AIが業務の途中で接続を拒否して停止してしまう","利用にかかるコストが想定より大きく増加してしまう","AIが過剰に正直になり不都合な事実まで述べてしまう"]},
+  {id:"e47", lesson:"lesson9", q:"個人情報保護法において「要配慮個人情報」に該当するものはどれか？", o:["メールアドレス","病歴・診療情報","生年月日と性別","氏名と勤務先名"]},
+  {id:"e48", lesson:"lesson13", q:"個人情報漏洩が発生した場合、個人情報保護委員会への報告義務が生じる条件として正しいものはどれか？", o:["要配慮個人情報が含まれるなど一定の条件を満たす場合","社内で漏洩に気づいた段階で直ちに報告するべきとされる場合","報道機関が漏洩の事実を外部へ報道してしまっていた場合","漏洩が1件でも発生していれば例外なく該当することになる"]},
+  {id:"e49", lesson:"lesson3", q:"シャドーAIが特に危険な理由として最も適切なものはどれか？", o:["利用コストが想定よりかかりすぎる","利用しているAIの性能が低い","会社が情報漏洩を把握できない","社員のAIスキルが上がりすぎてしまう"]},
+  {id:"e50", lesson:"lesson18", q:"AIを使ったフィッシング詐欺の特徴として正しいものはどれか？", o:["送信元のメールアドレスが必ず海外のものになる","文章が不自然なため受信者が容易に見破ることができる","自然な日本語で個人に最適化された偽メールを大量生成できる","実行形式の添付ファイルが必ず含まれているため判別しやすい"]},
+  {id:"e51", lesson:"lesson18", q:"AIフィッシングを見破るための最も効果的な方法はどれか？", o:["本文の日本語が自然かどうかだけを見て真偽を判断する","そのメールにそのまま返信して本物かどうかを直接尋ねる","添付ファイルを実際に開いて中身を確認したうえで本物かどうか判断する","URLの確認・送信元ドメインの確認・公式サイトへの直接アクセス"]},
+  {id:"e52", lesson:"lesson15", q:"「今日からできる10のアクション」のうち、最も即効性が高い対策はどれか？", o:["新しいAIシステムの導入","社外に向けた情報の公開","AIツールの全面的な撤廃","社内のAI利用実態調査"]},
+  {id:"e53", lesson:"lesson17", q:"Gemini Notebook（旧 NotebookLM）が他の生成AIツールと大きく異なる特徴はどれか？", o:["アップロードしたドキュメントだけを情報源として回答する","音声による入力だけですべての操作ができる点","法人契約をした企業だけが利用できる点","回答を作るたびに常にインターネット検索を行って情報を集める点"]},
+  {id:"e54", lesson:"lesson10", q:"AIで生成した文章の著作権について正しい説明はどれか？", o:["生成された時点で著作権は一切発生しないとされる","人間の創作的寄与がある場合に利用者に帰属しうる","常にAIを開発した事業者に自動的に帰属することになる","入力の内容にかかわらず常に利用者に帰属する"]},
+  {id:"e55", lesson:"lesson3", q:"「シャドーAI」とは何か？", o:["会社が公式に導入しているAIツールの総称","会社の許可なく従業員が業務に使うAI","AIが人の指示なく自律的に行動している状態","サイバー攻撃に悪用されているAIのこと"]},
+  {id:"e56", lesson:"intro", q:"生成AIが日本のビジネス現場に急速に普及した主な契機はどれか？", o:["2022年11月のChatGPT公開","製造現場への産業用AIロボットの導入","政府によるAI推進のための新しい法律の施行","スマートフォンの世界的な急速な普及"]},
+  {id:"e57", lesson:"lesson17", q:"GensparkやManusなどの「AIエージェント型」ツールのリスクとして正しいものはどれか？", o:["生成される回答が業務で使うには短すぎてしまう","自律的に行動するため予期しないデータアクセスが発生しうる","操作画面も生成される回答も日本語に対応していない","月あたりの利用料が他のツールと比べて著しく高い"]},
+  {id:"e58", lesson:"lesson23", q:"LLM（大規模言語モデル）がハルシネーションを起こす根本的な理由はどれか？", o:["日本語の文法や語彙の扱いがそもそも苦手にできているから","確率的なパターン予測で文章を生成するため、事実確認をしていないから","文章を生成するために必要な計算能力が不足しているから","常時インターネットに接続して最新の情報を取得していないから"]},
+  {id:"e59", lesson:"lesson12", q:"社内AI利用ガイドラインに必ず含めるべき項目として最も重要なものはどれか？", o:["AI技術のこれまでの発展の歴史","入力禁止情報の具体的なリスト","同業他社における導入事例の紹介","主要なAIツールの利用料金の一覧"]},
+  {id:"e60", lesson:"lesson23", q:"トランスフォーマーアーキテクチャの「Attention機構」の役割はどれか？", o:["入力された文章を画像のデータに変換して出力する","回答が返ってくるまでの処理速度を引き上げる","文章中の単語間の関係性・重要度を計算する","AIを外部のインターネットへ常時接続させる仕組み"]}
 ];
 
 /* ===== 受講実績レポート ===== */
@@ -2381,11 +2424,10 @@ async function openRecordReport(){
   try {
     const d = await fetchRecordData();
     const s = d.summary;
-    const esc = escHtml;
 
     const trs = d.rows.map(r => `
       <tr>
-        <td class="c">${esc(r.title)}</td>
+        <td class="c">${escHtml(r.title)}</td>
         <td>${fmtDateTime(r.startedAt)}</td>
         <td>${fmtDateTime(r.completedAt)}</td>
         <td class="n">${fmtDuration(r.duration)}</td>
@@ -2443,13 +2485,13 @@ async function openRecordReport(){
       const blocks = (d.works || []).map(w => {
         const qs = w.answers.map(a => `
           <div class="wq">
-            <div class="wq-h">${esc(a.questionId)}　<span class="wq-n">${a.length}文字${a.min?`（必要 ${a.min}文字以上）`:''}</span></div>
-            <div class="wq-q">${esc(a.question)}</div>
-            <div class="wq-a">${esc(a.text) || '（未記入）'}</div>
+            <div class="wq-h">${escHtml(a.questionId)}　<span class="wq-n">${a.length}文字${a.min?`（必要 ${a.min}文字以上）`:''}</span></div>
+            <div class="wq-q">${escHtml(a.question)}</div>
+            <div class="wq-a">${escHtml(a.text) || '（未記入）'}</div>
           </div>`).join('');
         return `
         <div class="wch">
-          <h3>第${w.chapter}章　${esc(w.goal)}
+          <h3>第${w.chapter}章　${escHtml(w.goal)}
             <span class="wst ${w.submitted?'ok':''}">${w.submitted ? '提出済み' + (w.submittedAt ? '（' + fmtDateTime(w.submittedAt) + '）' : '') : '未提出'}</span>
             ${w.duration ? `<span class="wst">所要 ${fmtDuration(w.duration)}</span>` : ''}
           </h3>
@@ -2464,7 +2506,7 @@ ${blocks}`;
 
     win.document.open();
     win.document.write(`<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
-<title>受講実績レポート_${esc(name)}</title>
+<title>受講実績レポート_${escHtml(name)}</title>
 <style>
   *{box-sizing:border-box}
   body{font-family:"Hiragino Sans","Yu Gothic",sans-serif;color:#1a1a1a;margin:0;padding:32px;line-height:1.7}
@@ -2507,12 +2549,12 @@ ${blocks}`;
 
 <h2>受講者情報</h2>
 <table class="info">
-  <tr><th>氏名</th><td>${esc(name)}</td></tr>
-  ${company ? `<tr><th>会社名</th><td>${esc(company)}</td></tr>` : ''}
-  <tr><th>メールアドレス</th><td>${esc(d.email || '')}</td></tr>
-  <tr><th>講座名</th><td>AI Security Lab 生成AI×セキュリティ eラーニング（${esc(d.meta.name)}）</td></tr>
-  <tr><th>受講範囲</th><td>${esc(d.meta.range)}</td></tr>
-  <tr><th>標準学習時間</th><td>${esc(d.meta.hours)}（休憩時間を除く）</td></tr>
+  <tr><th>氏名</th><td>${escHtml(name)}</td></tr>
+  ${company ? `<tr><th>会社名</th><td>${escHtml(company)}</td></tr>` : ''}
+  <tr><th>メールアドレス</th><td>${escHtml(d.email || '')}</td></tr>
+  <tr><th>講座名</th><td>AI Security Lab 生成AI×セキュリティ eラーニング（${escHtml(d.meta.name)}）</td></tr>
+  <tr><th>受講範囲</th><td>${escHtml(d.meta.range)}</td></tr>
+  <tr><th>標準学習時間</th><td>${escHtml(d.meta.hours)}（休憩時間を除く）</td></tr>
   <tr><th>受講期間</th><td>${fmtDateTime(d.firstDate)} 〜 ${fmtDateTime(d.lastDate)}</td></tr>
 </table>
 
@@ -2916,14 +2958,10 @@ function goLesson(tabId){
   if(currentUser){
     // ログイン後：先にUIを表示してからレッスンをマウント
     showLearnUI();
-    showActiveLesson(tabId);
-    const completed = loadCompleted();
-    buildSideNav(completed);
-    // learn-wrapperの先頭へスクロール
+    window.switchTab(tabId);   // 前回のタブの記録・章末ワークの読み込みも同じ経路で行う
     window.scrollTo({top: 0, behavior: 'smooth'});
   } else {
-    // 未ログイン：通常のswitchTab
-    switchTab(tabId);
+    showTabGuest(tabId);
     const s = document.getElementById('lessons');
     if(s) s.scrollIntoView({behavior:'smooth'});
   }
@@ -2999,6 +3037,7 @@ async function ensureLessonLoaded(tabId){
       if(!j || typeof j.html !== 'string' || !j.html) throw new Error('本文が空です');
       tcon.innerHTML = j.html;
       tcon.dataset.loaded = '1';
+      rememberServed(tabId, j.served);
       // 流し込んだ後に、選択肢シャッフルと受講済み／クイズロックの状態を復元する
       shuffleQuizOptions(tabId);
       updateCompletionUI();
@@ -3032,6 +3071,46 @@ function reloadLesson(tabId){
 window.reloadLesson = reloadLesson;
 
 // ---- アクティブtconをlearn-content-innerに表示 ----
+// 初めて学習画面に入った人への案内（2026-11-23）。プランごとの進め方と修了の条件、最初のレッスンへのボタン。
+// 1本でも受講済みにするか、閉じるボタンを押すと出なくなる
+function renderOnboard(){
+  const box = document.getElementById('learn-onboard');
+  if(!box || !currentUser || !currentUserPlan) return;
+  const key = 'asl_onboard_closed:' + currentUser.id;
+  if(store.get(key) || loadCompleted().length > 0){ box.hidden = true; box.innerHTML = ''; return; }
+  if(!box.hidden && box.innerHTML) return;
+  const plan = currentUserPlan;
+  const paid = plan === 'basic' || plan === 'standard' || plan === 'premium';
+  const chs = COURSE.workChapters[plan] || 0;
+  const steps = [];
+  if(paid){
+    steps.push(`左の目次の順にレッスンを読み、最後の理解度チェックに答えて「受講済み」にします（全${PLAN_LESSON_COUNT[plan]}レッスン）。`);
+    if(chs) steps.push(`各章の終わりに、章末ワーク（記述4問）を提出し、章末確認テスト（5問中4問以上で合格）を受けます（全${chs}章）。`);
+    if(plan === 'premium') steps.push('全章を終えたら、認定試験（60問・48問以上で合格）を受けます。');
+    steps.push(plan === 'basic' ? '修了証は Standard 以上のプランで発行できます。' : '条件をすべて満たすと、目次の下の「修了証の申請」から申請できます。');
+  } else {
+    steps.push('序章と L01 は無料でお読みいただけます。');
+    steps.push('L02 以降は、ご購入後に受講できます。');
+  }
+  const first = planTabsOrdered().find(id => ALL_LESSONS_LIST.includes(id)) || 'intro';
+  const label = PLAN_LABELS_JA[plan] ? PLAN_LABELS_JA[plan].name : '無料登録';
+  box.innerHTML = `<div class="ob-card" role="region" aria-label="最初の一歩">
+    <button type="button" class="ob-close" aria-label="案内を閉じる" onclick="closeOnboard()">×</button>
+    <div class="ob-title">最初の一歩（${escHtml(label)}）</div>
+    <ol class="ob-steps">${steps.map(t => '<li>' + escHtml(t) + '</li>').join('')}</ol>
+    <div class="ob-actions">
+      <button type="button" class="form-submit ob-btn" onclick="closeOnboard();switchTab('${first}')">${first === 'intro' ? '序章' : 'L' + lessonNo(first) + ' ' + escHtml(COURSE.titles[first] || '')} から始める →</button>
+      ${paid ? '' : '<button type="button" class="work-nav-btn ob-btn2" onclick="showPlans()">料金プランを見る</button>'}
+    </div></div>`;
+  box.hidden = false;
+}
+function closeOnboard(){
+  if(currentUser) store.set('asl_onboard_closed:' + currentUser.id, '1');
+  const box = document.getElementById('learn-onboard');
+  if(box){ box.hidden = true; box.innerHTML = ''; }
+}
+window.closeOnboard = closeOnboard;
+
 function showActiveLesson(tabId){
   // 全tconをhidden
   document.querySelectorAll('.tcon').forEach(t => {
@@ -3098,10 +3177,9 @@ function fixLessonNav(tabId){
   const idx = order.indexOf(tabId);
   const prev = idx > 0 ? order[idx - 1] : null;
   const next = idx >= 0 ? order[idx + 1] : null;
-  const esc = escHtml;
   let html = '';
-  if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${esc(tabLabel(prev))}</span></a>`;
-  if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${esc(tabLabel(next))}</span></a>`;
+  if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${escHtml(tabLabel(prev))}</span></a>`;
+  if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${escHtml(tabLabel(next))}</span></a>`;
   // 範囲の終わりでは、上のプランの案内を開けるようにする（2026-11-23。以前は文字だけで押せなかった）
   else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">Basic の範囲はここまで</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
   else if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">無料公開はここまで</span><span class="lnt">L02 以降はご購入後に受講できます →</span></a>`;
@@ -3218,6 +3296,7 @@ function buildSideNav(completed){
 
   // プランロック適用
   applyPlanLock();
+  renderOnboard();
   try{ applyAdminVisibility(); }catch(e){}
 
   // アクティブ行をスクロール表示
@@ -3304,6 +3383,7 @@ function buildProgressPanel(){
       <span class="sb-row-title">受講実績レポート</span>
     </div>`;
   panel.innerHTML = html;
+  applyPlanLock();   // 行のキーボード操作・読み上げ用の属性を付ける
 }
 
 // 旧関数互換
@@ -3324,7 +3404,6 @@ function quizDoneKey(){ return 'asl_quiz_done:' + ((currentUser && currentUser.i
 function restoreQuizLocks(){
   let done = {};
   try { done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}'); } catch(e){ return; }
-  const escQ = escHtml;
   Object.keys(done).forEach(id => {
     const okEl = document.getElementById(id + '-ok');
     if(!okEl) return;                      // そのレッスンがまだ読み込まれていない
@@ -3338,7 +3417,7 @@ function restoreQuizLocks(){
       const m = (b.getAttribute('onclick') || '').match(/doQ\(this,(\d+),/);
       if(m && Number(m[1]) === rec.s) b.classList.add('ok');
     });
-    if(rec.e) okEl.innerHTML = '✅ ' + escQ(rec.e);
+    if(rec.e) okEl.innerHTML = '✅ ' + escHtml(rec.e);
     okEl.classList.add('show');
     const ngEl = document.getElementById(id + '-ng');
     if(ngEl) ngEl.classList.remove('show');
@@ -3462,7 +3541,9 @@ function shuffled(arr){
 function buildExamSet(){
   return shuffled(EXAM_QUESTIONS).map(q => ({
     id: q.id,
-    lesson: q.lesson,
+    // 設問は内部ID（lesson10 など）で持ち、表示のときに受講順の番号（L10）にする（2026-11-23）。
+    // 以前は表示番号で持っており、レッスンを並べ替えると古い番号のまま残った
+    lesson: q.lesson === 'intro' ? '序章' : 'L' + lessonNo(q.lesson),
     q: q.q,
     o: shuffled(q.o.map((text, orig) => ({ text, orig }))),
   }));
@@ -3740,9 +3821,8 @@ async function submitCertificate(){
       msg.style.display = 'block';
       msg.style.color = 'var(--green)';
       // サーバ応答をそのまま連結していたので、エスケープしてから埋める
-      const escCert = escHtml;
-      msg.innerHTML = '✅ 申請を受け付けました。修了証PDFを <strong>' + escCert(r.email || 'ご登録のメールアドレス') +
-                      '</strong> 宛にお送りします。<br>証明書番号：' + escCert(r.certNo || '') ;
+      msg.innerHTML = '✅ 申請を受け付けました。修了証PDFを <strong>' + escHtml(r.email || 'ご登録のメールアドレス') +
+                      '</strong> 宛にお送りします。<br>証明書番号：' + escHtml(r.certNo || '') ;
     }
     btn.textContent = '申請済み';
     window._certSubmitted = true;   // 画面の更新でボタンが押せる状態に戻らないように（二重申請の防止）
@@ -3961,26 +4041,25 @@ async function loadCorpApplications(){
     const d = await apiFetch('/api/admin/applications', { method: 'GET' });
     const rows = d.rows || [];
     if(!rows.length){ list.textContent = '申込はまだありません。'; return; }
-    const esc = escHtml;
     const yen = n => '¥' + Number(n || 0).toLocaleString('ja-JP');
     list.innerHTML = rows.map(r => {
-      const people = (r.participants || []).map(p => `${esc(p.name)}（${esc(p.email)}）`).join('<br>');
+      const people = (r.participants || []).map(p => `${escHtml(p.name)}（${escHtml(p.email)}）`).join('<br>');
       const sent = !!r.invoice_sent_at;
       const action = sent
-        ? `<span style="color:var(--green);font-weight:600">送信済み</span>${r.invoice_url ? `<br><a href="${esc(r.invoice_url)}" target="_blank" rel="noopener" style="font-size:12px">請求書を開く</a>` : ''}`
-        : `<button onclick="sendCorpInvoice('${esc(r.app_no)}', this)" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">請求書を送る</button>`;
+        ? `<span style="color:var(--green);font-weight:600">送信済み</span>${r.invoice_url ? `<br><a href="${escHtml(r.invoice_url)}" target="_blank" rel="noopener" style="font-size:12px">請求書を開く</a>` : ''}`
+        : `<button onclick="sendCorpInvoice('${escHtml(r.app_no)}', this)" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">請求書を送る</button>`;
       return `<div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;background:var(--bg2)">
         <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start">
           <div style="flex:1;min-width:240px">
-            <div style="font-weight:700;color:var(--text);font-size:14px">${esc(r.company)}
-              <span style="font-size:11px;font-weight:500;color:var(--text4);margin-left:8px">${esc(CORP_STATUS_JA[r.status] || r.status)}</span>
+            <div style="font-weight:700;color:var(--text);font-size:14px">${escHtml(r.company)}
+              <span style="font-size:11px;font-weight:500;color:var(--text4);margin-left:8px">${escHtml(CORP_STATUS_JA[r.status] || r.status)}</span>
             </div>
-            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text4);margin:3px 0 8px">${esc(r.app_no)}　${esc((r.created_at||'').slice(0,16).replace('T',' '))}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text4);margin:3px 0 8px">${escHtml(r.app_no)}　${escHtml((r.created_at||'').slice(0,16).replace('T',' '))}</div>
             <div style="line-height:1.9">
-              ご担当者：${esc(r.contact_name)}（${esc(r.contact_email)}）<br>
-              ${esc((CORP_PLANS[r.plan] || {}).label || r.plan)}　${r.seats}名　<strong style="color:var(--text)">${yen(r.total_price)}</strong>（税込）<br>
+              ご担当者：${escHtml(r.contact_name)}（${escHtml(r.contact_email)}）<br>
+              ${escHtml((CORP_PLANS[r.plan] || {}).label || r.plan)}　${r.seats}名　<strong style="color:var(--text)">${yen(r.total_price)}</strong>（税込）<br>
               <span style="color:var(--text4)">受講者</span><br>${people}
-              ${r.note ? `<br><span style="color:var(--text4)">備考</span><br>${esc(r.note)}` : ''}
+              ${r.note ? `<br><span style="color:var(--text4)">備考</span><br>${escHtml(r.note)}` : ''}
             </div>
           </div>
           <div style="text-align:right">${action}</div>

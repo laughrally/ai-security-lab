@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=984b854497">
+<link rel="stylesheet" href="/assets/app.css?v=5c93e409f0">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -517,7 +517,7 @@
         <div class="guide-step-num">4</div>
         <div class="guide-step-icon">🎓</div>
         <div class="guide-step-title">修了証を取得する</div>
-        <div class="guide-step-desc">ご契約プランの全レッスンを受講済みにすると、修了証の発行申請ができます（Standard以上が対象）。申請すると修了証PDFが自動でメール送信されます。</div>
+        <div class="guide-step-desc">修了の条件（全レッスンの受講・章末ワークの提出・章末確認テストの合格。Premium は認定試験の合格も）を満たすと、修了証を申請できます（Standard以上が対象）。申請すると修了証PDFがメールで届きます。</div>
       </div>
     </div>
     <div class="guide-cta">
@@ -673,7 +673,7 @@
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第6章</span><span class="cname">AI攻撃手口と防衛策・管理者設定 <span style="font-size:10px;background:#0ea5e9;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Standard+</span></span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第6章</span><span class="cname">AI攻撃手口と防衛策・管理者設定 <span style="font-size:10px;background:#0369a1;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Standard+</span></span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
         <div class="lrow" onclick="goLesson('lesson18')"  style="cursor:pointer"><span class="ln">23</span><span class="lname">AIを使ったフィッシング詐欺——攻撃者の手口と見分け方</span><span class="badge bs">Standard+</span></div>
         <div class="lrow" onclick="goLesson('lesson19')"  style="cursor:pointer"><span class="ln">24</span><span class="lname">プロンプトインジェクション攻撃——AIそのものを武器に変える手口</span><span class="badge bs">Standard+</span></div>
@@ -686,7 +686,7 @@
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
-      <div class="chd"><span class="ctag">第7章</span><span class="cname">AI技術とセキュリティの深層・開発 <span style="font-size:10px;background:#8b5cf6;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Premium</span></span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
+      <div class="chd"><span class="ctag">第7章</span><span class="cname">AI技術とセキュリティの深層・開発 <span style="font-size:10px;background:#7c3aed;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Premium</span></span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
         <div class="lrow" onclick="goLesson('lesson23')"  style="cursor:pointer"><span class="ln">30</span><span class="lname">LLMの仕組み入門——なぜAIは「嘘」をつくのか</span><span class="badge bp">Premium</span></div>
         <div class="lrow" onclick="goLesson('lesson24')"  style="cursor:pointer"><span class="ln">31</span><span class="lname">プロンプトエンジニアリング基礎——安全で精度の高い指示の書き方</span><span class="badge bp">Premium</span></div>
@@ -1664,7 +1664,7 @@
       <div class="cert-wrap">
         <div class="cert-icon">🎓</div>
         <h2 class="cert-title">修了証を取得する</h2>
-        <p class="cert-desc">ご契約プランの全レッスンを受講済みにすると、修了証の発行申請ができます。<br>申請後、ご登録のメールアドレス宛に修了証PDFが自動送信されます。</p>
+        <p class="cert-desc">下の「修了の条件」をすべて満たすと、修了証を申請できます。<br>申請後、ご登録のメールアドレス宛に修了証PDFが自動送信されます。</p>
         <div class="cert-progress-box">
           <div class="cert-progress-label">受講進捗</div>
           <div class="cert-bar"><div class="cert-bar-fill" id="cert-bar-fill" style="width:0%"></div></div>
@@ -1672,9 +1672,9 @@
         </div>
         <div class="cert-form-box">
           <div class="cert-form-title">修了証 発行申請フォーム</div>
-          <div class="cert-form-desc">以下を入力して申請してください。全レッスン受講済みの場合のみ送信できます。</div>
+          <div class="cert-form-desc">以下を入力して申請してください。修了の条件をすべて満たすと送信できます。</div>
           <div id="cert-checklist" style="margin:14px 0;font-size:13.5px;line-height:2"></div>
-          <div id="cert-locked-notice" class="cert-locked-notice">⚠️ 全レッスンを受講済みにしてから申請してください。</div>
+          <div id="cert-locked-notice" class="cert-locked-notice">⚠️ 修了の条件を満たしてから申請してください。</div>
           <div class="form-field"><label>会社名<span style="font-size:11px;color:#999;margin-left:6px">（任意）</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方は空欄でOK）"></div>
           <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
           <div class="form-field"><label>送付先メールアドレス</label><input type="email" id="cert-email" readonly style="background:var(--bg2);color:var(--text3);cursor:not-allowed" placeholder="ログイン中のアカウント"></div>
@@ -2248,9 +2248,10 @@
       </div>
     </div>
     <!-- モバイル FABボタン（learn-wrapper内） -->
-    <button id="sb-fab" onclick="toggleSbDrawer()">≡</button>
+    <button id="sb-fab" onclick="toggleSbDrawer()" aria-label="目次を開く">≡</button>
     <!-- レッスン本文 -->
     <div id="learn-content">
+      <div id="learn-onboard" hidden><!-- 初めての人への案内（JSで生成） --></div>
       <div id="learn-content-inner">
         <!-- JSでtconをここに表示 -->
       </div>
@@ -2284,6 +2285,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=8dcf67a1d5"></script>
+<script type="module" src="/assets/app.mjs?v=6fefaa82cd"></script>
 </body>
 </html>
