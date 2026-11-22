@@ -10,7 +10,7 @@ function getPlanLessons(){
 
 function loadCompleted(){
   try{
-    let arr = JSON.parse(localStorage.getItem('asl_completed')||'[]');
+    let arr = store.getJSON('asl_completed', []) || [];
     // 序章（intro）が含まれていたら削除（旧データのクリーンアップ）
     arr = arr.filter(id => id !== 'intro');
     return arr;
@@ -51,6 +51,29 @@ function markComplete(tabId){
     });
   }
 }
+
+// 次にやること：受講順で最初の未了（レッスン → その章のワーク → 確認テスト …）。最後は認定試験・修了証（2026-11-23）。
+// 戻り値：{ label, onclick, run } または null
+function nextStep(){
+  const completed = loadCompleted();
+  const sm = window._recSummary || {};
+  const mk = (label, onclick, run) => ({ label, onclick, run });
+  for(const id of planTabsOrdered()){
+    if(ALL_LESSONS_LIST.includes(id)){
+      if(!completed.includes(id)) return mk('L' + lessonNo(id) + ' ' + (COURSE.titles[id] || ''), `switchTab('${id}')`, () => window.switchTab(id));
+      continue;
+    }
+    const m = /^work(\d+)$/.exec(id);
+    if(!m) continue;
+    const c = Number(m[1]);
+    if(!_workSubmittedCh[c] && !(sm.workDoneList || []).includes(c)) return mk(`第${c}章の章末ワーク`, `switchTab('${id}')`, () => window.switchTab(id));
+    if(!(_testResultCh[c] && _testResultCh[c].passed) && !(sm.testPassedList || []).includes(c)) return mk(`第${c}章の確認テスト`, `goChapterTest(${c})`, () => goChapterTest(c));
+  }
+  if(currentUserPlan === 'premium' && !(sm.examPassed || currentExamPassed)) return mk('認定試験', `switchTab('exam')`, () => window.switchTab('exam'));
+  if(currentUserPlan === 'standard' || currentUserPlan === 'premium') return mk('修了証の申請', `switchTab('certificate')`, () => window.switchTab('certificate'));
+  return null;
+}
+window.nextStep = nextStep;
 
 function updateCompletionUI(){
   const completed = loadCompleted();
@@ -106,19 +129,27 @@ function updateCompletionUI(){
   }
   // レッスン追加より前に修了証を受け取った人は、追加分が未受講でも申請（再発行）できる
   let allDone = planLessons.every(id => completed.includes(id)) || currentCertifiedEarlier;
+  const go = (onclick, text) => ` <button type="button" class="ck-go" onclick="${onclick}">${escHtml(text)} →</button>`;
+  const firstLesson = planLessons.find(id => !completed.includes(id));
   // 修了条件のチェックリスト（2026-11-22）。以前はレッスン数しか見えず、ワークやテストが
   // 未了でも申請ボタンが押せて、送信後にサーバーで弾かれていた
   const sm = window._recSummary;
   const ckEl = document.getElementById('cert-checklist');
   if(ckEl && sm){
-    const row = (ok, label, val) => `<div>${ok ? '✅' : '⬜'} ${label}　<span style="color:var(--text3)">${val}</span></div>`;
+    // 足りない条件には、その場所へ移るボタンを付ける（2026-11-23。以前は文字だけで、スマホでは目次も隠れていた）
+    const row = (ok, label, val, btn) => `<div class="ck-row">${ok ? '✅' : '⬜'} ${label}　<span style="color:var(--text3)">${val}</span>${ok ? '' : (btn || '')}</div>`;
     const chs = sm.chaptersTotal || 0;
-    let h = row(planDone.length >= planTotal || currentCertifiedEarlier, '全レッスンを受講済みにする', planDone.length + ' / ' + planTotal);
+    const missW = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(sm.workDoneList || []).includes(c));
+    const missT = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(sm.testPassedList || []).includes(c));
+    let h = row(planDone.length >= planTotal || currentCertifiedEarlier, '全レッスンを受講済みにする', planDone.length + ' / ' + planTotal,
+      firstLesson ? go(`switchTab('${firstLesson}')`, 'L' + lessonNo(firstLesson) + ' を開く') : '');
     if(chs){
-      h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章');
-      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章');
+      h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章',
+        missW.length ? go(`switchTab('work${missW[0]}')`, `第${missW[0]}章のワークへ`) : '');
+      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章',
+        missT.length ? go(`goChapterTest(${missT[0]})`, `第${missT[0]}章のテストへ`) : '');
     }
-    if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格');
+    if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格', go(`switchTab('exam')`, '認定試験へ'));
     ckEl.innerHTML = '<div style="font-weight:700;margin-bottom:4px">修了の条件</div>' + h;
     if(!currentCertifiedEarlier && chs && ((sm.chaptersSubmitted || 0) < chs || (sm.testPassedChapters || 0) < chs)) allDone = false;
   }
@@ -139,10 +170,10 @@ function updateCompletionUI(){
     const chs = _sm ? (_sm.chaptersTotal || 0) : 0;
     if(_sm && chs && (_sm.chaptersSubmitted || 0) < chs && !currentCertifiedEarlier){
       const miss = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(_sm.workDoneList || []).includes(c));
-      noticeText = `⚠️ 章末ワークが未提出の章があります（第${miss.join('・')}章）。サイドバーの W 行から提出してください。`;
+      noticeText = `⚠️ 章末ワークが未提出の章があります（第${miss.join('・')}章）。上の「修了の条件」のボタンから開けます。`;
     } else if(_sm && chs && (_sm.testPassedChapters || 0) < chs && !currentCertifiedEarlier){
       const miss = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(_sm.testPassedList || []).includes(c));
-      noticeText = `⚠️ 章末確認テストに未合格の章があります（第${miss.join('・')}章）。サイドバーの T 行から受けてください。`;
+      noticeText = `⚠️ 章末確認テストに未合格の章があります（第${miss.join('・')}章）。上の「修了の条件」のボタンから開けます。`;
     } else if(plan === 'premium' && !examPassed){
       noticeText = '⚠️ 認定試験に合格してから申請してください。';
     }

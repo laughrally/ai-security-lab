@@ -230,10 +230,14 @@ function buildSideNav(completed){
   if(!window._aslResumed && currentUserPlan){
     window._aslResumed = true;
     try {
-      const last = JSON.parse(localStorage.getItem('asl_last_tab') || 'null');
+      const last = store.getJSON('asl_last_tab', null);
       if(last && last.u === currentUser.id && last.t && last.t !== currentTab && tabOpenable(last.t)){
         currentTab = last.t;
         setTimeout(() => window.switchTab(last.t), 0);   // 中身の読み込み（ワーク・テスト・修了証）を通常の経路で行う
+      } else if(!last && completed.length){
+        // 前回の記録が端末に無い（別の端末・ブラウザ）ときは、受講順で最初の未了から開く（2026-11-23。以前は序章が開いた）
+        const nx = nextStep();
+        if(nx) setTimeout(() => nx.run(), 0);
       }
     } catch(e){}
   }
@@ -267,7 +271,8 @@ function buildSideNav(completed){
   let html = '';
   CHAPTER_DATA.forEach((ch, idx) => {
     const doneCnt = ch.lessons.filter(id => completed.includes(id)).length;
-    html += `<div class="sb-ch-label">${ch.tag} · ${ch.name}</div>`;
+    const inPlan = ch.lessons.some(id => getPlanLessons().includes(id));
+    html += `<div class="sb-ch-label">${ch.tag} · ${ch.name}${inPlan && ch.tag !== '序章' ? `<span class="sb-ch-cnt">${doneCnt}/${ch.lessons.length}</span>` : ''}</div>`;
     ch.lessons.forEach(id => {
       const done = completed.includes(id);
       const active = id === currentTab;
@@ -365,6 +370,16 @@ function updateLearnTopBar(tabId){
 }
 
 // ---- 進捗パネル ----
+// 進捗パネルの章ごとの「章末ワーク・確認テスト」の状態（2026-11-23。以前はレッスンだけだった）
+function wtLine(ch){
+  const no = parseInt((ch.tag || '').replace(/[^0-9]/g, ''), 10);
+  if(!no || !WORK_CHAPTERS[no] || no > (COURSE.workChapters[currentUserPlan] || 0)) return '';
+  const sm = window._recSummary || {};
+  const w = !!_workSubmittedCh[no] || (sm.workDoneList || []).includes(no);
+  const t = !!(_testResultCh[no] && _testResultCh[no].passed) || (sm.testPassedList || []).includes(no);
+  return `<div class="sb-dash-wt"><button type="button" class="sb-dash-wt-item${w ? ' done' : ''}" onclick="switchTab('work${no}')">章末ワーク ${w ? '✓ 提出済み' : '未提出'}</button>`
+    + `<button type="button" class="sb-dash-wt-item${t ? ' done' : ''}" onclick="goChapterTest(${no})">確認テスト ${t ? '✓ 合格' : '未合格'}</button></div>`;
+}
 function buildProgressPanel(){
   const panel = document.getElementById('sb-progress-panel');
   if(!panel) return;
@@ -385,6 +400,7 @@ function buildProgressPanel(){
       </div>
       <div class="sb-dash-bar"><div class="sb-dash-bar-fill" style="width:${pct}%;background:${ch.color}"></div></div>
       <div class="sb-dash-items">${dots}</div>
+      ${wtLine(ch)}
     </div>`;
   });
   // 修了証への導線（Standard 以上）。以前はサイドバーにも進捗にも行が無く、Standard の人がたどり着けなかった
@@ -433,7 +449,7 @@ function quizDoneKey(){ return 'asl_quiz_done:' + ((currentUser && currentUser.i
  */
 function restoreQuizLocks(){
   let done = {};
-  try { done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}'); } catch(e){ return; }
+  done = store.getJSON(quizDoneKey(), {}) || {};
   Object.keys(done).forEach(id => {
     const okEl = document.getElementById(id + '-ok');
     if(!okEl) return;                      // そのレッスンがまだ読み込まれていない

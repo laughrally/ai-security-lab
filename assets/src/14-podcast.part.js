@@ -67,7 +67,7 @@ function initPodcast(){
     if(dur) dur.textContent = podFmt(a.duration);
     // 前回の続きから（最後まで聴き終えていた場合は先頭に戻す）
     try{
-      const saved = parseFloat(localStorage.getItem(POD_KEY) || '0');
+      const saved = parseFloat(store.get(POD_KEY, '0'));
       if(saved > 0 && isFinite(a.duration) && saved < a.duration - 5) a.currentTime = saved;
     }catch(e){ /* localStorageが使えない環境は無視 */ }
   };
@@ -82,7 +82,7 @@ function initPodcast(){
     }
     // 5秒ごとに保存する。毎回書くとtimeupdateの頻度ぶん無駄に書き込む。
     if(Math.floor(a.currentTime) % 5 === 0){
-      try{ localStorage.setItem(POD_KEY, String(a.currentTime)); }catch(e){ /* noop */ }
+      store.set(POD_KEY, String(a.currentTime));
     }
   });
   a.addEventListener('play',  () => { if(play){ play.textContent = '❚❚'; play.setAttribute('aria-label','一時停止'); } });
@@ -90,7 +90,7 @@ function initPodcast(){
   a.addEventListener('ended', () => {
     if(play) play.textContent = '▶';
     if(seek) seek.value = '0';
-    try{ localStorage.removeItem(POD_KEY); }catch(e){ /* noop */ }
+    store.remove(POD_KEY);
   });
   a.addEventListener('error', () => {
     if(cur) cur.textContent = '読み込み失敗';

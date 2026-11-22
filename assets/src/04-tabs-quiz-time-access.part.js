@@ -67,11 +67,11 @@ let tickAt      = null;   // 前回の加算時刻
 let lastInputAt = Date.now();
 let wasVisible  = (document.visibilityState === 'visible');
 
-function loadActive(){ try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}'); } catch(e){ return {}; } }
-function saveActive(o){ try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(o)); } catch(e){} }
-function loadStarts(){ try { return JSON.parse(localStorage.getItem(START_KEY) || '{}'); } catch(e){ return {}; } }
-function loadSynced(){ try { return JSON.parse(localStorage.getItem(SYNC_KEY) || '{}'); } catch(e){ return {}; } }
-function saveSynced(o){ try { localStorage.setItem(SYNC_KEY, JSON.stringify(o)); } catch(e){} }
+function loadActive(){ return store.getJSON(ACTIVE_KEY, {}) || {}; }
+function saveActive(o){ store.set(ACTIVE_KEY, o); }
+function loadStarts(){ return store.getJSON(START_KEY, {}) || {}; }
+function loadSynced(){ return store.getJSON(SYNC_KEY, {}) || {}; }
+function saveSynced(o){ store.set(SYNC_KEY, o); }
 
 // 完了済みレッスンを学習し直したぶんをサーバへ反映する。
 // 受講済みボタンは pointer-events:none で二度と押せないため、
@@ -129,7 +129,7 @@ function markLessonStart(tabId){
     const st = loadStarts();
     if(!st[tabId]){                    // 「最初に開いた時刻」は初回だけ記録して保持する
       st[tabId] = new Date().toISOString();
-      try { localStorage.setItem(START_KEY, JSON.stringify(st)); } catch(e){}
+      store.set(START_KEY, st);
     }
   } else {
     activeItem = null;                 // ダッシュボード等では加算しない
@@ -217,9 +217,9 @@ async function doQ(btn, selected, id){
       // 正解の位置はサーバーにしかないので、doQ が送る「元の選択肢番号」を保存する
       // （表示順はシャッフルされるが、この番号は QUIZ_ANSWER_KEY と対応している）。
       try {
-        const done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}');
+        const done = store.getJSON(quizDoneKey(), {}) || {};
         done[id] = { s: selected, e: r.explanation || '' };
-        localStorage.setItem(quizDoneKey(), JSON.stringify(done));
+        store.set(quizDoneKey(), done);
       } catch(e){}
     } else {
       // 不正解：この選択肢だけ無効化。他は引き続き選べる。

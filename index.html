@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=5c93e409f0">
+<link rel="stylesheet" href="/assets/app.css?v=cb851a9ca7">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -1675,7 +1675,7 @@
           <div class="cert-form-desc">以下を入力して申請してください。修了の条件をすべて満たすと送信できます。</div>
           <div id="cert-checklist" style="margin:14px 0;font-size:13.5px;line-height:2"></div>
           <div id="cert-locked-notice" class="cert-locked-notice">⚠️ 修了の条件を満たしてから申請してください。</div>
-          <div class="form-field"><label>会社名<span style="font-size:11px;color:#999;margin-left:6px">（任意）</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方は空欄でOK）"></div>
+          <div class="form-field"><label>会社名<span style="font-size:11px;color:var(--text3);margin-left:6px">（任意）</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方は空欄でOK）"></div>
           <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
           <div class="form-field"><label>送付先メールアドレス</label><input type="email" id="cert-email" readonly style="background:var(--bg2);color:var(--text3);cursor:not-allowed" placeholder="ログイン中のアカウント"></div>
           <div class="form-msg" id="cert-msg" style="display:none"></div>
@@ -1705,7 +1705,7 @@
           <input type="text" id="rep-name" placeholder="山田 太郎">
         </div>
         <div class="form-field" style="margin:0">
-          <label style="font-size:12px">会社名<span style="font-size:11px;color:#999;margin-left:4px">（任意）</span></label>
+          <label style="font-size:12px">会社名<span style="font-size:11px;color:var(--text3);margin-left:4px">（任意）</span></label>
           <input type="text" id="rep-company" placeholder="株式会社〇〇">
         </div>
       </div>
@@ -2285,6 +2285,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=3492fa2f69"></script>
+<script type="module" src="/assets/app.mjs?v=0c7c21a623"></script>
 </body>
 </html>

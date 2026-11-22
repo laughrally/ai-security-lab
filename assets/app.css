@@ -341,7 +341,7 @@
   .lnav{display:flex;justify-content:space-between;margin-top:56px;padding-top:28px;border-top:1px solid var(--border);gap:16px;flex-wrap:wrap}
   .lnbtn{display:flex;flex-direction:column;gap:4px;text-decoration:none;padding:16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;transition:all .2s;max-width:260px;box-shadow:var(--sh)}
   .lnbtn:hover{box-shadow:var(--sh-md);border-color:var(--border2)}
-  .lnl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);letter-spacing:.1em}
+  .lnl{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:.1em}
   .lnt{font-size:13px;color:var(--text2);line-height:1.5}
 
   .pgcards{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:16px;margin-top:48px}
@@ -939,9 +939,9 @@
   /* 章見出し */
   .sb-ch-label {
     padding: 10px 16px 3px;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: .08em;
-    color: var(--text4);
+    color: var(--text3);
     text-transform: uppercase;
     font-weight: 600;
     font-family: 'IBM Plex Mono', monospace;
@@ -979,8 +979,8 @@
   .sb-row.active .sb-row-dot { background: var(--red); }
   .sb-row-num {
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 10px;
-    color: var(--text4);
+    font-size: 11px;
+    color: var(--text3);
     min-width: 20px;
     flex-shrink: 0;
   }
@@ -1137,7 +1137,7 @@
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    background: var(--red);
+    background: var(--red-s);
     color: #fff;
     border: none;
     font-size: 22px;
@@ -1187,9 +1187,9 @@
     #learn-wrapper.show { top: 56px; }
     #learn-sidebar { width: 260px; }
     #learn-topbar { padding: 7px 12px; min-height: 42px; }
-    #learn-breadcrumb { font-size: 10px; }
+    #learn-breadcrumb { font-size: 12px; }
     #learn-breadcrumb .bc-ch, #learn-breadcrumb .bc-ch + .bc-sep { display: none; }
-    .learn-nav-btn { padding: 4px 8px; font-size: 10px; }
+    .learn-nav-btn { padding: 8px 12px; font-size: 13px; min-height: 36px; }
     #learn-content-inner { padding: 20px 14px; }
   }
 
@@ -1214,7 +1214,7 @@
   padding:18px 22px; border-radius:10px; margin:24px 0 32px; }
 .work-intro p{ font-size:14.5px; line-height:2.0; margin:0 0 10px; }
 .work-intro p:last-child{ margin-bottom:0; }
-.work-warn{ color:#b45309; }
+.work-warn{ color:var(--amber); }
 
 /* 進捗バー */
 .work-steps{ display:flex; gap:8px; margin:0 0 28px; }
@@ -1228,7 +1228,7 @@
 .work-q-head{ display:flex; justify-content:space-between; align-items:baseline;
   margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(127,127,127,.18); }
 .work-q-no{ font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--green); }
-.work-q-ref{ font-size:12px; opacity:.55; }
+.work-q-ref{ font-size:12px; color:var(--text3); }
 .work-q-text{ font-size:15.5px!important; line-height:2.15!important; margin:0 0 22px!important; }
 
 .work-input{ display:block; width:100%; min-height:320px; padding:18px 20px;
@@ -1241,7 +1241,7 @@
 
 .work-meta{ display:flex; justify-content:space-between; align-items:center;
   margin-top:10px; font-size:12.5px; }
-.work-count{ opacity:.5; font-variant-numeric:tabular-nums; }
+.work-count{ color:var(--text3); font-variant-numeric:tabular-nums; }
 .work-count.is-ok{ color:var(--green); opacity:1; font-weight:700; }
 .work-saved{ font-size:12px; opacity:.5; }
 
@@ -1282,7 +1282,7 @@
   border:1.5px solid rgba(127,127,127,.28); border-radius:8px; cursor:pointer; transition:.15s; }
 .test-opt:hover:not(:disabled){ border-color:#10b981; background:rgba(16,185,129,.05); }
 .test-opt:disabled{ cursor:default; }
-.test-opt.is-done{ opacity:.55; }
+.test-opt.is-done{ color:var(--text3); }
 .test-opt.is-correct{ opacity:1; border-color:#10b981; background:rgba(16,185,129,.12); font-weight:700; }
 .test-opt.is-wrong{ opacity:1; border-color:#dc2626; background:rgba(220,38,38,.08); }
 .test-exp{ display:none; }
@@ -1292,10 +1292,10 @@
 .test-exp.ng{ border-left:3px solid #dc2626; }
 .test-verdict{ font-weight:800; margin-bottom:6px; }
 .test-exp.ok .test-verdict{ color:var(--green); }
-.test-exp.ng .test-verdict{ color:#dc2626; }
+.test-exp.ng .test-verdict{ color:var(--red); }
 .test-summary{ margin-top:22px; text-align:center; font-size:15px; }
 .test-pass{ color:var(--green); font-weight:800; }
-.test-fail{ color:#dc2626; font-weight:700; }
+.test-fail{ color:var(--red); font-weight:700; }
 .test-prog{ opacity:.6; }
 @media(max-width:640px){ .test-q{ padding:15px 16px; } .test-opt{ padding:12px 14px; font-size:14px; } }
 
@@ -1313,8 +1313,8 @@
 .test-retry-msg{ font-size:13.5px; line-height:1.9; margin:0 0 14px; }
 .test-retry-sub{ font-size:12.5px; opacity:.65; }
 .test-retry-btn{ padding:11px 26px; font-size:14px; font-weight:700; font-family:inherit;
-  color:#fff; background:#f59e0b; border:none; border-radius:8px; cursor:pointer; transition:.15s; }
-.test-retry-btn:hover{ background:#d97706; }
+  color:#fff; background:#b45309; border:none; border-radius:8px; cursor:pointer; transition:.15s; }
+.test-retry-btn:hover{ background:#92400e; }
 .test-q.is-retry{ border-color:rgba(245,158,11,.5); background:rgba(245,158,11,.04); }
 .work-reopen{ margin-top:12px; padding:9px 22px; font-size:13px; font-weight:600; font-family:inherit;
   color:inherit; background:transparent; border:1.5px solid rgba(127,127,127,.35);
@@ -1402,3 +1402,13 @@ body.logged-in .hprice{display:none}
 #learn-onboard .ob-btn{width:auto;padding:10px 18px;margin:0}
 #learn-onboard .ob-close{position:absolute;top:8px;right:10px;background:none;border:none;font-size:20px;color:var(--text2);cursor:pointer;padding:6px}
 @media (max-width:860px){#learn-onboard{padding:14px 16px 0}}
+/* 修了の条件：足りない条件の横のボタン */
+.ck-row{margin:2px 0}
+.ck-go{margin-left:8px;padding:4px 10px;font-size:12.5px;border:1px solid var(--blue);background:transparent;color:var(--blue);border-radius:6px;cursor:pointer;font-family:inherit}
+.ck-go:hover{background:var(--blue-l)}
+/* 目次の章見出しの件数 */
+.sb-ch-cnt{float:right;font-weight:600;color:var(--text3);letter-spacing:0}
+/* 進捗パネルの章末ワーク・確認テスト */
+.sb-dash-wt{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.sb-dash-wt-item{font-size:11.5px;padding:3px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit}
+.sb-dash-wt-item.done{border-color:var(--green);color:var(--green)}

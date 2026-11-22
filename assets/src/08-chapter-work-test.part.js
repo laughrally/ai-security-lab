@@ -448,7 +448,10 @@ function updateTestSummary(ch){
   }
   const att = (r.attempts && r.attempts > 1) ? `　<span class="test-att">受験 ${r.attempts} 回目</span>` : '';
   if(r.passed){
-    el.innerHTML = `<span class="test-pass">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格</span>${att}`;
+    // 次の行き先（次の章の最初のレッスン、最後なら認定試験・修了証）を出す（2026-11-23）
+    const nx = typeof nextStep === 'function' ? nextStep() : null;
+    el.innerHTML = `<span class="test-pass">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格</span>${att}`
+      + (nx ? `<div style="margin-top:12px"><button type="button" class="form-submit ob-btn" onclick="${nx.onclick}">次へ：${escHtml(nx.label)} →</button></div>` : '');
     return;
   }
   const wrong = (r.wrongIds||[]).length;
@@ -519,7 +522,7 @@ window.switchTab = function(name){
   if(window._aslTestFocus && name !== 'work' + window._aslTestFocus) window._aslTestFocus = 0;
   if(currentUser){
     // 前回の続きから再開できるよう、最後に開いたタブを控える（ユーザーごと）
-    try { localStorage.setItem('asl_last_tab', JSON.stringify({ u: currentUser.id, t: name })); } catch(e){}
+    store.set('asl_last_tab', { u: currentUser.id, t: name });
     // ログイン後はshowActiveLessonで直接切替
     showActiveLesson(name);
     const completed = loadCompleted();

@@ -68,16 +68,16 @@ if(s==='dark'||(!s&&d))document.documentElement.setAttribute('data-pre','dark');
 :root{
   --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
   --border:#e5e7eb; --border2:#d1d5db;
-  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
-  --red:#dc2626; --red-l:#fee2e2;
-  --amber:#d97706; --amber-l:#fef3c7;
-  --green:#16a34a; --green-l:#dcfce7;
-  --blue:#2563eb; --blue-l:#dbeafe;
+  --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#6b7789;
+  --red:#b91c1c; --red-l:#fee2e2;
+  --amber:#b45309; --amber-l:#fef3c7;
+  --green:#15803d; --green-l:#dcfce7;
+  --blue:#1d4ed8; --blue-l:#dbeafe;
 }
 body.dark{
   --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
   --border:#2a3347; --border2:#374155;
-  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+  --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#8391a7;
   --red:#f87171; --red-l:rgba(248,113,113,.12);
   --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
   --green:#34d399; --green-l:rgba(52,211,153,.12);
@@ -107,6 +107,8 @@ nav{background:var(--bg);border-bottom:1px solid var(--border);height:60px;displ
 .btn{border:none;border-radius:7px;padding:12px 22px;font-size:14px;font-weight:700;cursor:pointer;
      font-family:inherit;text-decoration:none;display:inline-block}
 .btn-p{background:var(--red);color:#fff}
+/* ダークでは --red が明るい色になるので、白い文字のボタンは濃い赤のままにする（2026-11-23） */
+body.dark .ncta,body.dark .btn-p{background:#dc2626}
 .btn-p:hover{background:#b91c1c}
 .btn-s{background:var(--bg);color:var(--text);border:1px solid var(--border2)}
 .btn-s:hover{background:var(--bg3)}

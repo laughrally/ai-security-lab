@@ -298,9 +298,9 @@ function servedFor(lessonId){ return (store.getJSON(SERVED_KEY, {}) || {})[lesso
 function claimLocalData(uid){
   if(!uid) return;
   try {
-    const owner = localStorage.getItem('asl_owner');
-    if(owner && owner !== uid) LOCAL_LEARN_KEYS.forEach(k => localStorage.removeItem(k));
-    if(owner !== uid) localStorage.setItem('asl_owner', uid);
+    const owner = store.get('asl_owner');
+    if(owner && owner !== uid) LOCAL_LEARN_KEYS.forEach(k => store.remove(k));
+    if(owner !== uid) store.set('asl_owner', uid);
   } catch(e){}
 }
 
@@ -590,7 +590,7 @@ async function signOut(){
   if(!_supabase) return;
   // ログアウト時に、この端末に残る受講データを消す（共用PCで次の人の記録に混ざらないように）。
   // 以前は受講済みだけを消しており、学習時間の累計や開始時刻が次の人の送信に乗っていた（2026-11-22）
-  LOCAL_LEARN_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  LOCAL_LEARN_KEYS.forEach(k => store.remove(k));
   currentCertifiedEarlier = false;
   currentExamPassed = false;
   await _supabase.auth.signOut();
@@ -667,11 +667,11 @@ let tickAt      = null;   // 前回の加算時刻
 let lastInputAt = Date.now();
 let wasVisible  = (document.visibilityState === 'visible');
 
-function loadActive(){ try { return JSON.parse(localStorage.getItem(ACTIVE_KEY) || '{}'); } catch(e){ return {}; } }
-function saveActive(o){ try { localStorage.setItem(ACTIVE_KEY, JSON.stringify(o)); } catch(e){} }
-function loadStarts(){ try { return JSON.parse(localStorage.getItem(START_KEY) || '{}'); } catch(e){ return {}; } }
-function loadSynced(){ try { return JSON.parse(localStorage.getItem(SYNC_KEY) || '{}'); } catch(e){ return {}; } }
-function saveSynced(o){ try { localStorage.setItem(SYNC_KEY, JSON.stringify(o)); } catch(e){} }
+function loadActive(){ return store.getJSON(ACTIVE_KEY, {}) || {}; }
+function saveActive(o){ store.set(ACTIVE_KEY, o); }
+function loadStarts(){ return store.getJSON(START_KEY, {}) || {}; }
+function loadSynced(){ return store.getJSON(SYNC_KEY, {}) || {}; }
+function saveSynced(o){ store.set(SYNC_KEY, o); }
 
 // 完了済みレッスンを学習し直したぶんをサーバへ反映する。
 // 受講済みボタンは pointer-events:none で二度と押せないため、
@@ -729,7 +729,7 @@ function markLessonStart(tabId){
     const st = loadStarts();
     if(!st[tabId]){                    // 「最初に開いた時刻」は初回だけ記録して保持する
       st[tabId] = new Date().toISOString();
-      try { localStorage.setItem(START_KEY, JSON.stringify(st)); } catch(e){}
+      store.set(START_KEY, st);
     }
   } else {
     activeItem = null;                 // ダッシュボード等では加算しない
@@ -817,9 +817,9 @@ async function doQ(btn, selected, id){
       // 正解の位置はサーバーにしかないので、doQ が送る「元の選択肢番号」を保存する
       // （表示順はシャッフルされるが、この番号は QUIZ_ANSWER_KEY と対応している）。
       try {
-        const done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}');
+        const done = store.getJSON(quizDoneKey(), {}) || {};
         done[id] = { s: selected, e: r.explanation || '' };
-        localStorage.setItem(quizDoneKey(), JSON.stringify(done));
+        store.set(quizDoneKey(), done);
       } catch(e){}
     } else {
       // 不正解：この選択肢だけ無効化。他は引き続き選べる。
@@ -1951,7 +1951,10 @@ function updateTestSummary(ch){
   }
   const att = (r.attempts && r.attempts > 1) ? `　<span class="test-att">受験 ${r.attempts} 回目</span>` : '';
   if(r.passed){
-    el.innerHTML = `<span class="test-pass">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格</span>${att}`;
+    // 次の行き先（次の章の最初のレッスン、最後なら認定試験・修了証）を出す（2026-11-23）
+    const nx = typeof nextStep === 'function' ? nextStep() : null;
+    el.innerHTML = `<span class="test-pass">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格</span>${att}`
+      + (nx ? `<div style="margin-top:12px"><button type="button" class="form-submit ob-btn" onclick="${nx.onclick}">次へ：${escHtml(nx.label)} →</button></div>` : '');
     return;
   }
   const wrong = (r.wrongIds||[]).length;
@@ -2022,7 +2025,7 @@ window.switchTab = function(name){
   if(window._aslTestFocus && name !== 'work' + window._aslTestFocus) window._aslTestFocus = 0;
   if(currentUser){
     // 前回の続きから再開できるよう、最後に開いたタブを控える（ユーザーごと）
-    try { localStorage.setItem('asl_last_tab', JSON.stringify({ u: currentUser.id, t: name })); } catch(e){}
+    store.set('asl_last_tab', { u: currentUser.id, t: name });
     // ログイン後はshowActiveLessonで直接切替
     showActiveLesson(name);
     const completed = loadCompleted();
@@ -2060,7 +2063,7 @@ function getPlanLessons(){
 
 function loadCompleted(){
   try{
-    let arr = JSON.parse(localStorage.getItem('asl_completed')||'[]');
+    let arr = store.getJSON('asl_completed', []) || [];
     // 序章（intro）が含まれていたら削除（旧データのクリーンアップ）
     arr = arr.filter(id => id !== 'intro');
     return arr;
@@ -2101,6 +2104,29 @@ function markComplete(tabId){
     });
   }
 }
+
+// 次にやること：受講順で最初の未了（レッスン → その章のワーク → 確認テスト …）。最後は認定試験・修了証（2026-11-23）。
+// 戻り値：{ label, onclick, run } または null
+function nextStep(){
+  const completed = loadCompleted();
+  const sm = window._recSummary || {};
+  const mk = (label, onclick, run) => ({ label, onclick, run });
+  for(const id of planTabsOrdered()){
+    if(ALL_LESSONS_LIST.includes(id)){
+      if(!completed.includes(id)) return mk('L' + lessonNo(id) + ' ' + (COURSE.titles[id] || ''), `switchTab('${id}')`, () => window.switchTab(id));
+      continue;
+    }
+    const m = /^work(\d+)$/.exec(id);
+    if(!m) continue;
+    const c = Number(m[1]);
+    if(!_workSubmittedCh[c] && !(sm.workDoneList || []).includes(c)) return mk(`第${c}章の章末ワーク`, `switchTab('${id}')`, () => window.switchTab(id));
+    if(!(_testResultCh[c] && _testResultCh[c].passed) && !(sm.testPassedList || []).includes(c)) return mk(`第${c}章の確認テスト`, `goChapterTest(${c})`, () => goChapterTest(c));
+  }
+  if(currentUserPlan === 'premium' && !(sm.examPassed || currentExamPassed)) return mk('認定試験', `switchTab('exam')`, () => window.switchTab('exam'));
+  if(currentUserPlan === 'standard' || currentUserPlan === 'premium') return mk('修了証の申請', `switchTab('certificate')`, () => window.switchTab('certificate'));
+  return null;
+}
+window.nextStep = nextStep;
 
 function updateCompletionUI(){
   const completed = loadCompleted();
@@ -2156,19 +2182,27 @@ function updateCompletionUI(){
   }
   // レッスン追加より前に修了証を受け取った人は、追加分が未受講でも申請（再発行）できる
   let allDone = planLessons.every(id => completed.includes(id)) || currentCertifiedEarlier;
+  const go = (onclick, text) => ` <button type="button" class="ck-go" onclick="${onclick}">${escHtml(text)} →</button>`;
+  const firstLesson = planLessons.find(id => !completed.includes(id));
   // 修了条件のチェックリスト（2026-11-22）。以前はレッスン数しか見えず、ワークやテストが
   // 未了でも申請ボタンが押せて、送信後にサーバーで弾かれていた
   const sm = window._recSummary;
   const ckEl = document.getElementById('cert-checklist');
   if(ckEl && sm){
-    const row = (ok, label, val) => `<div>${ok ? '✅' : '⬜'} ${label}　<span style="color:var(--text3)">${val}</span></div>`;
+    // 足りない条件には、その場所へ移るボタンを付ける（2026-11-23。以前は文字だけで、スマホでは目次も隠れていた）
+    const row = (ok, label, val, btn) => `<div class="ck-row">${ok ? '✅' : '⬜'} ${label}　<span style="color:var(--text3)">${val}</span>${ok ? '' : (btn || '')}</div>`;
     const chs = sm.chaptersTotal || 0;
-    let h = row(planDone.length >= planTotal || currentCertifiedEarlier, '全レッスンを受講済みにする', planDone.length + ' / ' + planTotal);
+    const missW = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(sm.workDoneList || []).includes(c));
+    const missT = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(sm.testPassedList || []).includes(c));
+    let h = row(planDone.length >= planTotal || currentCertifiedEarlier, '全レッスンを受講済みにする', planDone.length + ' / ' + planTotal,
+      firstLesson ? go(`switchTab('${firstLesson}')`, 'L' + lessonNo(firstLesson) + ' を開く') : '');
     if(chs){
-      h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章');
-      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章');
+      h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章',
+        missW.length ? go(`switchTab('work${missW[0]}')`, `第${missW[0]}章のワークへ`) : '');
+      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章',
+        missT.length ? go(`goChapterTest(${missT[0]})`, `第${missT[0]}章のテストへ`) : '');
     }
-    if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格');
+    if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格', go(`switchTab('exam')`, '認定試験へ'));
     ckEl.innerHTML = '<div style="font-weight:700;margin-bottom:4px">修了の条件</div>' + h;
     if(!currentCertifiedEarlier && chs && ((sm.chaptersSubmitted || 0) < chs || (sm.testPassedChapters || 0) < chs)) allDone = false;
   }
@@ -2189,10 +2223,10 @@ function updateCompletionUI(){
     const chs = _sm ? (_sm.chaptersTotal || 0) : 0;
     if(_sm && chs && (_sm.chaptersSubmitted || 0) < chs && !currentCertifiedEarlier){
       const miss = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(_sm.workDoneList || []).includes(c));
-      noticeText = `⚠️ 章末ワークが未提出の章があります（第${miss.join('・')}章）。サイドバーの W 行から提出してください。`;
+      noticeText = `⚠️ 章末ワークが未提出の章があります（第${miss.join('・')}章）。上の「修了の条件」のボタンから開けます。`;
     } else if(_sm && chs && (_sm.testPassedChapters || 0) < chs && !currentCertifiedEarlier){
       const miss = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(_sm.testPassedList || []).includes(c));
-      noticeText = `⚠️ 章末確認テストに未合格の章があります（第${miss.join('・')}章）。サイドバーの T 行から受けてください。`;
+      noticeText = `⚠️ 章末確認テストに未合格の章があります（第${miss.join('・')}章）。上の「修了の条件」のボタンから開けます。`;
     } else if(plan === 'premium' && !examPassed){
       noticeText = '⚠️ 認定試験に合格してから申請してください。';
     }
@@ -2845,7 +2879,7 @@ function initPodcast(){
     if(dur) dur.textContent = podFmt(a.duration);
     // 前回の続きから（最後まで聴き終えていた場合は先頭に戻す）
     try{
-      const saved = parseFloat(localStorage.getItem(POD_KEY) || '0');
+      const saved = parseFloat(store.get(POD_KEY, '0'));
       if(saved > 0 && isFinite(a.duration) && saved < a.duration - 5) a.currentTime = saved;
     }catch(e){ /* localStorageが使えない環境は無視 */ }
   };
@@ -2860,7 +2894,7 @@ function initPodcast(){
     }
     // 5秒ごとに保存する。毎回書くとtimeupdateの頻度ぶん無駄に書き込む。
     if(Math.floor(a.currentTime) % 5 === 0){
-      try{ localStorage.setItem(POD_KEY, String(a.currentTime)); }catch(e){ /* noop */ }
+      store.set(POD_KEY, String(a.currentTime));
     }
   });
   a.addEventListener('play',  () => { if(play){ play.textContent = '❚❚'; play.setAttribute('aria-label','一時停止'); } });
@@ -2868,7 +2902,7 @@ function initPodcast(){
   a.addEventListener('ended', () => {
     if(play) play.textContent = '▶';
     if(seek) seek.value = '0';
-    try{ localStorage.removeItem(POD_KEY); }catch(e){ /* noop */ }
+    store.remove(POD_KEY);
   });
   a.addEventListener('error', () => {
     if(cur) cur.textContent = '読み込み失敗';
@@ -3202,10 +3236,14 @@ function buildSideNav(completed){
   if(!window._aslResumed && currentUserPlan){
     window._aslResumed = true;
     try {
-      const last = JSON.parse(localStorage.getItem('asl_last_tab') || 'null');
+      const last = store.getJSON('asl_last_tab', null);
       if(last && last.u === currentUser.id && last.t && last.t !== currentTab && tabOpenable(last.t)){
         currentTab = last.t;
         setTimeout(() => window.switchTab(last.t), 0);   // 中身の読み込み（ワーク・テスト・修了証）を通常の経路で行う
+      } else if(!last && completed.length){
+        // 前回の記録が端末に無い（別の端末・ブラウザ）ときは、受講順で最初の未了から開く（2026-11-23。以前は序章が開いた）
+        const nx = nextStep();
+        if(nx) setTimeout(() => nx.run(), 0);
       }
     } catch(e){}
   }
@@ -3239,7 +3277,8 @@ function buildSideNav(completed){
   let html = '';
   CHAPTER_DATA.forEach((ch, idx) => {
     const doneCnt = ch.lessons.filter(id => completed.includes(id)).length;
-    html += `<div class="sb-ch-label">${ch.tag} · ${ch.name}</div>`;
+    const inPlan = ch.lessons.some(id => getPlanLessons().includes(id));
+    html += `<div class="sb-ch-label">${ch.tag} · ${ch.name}${inPlan && ch.tag !== '序章' ? `<span class="sb-ch-cnt">${doneCnt}/${ch.lessons.length}</span>` : ''}</div>`;
     ch.lessons.forEach(id => {
       const done = completed.includes(id);
       const active = id === currentTab;
@@ -3337,6 +3376,16 @@ function updateLearnTopBar(tabId){
 }
 
 // ---- 進捗パネル ----
+// 進捗パネルの章ごとの「章末ワーク・確認テスト」の状態（2026-11-23。以前はレッスンだけだった）
+function wtLine(ch){
+  const no = parseInt((ch.tag || '').replace(/[^0-9]/g, ''), 10);
+  if(!no || !WORK_CHAPTERS[no] || no > (COURSE.workChapters[currentUserPlan] || 0)) return '';
+  const sm = window._recSummary || {};
+  const w = !!_workSubmittedCh[no] || (sm.workDoneList || []).includes(no);
+  const t = !!(_testResultCh[no] && _testResultCh[no].passed) || (sm.testPassedList || []).includes(no);
+  return `<div class="sb-dash-wt"><button type="button" class="sb-dash-wt-item${w ? ' done' : ''}" onclick="switchTab('work${no}')">章末ワーク ${w ? '✓ 提出済み' : '未提出'}</button>`
+    + `<button type="button" class="sb-dash-wt-item${t ? ' done' : ''}" onclick="goChapterTest(${no})">確認テスト ${t ? '✓ 合格' : '未合格'}</button></div>`;
+}
 function buildProgressPanel(){
   const panel = document.getElementById('sb-progress-panel');
   if(!panel) return;
@@ -3357,6 +3406,7 @@ function buildProgressPanel(){
       </div>
       <div class="sb-dash-bar"><div class="sb-dash-bar-fill" style="width:${pct}%;background:${ch.color}"></div></div>
       <div class="sb-dash-items">${dots}</div>
+      ${wtLine(ch)}
     </div>`;
   });
   // 修了証への導線（Standard 以上）。以前はサイドバーにも進捗にも行が無く、Standard の人がたどり着けなかった
@@ -3405,7 +3455,7 @@ function quizDoneKey(){ return 'asl_quiz_done:' + ((currentUser && currentUser.i
  */
 function restoreQuizLocks(){
   let done = {};
-  try { done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}'); } catch(e){ return; }
+  done = store.getJSON(quizDoneKey(), {}) || {};
   Object.keys(done).forEach(id => {
     const okEl = document.getElementById(id + '-ok');
     if(!okEl) return;                      // そのレッスンがまだ読み込まれていない
@@ -3620,7 +3670,7 @@ function renderExam(){
   const QS = examState.questions;
   QS.forEach((q, i) => {
     html += `<div style="margin-bottom:32px;padding:20px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">問題 ${i+1} / ${QS.length}　[${q.lesson}]</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">問題 ${i+1} / ${QS.length}　[${q.lesson}]</div>
       <div style="font-weight:700;margin-bottom:16px;line-height:1.6">${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:8px">`;
     q.o.forEach((opt, j) => {
@@ -3674,7 +3724,7 @@ async function submitExam(){
   });
 
   const container = document.getElementById('examContainer');
-  if(container) container.innerHTML = '<div style="text-align:center;padding:80px 20px;font-size:16px;color:var(--muted)">採点しています…</div>';
+  if(container) container.innerHTML = '<div style="text-align:center;padding:80px 20px;font-size:16px;color:var(--text3)">採点しています…</div>';
   window.scrollTo({top:0, behavior:'smooth'});
 
   try {
@@ -3731,12 +3781,12 @@ function renderExamResult(res){
   const passMark = res.passMark != null ? res.passMark : 48;
 
   let html = `
-    <div style="text-align:center;padding:40px 20px;background:${passed ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};border:2px solid ${passed ? '#22c55e' : 'var(--red)'};border-radius:16px;margin-bottom:32px">
+    <div style="text-align:center;padding:40px 20px;background:${passed ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};border:2px solid ${passed ? 'var(--green)' : 'var(--red)'};border-radius:16px;margin-bottom:32px">
       <div style="font-size:64px;margin-bottom:16px">${passed ? '🎉' : '😢'}</div>
-      <div style="font-size:28px;font-weight:700;margin-bottom:8px;color:${passed ? '#22c55e' : 'var(--red)'}">${passed ? '合格' : '不合格'}</div>
+      <div style="font-size:28px;font-weight:700;margin-bottom:8px;color:${passed ? 'var(--green)' : 'var(--red)'}">${passed ? '合格' : '不合格'}</div>
       <div style="font-size:20px;margin-bottom:16px">${correct} / ${total} 問正解（${pct}%）</div>
-      <div style="color:var(--muted);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
-      <div style="color:var(--muted);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
+      <div style="color:var(--text3);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
+      <div style="color:var(--text3);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
       ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
     </div>
   `;
@@ -3753,13 +3803,13 @@ function renderExamResult(res){
         return hit ? hit.text : '—';
       };
       const bg = r.isCorrect ? 'rgba(34,197,94,0.05)' : 'rgba(239,68,68,0.05)';
-      const bc = r.isCorrect ? '#22c55e' : 'var(--red)';
+      const bc = r.isCorrect ? 'var(--green)' : 'var(--red)';
       html += `<div style="margin-bottom:16px;padding:16px;background:${bg};border-left:4px solid ${bc};border-radius:8px">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">問題 ${idx+1} [${q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:4px">問題 ${idx+1} [${q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
         <div style="font-weight:700;margin-bottom:8px">${q.q}</div>
         <div style="font-size:14px;margin-bottom:4px"><strong>あなたの解答:</strong> ${r.selected !== null && r.selected !== undefined ? optText(r.selected) : '未回答'}</div>
-        <div style="font-size:14px;margin-bottom:8px;color:#22c55e"><strong>正解:</strong> ${optText(r.correctIndex)}</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.6"><strong>解説:</strong> ${r.explanation || ''}</div>
+        <div style="font-size:14px;margin-bottom:8px;color:var(--green)"><strong>正解:</strong> ${optText(r.correctIndex)}</div>
+        <div style="font-size:13px;color:var(--text3);line-height:1.6"><strong>解説:</strong> ${r.explanation || ''}</div>
       </div>`;
     });
   } else {
@@ -3771,21 +3821,28 @@ function renderExamResult(res){
     const wrongLessons = res.wrongByChapter || {};
     const keys = Object.keys(wrongLessons).sort((a, b) => (a === '序章' ? -1 : b === '序章' ? 1 : a.localeCompare(b, 'ja', {numeric:true})));
     html += `<div style="font-weight:700;font-size:18px;margin-bottom:12px">📚 復習が必要な章</div>
-      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 16px">
+      <p style="color:var(--text3);font-size:14px;line-height:1.8;margin:0 0 16px">
         公平な認定のため、正解と解説、どの設問を間違えたかは表示していません。誤答のあった章を読み直してから、あらためて受験してください。
       </p>`;
     if(keys.length){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
-        keys.map(L => `<span style="background:rgba(239,68,68,0.08);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600">${L}<span style="opacity:.7;font-weight:400">　${wrongLessons[L]}問</span></span>`).join('') +
+        // 章を押すと、その章の最初のレッスンが開く（2026-11-23。以前はただの文字だった）
+        keys.map(L => { const no = L === '序章' ? 0 : parseInt(L.replace(/[^0-9]/g, ''), 10); const first = no === 0 ? 'intro' : ((COURSE.chapters.find(c => c.no === no) || {}).lessons || [])[0];
+          return `<button type="button" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
         `</div>`;
     }
-    html += `<p style="color:var(--muted);font-size:13px;line-height:1.8;margin:0">
-      2回目以降の受験は、前回から24時間の間隔をいただいています。
+    html += `<p style="color:var(--text3);font-size:13px;line-height:1.8;margin:0">
+      2回目以降の受験は、前回から24時間の間隔をいただいています（次に受験できるのは ${nextExamAt()} ごろから）。
     </p>`;
   }
   container.innerHTML = html;
 }
 
+// 次に受験できる日時（提出から24時間後。Worker の EXAM_COOLDOWN_MS と同じ）
+function nextExamAt(){
+  const d = new Date(Date.now() + 24 * 3600e3);
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+}
 function retryExam(){
   examState = { active:false, answers:{}, questions:[], timer:null, remaining:3600, submitted:false, sending:false, startedAt:null };
   const container = document.getElementById('examContainer');

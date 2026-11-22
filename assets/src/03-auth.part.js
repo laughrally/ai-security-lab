@@ -129,9 +129,9 @@ function servedFor(lessonId){ return (store.getJSON(SERVED_KEY, {}) || {})[lesso
 function claimLocalData(uid){
   if(!uid) return;
   try {
-    const owner = localStorage.getItem('asl_owner');
-    if(owner && owner !== uid) LOCAL_LEARN_KEYS.forEach(k => localStorage.removeItem(k));
-    if(owner !== uid) localStorage.setItem('asl_owner', uid);
+    const owner = store.get('asl_owner');
+    if(owner && owner !== uid) LOCAL_LEARN_KEYS.forEach(k => store.remove(k));
+    if(owner !== uid) store.set('asl_owner', uid);
   } catch(e){}
 }
 
@@ -421,7 +421,7 @@ async function signOut(){
   if(!_supabase) return;
   // ログアウト時に、この端末に残る受講データを消す（共用PCで次の人の記録に混ざらないように）。
   // 以前は受講済みだけを消しており、学習時間の累計や開始時刻が次の人の送信に乗っていた（2026-11-22）
-  LOCAL_LEARN_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  LOCAL_LEARN_KEYS.forEach(k => store.remove(k));
   currentCertifiedEarlier = false;
   currentExamPassed = false;
   await _supabase.auth.signOut();

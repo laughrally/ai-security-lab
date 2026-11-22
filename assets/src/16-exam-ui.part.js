@@ -109,7 +109,7 @@ function renderExam(){
   const QS = examState.questions;
   QS.forEach((q, i) => {
     html += `<div style="margin-bottom:32px;padding:20px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">問題 ${i+1} / ${QS.length}　[${q.lesson}]</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:8px">問題 ${i+1} / ${QS.length}　[${q.lesson}]</div>
       <div style="font-weight:700;margin-bottom:16px;line-height:1.6">${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:8px">`;
     q.o.forEach((opt, j) => {
@@ -163,7 +163,7 @@ async function submitExam(){
   });
 
   const container = document.getElementById('examContainer');
-  if(container) container.innerHTML = '<div style="text-align:center;padding:80px 20px;font-size:16px;color:var(--muted)">採点しています…</div>';
+  if(container) container.innerHTML = '<div style="text-align:center;padding:80px 20px;font-size:16px;color:var(--text3)">採点しています…</div>';
   window.scrollTo({top:0, behavior:'smooth'});
 
   try {
@@ -220,12 +220,12 @@ function renderExamResult(res){
   const passMark = res.passMark != null ? res.passMark : 48;
 
   let html = `
-    <div style="text-align:center;padding:40px 20px;background:${passed ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};border:2px solid ${passed ? '#22c55e' : 'var(--red)'};border-radius:16px;margin-bottom:32px">
+    <div style="text-align:center;padding:40px 20px;background:${passed ? 'rgba(34,197,94,0.08)' : 'rgba(239,68,68,0.08)'};border:2px solid ${passed ? 'var(--green)' : 'var(--red)'};border-radius:16px;margin-bottom:32px">
       <div style="font-size:64px;margin-bottom:16px">${passed ? '🎉' : '😢'}</div>
-      <div style="font-size:28px;font-weight:700;margin-bottom:8px;color:${passed ? '#22c55e' : 'var(--red)'}">${passed ? '合格' : '不合格'}</div>
+      <div style="font-size:28px;font-weight:700;margin-bottom:8px;color:${passed ? 'var(--green)' : 'var(--red)'}">${passed ? '合格' : '不合格'}</div>
       <div style="font-size:20px;margin-bottom:16px">${correct} / ${total} 問正解（${pct}%）</div>
-      <div style="color:var(--muted);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
-      <div style="color:var(--muted);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
+      <div style="color:var(--text3);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
+      <div style="color:var(--text3);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
       ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
     </div>
   `;
@@ -242,13 +242,13 @@ function renderExamResult(res){
         return hit ? hit.text : '—';
       };
       const bg = r.isCorrect ? 'rgba(34,197,94,0.05)' : 'rgba(239,68,68,0.05)';
-      const bc = r.isCorrect ? '#22c55e' : 'var(--red)';
+      const bc = r.isCorrect ? 'var(--green)' : 'var(--red)';
       html += `<div style="margin-bottom:16px;padding:16px;background:${bg};border-left:4px solid ${bc};border-radius:8px">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">問題 ${idx+1} [${q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
+        <div style="font-size:12px;color:var(--text3);margin-bottom:4px">問題 ${idx+1} [${q.lesson}] ${r.isCorrect ? '✅ 正解' : '❌ 不正解'}</div>
         <div style="font-weight:700;margin-bottom:8px">${q.q}</div>
         <div style="font-size:14px;margin-bottom:4px"><strong>あなたの解答:</strong> ${r.selected !== null && r.selected !== undefined ? optText(r.selected) : '未回答'}</div>
-        <div style="font-size:14px;margin-bottom:8px;color:#22c55e"><strong>正解:</strong> ${optText(r.correctIndex)}</div>
-        <div style="font-size:13px;color:var(--muted);line-height:1.6"><strong>解説:</strong> ${r.explanation || ''}</div>
+        <div style="font-size:14px;margin-bottom:8px;color:var(--green)"><strong>正解:</strong> ${optText(r.correctIndex)}</div>
+        <div style="font-size:13px;color:var(--text3);line-height:1.6"><strong>解説:</strong> ${r.explanation || ''}</div>
       </div>`;
     });
   } else {
@@ -260,21 +260,28 @@ function renderExamResult(res){
     const wrongLessons = res.wrongByChapter || {};
     const keys = Object.keys(wrongLessons).sort((a, b) => (a === '序章' ? -1 : b === '序章' ? 1 : a.localeCompare(b, 'ja', {numeric:true})));
     html += `<div style="font-weight:700;font-size:18px;margin-bottom:12px">📚 復習が必要な章</div>
-      <p style="color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 16px">
+      <p style="color:var(--text3);font-size:14px;line-height:1.8;margin:0 0 16px">
         公平な認定のため、正解と解説、どの設問を間違えたかは表示していません。誤答のあった章を読み直してから、あらためて受験してください。
       </p>`;
     if(keys.length){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
-        keys.map(L => `<span style="background:rgba(239,68,68,0.08);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600">${L}<span style="opacity:.7;font-weight:400">　${wrongLessons[L]}問</span></span>`).join('') +
+        // 章を押すと、その章の最初のレッスンが開く（2026-11-23。以前はただの文字だった）
+        keys.map(L => { const no = L === '序章' ? 0 : parseInt(L.replace(/[^0-9]/g, ''), 10); const first = no === 0 ? 'intro' : ((COURSE.chapters.find(c => c.no === no) || {}).lessons || [])[0];
+          return `<button type="button" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
         `</div>`;
     }
-    html += `<p style="color:var(--muted);font-size:13px;line-height:1.8;margin:0">
-      2回目以降の受験は、前回から24時間の間隔をいただいています。
+    html += `<p style="color:var(--text3);font-size:13px;line-height:1.8;margin:0">
+      2回目以降の受験は、前回から24時間の間隔をいただいています（次に受験できるのは ${nextExamAt()} ごろから）。
     </p>`;
   }
   container.innerHTML = html;
 }
 
+// 次に受験できる日時（提出から24時間後。Worker の EXAM_COOLDOWN_MS と同じ）
+function nextExamAt(){
+  const d = new Date(Date.now() + 24 * 3600e3);
+  return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
+}
 function retryExam(){
   examState = { active:false, answers:{}, questions:[], timer:null, remaining:3600, submitted:false, sending:false, startedAt:null };
   const container = document.getElementById('examContainer');
