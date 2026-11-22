@@ -6735,9 +6735,10 @@ async function corpSubmit(){
 
 window.openCorpModal  = openCorpModal;
 // https://ai-security-lab.com/#corp で法人申込を直接開く（営業メールのリンク用）
-window.addEventListener('load', function(){
-  if (location.hash === '#corp') { try { openCorpModal(); } catch (e) {} }
-});
+// このモジュールは load のあとに走り終えることがあるので、済んでいればその場で開く
+function openCorpFromHash(){ if (location.hash === '#corp') { try { openCorpModal(); } catch (e) {} } }
+if (document.readyState === 'complete') openCorpFromHash();
+else window.addEventListener('load', openCorpFromHash);
 window.closeCorpModal = closeCorpModal;
 window.corpAddRow     = corpAddRow;
 window.corpRecalc     = corpRecalc;
