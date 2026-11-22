@@ -437,6 +437,19 @@
   #sb-user{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:11px;color:var(--text3)}
   #sb-user span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #sb-user button{flex-shrink:0;background:none;border:1px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text2);cursor:pointer;min-height:32px}
+
+  /* ===== 2026-11-22 UI 修正（2） ===== */
+  body{--accent:var(--blue)}   /* 申込フォームのリンク色が未定義の変数を参照していた */
+  /* 入力欄のフォーカス：outline:none で見えなくなっていた */
+  input:focus-visible,textarea:focus-visible,select:focus-visible,.work-input:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+  /* 押しにくかった小さなボタンを 44px 前後に */
+  .tab{min-height:40px}
+  .sb-dash-dot{min-width:34px;min-height:34px;display:inline-flex;align-items:center;justify-content:center}
+  #nav-login{min-height:40px;display:inline-flex;align-items:center;padding-left:12px;padding-right:12px}
+  .test-opt,.work-nav-btn,.work-reopen{min-height:44px}
+  /* レッスン本文の中で薄い背景色を直書きしている箇所（ダークモードで文字が読めなくなる） */
+  body.dark .lb [style*="background:#fee2e2"],body.dark .lb [style*="background: #fee2e2"]{background:var(--red-l)!important;color:var(--red)!important}
+  body.dark .lb [style*="background:#dcfce7"],body.dark .lb [style*="background:#dbeafe"],body.dark .lb [style*="background:#fef3c7"]{background:var(--bg3)!important;color:var(--text)!important}
   /* トップページの序章（未ログイン）は途中まで */
   .lb.lb-collapsed{max-height:1100px;overflow:hidden;position:relative}
   .lb.lb-collapsed::after{content:'';position:absolute;left:0;right:0;bottom:0;height:160px;background:linear-gradient(to bottom,transparent,var(--bg))}
@@ -1345,7 +1358,7 @@
 
 /* ===== 章末ワーク ===== */
 .tab-work{ background:rgba(16,185,129,.12)!important; border-color:rgba(16,185,129,.35)!important; font-weight:700; }
-.sb-row-work .sb-row-num{ color:#10b981; font-weight:700; }
+.sb-row-work .sb-row-num{ color:var(--green); font-weight:700; }
 .sb-row-work .sb-row-dot{ background:#10b981; opacity:.35; }
 .sb-row-work.done .sb-row-dot{ background:#10b981; opacity:1; }
 
@@ -1366,7 +1379,7 @@
 .work-q.is-active{ display:block; }
 .work-q-head{ display:flex; justify-content:space-between; align-items:baseline;
   margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(127,127,127,.18); }
-.work-q-no{ font-size:13px; font-weight:800; letter-spacing:.1em; color:#10b981; }
+.work-q-no{ font-size:13px; font-weight:800; letter-spacing:.1em; color:var(--green); }
 .work-q-ref{ font-size:12px; opacity:.55; }
 .work-q-text{ font-size:15.5px!important; line-height:2.15!important; margin:0 0 22px!important; }
 
@@ -1381,7 +1394,7 @@
 .work-meta{ display:flex; justify-content:space-between; align-items:center;
   margin-top:10px; font-size:12.5px; }
 .work-count{ opacity:.5; font-variant-numeric:tabular-nums; }
-.work-count.is-ok{ color:#10b981; opacity:1; font-weight:700; }
+.work-count.is-ok{ color:var(--green); opacity:1; font-weight:700; }
 .work-saved{ font-size:12px; opacity:.5; }
 
 /* 設問間の移動 */
@@ -1389,12 +1402,12 @@
 .work-nav-btn{ padding:11px 26px; font-size:14px; font-weight:600; font-family:inherit;
   border:1.5px solid rgba(127,127,127,.3); background:transparent; color:inherit;
   border-radius:8px; cursor:pointer; transition:.15s; }
-.work-nav-btn:hover:not(:disabled){ border-color:#10b981; color:#10b981; }
+.work-nav-btn:hover:not(:disabled){ border-color:#10b981; color:var(--green); }
 .work-nav-btn:disabled{ opacity:.25; cursor:not-allowed; }
 
 .work-foot{ margin-top:36px; padding-top:26px; border-top:1px solid rgba(127,127,127,.18); text-align:center; }
 .work-status{ font-size:13.5px; line-height:1.9; margin-bottom:16px; }
-.work-done{ color:#10b981; font-weight:700; }
+.work-done{ color:var(--green); font-weight:700; }
 .work-note{ font-size:12.5px; opacity:.6; }
 .work-submit{ padding:15px 48px; font-size:15.5px; font-weight:700; font-family:inherit;
   color:#fff; background:#10b981; border:none; border-radius:10px; cursor:pointer; transition:.15s; }
@@ -1413,7 +1426,7 @@
   border-radius:8px; padding:14px 18px; margin:18px 0 28px; }
 .test-q{ border:1px solid rgba(127,127,127,.22); border-radius:10px;
   padding:20px 22px; margin-bottom:18px; }
-.test-q-no{ font-size:12px; font-weight:800; letter-spacing:.1em; color:#10b981; margin-bottom:10px; }
+.test-q-no{ font-size:12px; font-weight:800; letter-spacing:.1em; color:var(--green); margin-bottom:10px; }
 .test-q-text{ font-size:15px!important; line-height:1.95!important; margin:0 0 16px!important; font-weight:600; }
 .test-opts{ display:flex; flex-direction:column; gap:9px; }
 .test-opt{ text-align:left; padding:13px 16px; font-size:14.5px; line-height:1.7;
@@ -1430,10 +1443,10 @@
 .test-exp.ok{ border-left:3px solid #10b981; }
 .test-exp.ng{ border-left:3px solid #dc2626; }
 .test-verdict{ font-weight:800; margin-bottom:6px; }
-.test-exp.ok .test-verdict{ color:#10b981; }
+.test-exp.ok .test-verdict{ color:var(--green); }
 .test-exp.ng .test-verdict{ color:#dc2626; }
 .test-summary{ margin-top:22px; text-align:center; font-size:15px; }
-.test-pass{ color:#10b981; font-weight:800; }
+.test-pass{ color:var(--green); font-weight:800; }
 .test-fail{ color:#dc2626; font-weight:700; }
 .test-prog{ opacity:.6; }
 @media(max-width:640px){ .test-q{ padding:15px 16px; } .test-opt{ padding:12px 14px; font-size:14px; } }
@@ -1458,7 +1471,7 @@
 .work-reopen{ margin-top:12px; padding:9px 22px; font-size:13px; font-weight:600; font-family:inherit;
   color:inherit; background:transparent; border:1.5px solid rgba(127,127,127,.35);
   border-radius:8px; cursor:pointer; transition:.15s; }
-.work-reopen:hover{ border-color:#10b981; color:#10b981; }
+.work-reopen:hover{ border-color:#10b981; color:var(--green); }
 @media(max-width:640px){ .test-retry-btn,.work-reopen{ width:100%; } }
 
 /* ===== よくあるご質問 ===== */
@@ -1494,6 +1507,7 @@
 </style>
 </head>
 <body>
+<script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
 
 
 <!-- ===== 申込フォームモーダル ===== -->
@@ -3591,6 +3605,23 @@
 </footer>
 
 <script type="module">
+// <COURSE:BEGIN> course/course-sync.py が course.json から書き出す。手で直さない
+const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"]}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"]}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"]}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"]}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"]}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
+const FREE_TABS = COURSE.free;
+// 受講順の内部ID（序章を除く）。内部IDは追加順なので番号順ではない。表示番号はこの並び順
+const ALL_LESSONS_LIST = COURSE.chapters.filter(c => c.no >= 1).flatMap(c => c.lessons);
+const PLAN_LESSON_COUNT = Object.fromEntries(Object.entries(COURSE.plans).map(([p, n]) => [p, COURSE.chapters.filter(c => c.no >= 1 && c.no <= n).reduce((s, c) => s + c.lessons.length, 0)]));
+const PLAN_RANGE_LABEL = Object.fromEntries(Object.entries(COURSE.plans).map(([p, n]) => [p, '第1〜' + n + '章']));
+const _chLessons = (lo, hi) => COURSE.chapters.filter(c => c.no > lo && c.no <= hi).flatMap(c => c.lessons);
+const _works = (lo, hi) => Array.from({ length: Math.max(0, hi - lo) }, (_, i) => 'work' + (lo + i + 1));
+// Basic は章末ワークなし。Standard の章までのワークは Standard 以上、それより後は Premium
+const STANDARD_TABS = [..._chLessons(COURSE.plans.basic, COURSE.plans.standard), ..._works(0, COURSE.plans.standard)];
+const PREMIUM_TABS = [..._chLessons(COURSE.plans.standard, COURSE.plans.premium), ..._works(COURSE.plans.standard, COURSE.plans.premium)];
+// 各章の最後のレッスン → 章番号（章末ワークをその後ろに挟む）
+const CH_END = Object.fromEntries(COURSE.chapters.filter(c => c.no >= 1).map(c => [c.lessons[c.lessons.length - 1], c.no]));
+const LESSON_LABELS = Object.fromEntries([['intro', COURSE.titles.intro], ...ALL_LESSONS_LIST.map((id, i) => [id, 'L' + String(i + 1).padStart(2, '0') + '：' + COURSE.titles[id]])]);
+const CHAPTER_DATA = COURSE.chapters.map(c => Object.assign({ tag: c.tag, name: c.name, lessons: c.lessons, color: c.color }, c.badge ? { plan: c.badge } : {}));
+// <COURSE:END>
 // バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/+esm";
 
@@ -3744,10 +3775,6 @@ const WORKER_URL    = 'https://ai-security-lab-stripe.laughrally.workers.dev';
 /* ============================================================
    ▼ 無料で見られるタブ名（これ以外はログイン必須）
    ============================================================ */
-const FREE_TABS = ['intro', 'lesson1'];
-const STANDARD_TABS = ['lesson18','lesson19','lesson20','lesson21','lesson22','lesson33','lesson34',
-                       'work1','work2','work3','work4','work5','work6'];
-const PREMIUM_TABS  = ['lesson23','lesson24','lesson25','lesson26','lesson27','lesson35','lesson36','work7'];
 
 /* ========== Supabase初期化 ========== */
 let _supabase = null;
@@ -5127,7 +5154,9 @@ async function loadWorkChapter(ch){
     if(!r.ok){ status.textContent = d.error || '読み込みに失敗しました'; return; }
     (d.answers||[]).forEach(a=>{
       const el = document.getElementById('wa-'+a.question_id);
-      if(el){ el.value = a.answer_text || ''; }
+      // 保存前の入力がある欄は上書きしない（2026-11-22）。入力後1.5秒以内にタブを切り替えて戻ると、
+      // 古い値で上書きされ、その古い値が保存されて入力が消えていた
+      if(el && el.dataset.dirty !== '1'){ el.value = a.answer_text || ''; }
     });
     for(let i=1;i<=4;i++) updateWorkCount(`w${ch}-${i}`);
     _workLoaded[ch] = true;
@@ -5181,6 +5210,8 @@ function updateWorkSubmitBtn(ch){
 
 function onWorkInput(qid){
   const ch = parseInt(qid.split('-')[0].slice(1),10);
+  const _el = document.getElementById('wa-'+qid);
+  if(_el) _el.dataset.dirty = '1';
   updateWorkSubmitBtn(ch);
   if(!_workStarted[qid]) _workStarted[qid] = new Date().toISOString();
   clearTimeout(_workTimers[qid]);
@@ -5193,15 +5224,18 @@ async function saveWorkDraft(qid){
   const el = document.getElementById('wa-'+qid);
   const s  = document.getElementById('ws-'+qid);
   if(!el || el.readOnly) return;
+  const sentValue = el.value;
   const t = await workToken();
   if(!t) return;
   try{
     const r = await fetch(`${WORK_API}/api/work/draft`, {
       method:'POST',
       headers:{ Authorization:'Bearer '+t, 'Content-Type':'application/json' },
-      body: JSON.stringify({ questionId:qid, answerText:el.value, startedAt:_workStarted[qid], reopen: !!_workReopen[parseInt(qid.split('-')[0].slice(1),10)] })
+      body: JSON.stringify({ questionId:qid, answerText:sentValue, startedAt:_workStarted[qid], reopen: !!_workReopen[parseInt(qid.split('-')[0].slice(1),10)] })
     });
     const d = await r.json();
+    // 送った内容のまま変わっていなければ「保存済み」に戻す（送信中にさらに入力していたら未保存のまま）
+    if(r.ok && el.value === sentValue) el.dataset.dirty = '';
     if(s) s.textContent = r.ok ? '保存しました' : (d.error||'保存に失敗しました');
     if(s && r.ok) setTimeout(()=>{ if(s.textContent==='保存しました') s.textContent=''; }, 2500);
   }catch(e){
@@ -5530,12 +5564,9 @@ window.submitForm      = submitForm;
 //   第5章：lesson16, 17, 28〜32 ／ 第6章：lesson18〜22, 33, 34 ／ 第7章：lesson23〜27, 35, 36
 //   画面に出す番号はこの並びの順（lessonNo()：1〜36）。本文の番号は asl-worker/articles-src/renumber.py で付け替える
 // Worker の LESSON_ORDER と同じ並びにすること（プランの範囲はこの先頭からの件数で決まる）
-const ALL_LESSONS_LIST = ['lesson1','lesson2','lesson3','lesson4','lesson5','lesson6','lesson7','lesson8','lesson9','lesson10','lesson11','lesson12','lesson13','lesson14','lesson15','lesson16','lesson17','lesson28','lesson29','lesson30','lesson31','lesson32','lesson18','lesson19','lesson20','lesson21','lesson22','lesson33','lesson34','lesson23','lesson24','lesson25','lesson26','lesson27','lesson35','lesson36'];
 
 // ---- プラン別の受講範囲（進捗の分母は必ずここから取る） ----
 // Basic=序章＋第1〜5章（22本） / Standard=第1〜6章（29本） / Premium=第1〜7章（36本）
-const PLAN_LESSON_COUNT = { basic: 22, standard: 29, premium: 36 };
-const PLAN_RANGE_LABEL  = { basic: '第1〜5章', standard: '第1〜6章', premium: '第1〜7章' };
 // 画面に出すレッスン番号は受講順（1〜36）。内部ID（lesson28 等）とは別。renumbered-2026-11
 function lessonNo(id){ const i = ALL_LESSONS_LIST.indexOf(id); return i < 0 ? '' : String(i + 1).padStart(2,'0'); }
 function getPlanLessons(){
@@ -6167,57 +6198,8 @@ async function downloadRecordCSV(){
 window.downloadRecordCSV = downloadRecordCSV;
 
 /* ===== 進捗ダッシュボード ===== */
-const LESSON_LABELS = {
-  'intro':'序章：なぜ今学ぶか',
-  'lesson1':'L01：入力情報はどこへ行くのか',
-  'lesson2':'L02：学習オフ設定の意味と限界',
-  'lesson3':'L03：シャドーAIとは何か',
-  'lesson4':'L04：クラウドAIとオンプレAIの違い',
-  'lesson5':'L05：ChatGPT各プランの違い',
-  'lesson6':'L06：Claude・Gemini・Copilot比較',
-  'lesson7':'L07：社外秘・個人情報の判断基準',
-  'lesson8':'L08：業種別リスク事例',
-  'lesson9':'L09：AIと個人情報保護法',
-  'lesson10':'L10：著作権侵害になるケース',
-  'lesson11':'L11：ハルシネーションと法的責任',
-  'lesson12':'L12：ガイドライン作成テンプレート',
-  'lesson13':'L13：インシデント初動対応フロー',
-  'lesson14':'L14：中小企業の最低限の体制',
-  'lesson15':'L15：今日からできる10のアクション',
-  'lesson16':'L16：よくある事例集（20事例）',
-  'lesson17':'L17：主要AIツール完全比較',
-  'lesson18':'L23：AIを使ったフィッシング詐欺',
-  'lesson19':'L24：プロンプトインジェクション攻撃',
-  'lesson20':'L25：ディープフェイクと音声詐欺',
-  'lesson21':'L26：AIエージェント・自動化ツールのリスク',
-  'lesson22':'L27：インシデント対応ロールプレイ',
-  'lesson23':'L30：LLMの仕組み入門',
-  'lesson24':'L31：プロンプトエンジニアリング基礎',
-  'lesson25':'L32：RAG・ファインチューニングのリスク',
-  'lesson26':'L33：業種別AIロードマップ',
-  'lesson27':'L34：MCPとAIエージェント最前線',
-  'lesson28':'L18：ChatGPTを安全に使う',
-  'lesson29':'L19：GeminiとGoogle Workspace',
-  'lesson30':'L20：CopilotとMicrosoft 365',
-  'lesson31':'L21：Claudeを安全に使う',
-  'lesson32':'L22：MetaのMuseとSNSのAI',
-  'lesson33':'L28：AIブラウザとエージェント機能',
-  'lesson34':'L29：管理者のための設定集',
-  'lesson35':'L35：Claude Codeを安全に使う',
-  'lesson36':'L36：AIコーディングと秘密情報'
-};
 
 // 章別レッスン定義
-const CHAPTER_DATA = [
-  {tag:'序章', name:'なぜ今、AIセキュリティを学ぶ必要があるのか', lessons:['intro'], color:'var(--red)'},
-  {tag:'第1章', name:'AIと情報漏洩の基礎知識', lessons:['lesson1','lesson2','lesson3','lesson4'], color:'var(--red)'},
-  {tag:'第2章', name:'ツール別リスクと設定', lessons:['lesson5','lesson6','lesson7','lesson8'], color:'var(--amber)'},
-  {tag:'第3章', name:'法律・著作権・ハルシネーション', lessons:['lesson9','lesson10','lesson11'], color:'var(--amber)'},
-  {tag:'第4章', name:'組織・ガイドライン整備', lessons:['lesson12','lesson13','lesson14','lesson15'], color:'var(--blue)'},
-  {tag:'第5章', name:'実践：事例研究とツール別ガイド', lessons:['lesson16','lesson17','lesson28','lesson29','lesson30','lesson31','lesson32'], color:'var(--blue)'},
-  {tag:'第6章', name:'AI攻撃手口と防衛策・管理者設定', lessons:['lesson18','lesson19','lesson20','lesson21','lesson22','lesson33','lesson34'], color:'#0ea5e9', plan:'Standard+'},
-  {tag:'第7章', name:'AI技術とセキュリティの深層・開発', lessons:['lesson23','lesson24','lesson25','lesson26','lesson27','lesson35','lesson36'], color:'#8b5cf6', plan:'Premium'},
-];
 
 function updateDashboard(){
   const completed = loadCompleted();
@@ -6279,7 +6261,6 @@ window.updateDashboard = updateDashboard;
 
 // 各章の最終レッスンの直後に章末ワークを挟んだ順序を作る
 const ALL_TABS_ORDERED = (function(){
-  const CH_END = { lesson4:1, lesson8:2, lesson11:3, lesson15:4, lesson32:5, lesson34:6, lesson36:7 };
   const out = ['intro'];
   ALL_LESSONS_LIST.forEach(id => {
     if(id !== 'intro') out.push(id);
@@ -6954,6 +6935,30 @@ document.addEventListener('DOMContentLoaded', ()=>{
   more.innerHTML = '<button type="button">序章の続きを読む（無料）</button>';
   more.querySelector('button').addEventListener('click', () => { lb.classList.remove('lb-collapsed'); more.remove(); });
   lb.after(more);
+});
+
+// ダイアログを Esc で閉じる・読み上げ用の印を付ける（2026-11-22）
+document.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Escape') return;
+  const close = [
+    ['corp-progress-overlay', () => window.closeCorpProgress && window.closeCorpProgress()],
+    ['auth-overlay', () => window.closeAuthModal && window.closeAuthModal()],
+    ['guide-modal-overlay', () => window.closeGuideModal && window.closeGuideModal()],
+    ['form-overlay', () => window.closeFormModal && window.closeFormModal()],
+    ['corp-overlay', () => window.closeCorpModal && window.closeCorpModal()],
+  ];
+  for(const [id, fn] of close){
+    const el = document.getElementById(id);
+    if(el && getComputedStyle(el).display !== 'none' && !el.classList.contains('hidden')){ fn(); break; }
+  }
+});
+document.addEventListener('DOMContentLoaded', ()=>{
+  ['auth-overlay','guide-modal-overlay','form-overlay','corp-overlay'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el){ el.setAttribute('role','dialog'); el.setAttribute('aria-modal','true'); }
+  });
+  // href の無いリンク（ログイン画面の切替など）を、キーボードで選べるようにする
+  document.querySelectorAll('a[onclick]:not([href])').forEach(a => { a.setAttribute('href','#'); a.addEventListener('click', ev => ev.preventDefault()); });
 });
 document.addEventListener('keydown', (e)=>{
   if(e.key !== 'Enter' && e.key !== ' ') return;
