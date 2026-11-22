@@ -19,12 +19,12 @@
      frame-ancestors と HSTS はmetaでは指定できないため、CDN前段での付与が必要。 -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/ https://www.googletagmanager.com;
+  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' data: https://fonts.gstatic.com;
   img-src 'self' data: https:;
   media-src 'self';
-  connect-src 'self' https://zektuwdsmqpdbbslxyal.supabase.co wss://zektuwdsmqpdbbslxyal.supabase.co https://ai-security-lab-stripe.laughrally.workers.dev https://cdn.jsdelivr.net https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
+  connect-src 'self' https://zektuwdsmqpdbbslxyal.supabase.co wss://zektuwdsmqpdbbslxyal.supabase.co https://ai-security-lab-stripe.laughrally.workers.dev https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com;
   frame-src 'none';
   object-src 'none';
   base-uri 'self';
@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=2fa7edd568">
+<link rel="stylesheet" href="/assets/app.css?v=984b854497">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -336,7 +336,7 @@
   <div class="auth-box">
     <div class="auth-logo">AI<span>Security</span>Lab</div>
     <div class="auth-title" id="auth-modal-title">受講者ログイン</div>
-    <div class="auth-sub" id="auth-modal-sub">L02以降の受講には登録が必要です。<br>アカウントをお持ちでない方は新規登録してください。</div>
+    <div class="auth-sub" id="auth-modal-sub">序章と L01 はログインなしでお読みいただけます。<br>L02 以降は、ご購入後に届くメールからパスワードを設定し、お申し込みのメールアドレスでログインしてください。</div>
     <div class="auth-msg" id="auth-msg"></div>
 
     <!-- メール+PW フォーム -->
@@ -372,7 +372,7 @@
 
     <div id="auth-form-newpw" style="display:none">
       <div class="auth-field">
-        <label>新しいパスワード（6文字以上）</label>
+        <label>新しいパスワード（10文字以上）</label>
         <input type="password" id="auth-newpw" placeholder="••••••••" autocomplete="new-password">
       </div>
       <div class="auth-field">
@@ -388,7 +388,7 @@
         <input type="email" id="auth-signup-email" placeholder="you@example.com" autocomplete="email">
       </div>
       <div class="auth-field">
-        <label>パスワード（6文字以上）</label>
+        <label>パスワード（10文字以上）</label>
         <input type="password" id="auth-signup-pw" placeholder="••••••••" autocomplete="new-password">
       </div>
       <button class="auth-btn-email" onclick="signUpWithEmail()">新規登録する</button>
@@ -419,7 +419,7 @@
     <a href="#plans" id="nav-pricing">料金</a>
     <a href="#plans" class="ncta" id="nav-cta">受講を始める</a>
     <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
-    <button class="ncta" id="nav-progress" onclick="openProgressPanel();return false;" style="display:none;background:var(--green)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/0</button>
+    <button class="ncta" id="nav-progress" onclick="openProgressPanel();return false;" style="display:none;background:var(--green-s)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/0</button>
     <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
   </div>
@@ -1650,7 +1650,7 @@
             </ul>
           </div>
           <div id="examIntro" style="text-align:center">
-            <button onclick="startExam()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:18px 56px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 20px rgba(124,58,237,.3)">
+            <button onclick="startExam()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:18px 56px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Noto Sans JP',sans-serif;box-shadow:0 4px 20px rgba(124,58,237,.3)">
               🏆 試験を開始する
             </button>
             <p style="font-size:12px;color:var(--text4);margin-top:12px">開始確認ダイアログが表示されます</p>
@@ -1787,7 +1787,7 @@
         <strong>CSVに含まれる項目：</strong><br>
         user_id（受講者ID）/ lesson_id（レッスンID）/ completed_at（完了日時）/ plan（受講プラン）
       </div>
-      <button id="admin-export-btn" onclick="adminExportLogs()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
+      <button id="admin-export-btn" onclick="adminExportLogs()" style="background:var(--green-s);color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:14px;font-weight:600;cursor:pointer">
         📥 受講ログCSVをダウンロード
       </button>
       <div id="admin-export-result" style="margin-top:12px;font-size:14px;color:var(--green)"></div>
@@ -1801,9 +1801,9 @@
         <img id="admin-mfa-qr" alt="二段階認証の登録用 QR コード" style="width:180px;height:180px;background:#fff;border-radius:8px;padding:8px">
         <div style="font-size:12px;color:var(--text3);margin:8px 0">読み取れない場合のキー：<code id="admin-mfa-secret" style="word-break:break-all"></code></div>
         <input id="admin-mfa-code" aria-label="認証アプリの6桁のコード" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6桁のコード" style="font-size:16px;padding:10px 12px;border:1px solid var(--border2);border-radius:8px;width:160px;background:var(--bg);color:var(--text)">
-        <button onclick="adminMfaVerify()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;margin-left:8px">登録する</button>
+        <button onclick="adminMfaVerify()" style="background:var(--green-s);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;margin-left:8px">登録する</button>
       </div>
-      <button id="admin-mfa-start" onclick="adminMfaEnroll()" style="display:none;margin-top:12px;background:var(--blue);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer">認証アプリを登録する</button>
+      <button id="admin-mfa-start" onclick="adminMfaEnroll()" style="display:none;margin-top:12px;background:var(--blue-s);color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer">認証アプリを登録する</button>
     </div>
 
     <!-- ===== 法人申込の一覧と請求書送信 ===== -->
@@ -1834,6 +1834,75 @@
 
 <section class="sec" id="pricing" data-auth-hide="true">
   <div class="conw">
+    <!-- 料金を先に見せる（2026-11-23。以前は学習の進め方・助成金の説明のあとで、料金までが長かった） -->
+    <div class="seye" id="plans">// PRICING</div>
+    <h2 class="stit">シンプルな料金体系</h2>
+    <p class="sdesc">買い切り・永久アクセス。Standard以上は修了後に修了証PDFを発行できます。</p>
+    <div class="pgcards">
+      <div class="pc">
+        <div class="pcname">BASIC</div>
+        <div class="pcprice">¥9,800</div>
+        <div class="pcperiod">買い切り・税込 / 永久アクセス</div>
+        <ul class="pcf">
+          <li>序章＋第1〜5章　全22レッスン</li>
+          <li>ChatGPT・Gemini・Copilot・Claude・Meta Muse のツール別ガイド</li>
+          <li>各レッスン 理解度チェック</li>
+          <li>標準学習時間：約6時間10分（休憩時間を除く）</li>
+          <li>AI利用ガイドラインテンプレート（DL）</li>
+          <li>コンテンツ更新通知</li>
+        </ul>
+        <button class="pcbtn bpo" onclick="openFormModal('ベーシック 9800円')">申し込む</button>
+      </div>
+      <div class="pc feat">
+        <div class="pcbadge">社内研修におすすめ</div>
+        <div class="pcname">STANDARD</div>
+        <div class="pcprice">¥59,800</div>
+        <div class="pcperiod">買い切り・税込 / 永久アクセス</div>
+        <ul class="pcf">
+          <li>Basic の全内容 +</li>
+          <li>第6章（7レッスン）AI攻撃手口と防衛策・AIブラウザ・管理者の設定集</li>
+          <li>章末ワーク（全6章・記述式課題）</li>
+          <li>章末確認テスト（全6章・各5問）</li>
+          <li>標準学習時間：約14時間（休憩時間を除く）</li>
+          <li>修了証PDF発行（会社名・氏名入り／申請制）</li>
+          <li>請求書払い対応</li>
+        </ul>
+        <button class="pcbtn bpr" onclick="openFormModal('スタンダード 59800円')">申し込む</button>
+      </div>
+      <div class="pc">
+        
+        <div class="pcname">PREMIUM</div>
+        <div class="pcprice">¥149,800</div>
+        <div class="pcperiod">買い切り・税込 / 永久アクセス</div>
+        <ul class="pcf">
+          <li>Standard の全内容 +</li>
+          <li>第7章（7レッスン）AI技術の深層・Claude Code と AI コーディングの安全</li>
+          <li>章末ワーク・確認テスト（全7章）</li>
+          <li>標準学習時間：約18時間10分（休憩時間を除く）</li>
+          <li>認定試験（全60問・80%で合格）</li>
+          <li>修了証＋認定試験合格証PDF 発行（申請制）</li>
+          <li>請求書払い対応</li>
+        </ul>
+        <button class="pcbtn bpo" onclick="openFormModal('プレミアム 149800円')">申し込む</button>
+      </div>
+    </div>
+
+    <!-- ===== 法人一括申込への導線 ===== -->
+    <div style="max-width:760px;margin:48px auto 0;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 30px;text-align:center">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue);letter-spacing:.18em;margin-bottom:12px">// FOR BUSINESS</div>
+      <h3 style="font-size:20px;font-weight:800;margin-bottom:10px">複数名でまとめてお申し込みの法人さまへ</h3>
+      <p style="font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:20px">
+        受講者さまの情報をご入力いただくと、<strong>受講申込確認書（PDF）</strong>をその場で発行し、ご担当者さま宛にお送りします。<br>
+        社内の稟議や各種申請の添付資料としてそのままご利用いただけます。お支払いは銀行振込にも対応しております。
+      </p>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.9;margin:-6px auto 20px;max-width:620px;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+        <strong>受講者は、業務で個人情報や機密を扱う方から</strong>始めるのがおすすめです（経理・営業事務・顧客対応・人事など）。手順が変わる効果が出やすく、助成金をご検討の場合も、職務との関連を説明しやすくなります。対象可否は制度と交付団体の判断によります。<a href="/articles/ai-kenshu-joseikin-2026.html">2026年8月の改正点</a>
+      </p>
+      <button class="pcbtn bpr" style="max-width:340px;margin:0 auto" onclick="openCorpModal()">法人・複数名でお申し込み</button>
+      <div style="font-size:12px;color:var(--text4);margin-top:14px">アカウントは受講者1名につき1つ発行いたします。ご担当者さまには、受講者全員の進捗（レッスン・章末ワーク・確認テスト・修了証）を一覧と CSV で確認できるアカウントをお渡しします</div>
+    </div>
+
+    <div style="height:72px"></div>
     <div class="seye">// LEARNING FORMAT</div>
     <h2 class="stit">学習の進め方と評価方法</h2>
     <p class="sdesc">動画視聴・資料閲覧のみで完結する講座ではありません。<br>回答・評価・記録が残る仕組みを備えています。</p>
@@ -1977,72 +2046,6 @@
       </p>
     </div>
 
-    <div class="seye" id="plans">// PRICING</div>
-    <h2 class="stit">シンプルな料金体系</h2>
-    <p class="sdesc">買い切り・永久アクセス。Standard以上は修了後に修了証PDFを発行できます。</p>
-    <div class="pgcards">
-      <div class="pc">
-        <div class="pcname">BASIC</div>
-        <div class="pcprice">¥9,800</div>
-        <div class="pcperiod">買い切り・税込 / 永久アクセス</div>
-        <ul class="pcf">
-          <li>序章＋第1〜5章　全22レッスン</li>
-          <li>ChatGPT・Gemini・Copilot・Claude・Meta Muse のツール別ガイド</li>
-          <li>各レッスン 理解度チェック</li>
-          <li>標準学習時間：約6時間10分（休憩時間を除く）</li>
-          <li>AI利用ガイドラインテンプレート（DL）</li>
-          <li>コンテンツ更新通知</li>
-        </ul>
-        <button class="pcbtn bpo" onclick="openFormModal('ベーシック 9800円')">申し込む</button>
-      </div>
-      <div class="pc feat">
-        <div class="pcbadge">社内研修におすすめ</div>
-        <div class="pcname">STANDARD</div>
-        <div class="pcprice">¥59,800</div>
-        <div class="pcperiod">買い切り・税込 / 永久アクセス</div>
-        <ul class="pcf">
-          <li>Basic の全内容 +</li>
-          <li>第6章（7レッスン）AI攻撃手口と防衛策・AIブラウザ・管理者の設定集</li>
-          <li>章末ワーク（全6章・記述式課題）</li>
-          <li>章末確認テスト（全6章・各5問）</li>
-          <li>標準学習時間：約14時間（休憩時間を除く）</li>
-          <li>修了証PDF発行（会社名・氏名入り／申請制）</li>
-          <li>請求書払い対応</li>
-        </ul>
-        <button class="pcbtn bpr" onclick="openFormModal('スタンダード 59800円')">申し込む</button>
-      </div>
-      <div class="pc">
-        
-        <div class="pcname">PREMIUM</div>
-        <div class="pcprice">¥149,800</div>
-        <div class="pcperiod">買い切り・税込 / 永久アクセス</div>
-        <ul class="pcf">
-          <li>Standard の全内容 +</li>
-          <li>第7章（7レッスン）AI技術の深層・Claude Code と AI コーディングの安全</li>
-          <li>章末ワーク・確認テスト（全7章）</li>
-          <li>標準学習時間：約18時間10分（休憩時間を除く）</li>
-          <li>認定試験（全60問・80%で合格）</li>
-          <li>修了証＋認定試験合格証PDF 発行（申請制）</li>
-          <li>請求書払い対応</li>
-        </ul>
-        <button class="pcbtn bpo" onclick="openFormModal('プレミアム 149800円')">申し込む</button>
-      </div>
-    </div>
-
-    <!-- ===== 法人一括申込への導線 ===== -->
-    <div style="max-width:760px;margin:48px auto 0;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px 30px;text-align:center">
-      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--blue);letter-spacing:.18em;margin-bottom:12px">// FOR BUSINESS</div>
-      <h3 style="font-size:20px;font-weight:800;margin-bottom:10px">複数名でまとめてお申し込みの法人さまへ</h3>
-      <p style="font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:20px">
-        受講者さまの情報をご入力いただくと、<strong>受講申込確認書（PDF）</strong>をその場で発行し、ご担当者さま宛にお送りします。<br>
-        社内の稟議や各種申請の添付資料としてそのままご利用いただけます。お支払いは銀行振込にも対応しております。
-      </p>
-      <p style="font-size:13.5px;color:var(--text2);line-height:1.9;margin:-6px auto 20px;max-width:620px;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
-        <strong>受講者は、業務で個人情報や機密を扱う方から</strong>始めるのがおすすめです（経理・営業事務・顧客対応・人事など）。手順が変わる効果が出やすく、助成金をご検討の場合も、職務との関連を説明しやすくなります。対象可否は制度と交付団体の判断によります。<a href="/articles/ai-kenshu-joseikin-2026.html">2026年8月の改正点</a>
-      </p>
-      <button class="pcbtn bpr" style="max-width:340px;margin:0 auto" onclick="openCorpModal()">法人・複数名でお申し込み</button>
-      <div style="font-size:12px;color:var(--text4);margin-top:14px">アカウントは受講者1名につき1つ発行いたします。ご担当者さまには、受講者全員の進捗（レッスン・章末ワーク・確認テスト・修了証）を一覧と CSV で確認できるアカウントをお渡しします</div>
-    </div>
 
 
     <div class="seye" style="margin-top:72px">// FAQ</div>
@@ -2280,6 +2283,7 @@
   <div class="fcopy">© 2026 LaughRally LLC. All rights reserved.</div>
 </footer>
 
-<script type="module" src="/assets/app.mjs?v=3934a7ef0b"></script>
+<script src="/assets/vendor/supabase-js-2.112.3.js"></script>
+<script type="module" src="/assets/app.mjs?v=8dcf67a1d5"></script>
 </body>
 </html>

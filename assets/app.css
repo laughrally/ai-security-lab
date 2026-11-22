@@ -19,6 +19,7 @@
     --blue:#2563eb; --blue-l:#dbeafe;
     --green:#16a34a; --green-l:#dcfce7;
     --purple:#7c3aed; --purple-l:#ede9fe;
+    --red-s:#dc2626; --blue-s:#2563eb; --green-s:#15803d; --purple-s:#7c3aed;   /* 白い文字を載せる背景（両モード共通） */
     --sh:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
     --sh-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
     --sh-lg:0 12px 40px rgba(0,0,0,.10),0 4px 12px rgba(0,0,0,.05);
@@ -30,7 +31,7 @@
   body.dark {
     --bg:#0f1117; --bg2:#161b27; --bg3:#1e2535;
     --border:#2a3347; --border2:#374155;
-    --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#64748b;
+    --text:#f1f5f9; --text2:#cbd5e1; --text3:#94a3b8; --text4:#8391a7;
     --red:#f87171; --red-l:rgba(248,113,113,.12);
     --amber:#fbbf24; --amber-l:rgba(251,191,36,.12);
     --blue:#60a5fa; --blue-l:rgba(96,165,250,.12);
@@ -59,7 +60,7 @@
   .nright{display:flex;align-items:center;gap:28px}
   .nright a{font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s}
   .nright a:hover{color:var(--text)}
-  .ncta{background:var(--red)!important;color:#fff!important;font-weight:700!important;padding:8px 20px;border-radius:6px;font-size:13px!important;transition:background .2s!important;white-space:nowrap;flex:0 0 auto}
+  .ncta{background:var(--red-s)!important;color:#fff!important;font-weight:700!important;padding:8px 20px;border-radius:6px;font-size:13px!important;transition:background .2s!important;white-space:nowrap;flex:0 0 auto}
 
   /* 「今は買わない人」の受け皿。LPには買うか離れるかの二択しかなかった */
   .freebox{background:var(--bg2,#f8f9fb);border:1px solid var(--border);border-radius:14px;
@@ -89,7 +90,7 @@
   .nobr{white-space:nowrap}   /* 見出しが「情報 / は、」のように語の途中で折れないように */
   .hdesc{font-size:15px;color:var(--text3);line-height:1.9;margin-bottom:36px;max-width:480px}
   .hacts{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .btnp{background:var(--red);color:#fff;font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;font-family:'Noto Sans JP',sans-serif}
+  .btnp{background:var(--red-s);color:#fff;font-size:14px;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;font-family:'Noto Sans JP',sans-serif}
   .btnp:hover{background:#b91c1c;transform:translateY(-1px);box-shadow:0 6px 20px rgba(220,38,38,.25)}
   .btng{font-size:13px;color:var(--text3);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
   .btng:hover{color:var(--text)}
@@ -298,11 +299,11 @@
   .lb.lb-collapsed{max-height:1100px;overflow:hidden;position:relative}
   .lb.lb-collapsed::after{content:'';position:absolute;left:0;right:0;bottom:0;height:160px;background:linear-gradient(to bottom,transparent,var(--bg))}
   .lb-more{text-align:center;margin:8px 0 28px}
-  .lb-more button{background:var(--red);color:#fff;border:none;border-radius:10px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
+  .lb-more button{background:var(--red-s);color:#fff;border:none;border-radius:10px;padding:12px 26px;font-size:14px;font-weight:700;cursor:pointer;min-height:44px}
   /* キーボード操作の位置を見えるように */
   :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
   .sb-row:focus-visible,.lrow:focus-visible,.chd:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
-  .newb{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:1px 5px;margin-left:6px;border-radius:4px;background:var(--red);color:#fff;vertical-align:middle}
+  .newb{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:1px 5px;margin-left:6px;border-radius:4px;background:var(--red-s);color:#fff;vertical-align:middle}
   @media (max-width:640px){
     .fig{padding:16px 12px 12px;margin:24px -4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
     .fig svg{min-width:540px}
@@ -345,7 +346,7 @@
   .pc{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:32px;box-shadow:var(--sh);position:relative;transition:box-shadow .2s,transform .2s}
   .pc:hover{box-shadow:var(--sh-lg);transform:translateY(-3px)}
   .pc.feat{border-color:var(--red);box-shadow:0 0 0 1px var(--red),var(--sh-md)}
-  .pcbadge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--red);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:100px;white-space:nowrap}
+  .pcbadge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--red-s);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:100px;white-space:nowrap}
   .pcname{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text4);letter-spacing:.1em;margin-bottom:16px}
   .pcprice{font-family:'Barlow',sans-serif;font-size:44px;font-weight:800;line-height:1;letter-spacing:-.03em;margin-bottom:4px}
   .pcperiod{font-size:13px;color:var(--text3);margin-bottom:24px}
@@ -353,7 +354,7 @@
   .pcf li{font-size:13px;color:var(--text2);padding:9px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
   .pcf li::before{content:"→";color:var(--red);font-size:12px;flex-shrink:0;margin-top:1px}
   .pcbtn{display:block;width:100%;padding:14px;text-align:center;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;font-family:'Noto Sans JP',sans-serif}
-  .bpr{background:var(--red);color:#fff;border:none}
+  .bpr{background:var(--red-s);color:#fff;border:none}
   .bpr:hover{background:#b91c1c}
   .bpo{background:transparent;color:var(--text2);border:1px solid var(--border2)}
   .bpo:hover{border-color:var(--text3);color:var(--text)}
@@ -427,7 +428,7 @@
   .form-check input{width:18px;height:18px;cursor:pointer;accent-color:var(--red)}
   .form-submit{
     width:100%;padding:14px;border-radius:8px;border:none;
-    background:var(--red);color:#fff;font-size:15px;font-weight:700;
+    background:var(--red-s);color:#fff;font-size:15px;font-weight:700;
     cursor:pointer;transition:background .2s;font-family:inherit;
   }
   .form-submit:hover{background:#b91c1c}
@@ -488,7 +489,7 @@
   .guide-step-desc{font-size:13px;color:var(--text3);line-height:1.8}
   .guide-cta{display:flex;gap:12px;flex-wrap:wrap}
   .guide-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:8px;font-size:14px;font-weight:700;text-decoration:none;cursor:pointer;transition:all .2s;border:none;font-family:inherit}
-  .guide-btn-primary{background:var(--red);color:#fff}
+  .guide-btn-primary{background:var(--red-s);color:#fff}
   .guide-btn-primary:hover{background:#b91c1c}
   .guide-btn-secondary{background:var(--bg2);color:var(--text2);border:1px solid var(--border2)}
   .guide-btn-secondary:hover{border-color:var(--text3)}
@@ -541,7 +542,7 @@
   .podcast-desc{font-size:13px;color:var(--text3);margin-bottom:16px;line-height:1.7}
   .pod-player{background:var(--bg3);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
   .pod-top{display:flex;align-items:center;gap:12px}
-  .pod-play-btn{width:40px;height:40px;border-radius:50%;background:var(--red);color:#fff;border:none;font-size:16px;cursor:pointer;flex-shrink:0;transition:background .2s;display:flex;align-items:center;justify-content:center}
+  .pod-play-btn{width:40px;height:40px;border-radius:50%;background:var(--red-s);color:#fff;border:none;font-size:16px;cursor:pointer;flex-shrink:0;transition:background .2s;display:flex;align-items:center;justify-content:center}
   .pod-play-btn:hover{background:#b91c1c}
   .pod-progress-wrap{flex:1;display:flex;flex-direction:column;gap:4px}
   .pod-time-wrap{display:flex;justify-content:space-between;width:100%;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3)}
@@ -555,7 +556,7 @@
   .pod-speeds{display:flex;gap:3px}
   .pod-spd{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:11px;color:var(--text3);cursor:pointer;font-family:inherit;transition:all .15s}
   .pod-spd:hover{border-color:var(--text3);color:var(--text)}
-  .pod-spd.active{background:var(--red);border-color:var(--red);color:#fff}
+  .pod-spd.active{background:var(--red-s);border-color:var(--red);color:#fff}
   @media(max-width:480px){.pod-vol{width:60px}.pod-speeds{flex-wrap:wrap}}
   /* 上の .pod-* が現行のプレーヤー。以前の世代のCSS（.podcast-controls / .pod-btn /
      .pod-play / .pod-speed / .pod-time / .pod-progress と、重複していた
@@ -811,7 +812,7 @@
   .auth-field input:focus{border-color:var(--blue)}
   .auth-btn-email{
     width:100%;padding:12px;border-radius:8px;border:none;
-    background:var(--red);color:#fff;font-size:14px;font-weight:700;
+    background:var(--red-s);color:#fff;font-size:14px;font-weight:700;
     cursor:pointer;transition:background .2s;margin-top:4px;font-family:inherit;
   }
   .auth-btn-email:hover{background:#b91c1c}
@@ -1356,3 +1357,18 @@
 .hprice a span{font-size:11.5px;color:var(--text3)}
 .hprice a:hover{border-color:var(--border2);background:var(--bg3)}
 body.logged-in .hprice{display:none}
+
+/* 料金プランの案内（ログイン中に開けないレッスンを押したとき。2026-11-23） */
+#plan-pick-overlay{position:fixed;inset:0;z-index:9997;background:rgba(15,23,42,.7);display:flex;align-items:center;justify-content:center;padding:16px}
+#plan-pick-overlay .pp-box{position:relative;background:var(--bg);color:var(--text);border-radius:14px;max-width:480px;width:100%;padding:24px 22px;box-shadow:0 20px 50px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto}
+#plan-pick-overlay .pp-title{font-weight:700;font-size:18px;margin-bottom:14px}
+#plan-pick-overlay .pp-close{position:absolute;top:10px;right:12px;background:none;border:none;font-size:22px;line-height:1;color:var(--text2);cursor:pointer;padding:6px}
+#plan-pick-overlay .pp-row{display:flex;gap:12px;align-items:center;justify-content:space-between;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+#plan-pick-overlay .pp-name{font-weight:700;font-size:15px}
+#plan-pick-overlay .pp-price{font-weight:600;margin-left:8px;font-size:14px}
+#plan-pick-overlay .pp-desc{font-size:12.5px;color:var(--text2);line-height:1.6;margin-top:4px}
+#plan-pick-overlay .pp-btn{width:auto;white-space:nowrap;padding:10px 16px;margin:0}
+#plan-pick-overlay .pp-note{font-size:12px;color:var(--text3);margin:12px 0 0}
+@media (max-width:480px){#plan-pick-overlay .pp-row{flex-direction:column;align-items:stretch}}
+/* プランの範囲外の行：押すと理由とプランの案内が出る */
+.sb-row.plan-locked .sb-row-title::after,.lrow.plan-locked .lname::after{content:" 🔒";font-size:.85em}

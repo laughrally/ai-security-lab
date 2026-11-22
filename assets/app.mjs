@@ -1,7 +1,7 @@
 // AI Security Lab — 受講画面と LP の主要なスクリプト（index.html から切り出し。2026-11-23）
 // 冒頭の COURSE ブロックは asl-worker/course/course-sync.py が course.json から書き出す
 // <COURSE:BEGIN> course/course-sync.py が course.json から書き出す。手で直さない
-const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
+const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
 const FREE_TABS = COURSE.free;
 // 受講順の内部ID（序章を除く）。内部IDは追加順なので番号順ではない。表示番号はこの並び順
 const ALL_LESSONS_LIST = COURSE.chapters.filter(c => c.no >= 1).flatMap(c => c.lessons);
@@ -33,7 +33,9 @@ function csvCell(v){ let t = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(
 window.escHtml = escHtml;
 
 // バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。
-import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.3/+esm";
+// Supabase のライブラリは自前で配信する（/assets/vendor/supabase-js-2.112.3.js。2026-11-23）。
+// 外部の配信元の改ざんや停止の影響を受けないように。取得時に jsDelivr と unpkg の SHA-256 が一致することを確かめた
+const { createClient } = window.supabase;
 
 
 /* ===== 申込フォーム ===== */
@@ -43,6 +45,10 @@ const PRICE_ID_MAP = {
   'プレミアム 149800円':   'price_1TP05i2OQszM8w2hhNpHkmfG',
 };
 let currentPriceId = '';
+// 申込フォームのプラン名（決済のメタデータにも入るので文字は変えない）→ course.json のプラン
+const FORM_PLAN_KEY = { 'ベーシック 9800円': 'basic', 'スタンダード 59800円': 'standard', 'プレミアム 149800円': 'premium' };
+const FORM_PLAN_NAME = Object.fromEntries(Object.entries(FORM_PLAN_KEY).map(([k, v]) => [v, k]));
+const yen = n => '¥' + Number(n).toLocaleString('ja-JP');
 let currentPlanName = '';
 
 function toggleSubmitBtn(){
@@ -58,31 +64,18 @@ function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
   currentPriceId = PRICE_ID_MAP[plan] || '';
   currentPlanName = plan;
-  const labels = {
-    'ベーシック 9800円':    'BASIC · ¥9,800',
-    'スタンダード 59800円': 'STANDARD · ¥59,800',
-    'プレミアム 149800円':   'PREMIUM · ¥149,800'
-  };
-  document.getElementById('form-plan-label').textContent = labels[plan] || plan;
-  // 最終確認テーブルを更新
-  const priceLabels = {
-    'ベーシック 9800円':    'BASICプラン（第1〜5章・22レッスン）',
-    'スタンダード 59800円': 'STANDARDプラン（第1〜6章・29レッスン）',
-    'プレミアム 149800円':   'PREMIUMプラン（第1〜7章・全36レッスン）'
-  };
-  const priceTags = {
-    'ベーシック 9800円':    '¥9,800（税込）',
-    'スタンダード 59800円': '¥59,800（税込）',
-    'プレミアム 149800円':   '¥149,800（税込）'
-  };
-  document.getElementById('legal-plan-name').textContent = priceLabels[plan] || plan;
-  document.getElementById('legal-plan-price').textContent = priceTags[plan] || '';
+  // 表記は course.json の価格と受講範囲から作る（2026-11-23。以前は価格を3か所に手で書いていた）
+  const key = FORM_PLAN_KEY[plan];
+  const range = key ? '第1〜' + COURSE.plans[key] + '章・' + (key === 'premium' ? '全' : '') + PLAN_LESSON_COUNT[key] + 'レッスン' : '';
+  document.getElementById('form-plan-label').textContent = key ? key.toUpperCase() + ' · ' + yen(COURSE.prices[key]) : plan;
+  document.getElementById('legal-plan-name').textContent = key ? key.toUpperCase() + 'プラン（' + range + '）' : plan;
+  document.getElementById('legal-plan-price').textContent = key ? yen(COURSE.prices[key]) + '（税込）' : '';
   // 同意チェックをリセット
   document.getElementById('form-agree').checked = false;
   toggleSubmitBtn();
   setFormMsg('','');
   // ベーシック以外はコンサルフィールドを表示
-  const isConsult = plan !== 'ベーシック 9800円';
+  const isConsult = key !== 'basic';
   document.getElementById('form-consult-fields').style.display = isConsult ? 'block' : 'none';
   // フィールドリセット
   ['form-name','form-company','form-tel','form-email','form-challenge'].forEach(id=>{
@@ -105,7 +98,7 @@ async function submitForm(){
   const company = document.getElementById('form-company').value.trim();
   const tel     = document.getElementById('form-tel').value.trim();
   const email   = document.getElementById('form-email').value.trim();
-  const isConsult = currentPlanName !== 'ベーシック 9800円';
+  const isConsult = FORM_PLAN_KEY[currentPlanName] !== 'basic';
   const challenge = isConsult ? document.getElementById('form-challenge').value.trim() : '';
   const contactPref = isConsult ? (document.querySelector('input[name="form-contact"]:checked')?.value || 'メール') : '';
 
@@ -267,6 +260,7 @@ function initSupabase(){
         return;
       }
       window._aslUid = _uid;
+      claimLocalData(_uid);
       currentUser = session?.user ?? null;
       if(!currentUser){ currentUserPlan=null; }
       updateAuthUI();
@@ -274,6 +268,7 @@ function initSupabase(){
     });
     _supabase.auth.getSession().then(({data:{session}})=>{
       if(window._aslUid === undefined) window._aslUid = session?.user?.id || null;
+      claimLocalData(session?.user?.id || null);
       currentUser = session?.user ?? null;
       updateAuthUI();
       if(currentUser) fetchUserPlan();
@@ -281,6 +276,19 @@ function initSupabase(){
   } catch(e) {
     console.error('Supabase init error:', e);
   }
+}
+
+// この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。
+// 別の人がログインしたら先に消す（2026-11-23）。ログアウトせずにセッションが切れたあと、
+// 次の人の受講済みや学習時間に前の人の分が混ざらないように
+const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab'];
+function claimLocalData(uid){
+  if(!uid) return;
+  try {
+    const owner = localStorage.getItem('asl_owner');
+    if(owner && owner !== uid) LOCAL_LEARN_KEYS.forEach(k => localStorage.removeItem(k));
+    if(owner !== uid) localStorage.setItem('asl_owner', uid);
+  } catch(e){}
 }
 
 let currentExamPassed = false;
@@ -365,8 +373,8 @@ function updateCertificateUI(){
       box.style.cssText = 'background:var(--bg2);border:1.5px solid var(--amber,#f59e0b);border-radius:12px;padding:24px 28px;text-align:center;margin-top:16px;';
       box.innerHTML = '<div style="font-size:22px;margin-bottom:10px">🎓</div>'
         + '<div style="font-weight:600;font-size:15px;margin-bottom:8px">修了証はStandard・Premiumプランの特典です</div>'
-        + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">Basicプランは修了証の発行対象外です。<br>Standard（¥59,800）以上にアップグレードすると修了証PDFを取得できます。</div>'
-        + '<a href="#plans" onclick="document.getElementById(\'pricing\').style.display=\'block\';switchTab(\'intro\')" style="display:inline-block;background:var(--blue);color:#fff;padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none">プランをアップグレードする →</a>';
+        + '<div style="font-size:13px;color:var(--text3);margin-bottom:18px;line-height:1.7">Basicプランは修了証の発行対象外です。<br>Standard（' + yen(COURSE.prices.standard) + '）以上で修了証PDFを取得できます。</div>'
+        + '<button type="button" class="form-submit" onclick="showPlans()" style="width:auto;padding:10px 28px">料金プランを見る →</button>';
       formBox.parentNode.insertBefore(box, formBox);
     }
   } else {
@@ -445,24 +453,17 @@ function lockPaidTabs(lock){
 
 // プランに応じてL23〜L34のアクセスをロック
 function applyPlanLock(){
-  const plan = currentUserPlan || 'basic';
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
     const onclick = el.getAttribute('onclick') || '';
     const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/);
     if(!m) return;
-    const lessonId = m[1];
-    const isLocked =
-      (PREMIUM_TABS.includes(lessonId) && plan !== 'premium') ||
-      (STANDARD_TABS.includes(lessonId) && plan === 'basic');
-    if(isLocked){
-      el.style.opacity = '0.4';
-      el.style.pointerEvents = 'none';
-      el.title = plan === 'basic' ? 'Standardプラン以上で受講できます' : 'Premiumプランで受講できます';
-    } else {
-      el.style.opacity = '';
-      el.style.pointerEvents = '';
-      el.title = '';
-    }
+    const r = currentUser ? tabDenyReason(m[1]) : null;
+    const locked = !!(r && r !== 'login');
+    el.classList.toggle('plan-locked', locked);
+    el.style.opacity = locked ? '0.45' : '';
+    el.style.pointerEvents = '';
+    el.title = locked ? r.msg : '';
+    if(locked) el.setAttribute('aria-disabled', 'true'); else el.removeAttribute('aria-disabled');
   });
 }
 
@@ -511,7 +512,7 @@ async function signUpWithEmail(){
   const email = document.getElementById('auth-signup-email').value.trim();
   const pw    = document.getElementById('auth-signup-pw').value;
   if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
-  if(pw.length < 6){ setAuthMsg('error','パスワードは6文字以上で設定してください。'); return; }
+  if(pw.length < 10){ setAuthMsg('error','パスワードは10文字以上で設定してください（推測されにくくするため）。'); return; }
   setAuthMsg('', '登録中...');
   const {error} = await _supabase.auth.signUp({email, password:pw});
   if(error){
@@ -543,7 +544,7 @@ async function updatePassword(){
   const pw  = document.getElementById('auth-newpw').value;
   const pw2 = document.getElementById('auth-newpw2').value;
   if(!pw || !pw2){ setAuthMsg('error','パスワードを入力してください。'); return; }
-  if(pw.length < 6){ setAuthMsg('error','パスワードは6文字以上で設定してください。'); return; }
+  if(pw.length < 10){ setAuthMsg('error','パスワードは10文字以上で設定してください（推測されにくくするため）。'); return; }
   if(pw !== pw2){ setAuthMsg('error','パスワードが一致しません。'); return; }
   setAuthMsg('', '更新中...');
   const {error} = await _supabase.auth.updateUser({password: pw});
@@ -565,8 +566,7 @@ async function signOut(){
   if(!_supabase) return;
   // ログアウト時に、この端末に残る受講データを消す（共用PCで次の人の記録に混ざらないように）。
   // 以前は受講済みだけを消しており、学習時間の累計や開始時刻が次の人の送信に乗っていた（2026-11-22）
-  ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab']
-    .forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  LOCAL_LEARN_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
   currentCertifiedEarlier = false;
   currentExamPassed = false;
   await _supabase.auth.signOut();
@@ -576,33 +576,7 @@ async function signOut(){
 
 /* ===== タブ切り替え（認証チェック付き） ===== */
 function switchTab(name){
-  // 有料タブ かつ 未ログインならモーダルを出す
-  if(!FREE_TABS.includes(name) && !currentUser){
-    openAuthModal();
-    return;
-  }
-  // examタブはPremiumのみ
-  if(name === 'exam' && currentUser && currentUserPlan !== 'premium'){
-    alert('認定試験はPremiumプランの受講者のみ受験できます。');
-    return;
-  }
-  // プランチェック
-  if(currentUser){
-    const plan = currentUserPlan || 'basic';
-    if(PREMIUM_TABS.includes(name) && plan !== 'premium'){
-      alert('このレッスンはPremiumプランでご受講いただけます。');
-      return;
-    }
-    if(STANDARD_TABS.includes(name) && plan === 'basic'){
-      alert('このレッスンはStandard以上のプランでご受講いただけます。');
-      return;
-    }
-    // 無料登録のみ（プランなし）の場合は、無料公開のレッスン以外を開かない（2026-11-22）
-    if(ALL_LESSONS_LIST.includes(name) && !FREE_TABS.includes(name) && !getPlanLessons().includes(name)){
-      alert('このレッスンはご購入後にご受講いただけます。');
-      return;
-    }
-  }
+  // 開けるかどうかは window.switchTab（下）が canAccessTab で判定済み。ここでは表示だけを切り替える
   document.querySelectorAll('.tab').forEach(t=>{
     const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
     if(m) t.classList.toggle('active', m[1]===name);
@@ -661,7 +635,7 @@ const IDLE_WORK_MS   = 5 * 60 * 1000;      // ワークは書くので5分（考
 const RESYNC_STEP_S  = 60;                 // 完了済みレッスンは60秒たまるごとに送り直す
 const MAX_TICK_S = 30;                     // 1回の加算上限。スリープ復帰の跳ねを抑える
 const MAX_TOTAL_S = 86400;                 // Worker 側の範囲チェックに合わせる
-const TRACK_RE = /^(lesson\d+|work[1-7])$/;
+const TRACK_RE = /^(lesson\d+|work\d+)$/;
 
 let activeItem  = null;   // いま表示している lessonN / workN（それ以外は null）
 let tickAt      = null;   // 前回の加算時刻
@@ -944,34 +918,59 @@ window.switchTab = switchTab;
 // ---- プランによるアクセス判定（全ての遷移経路で必ず通す） ----
 // 以前は上書き版 switchTab が showActiveLesson を直接呼んでおり、
 // ログイン中はプラン制限が一切効かなかった（Basicでも L23〜L34 が閲覧できた）。
-function canAccessTab(name){
-  if(FREE_TABS.includes(name)) return true;
-  if(name === 'certificate' && typeof refreshRecords === 'function') setTimeout(refreshRecords, 0);
-  if(!currentUser){ openAuthModal(); return false; }
+// タブを開けるかどうかの判定は、この1か所だけで行う（2026-11-23）。
+// 以前は switchTab・canAccessTab・tabOpenable・applyPlanLock がそれぞれ別の条件を持っており、
+// 片方だけ直して食い違うことがあった。
+// 戻り値：null＝開ける／'login'＝ログインが必要／{msg, upgrade}＝開けない（理由と、プラン案内を出すか）
+function tabDenyReason(name){
+  if(FREE_TABS.includes(name)) return null;
+  if(!currentUser) return 'login';
   const plan = currentUserPlan || 'basic';
-  if(name === 'exam' && plan !== 'premium'){
-    alert('認定試験はPremiumプランの受講者のみ受験できます。');
-    return false;
-  }
-  if(PREMIUM_TABS.includes(name) && plan !== 'premium'){
-    alert('このレッスンはPremiumプランでご受講いただけます。');
-    return false;
-  }
-  if(STANDARD_TABS.includes(name) && !(plan === 'standard' || plan === 'premium')){
-    alert(plan === 'basic' ? 'このレッスンはStandard以上のプランでご受講いただけます。' : 'ご購入後にご受講いただけます。');
-    return false;
-  }
-  // 無料登録のみ（プランなし）の場合は、無料公開のレッスン以外を開かない（2026-11-22）
-  if(ALL_LESSONS_LIST.includes(name) && !getPlanLessons().includes(name)){
-    alert('このレッスンはご購入後にご受講いただけます。');
-    return false;
-  }
-  if((name === 'certificate') && !(plan === 'standard' || plan === 'premium')){
-    alert('修了証は Standard 以上のプランで発行できます。');
-    return false;
-  }
-  return true;
+  const paid = plan === 'basic' || plan === 'standard' || plan === 'premium';
+  if(name === 'records') return null;
+  if(name === 'exam') return plan === 'premium' ? null : { msg: '認定試験は Premium プランで受験できます。', upgrade: true };
+  if(name === 'certificate') return (plan === 'standard' || plan === 'premium') ? null : { msg: '修了証は Standard 以上のプランで発行できます。', upgrade: true };
+  if(!paid) return { msg: '序章と L01 は無料でお読みいただけます。L02 以降はご購入後に受講できます。', upgrade: true };
+  if(PREMIUM_TABS.includes(name) && plan !== 'premium') return { msg: 'このレッスンは Premium プランで受講できます。', upgrade: true };
+  if(STANDARD_TABS.includes(name) && plan === 'basic') return { msg: 'このレッスンは Standard 以上のプランで受講できます。', upgrade: true };
+  if(ALL_LESSONS_LIST.includes(name) && !getPlanLessons().includes(name)) return { msg: 'このレッスンはご購入後に受講できます。', upgrade: true };
+  return null;
 }
+// 開けないときは理由を伝え、プランの案内へ進めるようにする
+function canAccessTab(name){
+  if(name === 'certificate' && typeof refreshRecords === 'function') setTimeout(refreshRecords, 0);
+  const r = tabDenyReason(name);
+  if(!r) return true;
+  if(r === 'login'){ openAuthModal(); return false; }
+  if(r.upgrade && confirm(r.msg + '\n\n料金プランのご案内を開きますか？')) showPlans();
+  else if(!r.upgrade) alert(r.msg);
+  return false;
+}
+// 料金プランの案内。ログイン中は学習画面がトップページの料金欄を隠しているので、
+// 今のプランより上のプランだけを小さな画面に出し、そこから申込フォームを開けるようにする（2026-11-23）
+function showPlans(){
+  if(!currentUser){ const p = document.getElementById('plans'); if(p) p.scrollIntoView({ behavior: 'smooth' }); return; }
+  closePlanPick();
+  const order = ['basic', 'standard', 'premium'];
+  const cur = order.indexOf(currentUserPlan);
+  const rows = order.filter((p, i) => i > cur).map(p => `<div class="pp-row">
+      <div class="pp-info"><div class="pp-name">${p.toUpperCase()}<span class="pp-price">${yen(COURSE.prices[p])}（税込）</span></div>
+      <div class="pp-desc">${escHtml(PLAN_RANGE_TEXT[p])}<br>標準学習時間 ${escHtml(PLAN_HOURS[p])}${p === 'basic' ? '' : '・修了証あり'}</div></div>
+      <button type="button" class="form-submit pp-btn" onclick="closePlanPick();openFormModal('${FORM_PLAN_NAME[p]}')">申し込む</button></div>`).join('');
+  const ov = document.createElement('div');
+  ov.id = 'plan-pick-overlay';
+  ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'pp-title');
+  ov.innerHTML = `<div class="pp-box"><button type="button" class="pp-close" onclick="closePlanPick()" aria-label="閉じる">×</button>
+    <div class="pp-title" id="pp-title">受講範囲を広げる</div>
+    ${rows || '<p class="pp-desc">いまのプランで全レッスンを受講できます。</p>'}
+    <p class="pp-note">お支払いは決済画面（Stripe）で行います。ご不明点はお問い合わせください。</p></div>`;
+  ov.addEventListener('click', e => { if(e.target === ov) closePlanPick(); });
+  document.body.appendChild(ov);
+  const b = ov.querySelector('.pp-btn, .pp-close'); if(b) b.focus();
+}
+function closePlanPick(){ const ov = document.getElementById('plan-pick-overlay'); if(ov) ov.remove(); }
+window.closePlanPick = closePlanPick;
+window.showPlans = showPlans;
 window.canAccessTab = canAccessTab;
 // ===================== 法的ページモーダル =====================
 const LEGAL_PAGES = {
@@ -1382,7 +1381,7 @@ function openCorpProgress(){
     });
     html += '</table></div>';
   });
-  html += '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button onclick="downloadCorpCsv()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:11px 18px;font-weight:600;cursor:pointer;min-height:44px">📥 CSVをダウンロード</button>' +
+  html += '<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap"><button onclick="downloadCorpCsv()" style="background:var(--green-s);color:#fff;border:none;border-radius:8px;padding:11px 18px;font-weight:600;cursor:pointer;min-height:44px">📥 CSVをダウンロード</button>' +
     '<button onclick="closeCorpProgress()" style="background:var(--bg2);color:var(--text2);border:1px solid var(--border2);border-radius:8px;padding:11px 18px;cursor:pointer;min-height:44px">閉じる</button></div>';
   let ov = document.getElementById('corp-progress-overlay');
   if(!ov){
@@ -1499,7 +1498,7 @@ const WORK_QUESTIONS = {
   'w7-4': { min:200, ref:'L33・総括', q:'L33をふまえ、自社のAI活用ロードマップを作成してください。今後1年間で、どの業務にどの順序でAIを導入していくか、各段階で必要になるセキュリティ対策とあわせて記述してください。第5章のw5-4で作成した導入計画との整合を確認し、より長期の視点で見直した結果を書いてください。' }
 };
 
-const WORK_API = 'https://ai-security-lab-stripe.laughrally.workers.dev';
+const WORK_API = WORKER_URL;   // 同じ Worker（以前は URL を2か所に書いていた）
 const _workTimers = {};
 const _workStarted = {};
 let _workLoaded = {};
@@ -1793,6 +1792,7 @@ const TEST_QUESTIONS = {
 const TEST_TOTAL_PER_CHAPTER = 5;
 const TEST_PASS_COUNT_UI = 4;
 const _testAnswered = {};   // { questionId: true } 回答済み
+const _testAttemptsLeft = {};   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
 const _testResultCh = {};   // { 章番号: {answered, correct, passed} }
 
 function renderTestChapter(ch){
@@ -1829,6 +1829,7 @@ async function loadTestChapter(ch){
     const d = await r.json();
     (d.answers||[]).forEach(a=>{
       _testAnswered[a.question_id] = true;
+      if(a.attemptsLeft != null) _testAttemptsLeft[a.question_id] = a.attemptsLeft;
       lockTestQuestion(a.question_id, a.selected, a.is_correct, a.explanation);
     });
     _testResultCh[ch] = { answered:d.answered, correct:d.correct, passed:d.passed,
@@ -1879,6 +1880,7 @@ async function answerTest(qid, idx){
       return;
     }
     _testAnswered[qid] = true;
+    if(d.attemptsLeft != null) _testAttemptsLeft[qid] = d.attemptsLeft;
     lockTestQuestion(qid, idx, d.isCorrect, d.explanation);
     const cur = _testResultCh[ch] || { answered:0, correct:0 };
     cur.answered += 1;
@@ -1912,6 +1914,13 @@ function updateTestSummary(ch){
     return;
   }
   const wrong = (r.wrongIds||[]).length;
+  const retryable = (r.wrongIds||[]).filter(q => _testAttemptsLeft[q] !== 0).length;
+  if(!retryable){
+    el.innerHTML = `<span class="test-fail">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格ラインは ${TEST_PASS_COUNT_UI} 問です</span>${att}
+      <div class="test-retry-box"><p class="test-retry-msg">間違えた設問は、回答できる回数（各3回）を使い切りました。<br>
+      章のレッスンを読み直したうえで、お問い合わせから運営までご連絡ください。</p></div>`;
+    return;
+  }
   el.innerHTML =
     `<span class="test-fail">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格ラインは ${TEST_PASS_COUNT_UI} 問です</span>${att}
      <div class="test-retry-box">
@@ -1924,7 +1933,8 @@ function updateTestSummary(ch){
 // 間違えた設問だけを未回答に戻し、参照レッスンへの導線を出す
 function retryTestChapter(ch){
   const r = _testResultCh[ch] || {};
-  const wrong = r.wrongIds || [];
+  // 回答回数を使い切った設問は戻さない（戻しても送信時に 429 で弾かれる。2026-11-23）
+  const wrong = (r.wrongIds || []).filter(q => _testAttemptsLeft[q] !== 0);
   if(!wrong.length) return;
   wrong.forEach(qid => {
     _testAnswered[qid] = false;
@@ -1963,6 +1973,7 @@ window.loadTestChapter = loadTestChapter;
 const _origSwitchTab = switchTab;
 window.switchTab = function(name){
   if(!canAccessTab(name)) return;
+  if(window._aslTestFocus && name !== 'work' + window._aslTestFocus) window._aslTestFocus = 0;
   if(currentUser){
     // 前回の続きから再開できるよう、最後に開いたタブを控える（ユーザーごと）
     try { localStorage.setItem('asl_last_tab', JSON.stringify({ u: currentUser.id, t: name })); } catch(e){}
@@ -1976,27 +1987,19 @@ window.switchTab = function(name){
     _origSwitchTab(name);
   }
   // 章末ワークタブなら内容を読み込む
-  if(/^work[1-7]$/.test(name)){
+  if(/^work\d+$/.test(name)){
     const _ch = parseInt(name.slice(4),10);
     loadWorkChapter(_ch);
     loadTestChapter(_ch);
   }
 };
-window.toggleCh        = toggleCh;
 window.openGuideModal  = function(){ document.getElementById('guide-modal-overlay').classList.add('show'); };
 window.closeGuideModal = function(){ document.getElementById('guide-modal-overlay').classList.remove('show'); };
-window.doQ             = doQ;
-window.openAuthModal   = openAuthModal;
-window.closeAuthModal  = closeAuthModal;
-window.toggleAuthMode  = toggleAuthMode;
 window.signInWithEmail = signInWithEmail;
 window.signUpWithEmail = signUpWithEmail;
 window.signOut             = signOut;
 window.sendPasswordReset   = sendPasswordReset;
 window.updatePassword      = updatePassword;
-window.toggleDark      = toggleDark;
-window.openFormModal   = openFormModal;
-window.closeFormModal  = closeFormModal;
 window.submitForm      = submitForm;
 
 /* ===== 受講済み管理・修了証 ===== */
@@ -2304,7 +2307,9 @@ async function fetchRecordData(){
       chapter: c,
       name: info.name || '',
       goal: info.goal || '',
-      submitted: items.some(i => i.status === 'submitted'),
+      // 4問すべて提出した章だけを「提出済み」とする（修了の判定と同じ。2026-11-23。
+      // 以前は1問でも提出していれば提出済みと出て、修了条件の表示と食い違った）
+      submitted: ((data.summary && data.summary.workDoneList) || []).includes(c),
       submittedAt: (items.find(i => i.submitted_at) || {}).submitted_at || null,
       // duration_seconds は章内の全行に同じ値が入る仕様なので、合計せず最大を取る
       duration: items.reduce((a,i) => Math.max(a, i.duration_seconds || 0), 0) || null,
@@ -2904,8 +2909,6 @@ function closeSbDrawer(){
   if(sb) sb.classList.remove('open');
   if(ov) ov.classList.remove('show');
 }
-window.toggleSbDrawer = toggleSbDrawer;
-window.closeSbDrawer  = closeSbDrawer;
 
 // カリキュラムからレッスンへ飛ぶ共通関数
 function goLesson(tabId){
@@ -3044,21 +3047,16 @@ function showActiveLesson(tabId){
   markLessonStart(tabId);
   ensureLessonLoaded(tabId);
   shuffleQuizOptions(tabId);
+  // 本文が最初から入っている序章・L01 も、前後ナビをプランに合わせる（無料登録の人に購入の案内を出すため）
+  if(tcon.dataset.remote !== '1') fixLessonNav(tabId);
 }
 
 // ---- 前後ナビ ----
 // プランで開けるタブだけをたどる（2026-11-22）。以前は ALL_TABS_ORDERED をそのままたどり、
 // Basic は章末ワーク（開けない）で、Standard は第7章（開けない）でアラートが出て止まった。
 function tabOpenable(id){
-  const plan = currentUserPlan || 'basic';
-  if(FREE_TABS.includes(id)) return true;
   if(id === 'records') return false;                       // 流れの外（進捗パネルから開く）
-  if(id === 'exam') return plan === 'premium';
-  if(id === 'certificate') return plan === 'standard' || plan === 'premium';
-  if(PREMIUM_TABS.includes(id)) return plan === 'premium';
-  if(STANDARD_TABS.includes(id)) return plan === 'standard' || plan === 'premium';
-  if(ALL_LESSONS_LIST.includes(id)) return getPlanLessons().includes(id);
-  return true;
+  return tabDenyReason(id) === null;
 }
 function planTabsOrdered(){ return ALL_TABS_ORDERED.filter(tabOpenable); }
 window.tabOpenable = tabOpenable;
@@ -3104,7 +3102,9 @@ function fixLessonNav(tabId){
   let html = '';
   if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${esc(tabLabel(prev))}</span></a>`;
   if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${esc(tabLabel(next))}</span></a>`;
-  else if((currentUserPlan || 'basic') === 'basic') html += `<div class="lnbtn" style="text-align:right;cursor:default"><span class="lnl">Basic の範囲はここまで</span><span class="lnt">Standard 以上で第6章と修了証へ進めます</span></div>`;
+  // 範囲の終わりでは、上のプランの案内を開けるようにする（2026-11-23。以前は文字だけで押せなかった）
+  else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">Basic の範囲はここまで</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
+  else if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">無料公開はここまで</span><span class="lnt">L02 以降はご購入後に受講できます →</span></a>`;
   nav.innerHTML = html;
 }
 window.fixLessonNav = fixLessonNav;
@@ -3123,7 +3123,10 @@ function buildSideNav(completed){
     window._aslResumed = true;
     try {
       const last = JSON.parse(localStorage.getItem('asl_last_tab') || 'null');
-      if(last && last.u === currentUser.id && last.t && last.t !== currentTab && tabOpenable(last.t)) currentTab = last.t;
+      if(last && last.u === currentUser.id && last.t && last.t !== currentTab && tabOpenable(last.t)){
+        currentTab = last.t;
+        setTimeout(() => window.switchTab(last.t), 0);   // 中身の読み込み（ワーク・テスト・修了証）を通常の経路で行う
+      }
     } catch(e){}
   }
 
@@ -3171,7 +3174,8 @@ function buildSideNav(completed){
     });
     // 章末ワーク行（序章の擬似章には付けない）
     const chNo = parseInt((ch.tag||'').replace(/[^0-9]/g,''), 10);
-    if(chNo >= 1 && chNo <= 7 && WORK_CHAPTERS[chNo]){
+    // Basic には章末ワーク・テストが無いので行を出さない（2026-11-23。以前は押せない行が並んでいた）
+    if(chNo >= 1 && WORK_CHAPTERS[chNo] && (COURSE.workChapters[currentUserPlan] || 0) > 0){
       const wid = 'work' + chNo;
       const wactive = wid === currentTab;
       const wdone = !!_workSubmittedCh[chNo];
@@ -3393,6 +3397,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 document.addEventListener('keydown', (e)=>{
   if(e.key !== 'Escape') return;
   const close = [
+    ['plan-pick-overlay', () => closePlanPick()],
     ['corp-progress-overlay', () => window.closeCorpProgress && window.closeCorpProgress()],
     ['auth-overlay', () => window.closeAuthModal && window.closeAuthModal()],
     ['guide-modal-overlay', () => window.closeGuideModal && window.closeGuideModal()],
@@ -3480,7 +3485,7 @@ async function startExam(){
     const st = await apiFetch('/api/exam/status', { method: 'GET' });
     if(st && st.canStart === false && st.reason === 'cooldown'){
       alert('次の受験まで、あと約' + st.retryAfterHours + '時間お待ちください。\n\n' +
-            '3回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
+            '2回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
             'これまでの受験回数：' + st.attempts + '回');
       return;
     }
@@ -3524,7 +3529,7 @@ function renderExam(){
         <div style="font-weight:700;font-size:18px">🏆 AI Security Lab 認定試験</div>
         <div style="display:flex;gap:16px;align-items:center">
           <div style="font-weight:700;color:var(--purple)">⏰ <span id="examTimer">${fmtTime(examState.remaining)}</span></div>
-          <button onclick="submitExam()" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
+          <button onclick="submitExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
         </div>
       </div>
     </div>
@@ -3546,7 +3551,7 @@ function renderExam(){
     html += `</div></div>`;
   });
   html += `<div style="text-align:center;margin:40px 0">
-    <button onclick="submitExam()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:16px 48px;font-size:16px;font-weight:700;cursor:pointer">✅ 試験を提出する</button>
+    <button onclick="submitExam()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:16px 48px;font-size:16px;font-weight:700;cursor:pointer">✅ 試験を提出する</button>
   </div>`;
   container.innerHTML = html;
   container.style.display = 'block';
@@ -3649,7 +3654,7 @@ function renderExamResult(res){
       <div style="font-size:20px;margin-bottom:16px">${correct} / ${total} 問正解（${pct}%）</div>
       <div style="color:var(--muted);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
       <div style="color:var(--muted);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
-      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
+      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
     </div>
   `;
 
@@ -3692,7 +3697,7 @@ function renderExamResult(res){
         `</div>`;
     }
     html += `<p style="color:var(--muted);font-size:13px;line-height:1.8;margin:0">
-      3回目以降の受験は、前回から24時間の間隔をいただいています。
+      2回目以降の受験は、前回から24時間の間隔をいただいています。
     </p>`;
   }
   container.innerHTML = html;
@@ -3742,6 +3747,13 @@ async function submitCertificate(){
     btn.textContent = '申請済み';
     window._certSubmitted = true;   // 画面の更新でボタンが押せる状態に戻らないように（二重申請の防止）
   } catch(e) {
+    if(e.status === 409 || /発行済み/.test(e.message || '')){
+      window._certSubmitted = true;
+      btn.textContent = '発行済み';
+      btn.style.opacity = '.4';
+      if(msg){ msg.style.display = 'block'; msg.style.color = 'var(--text2)'; msg.textContent = e.message; }
+      return;
+    }
     btn.disabled = false;
     btn.textContent = '修了証を申請する';
     if(msg){
@@ -3752,9 +3764,14 @@ async function submitCertificate(){
   }
 }
 
-// Premium（認定試験合格者）向け。Standardと同じ申請フローに統一。
+// 認定試験の合格画面から：修了証の申請欄を開き、氏名の入力欄へ移る（2026-11-23）。
+// 以前はその場で送信しており、氏名が空のため必ず「氏名を入力してください」で止まった
 function requestCertificate(){
-  submitCertificate();
+  if(typeof window.switchTab === 'function') window.switchTab('certificate');
+  setTimeout(() => {
+    const el = document.getElementById('cert-name');
+    if(el){ el.scrollIntoView({ block: 'center', behavior: 'smooth' }); el.focus({ preventScroll: true }); }
+  }, 300);
 }
 
 window.markComplete = markComplete;
@@ -3951,7 +3968,7 @@ async function loadCorpApplications(){
       const sent = !!r.invoice_sent_at;
       const action = sent
         ? `<span style="color:var(--green);font-weight:600">送信済み</span>${r.invoice_url ? `<br><a href="${esc(r.invoice_url)}" target="_blank" rel="noopener" style="font-size:12px">請求書を開く</a>` : ''}`
-        : `<button onclick="sendCorpInvoice('${esc(r.app_no)}', this)" style="background:var(--red);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">請求書を送る</button>`;
+        : `<button onclick="sendCorpInvoice('${esc(r.app_no)}', this)" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap">請求書を送る</button>`;
       return `<div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;background:var(--bg2)">
         <div style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start">
           <div style="flex:1;min-width:240px">
