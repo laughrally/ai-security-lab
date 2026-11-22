@@ -10,6 +10,8 @@
   gtag('config', 'G-38D23PV2DV');
 </script>
 <meta charset="UTF-8">
+<script>if(window.top!==window.self){try{window.top.location=window.self.location.href}catch(e){document.documentElement.style.display='none'}}</script>
+
 <!-- Content Security Policy（GitHub Pagesはレスポンスヘッダを設定できないためmetaで指定）
      script-src に 'unsafe-inline' が必要なのは、本ファイルがインラインJSとonclick属性で
      構成されているため。XSSの実行そのものは防げないが、万一注入された場合の
@@ -17,7 +19,7 @@
      frame-ancestors と HSTS はmetaでは指定できないため、CDN前段での付与が必要。 -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com;
+  script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net/npm/ https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' data: https://fonts.gstatic.com;
   img-src 'self' data: https:;
@@ -186,7 +188,7 @@
     /* ライトモード */
     --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
     --border:#e5e7eb; --border2:#d1d5db;
-    --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#94a3b8;
+    --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#7a879b;
     --red:#dc2626; --red-l:#fee2e2;
     --amber:#d97706; --amber-l:#fef3c7;
     --blue:#2563eb; --blue-l:#dbeafe;
@@ -427,9 +429,22 @@
   .bt i{display:block;height:100%;border-radius:6px;background:var(--blue)}
   .bt i.r{background:var(--red)} .bt i.a{background:var(--amber)} .bt i.g{background:var(--green)}
   .br em{font-style:normal;font-size:12px;color:var(--text3);text-align:right}
+
+  /* ===== 2026-11-22 点検での修正 ===== */
+  /* 学習画面ではユーザーバーを隠す（固定の上部バーに重なり、「次へ」を押すとログアウトになっていた）。
+     メールアドレスとログアウトはサイドバー下部に出す */
+  body:has(#learn-wrapper.show) #auth-user-bar{display:none !important}
+  #sb-user{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;font-size:11px;color:var(--text3)}
+  #sb-user span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #sb-user button{flex-shrink:0;background:none;border:1px solid var(--border2);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text2);cursor:pointer;min-height:32px}
+  /* キーボード操作の位置を見えるように */
+  :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+  .sb-row:focus-visible,.lrow:focus-visible,.chd:focus-visible{outline:2px solid var(--blue);outline-offset:-2px}
   .newb{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.06em;padding:1px 5px;margin-left:6px;border-radius:4px;background:var(--red);color:#fff;vertical-align:middle}
   @media (max-width:640px){
-    .fig{padding:16px 12px 12px;margin:24px -4px}
+    .fig{padding:16px 12px 12px;margin:24px -4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .fig svg{min-width:540px}
+    .fig:has(svg) .fig-t::after{content:'　← 横にスクロールできます →';color:var(--text4)}
     .flow{flex-direction:column}
     .fa{flex-basis:22px}
     .fa::before{content:'↓'}
@@ -1175,9 +1190,10 @@
   #learn-breadcrumb .bc-ch { font-weight: 600; }
   #learn-nav-btns { display: flex; gap: 6px; flex-shrink: 0; }
   .learn-nav-btn {
-    padding: 5px 14px;
-    border-radius: 6px;
-    font-size: 12px;
+    padding: 9px 16px;
+    min-height: 40px;
+    border-radius: 8px;
+    font-size: 13px;
     font-weight: 600;
     border: 1px solid var(--border);
     background: var(--bg);
@@ -1296,7 +1312,7 @@
     #learn-main { width: 100%; }
     #learn-topbar { padding: 8px 14px; gap: 8px; }
     #learn-breadcrumb { font-size: 11px; }
-    .learn-nav-btn { padding: 5px 10px; font-size: 11px; }
+    .learn-nav-btn { padding: 8px 12px; font-size: 12px; min-height: 40px; }
     #learn-content-inner { padding: 24px 16px; }
   }
 
@@ -1517,13 +1533,13 @@
       <div class="form-field">
         <label>ご連絡希望方法</label>
         <div style="display:flex;gap:20px;margin-top:8px;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;line-height:1;color:#0f172a !important">
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;line-height:1;color:var(--text) !important">
             <input type="radio" name="form-contact" value="電話" id="form-contact-tel" style="width:16px;height:16px;flex-shrink:0;margin:0"><span style="color:#0f172a">電話</span>
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;line-height:1;color:#0f172a !important">
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;line-height:1;color:var(--text) !important">
             <input type="radio" name="form-contact" value="メール" id="form-contact-email" checked style="width:16px;height:16px;flex-shrink:0;margin:0"><span style="color:#0f172a">メール</span>
           </label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;line-height:1;color:#0f172a !important">
+          <label style="display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;line-height:1;color:var(--text) !important">
             <input type="radio" name="form-contact" value="どちらでも可" id="form-contact-both" style="width:16px;height:16px;flex-shrink:0;margin:0"><span style="color:#0f172a">どちらでも可</span>
           </label>
         </div>
@@ -2309,7 +2325,7 @@
         <div class="leye">INTRO // 序章</div>
         <h2 class="ltit">日本企業の8割が教育なしで<br>AIを使っている現実</h2>
         <div class="lmeta">
-          <span class="lmi">📖 読了時間：約10分</span>
+          <span class="lmi">📖 読了時間：約9分</span>
           <span class="lmi">🎯 難易度：入門</span>
           <span class="lmi">🆓 無料公開</span>
         </div>
@@ -2352,74 +2368,134 @@
         </div>
 
         <div class="lb">
-          <p>2022年11月、OpenAIがChatGPTを公開してからわずか2年あまりで、生成AIは日本のビジネス現場に急速に浸透しました。メールの下書き、議事録の要約、企画書のアイデア出し——かつては人間が1〜2時間かけて行っていた作業が、数十秒で完了するようになりました。</p>
-          <p>その利便性は本物です。ある不動産会社では、物件資料の作成時間が従来の3分の1に短縮されました。介護施設では、申し送り文書の下書きをAIが作成することで、担当者の残業が月20時間減ったという報告もあります。</p>
-          <p>しかし、その便利さの裏で、静かに進行しているリスクがあります。</p>
+<p>2022年11月、OpenAIがChatGPTを公開してからわずか2年あまりで、生成AIは日本のビジネス現場に急速に浸透しました。メールの下書き、議事録の要約、企画書のアイデア出し——かつては人間が1〜2時間かけて行っていた作業が、数十秒で完了するようになりました。</p>
+<p>その利便性は本物です。ある不動産会社では、物件資料の作成時間が従来の3分の1に短縮されました。介護施設では、申し送り文書の下書きをAIが作成することで、担当者の残業が月20時間減ったという報告もあります。</p>
+<p>しかし、その便利さの裏で、静かに進行しているリスクがあります。</p>
 
-          <div class="co cr">
-            <div class="col">// 実態データ：ルール整備が追いついていない</div>
-            東京商工リサーチの企業向けアンケート（2026年4月公表）では、生成AIの活用について<strong>「方針は決めていない」企業が37.5%</strong>。前回調査（2025年8月）の50.9%からは改善したものの、依然として3社に1社以上がルール未整備のままである。<br>
-            また総務省「情報通信白書 令和7年版」によれば、生成AIを業務に活用している従業員は<strong>全体の約35%</strong>。導入した企業でも、組織全体への浸透と統制の整備には至っていない。
-          </div>
+<div class="co cr">
+  <div class="col">// 実態データ：ルール整備が追いついていない</div>
+  東京商工リサーチの企業向けアンケート（2026年4月公表）では、生成AIの活用について<strong>「方針は決めていない」企業が37.5%</strong>。前回調査（2025年8月）の50.9%からは改善したものの、依然として3社に1社以上がルール未整備のままである。<br>
+  また総務省「情報通信白書 令和7年版」によれば、生成AIを業務に活用している従業員は<strong>全体の約35%</strong>。導入した企業でも、組織全体への浸透と統制の整備には至っていない。
+</div>
 
-          <h2>「使っている」と「管理している」は全く別の話</h2>
-          <p>ここで、経営者・管理職の方に一つ問いかけます。</p>
-          <p><strong>「あなたの会社の社員は、今週AIに何を入力しましたか？」</strong></p>
-          <p>おそらく、正確に答えられる方はほとんどいないはずです。それが問題の本質です。生成AIは「入力した内容を外部サーバーに送信して処理する」仕組みです。社員が何気なく入力した顧客名・契約金額・社内の人事情報が、毎日何十回も外部に送り出されている可能性があります。</p>
+<h2>「使っている」と「管理している」は全く別の話</h2>
+<p>ここで、経営者・管理職の方に一つ問いかけます。</p>
+<p><strong>「あなたの会社の社員は、今週AIに何を入力しましたか？」</strong></p>
+<p>おそらく、正確に答えられる方はほとんどいないはずです。それが問題の本質です。生成AIは「入力した内容を外部サーバーに送信して処理する」仕組みです。社員が何気なく入力した顧客名・契約金額・社内の人事情報が、毎日何十回も外部に送り出されている可能性があります。</p>
 
-          <div class="dbox">
-            <div class="dbtit">// 情報漏洩が起きるまでの典型的な流れ</div>
-            <div class="dr"><span class="drl" style="font-weight:700">① 社員が「便利だから」とAIを使い始める</span><span class="drv" style="color:var(--text3)">ルール不在</span></div>
-            <div class="dr"><span class="drl" style="font-weight:700">② 業務効率化のために顧客情報を入力する</span><span class="drv va">無意識のリスク</span></div>
-            <div class="dr"><span class="drl" style="font-weight:700">③ 情報が外部サーバーに送信・保存される</span><span class="drv vr">制御不能</span></div>
-            <div class="dr"><span class="drl" style="font-weight:700">④ 数週間〜数ヶ月後に問題が発覚する</span><span class="drv vr">手遅れ</span></div>
-            <div class="dr"><span class="drl" style="font-weight:700">⑤ 顧客・取引先への説明・謝罪が必要に</span><span class="drv vr">信頼失墜</span></div>
-          </div>
+<figure class="fig">
+  <div class="fig-t">// 図1 情報漏洩が起きるまでの典型的な流れ</div>
+  <div class="flow">
+    <div class="fs"><b>① 使い始める</b><span>「便利だから」。ルール不在</span></div><div class="fa"></div>
+    <div class="fs a"><b>② 顧客情報を入力</b><span>業務効率化のため。無意識のリスク</span></div><div class="fa"></div>
+    <div class="fs r"><b>③ 外部に送信・保存</b><span>制御不能</span></div><div class="fa"></div>
+    <div class="fs r"><b>④ 数週間〜数ヶ月後に発覚</b><span>手遅れ</span></div><div class="fa"></div>
+    <div class="fs r"><b>⑤ 説明・謝罪</b><span>顧客・取引先へ。信頼失墜</span></div>
+  </div>
+  <figcaption>③を過ぎると、会社の側からは取り戻せません。止められるのは①と②の段階だけです。</figcaption>
+</figure>
 
-          <h2>実際に起きた3つの事例</h2>
+<h2>なぜ中小企業のほうが気づけないのか</h2>
 
-          <div class="ccase">
-            <div class="cchd"><span class="ctg">不動産業・国内</span><span class="cco">営業担当者による顧客情報の無意識入力</span></div>
-            <div class="cdesc">都内の不動産仲介会社で、営業担当者が「田中様（45歳・年収800万・離婚歴あり・○○区在住）向けの提案書を作って」とChatGPTに入力。実名・年齢・年収・個人的な事情が組み合わさった情報が外部サーバーに送信されました。後日、会社として個人情報保護委員会へ相談した際、「適切な取り扱いではなかった可能性がある」との見解が示されました。<br><br><strong>問題点：</strong>個人情報保護法第27条（第三者提供の制限）に抵触する可能性。顧客の同意なく第三者（OpenAI）のサーバーに提供したことになりえます。</div>
-          </div>
+<p>④の「数週間〜数ヶ月後に発覚する」という部分が、中小企業では特に長引きます。理由は単純で、<strong>検知する仕組みがないからです。</strong></p>
 
-          <div class="ccase">
-            <div class="cchd"><span class="ctg">大手電機メーカー・韓国（国際事例）</span><span class="cco">エンジニアによるソースコード流出</span></div>
-            <div class="cdesc">エンジニアが社内システムのバグ修正のためにソースコード（機密情報）をそのままChatGPTに貼り付けて入力。この事例が社内で発覚し、会社はChatGPTの全社利用を禁止する事態となりました。「コードを修正させるだけ」という軽い気持ちが、機密情報の外部送信につながりました。<br><br><strong>教訓：</strong>技術情報も個人情報と同様に、外部サービスへの送信には慎重な判断が必要です。</div>
-          </div>
+<p>メールの誤送信なら、送信済みフォルダに記録が残ります。USBメモリの持ち出しなら、資産管理の仕組みで分かることがあります。ところが生成AIへの入力は、本人が黙っていれば誰も知りません。</p>
 
-          <div class="ccase">
-            <div class="cchd"><span class="ctg">士業・国内（弁護士）</span><span class="cco">依頼人情報と守秘義務の問題</span></div>
-            <div class="cdesc">弁護士が依頼人の案件をAIに要約させるため、依頼人の実名・事案の詳細（相手方の情報を含む）を入力。後日、弁護士会からの指導を受けることになりました。弁護士には弁護士法第23条に基づく職業上の守秘義務があり、AIへの入力が義務違反にあたるかどうかが問題となりました。<br><br><strong>教訓：</strong>職業上の守秘義務を持つ士業（弁護士・税理士・社労士等）は特に慎重な対応が求められます。</div>
-          </div>
+<figure class="fig">
+  <div class="fig-t">// 図2 発覚の経路は、実質この3つしかない</div>
+  <div class="cmp">
+    <div class="cc ok"><div class="cc-h">本人が申告する</div><ul>
+      <li>最も早い</li>
+      <li>ただし「報告しても咎められない」空気が要る</li>
+    </ul></div>
+    <div class="cc mid"><div class="cc-h">同僚や上司が気づく</div><ul>
+      <li>画面を見ていた、会話で出た、という偶然に依存する</li>
+    </ul></div>
+    <div class="cc ng"><div class="cc-h">取引先・顧客から指摘される</div><ul>
+      <li>最も遅い</li>
+      <li>この時点で信用の問題になっている</li>
+    </ul></div>
+  </div>
+  <figcaption>左から順に早く見つかります。仕組みで検知できない以上、いちばん早い「本人の申告」が出やすい職場にしておくことが近道です。</figcaption>
+</figure>
 
-          <div class="co ca">
-            <div class="col">// 共通点</div>
-            これらの事例に共通するのは、<strong>「悪意がなかった」</strong>という点です。業務を効率化しようとした善意の行動が、情報漏洩リスクを生みました。「知らなかった」では済まないのが情報管理の世界です。
-          </div>
+<p>つまり「まだ事例を聞かないから大丈夫」という判断は成り立ちません。<strong>見えていないだけ、という前提で考えてください。</strong></p>
 
-          <h2>このコースで身につくこと</h2>
-          <ul class="slist">
-            <li><span class="snum">1</span><span><strong>判断基準が明確になる</strong>——「これは入力していいか？」を毎回上司に確認しなくても自分で判断できるようになります。</span></li>
-            <li><span class="snum">2</span><span><strong>今すぐ設定すべきことがわかる</strong>——ChatGPT・Claude・Gemini・Copilotそれぞれの設定方法と、最低限すべき対応がわかります。</span></li>
-            <li><span class="snum">3</span><span><strong>社内ルールを作れるようになる</strong>——ゼロからガイドラインを作るためのテンプレートと実践手順を提供します。</span></li>
-            <li><span class="snum">4</span><span><strong>万が一の初動を知る</strong>——インシデントが発生したとき、最初の1時間に何をすべきかを理解します。</span></li>
-          </ul>
+<h2>実際に起きた3つの事例</h2>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">不動産業・国内</span><span class="cco">営業担当者による顧客情報の無意識入力</span></div>
+  <div class="cdesc">都内の不動産仲介会社で、営業担当者が「田中様（45歳・年収800万・離婚歴あり・○○区在住）向けの提案書を作って」とChatGPTに入力。実名・年齢・年収・個人的な事情が組み合わさった情報が外部サーバーに送信されました。後日、会社として個人情報保護委員会へ相談した際、「適切な取り扱いではなかった可能性がある」との見解が示されました。<br><br><strong>問題点：</strong>個人情報保護法第27条（第三者提供の制限）に抵触する可能性。顧客の同意なく第三者（OpenAI）のサーバーに提供したことになりえます。</div>
+</div>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">大手電機メーカー・韓国（国際事例）</span><span class="cco">エンジニアによるソースコード流出</span></div>
+  <div class="cdesc">エンジニアが社内システムのバグ修正のためにソースコード（機密情報）をそのままChatGPTに貼り付けて入力。この事例が社内で発覚し、会社はChatGPTの全社利用を禁止する事態となりました。「コードを修正させるだけ」という軽い気持ちが、機密情報の外部送信につながりました。<br><br>報道によれば、このとき起きた複数件のうち1件は<strong>社内会議の文字起こしを送信して議事録を作らせたもの</strong>でした。ソースコードの件が有名ですが、会議の内容を外に出すという行為は、技術職に限らずどの会社でも起こりえます。<br><br><strong>教訓：</strong>技術情報も個人情報と同様に、外部サービスへの送信には慎重な判断が必要です。</div>
+</div>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">士業・国内（弁護士）</span><span class="cco">依頼人情報と守秘義務の問題</span></div>
+  <div class="cdesc">弁護士が依頼人の案件をAIに要約させるため、依頼人の実名・事案の詳細（相手方の情報を含む）を入力。後日、弁護士会からの指導を受けることになりました。弁護士には弁護士法第23条に基づく職業上の守秘義務があり、AIへの入力が義務違反にあたるかどうかが問題となりました。<br><br><strong>教訓：</strong>職業上の守秘義務を持つ士業（弁護士・税理士・社労士等）は特に慎重な対応が求められます。</div>
+</div>
 
-          <div class="co cg">
-            <div class="col">// 対象者</div>
-            AI導入を検討している経営者・管理職 / すでにAIを使っている現場社員 / 社内のAIルール整備担当者 / 不動産・介護・飲食・士業に携わる方。特別なIT知識は一切不要です。
-          </div>
+<div class="co ca">
+  <div class="col">// 共通点</div>
+  これらの事例に共通するのは、<strong>「悪意がなかった」</strong>という点です。業務を効率化しようとした善意の行動が、情報漏洩リスクを生みました。「知らなかった」では済まないのが情報管理の世界です。
+</div>
 
-          <div class="ref">
-            <div class="ref-tit">// 参考文献・出典</div>
-            <ul class="ref-list">
-              <li>総務省・経済産業省「AI事業者ガイドライン（第1.2版）」2026年3月31日公表 <a href="https://www.meti.go.jp/shingikai/mono_info_service/ai_shakai_jisso/index.html" target="_blank" rel="noopener noreferrer">→ 経済産業省</a></li>
-              <li>個人情報保護委員会「生成AIサービスの利用に関する注意喚起等について」2023年6月2日 <a href="https://www.ppc.go.jp/news/careful_information/230602_AI_utilize_alert/" target="_blank" rel="noopener noreferrer">→ 個人情報保護委員会</a></li>
-              <li>個人情報の保護に関する法律（令和2年改正法、2022年4月施行）第27条（第三者提供の制限）</li>
-            </ul>
-          </div>
+<p>この「悪意がない」という点は、対策の設計にも関わります。従来の情報漏洩対策は<strong>不正な持ち出しを止める</strong>設計でした。ファイアウォール、ウイルス対策、USBメモリの使用禁止。しかし生成AIへの入力は、本人が業務のために、正規の手順で、良かれと思って行います。<strong>止める対象として想定されていないのです。</strong></p>
 
+<figure class="fig">
+  <div class="fig-t">// 図3 従来の対策が想定していたもの、生成AIへの入力</div>
+  <div class="cmp">
+    <div class="cc inf"><div class="cc-h">従来の情報漏洩対策</div><ul>
+      <li>不正な持ち出しを止める設計</li>
+      <li>ファイアウォール、ウイルス対策、USBメモリの使用禁止</li>
+    </ul></div>
+    <div class="cc mid"><div class="cc-h">生成AIへの入力</div><ul>
+      <li>本人が業務のために、正規の手順で、良かれと思って行う</li>
+      <li>止める対象として想定されていない</li>
+    </ul></div>
+  </div>
+  <figcaption>右側は、左側の仕組みをすり抜けます。だから必要になるのは、入力する本人が持つ判断の基準です。</figcaption>
+</figure>
+
+<p>だからこのコースが扱うのは、技術的な防御ではなく<strong>判断の基準</strong>です。何を入れてよくて、何を入れてはいけないのか。迷ったときにどうするのか。入れてしまったら何をするのか。</p>
+
+<h2>このコースで身につくこと</h2>
+<ul class="slist">
+  <li><span class="snum">1</span><span><strong>判断基準が明確になる</strong>——「これは入力していいか？」を毎回上司に確認しなくても自分で判断できるようになります。</span></li>
+  <li><span class="snum">2</span><span><strong>今すぐ設定すべきことがわかる</strong>——ChatGPT・Claude・Gemini・Copilotそれぞれの設定方法と、最低限すべき対応がわかります。</span></li>
+  <li><span class="snum">3</span><span><strong>社内ルールを作れるようになる</strong>——ゼロからガイドラインを作るためのテンプレートと実践手順を提供します。</span></li>
+  <li><span class="snum">4</span><span><strong>万が一の初動を知る</strong>——インシデントが発生したとき、最初の1時間に何をすべきかを理解します。</span></li>
+</ul>
+
+<h2>このコースの進め方</h2>
+
+<p>順番に読み進める設計になっていますが、置かれている状況によって急ぐべき場所が違います。目安を示します。</p>
+
+<div class="dbox">
+  <div class="dbtit">// 立場別：先に読むとよいところ</div>
+  <div class="dr"><span class="drl">これから社内ルールを作る</span><span class="drv" style="color:var(--text3)">L03（実態把握）→ L12（ガイドラインの雛形）→ L14（体制づくり）</span></div>
+  <div class="dr"><span class="drl">すでに使っていて、設定が不安</span><span class="drv" style="color:var(--text3)">L02（設定手順）→ L05（プランの違い）→ L17（ツール比較）</span></div>
+  <div class="dr"><span class="drl">法令面の整理を知りたい</span><span class="drv" style="color:var(--text3)">L07（判断基準）→ L09（個人情報保護法）→ L10（著作権）</span></div>
+  <div class="dr"><span class="drl">いま何か起きている</span><span class="drv vr">L13（初動対応）を先に。削除する前に読んでください</span></div>
+</div>
+
+<p>各レッスンの終わりには理解度チェックがあります。読み飛ばしても進めますが、<strong>答えられなかった問いがあったら、その箇所を読み直してください。</strong>「分かったつもり」で終わると、現場で判断するときに迷います。</p>
+
+<div class="co cb"><div class="col">// 記録が残ります</div>受講の開始・完了の日時はサーバー側で記録され、受講者側では変更できません。学習時間や設問の回答・正誤も含めて、受講実績として出力できます。取引先から教育の実施状況を問われたときに、口頭ではなく記録で示せる状態になります。</div>
+
+<div class="co cg">
+  <div class="col">// 対象者</div>
+  AI導入を検討している経営者・管理職 / すでにAIを使っている現場社員 / 社内のAIルール整備担当者 / 不動産・介護・飲食・士業に携わる方。特別なIT知識は一切不要です。
+</div>
+
+<div class="ref">
+  <div class="ref-tit">// 参考文献・出典</div>
+  <ul class="ref-list">
+    <li>総務省・経済産業省「AI事業者ガイドライン（第1.2版）」2026年3月31日公表 <a href="https://www.meti.go.jp/shingikai/mono_info_service/ai_shakai_jisso/index.html" target="_blank">→ 経済産業省</a></li>
+    <li>個人情報保護委員会「生成AIサービスの利用に関する注意喚起等について」2023年6月2日 <a href="https://www.ppc.go.jp/news/careful_information/230602_AI_utilize_alert/" target="_blank">→ 個人情報保護委員会</a></li>
+    <li>個人情報の保護に関する法律（令和2年改正法、2022年4月施行）第27条（第三者提供の制限）</li>
+  </ul>
+</div>
           <div class="hr"></div>
           <div class="lnav">
             <div></div>
@@ -2438,86 +2514,165 @@
         <div class="leye">CHAPTER 01 // LESSON 01</div>
         <h2 class="ltit">ChatGPTに入力した情報は<br>どこへ行くのか</h2>
         <div class="lmeta">
-          <span class="lmi">📖 読了時間：約12分</span>
+          <span class="lmi">📖 読了時間：約13分</span>
           <span class="lmi">🎯 難易度：入門</span>
           <span class="lmi">🆓 無料公開</span>
         </div>
         <div class="lb">
-          <p>「ChatGPTに入力した内容はOpenAIのサーバーに送られる」——これを知っている方は多いでしょう。しかし問題は<strong>「その先、何が起きるか」を正確に理解している人がほとんどいない</strong>ことです。</p>
-          <p>「サーバーに送られる」という事実だけでは、リスクを適切に判断できません。このレッスンでは、情報の流れを具体的に追いながら、どこにリスクがあるかを整理します。</p>
+<p>「ChatGPTに入力した内容はOpenAIのサーバーに送られる」——これを知っている方は多いでしょう。しかし問題は<strong>「その先、何が起きるか」を正確に理解している人がほとんどいない</strong>ことです。</p>
+<p>「サーバーに送られる」という事実だけでは、リスクを適切に判断できません。このレッスンでは、情報の流れを具体的に追いながら、どこにリスクがあるかを整理します。</p>
 
-          <h2>情報が「旅する」経路を理解する</h2>
-          <div class="dbox">
-            <div class="dbtit">// あなたが送信ボタンを押した後に起きること</div>
-            <div class="dr"><span class="drl">① 暗号化して送信（HTTPS通信）</span><span class="drv vg">通信経路上の盗聴リスクは低い</span></div>
-            <div class="dr"><span class="drl">② OpenAIの米国サーバーに到達</span><span class="drv va">ここで「外部」に出た状態。国内法の適用範囲外</span></div>
-            <div class="dr"><span class="drl">③ AIモデルで処理・回答生成</span><span class="drv va">サーバー内で処理される</span></div>
-            <div class="dr"><span class="drl">④ 会話履歴としてサーバーに保存</span><span class="drv vr">削除しない限り保持される</span></div>
-            <div class="dr"><span class="drl">⑤ プランによって学習データに使用される場合あり</span><span class="drv vr">Free：デフォルトでON</span></div>
-          </div>
+<h2>情報が「旅する」経路を理解する</h2>
+<figure class="fig">
+  <div class="fig-t">// 図1 あなたが送信ボタンを押した後に起きること</div>
+  <div class="flow">
+    <div class="fs g"><b>① 暗号化して送信</b><span>HTTPS通信。通信経路上の盗聴リスクは低い</span></div><div class="fa"></div>
+    <div class="fs a"><b>② OpenAIのサーバーに到達</b><span>ここで「外部」に出た状態。日本国内に保存できるのは Enterprise・Edu だけ</span></div><div class="fa"></div>
+    <div class="fs a"><b>③ AIモデルで処理</b><span>サーバー内で回答を生成</span></div><div class="fa"></div>
+    <div class="fs r"><b>④ 会話履歴として保存</b><span>削除しても最大30日は残る。一時チャットも最大30日</span></div><div class="fa"></div>
+    <div class="fs r"><b>⑤ 学習に使われる場合あり</b><span>Free・Go・Plus・Pro は既定でON</span></div>
+  </div>
+  <figcaption>②で社外の事業者に渡った時点で、もう手元の管理ではありません。個人情報保護法には外国の事業者にも適用される規定があるので、「国外のサーバーだから国内法の外」とも言えません。</figcaption>
+</figure>
 
-          <div class="co cr">
-            <div class="col">// 重要：外国への個人データ送信</div>
-            ChatGPTのサーバーは米国に存在します。個人情報保護法第28条は<strong>「外国にある第三者への提供の制限」</strong>を定めており、個人データを米国の事業者に送信する際には特別な対応が必要になる場合があります。無料プランで何気なく使っている場合、この規制を無意識に違反している可能性があります。
-          </div>
+<div class="co cr">
+  <div class="col">// 重要：外国への個人データ送信</div>
+  ChatGPTのデータは、日本国内保存を選べる Enterprise・Edu を除き、国外のサーバーで扱われます。個人情報保護法第28条は<strong>「外国にある第三者への提供の制限」</strong>を定めており、個人データを米国の事業者に送信する際には特別な対応が必要になる場合があります。無料プランで何気なく使っている場合、この規制を無意識に違反している可能性があります。
+</div>
 
-          <h2>プランによってリスクは大きく変わる</h2>
-          <div class="dbox">
-            <div class="dbtit">// ChatGPT：プラン別データ取り扱い（2026年時点・OpenAI利用規約に基づく）</div>
-            <div class="dr"><span class="drl">Free（無料）</span><span class="drv vr">学習：デフォルトON。設定でOFF可（個人単位）</span></div>
-            <div class="dr"><span class="drl">Plus（月額$20）</span><span class="drv va">学習：設定でOFF可。個人単位での設定が必要</span></div>
-            <div class="dr"><span class="drl">Business（月額$25〜/人・年払い）</span><span class="drv vg">学習：契約レベルでOFF保証。管理者機能あり</span></div>
-            <div class="dr"><span class="drl">Enterprise（要相談）</span><span class="drv vg">完全データ保護・SOC2 Type II認証</span></div>
-          </div>
+<h2>送信されているのは、打った文字だけではない</h2>
 
-          <h2>「学習に使われない」≠「安全」</h2>
-          <p>ここが最も誤解される部分です。<strong>学習をオフにしても、情報はサーバーに送信・保存されています。</strong>以下のリスクは設定に関係なく残ります。</p>
+<p>「入力した文章が送られる」と聞くと、キーボードで打った文字だけを思い浮かべます。実際には、それ以外のものも一緒に渡っています。</p>
 
-          <ul class="slist">
-            <li><span class="snum">①</span><span><strong>OpenAI社員によるアクセス</strong>——安全性確認・品質管理のため、従業員が会話内容を確認することがOpenAI利用規約に明記されています。</span></li>
-            <li><span class="snum">②</span><span><strong>法的開示要請</strong>——司法機関から要請があれば、会話データが開示される可能性があります。米国法の適用を受けるOpenAIには、米国の裁判所命令が優先されます。</span></li>
-            <li><span class="snum">③</span><span><strong>サービス障害による流出</strong>——2023年3月20日、ChatGPTで実際に一部のChatGPT Plus会員（全体の約1.2%）の氏名・メールアドレス・支払い住所・クレジットカード番号下4桁が他ユーザーに表示されるバグが発生し、サービスが一時停止しました（OpenAI公式発表）。</span></li>
-          </ul>
+<div class="dbox">
+  <div class="dbtit">// 一緒に送られるもの</div>
+  <div class="dr"><span class="drl">添付したファイルの中身すべて</span><span class="drv vr">本文だけでなく、別紙・付録・隠し列・非表示シートも含む</span></div>
+  <div class="dr"><span class="drl">ファイルに埋め込まれた情報</span><span class="drv vr">作成者名、編集履歴、変更履歴のコメント。PDFに変換しても残ることがある</span></div>
+  <div class="dr"><span class="drl">画像に写り込んだもの</span><span class="drv vr">背景の書類、ホワイトボード、名札、画面に映った別のウィンドウ</span></div>
+  <div class="dr"><span class="drl">画像の撮影情報</span><span class="drv vr">スマートフォンで撮った写真には撮影位置が記録されていることがある</span></div>
+  <div class="dr"><span class="drl">貼り付けたログやエラーメッセージ</span><span class="drv vr">処理中の実データ（氏名・注文番号・金額）がそのまま入っている</span></div>
+</div>
 
-          <h2>入力してよいもの・いけないものを判断する</h2>
-          <div class="dbox">
-            <div class="dbtit">// Before / After：不動産業の入力例</div>
-            <div class="dr"><span class="drl" style="color:var(--red);font-weight:700">❌ Before（危険）</span><span class="drv" style="color:var(--text3);font-size:12px">「田中様（42歳・年収700万・○○市在住）へのマンション提案書を作って」</span></div>
-            <div class="dr"><span class="drl" style="color:var(--green);font-weight:700">✅ After（安全）</span><span class="drv" style="color:var(--text3);font-size:12px">「40代・年収700万円台のサラリーマン向けマンション提案書のフォーマットを作って」</span></div>
-          </div>
-          <div class="dbox">
-            <div class="dbtit">// Before / After：介護業の入力例</div>
-            <div class="dr"><span class="drl" style="color:var(--red);font-weight:700">❌ Before（危険）</span><span class="drv" style="color:var(--text3);font-size:12px">「鈴木さん（82歳・認知症・骨折後リハビリ中）の申し送り文を書いて」</span></div>
-            <div class="dr"><span class="drl" style="color:var(--green);font-weight:700">✅ After（安全）</span><span class="drv" style="color:var(--text3);font-size:12px">「80代・認知機能低下・骨折後リハビリ中の利用者の申し送り文のフォーマットを作って」</span></div>
-          </div>
-          <div class="dbox">
-            <div class="dbtit">// Before / After：飲食業の入力例</div>
-            <div class="dr"><span class="drl" style="color:var(--red);font-weight:700">❌ Before（危険）</span><span class="drv" style="color:var(--text3);font-size:12px">「常連の佐藤様（小麦アレルギー・毎週金曜来店）へのお礼メールを書いて」</span></div>
-            <div class="dr"><span class="drl" style="color:var(--green);font-weight:700">✅ After（安全）</span><span class="drv" style="color:var(--text3);font-size:12px">「食物アレルギーのある常連客向けのお礼メールのテンプレートを作って」</span></div>
-          </div>
+<p>とくにファイルの添付は、<strong>「1ファイル送っただけ」という感覚と、実際に出た情報量が大きく食い違います。</strong>50ページの資料を渡せば、50ページ全部が渡ります。読んでいない付録も一緒です。</p>
 
-          <div class="co cr">
-            <div class="col">// 判断の原則</div>
-            「この情報が外部に漏れたとき、会社・顧客・取引先に不利益が生じるか？」——YESなら入力しない。<strong>迷ったら入力しない</strong>が絶対原則です。
-          </div>
+<div class="co ca"><div class="col">// 渡す前に、最後までスクロールする</div>大げさに聞こえますが、これだけで防げる事故がかなりあります。別紙に顧客名簿が付いていた、最終ページに原価表が残っていた——いずれも実際に起こります。30秒の確認で済みます。</div>
 
-          <h2>今日から実践する3つのこと</h2>
-          <ul class="slist">
-            <li><span class="snum">1</span><span><strong>ChatGPTの設定を今すぐ確認する</strong>——Settings → Data Controls → 「Improve the model for everyone」をオフに。（5分で完了）</span></li>
-            <li><span class="snum">2</span><span><strong>実名・住所・金額を入力前に仮名に置き換える習慣をつける</strong>——「田中様」→「A様」、「○○円」→「●●円」。入力前の15秒の確認が情報漏洩を防ぎます。</span></li>
-            <li><span class="snum">3</span><span><strong>このレッスンをチームに共有する</strong>——一人が知っていても組織は守れません。まずこのページのURLを同僚に送ってください。</span></li>
-          </ul>
+<h2>プランによってリスクは大きく変わる</h2>
+<figure class="fig">
+  <div class="fig-t">// 図2 ChatGPT：プラン別データ取り扱い（2026年11月時点）</div>
+  <div class="cmp">
+    <div class="cc mid"><div class="cc-h">個人向け：Free・Go・Plus・Pro</div><ul>
+      <li>学習：4プランとも既定でON</li>
+      <li>設定でOFFにできるが、個人単位での設定が必要</li>
+    </ul></div>
+    <div class="cc ok"><div class="cc-h">法人向け：Business（旧Team）</div><ul>
+      <li>学習：既定で使われない</li>
+      <li>管理者機能あり</li>
+      <li>SOC 2 Type 2</li>
+    </ul></div>
+    <div class="cc ok"><div class="cc-h">法人向け：Enterprise（要相談）</div><ul>
+      <li>学習：既定で使われない</li>
+      <li>保存期間を自社で決められる</li>
+      <li>Compliance API（会話の監査ログ）、日本国内保存</li>
+    </ul></div>
+  </div>
+  <figcaption>OpenAI の Data controls FAQ と Enterprise privacy に基づきます。有料でも個人向けなら学習は既定でONです。分かれ目は金額ではなく、個人向けか法人向けかです。</figcaption>
+</figure>
 
-          <div class="ref">
-            <div class="ref-tit">// 参考文献・出典</div>
-            <ul class="ref-list">
-              <li>OpenAI「March 20 ChatGPT outage: Here's what happened」2023年3月24日 <a href="https://openai.com/index/march-20-chatgpt-outage/" target="_blank" rel="noopener noreferrer">→ OpenAI公式</a></li>
-              <li>個人情報の保護に関する法律 第27条（第三者提供の制限）・第28条（外国にある第三者への提供の制限）</li>
-              <li>個人情報保護委員会「生成AIサービスの利用に関する注意喚起等について」2023年6月2日 <a href="https://www.ppc.go.jp/news/careful_information/230602_AI_utilize_alert/" target="_blank" rel="noopener noreferrer">→ 個人情報保護委員会</a></li>
-              <li>OpenAI利用規約（Terms of Use）・プライバシーポリシー <a href="https://openai.com/ja-JP/policies/privacy-policy/" target="_blank" rel="noopener noreferrer">→ OpenAI</a></li>
-            </ul>
-          </div>
+<div class="co cb"><div class="col">// 金額ではなく、プランの種別で分かれる</div>プラン構成と価格は頻繁に変わります。実際、法人向けの「Team」は「Business」へ名称が変更されました。<strong>最新の金額とプラン構成は、必ずOpenAI公式の料金ページで確認してください。</strong><br><br>このレッスンで押さえてほしいのは金額ではなく、<strong>「個人向けか法人向けかで、学習利用とデータ保護の取り決めが根本的に異なる」</strong>という構造です。名称や価格が変わっても、この構造は変わりません。</div>
 
+<h2>「学習に使われない」≠「安全」</h2>
+<p>ここが最も誤解される部分です。<strong>学習をオフにしても、情報はサーバーに送信・保存されています。</strong>以下のリスクは設定に関係なく残ります。</p>
+<ul class="slist">
+  <li><span class="snum">①</span><span><strong>OpenAI社員によるアクセス</strong>——安全性確認・品質管理のため、従業員が会話内容を確認することがOpenAI利用規約に明記されています。</span></li>
+  <li><span class="snum">②</span><span><strong>法的開示要請</strong>——司法機関から要請があれば、会話データが開示される可能性があります。米国法の適用を受けるOpenAIには、米国の裁判所命令が優先されます。</span></li>
+  <li><span class="snum">③</span><span><strong>サービス障害による流出</strong>——2023年3月20日、ChatGPTで実際に一部のChatGPT Plus会員（全体の約1.2%）の氏名・メールアドレス・支払い住所・クレジットカード番号下4桁が他ユーザーに表示されるバグが発生し、サービスが一時停止しました（OpenAI公式発表）。</span></li>
+</ul>
+
+<p>③について補足します。この障害で重要なのは規模ではなく、<strong>利用者側に落ち度がなくても起きた</strong>という点です。設定をオフにしていても、入力を慎重にしていても、預けた先の不具合までは制御できません。</p>
+
+<p>だからこそ、<strong>「そもそも預けない」という判断が必要な情報が存在します。</strong>設定で守れる範囲と、設定では守れない範囲を分けて考えてください。</p>
+
+<h2>入力してよいもの・いけないものを判断する</h2>
+<div class="dbox">
+  <div class="dbtit">// Before / After：不動産業の入力例</div>
+  <div class="dr"><span class="drl" style="color:var(--red);font-weight:700">❌ Before（危険）</span><span class="drv" style="color:var(--text3);font-size:12px">「田中様（42歳・年収700万・○○市在住）へのマンション提案書を作って」</span></div>
+  <div class="dr"><span class="drl" style="color:var(--green);font-weight:700">✅ After（安全）</span><span class="drv" style="color:var(--text3);font-size:12px">「40代・年収700万円台のサラリーマン向けマンション提案書のフォーマットを作って」</span></div>
+</div>
+<div class="dbox">
+  <div class="dbtit">// Before / After：介護業の入力例</div>
+  <div class="dr"><span class="drl" style="color:var(--red);font-weight:700">❌ Before（危険）</span><span class="drv" style="color:var(--text3);font-size:12px">「鈴木さん（82歳・認知症・骨折後リハビリ中）の申し送り文を書いて」</span></div>
+  <div class="dr"><span class="drl" style="color:var(--green);font-weight:700">✅ After（安全）</span><span class="drv" style="color:var(--text3);font-size:12px">「80代・認知機能低下・骨折後リハビリ中の利用者の申し送り文のフォーマットを作って」</span></div>
+</div>
+<div class="dbox">
+  <div class="dbtit">// Before / After：飲食業の入力例</div>
+  <div class="dr"><span class="drl" style="color:var(--red);font-weight:700">❌ Before（危険）</span><span class="drv" style="color:var(--text3);font-size:12px">「常連の佐藤様（小麦アレルギー・毎週金曜来店）へのお礼メールを書いて」</span></div>
+  <div class="dr"><span class="drl" style="color:var(--green);font-weight:700">✅ After（安全）</span><span class="drv" style="color:var(--text3);font-size:12px">「食物アレルギーのある常連客向けのお礼メールのテンプレートを作って」</span></div>
+</div>
+
+<p>3つの例に共通するのは、<strong>置き換えても回答の質が落ちていない</strong>ことです。AIに求めているのは文面の型であって、相手が誰かという情報ではありません。固有名詞は、できあがった文章に後から差し込めば足ります。</p>
+
+<div class="co cr">
+  <div class="col">// 判断の原則</div>
+  「この情報が外部に漏れたとき、会社・顧客・取引先に不利益が生じるか？」——YESなら入力しない。<strong>迷ったら入力しない</strong>が絶対原則です。
+</div>
+
+<h2>一度入力した情報は、消せるのか</h2>
+<p>「うっかり入力してしまっても、あとで消せばいい」と考える人は多い。しかし「消す」という言葉には、実は<strong>3つの異なる段階</strong>がある。この違いを理解しないまま安心してしまうのが、最も危ういパターンだ。</p>
+<figure class="fig">
+  <div class="fig-t">// 図3 「削除」の3つの段階</div>
+  <div class="flow">
+    <div class="fs g"><b>① 自分の画面から消える</b><span>すぐ可能</span></div><div class="fa"></div>
+    <div class="fs a"><b>② 事業者のサーバーから消える</b><span>規約上の期間後</span></div><div class="fa"></div>
+    <div class="fs r"><b>③ 学習済みモデルから消える</b><span>困難</span></div>
+  </div>
+  <figcaption>削除操作が届くのは②までです。右へ進むほど、利用者の手が届かなくなります。</figcaption>
+</figure>
+<p>会話履歴の削除機能が効くのは①と②である。多くのサービスは、削除操作から一定期間（不正利用の監視目的などで保持される期間）を経てサーバー上のデータを消すと規約に定めている。ここまでは、操作すれば実現できる。</p>
+<p>問題は③だ。入力した内容がすでに学習に使われてモデルに反映されていた場合、<strong>そこから特定の情報だけを取り除くことは、現在の技術では現実的でない</strong>。モデルは文章をそのまま保管しているわけではなく、膨大なパラメータの中に溶かし込んで持っているためだ。「1件の顧客名だけ抜いてください」という操作に相当するものが存在しない。</p>
+<p>さらに見落としがちなのが、<strong>AIサービス以外に残るコピー</strong>である。AIに貼り付けた文章は、たいてい元のファイルや別のメール、スクリーンショット、あるいは出力を貼り付けた社内資料にも残っている。「AI側で消したから完了」と考えると、社内に散らばったコピーが放置される。</p>
+<div class="co cr">
+  <div class="col">⚠️ 結論</div>
+  削除機能は<strong>被害を小さくする手段であって、なかったことにする手段ではない</strong>。だからこのレッスンの結論は「消し方を覚える」ではなく「入力しない基準を持つ」になる。入力前の判断が、事後のどんな操作よりも確実に効く。
+</div>
+
+<h2>よくある3つの誤解</h2>
+<p>研修の場でよく出てくる、しかし成り立たない考え方を3つ挙げる。いずれも「一見もっともらしい」ため、社内で共有されて広がりやすい。</p>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">誤解①</span><span class="cco">「無料版じゃなく有料版だから安全」</span></div>
+  <p class="cdesc">安全性を分けるのは<strong>払っている金額ではなく、プランの種別</strong>だ。個人向けの有料プランは、機能が増えても「個人が自分のために使う契約」であることに変わりはない。会社としてのデータ保護の取り決め（契約書・利用規約上の位置づけ）は、法人向けプランで初めて成立する。「お金を払っているのだから会社として使ってよい」は成り立たない。</p>
+</div>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">誤解②</span><span class="cco">「ログインしていないから匿名で安全」</span></div>
+  <p class="cdesc">誰が入力したかが分からなくても、<strong>入力した内容そのものに個人情報や社外秘が含まれていれば、漏洩は漏洩である</strong>。「匿名だから」は、自分が特定されにくいという話であって、預けたデータが守られるという話ではない。守るべき対象は自分ではなく、顧客と会社の情報だ。</p>
+</div>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">誤解③</span><span class="cco">「社内のPCから使っているから社内で完結している」</span></div>
+  <p class="cdesc">クラウドAIは、どの端末から使っても<strong>通信先は社外のサーバー</strong>である。社内ネットワークの中で処理されているわけではない。この誤解は、社内システムに慣れた人ほど起こしやすい。「画面が社内PCに映っている」ことと「データが社内にとどまっている」ことは、まったく別のことだ。</p>
+</div>
+<div class="ccase">
+  <div class="cchd"><span class="ctg">誤解④</span><span class="cco">「AIに直接入力していないから関係ない」</span></div>
+  <p class="cdesc">自分でプロンプトを打っていなくても、<strong>外部のサーバーに業務データを送っている経路は複数ある</strong>。議事録ツール、翻訳ツール、AI-OCR、ブラウザ拡張、業務システムに組み込まれたAI機能——いずれも入力している自覚が生まれにくい。<br><br>社内ルールを「生成AIの利用について」と書くと、こうしたツールが対象から漏れる。<strong>「外部のクラウドサービスに業務データを送る場合」</strong>と書くと自動的に含まれる。</p>
+</div>
+
+<h2>今日から実践する3つのこと</h2>
+<ul class="slist">
+  <li><span class="snum">1</span><span><strong>ChatGPTの設定を今すぐ確認する</strong>——Settings → Data Controls → 「Improve the model for everyone」をオフに。（5分で完了）</span></li>
+  <li><span class="snum">2</span><span><strong>実名・住所・金額を入力前に仮名に置き換える習慣をつける</strong>——「田中様」→「A様」、「○○円」→「●●円」。入力前の15秒の確認が情報漏洩を防ぎます。</span></li>
+  <li><span class="snum">3</span><span><strong>このレッスンをチームに共有する</strong>——一人が知っていても組織は守れません。まずこのページのURLを同僚に送ってください。</span></li>
+</ul>
+
+<div class="ref">
+  <div class="ref-tit">// 参考文献・出典</div>
+  <ul class="ref-list">
+    <li>OpenAI「March 20 ChatGPT outage: Here's what happened」2023年3月24日 <a href="https://openai.com/index/march-20-chatgpt-outage/" target="_blank">→ OpenAI公式</a></li>
+    <li>個人情報の保護に関する法律 第27条（第三者提供の制限）・第28条（外国にある第三者への提供の制限）</li>
+    <li>個人情報保護委員会「生成AIサービスの利用に関する注意喚起等について」2023年6月2日 <a href="https://www.ppc.go.jp/news/careful_information/230602_AI_utilize_alert/" target="_blank">→ 個人情報保護委員会</a></li>
+    <li>OpenAI「Data Controls FAQ」 <a href="https://help.openai.com/en/articles/7730893-data-controls-faq" target="_blank">→ OpenAI Help Center</a></li>
+    <li>OpenAI「Enterprise privacy」 <a href="https://openai.com/enterprise-privacy/" target="_blank">→ OpenAI</a></li>
+    <li>OpenAI利用規約（Terms of Use）・プライバシーポリシー <a href="https://openai.com/ja-JP/policies/privacy-policy/" target="_blank">→ OpenAI</a></li>
+  </ul>
+</div>
           <div class="hr"></div>
           <div class="quiz">
             <div class="qlbl">// 理解度チェック</div>
@@ -2796,7 +2951,7 @@
               <li>✅ 全36レッスンを受講済みにしてから受験することを推奨します</li>
               <li>✅ 試験開始後は60分のカウントダウンが始まります</li>
               <li>✅ 途中で中断しても時間は進みます</li>
-              <li>✅ 提出後に全問の正誤と解説が表示されます</li>
+              <li>✅ 合格すると、全問の正誤と解説が表示されます（不合格のときは、復習が必要な章だけを表示します）</li>
               <li>✅ 不合格でも再受験できます</li>
             </ul>
           </div>
@@ -2824,6 +2979,7 @@
         <div class="cert-form-box">
           <div class="cert-form-title">修了証 発行申請フォーム</div>
           <div class="cert-form-desc">以下を入力して申請してください。全レッスン受講済みの場合のみ送信できます。</div>
+          <div id="cert-checklist" style="margin:14px 0;font-size:13.5px;line-height:2"></div>
           <div id="cert-locked-notice" class="cert-locked-notice">⚠️ 全レッスンを受講済みにしてから申請してください。</div>
           <div class="form-field"><label>会社名<span style="font-size:11px;color:#999;margin-left:6px">（任意）</span></label><input type="text" id="cert-company" placeholder="株式会社〇〇（個人の方は空欄でOK）"></div>
           <div class="form-field"><label>修了証に記載する氏名<span style="color:var(--red)">*</span></label><input type="text" id="cert-name" placeholder="山田 太郎"></div>
@@ -3366,6 +3522,7 @@
       <div id="sb-footer-track">
         <div id="sb-footer-fill"></div>
       </div>
+      <div id="sb-user"><span id="sb-user-email"></span><button onclick="signOut()">ログアウト</button></div>
     </div>
   </div>
 
@@ -3667,17 +3824,28 @@ let currentExamPassed = false;
 let currentCertifiedEarlier = false;
 async function fetchUserPlan(){
   if(!_supabase || !currentUser) return;
-  try {
-    const { data } = await _supabase.from('profiles').select('plan,exam_passed').eq('id', currentUser.id).single();
-    currentUserPlan = data?.plan ?? 'basic';
-    currentExamPassed = data?.exam_passed ?? false;
-  } catch(e) {
-    currentUserPlan = 'basic';
+  // .single() は失敗しても例外を投げず { error } を返す。以前は通信失敗でも 'basic' 扱いになり、
+  // 有料の受講者が自分の講座を開けなかった。2回まで取り直し、それでも駄目なら知らせる（2026-11-22）
+  let data = null, error = null;
+  for(let i = 0; i < 3; i++){
+    try {
+      ({ data, error } = await _supabase.from('profiles').select('plan,exam_passed').eq('id', currentUser.id).single());
+    } catch(e) { error = e; }
+    if(data && !error) break;
+    await new Promise(r => setTimeout(r, 800 * (i + 1)));
+  }
+  if(data && !error){
+    currentUserPlan = data.plan ?? 'free';
+    currentExamPassed = data.exam_passed ?? false;
+  } else {
+    currentUserPlan = currentUserPlan || 'basic';
     currentExamPassed = false;
+    console.warn('プランを取得できませんでした:', error && error.message);
+    alert('ご契約プランの情報を読み込めませんでした。通信環境をご確認のうえ、ページを再読み込みしてください。');
   }
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
     apiFetch('/api/records', { method: 'GET' })
-      .then(r => { currentCertifiedEarlier = !!r?.summary?.certifiedEarlier; if(currentCertifiedEarlier) updateCompletionUI(); })
+      .then(r => { window._recSummary = r?.summary || null; currentCertifiedEarlier = !!r?.summary?.certifiedEarlier; updateCompletionUI(); })
       .catch(() => {});
   }
   updateCertificateUI();
@@ -3752,6 +3920,8 @@ function updateAuthUI(){
   if(currentUser){
     bar.classList.add('show');
     email.textContent = currentUser.email ?? 'ログイン済み';
+    const sbEmail = document.getElementById('sb-user-email');
+    if(sbEmail) sbEmail.textContent = currentUser.email ?? '';
     lockPaidTabs(false);
     if(navCta)        navCta.style.display     = 'none';
     if(navPricing)    navPricing.style.display = 'none';
@@ -3925,8 +4095,12 @@ async function updatePassword(){
 
 async function signOut(){
   if(!_supabase) return;
-  // ログアウト時にlocalStorageの受講済みデータをクリア（別ユーザーのPCで見えないように）
-  localStorage.removeItem('asl_completed');
+  // ログアウト時に、この端末に残る受講データを消す（共用PCで次の人の記録に混ざらないように）。
+  // 以前は受講済みだけを消しており、学習時間の累計や開始時刻が次の人の送信に乗っていた（2026-11-22）
+  ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab']
+    .forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+  currentCertifiedEarlier = false;
+  currentExamPassed = false;
   await _supabase.auth.signOut();
   updateCompletionUI();
   updateDashboard();
@@ -3953,6 +4127,11 @@ function switchTab(name){
     }
     if(STANDARD_TABS.includes(name) && plan === 'basic'){
       alert('このレッスンはStandard以上のプランでご受講いただけます。');
+      return;
+    }
+    // 無料登録のみ（プランなし）の場合は、無料公開のレッスン以外を開かない（2026-11-22）
+    if(ALL_LESSONS_LIST.includes(name) && !FREE_TABS.includes(name) && !getPlanLessons().includes(name)){
+      alert('このレッスンはご購入後にご受講いただけます。');
       return;
     }
   }
@@ -4166,16 +4345,15 @@ async function doQ(btn, selected, id){
       // 正解の位置はサーバーにしかないので、doQ が送る「元の選択肢番号」を保存する
       // （表示順はシャッフルされるが、この番号は QUIZ_ANSWER_KEY と対応している）。
       try {
-        const done = JSON.parse(localStorage.getItem(QUIZ_DONE_KEY) || '{}');
+        const done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}');
         done[id] = { s: selected, e: r.explanation || '' };
-        localStorage.setItem(QUIZ_DONE_KEY, JSON.stringify(done));
+        localStorage.setItem(quizDoneKey(), JSON.stringify(done));
       } catch(e){}
     } else {
       // 不正解：この選択肢だけ無効化。他は引き続き選べる。
       btn.style.pointerEvents = 'none';
       btn.classList.add('ng');
       document.getElementById(id+'-ng').classList.add('show');
-      setTimeout(()=>{ document.getElementById(id+'-ng').classList.remove('show'); }, 2500);
     }
   } catch(e) {
     btn.style.opacity = '';
@@ -4237,6 +4415,15 @@ function canAccessTab(name){
   }
   if(STANDARD_TABS.includes(name) && plan === 'basic'){
     alert('このレッスンはStandard以上のプランでご受講いただけます。');
+    return false;
+  }
+  // 無料登録のみ（プランなし）の場合は、無料公開のレッスン以外を開かない（2026-11-22）
+  if(ALL_LESSONS_LIST.includes(name) && !getPlanLessons().includes(name)){
+    alert('このレッスンはご購入後にご受講いただけます。');
+    return false;
+  }
+  if((name === 'certificate') && !(plan === 'standard' || plan === 'premium')){
+    alert('修了証は Standard 以上のプランで発行できます。');
     return false;
   }
   return true;
@@ -4538,21 +4725,21 @@ window.downloadGuideline = downloadGuideline;
 
 // ===================== 管理者：受講ログのエクスポート =====================
 // #admin-dashboard は既定で display:none。管理者アカウントでログインしたときのみ表示する。
-const ADMIN_EMAILS = ['info@laughrally.tech', 'laughrally@gmail.com'];
+// 管理者はアカウントIDで判定する（Worker の ADMIN_USER_IDS と同じ）。表示を切り替えるだけで、権限はサーバーが判定する
+const ADMIN_USER_IDS = ['0fc82602-6512-41b5-9ef8-6a14b533d7f7'];
+function isAdminUser(){ return !!(currentUser && ADMIN_USER_IDS.includes(currentUser.id)); }
 
 function applyAdminVisibility(){
   const sec = document.getElementById('admin-dashboard');
   if(!sec) return;
-  const email = (currentUser && currentUser.email || '').toLowerCase();
-  sec.style.display = ADMIN_EMAILS.includes(email) ? 'block' : 'none';
+  sec.style.display = isAdminUser() ? 'block' : 'none';
 }
 window.applyAdminVisibility = applyAdminVisibility;
 
 async function adminExportLogs(){
   const btn = document.getElementById('admin-export-btn');
   const out = document.getElementById('admin-export-result');
-  const email = (currentUser && currentUser.email || '').toLowerCase();
-  if(!ADMIN_EMAILS.includes(email)){
+  if(!isAdminUser()){
     if(out) out.textContent = 'この操作を行う権限がありません。';
     return;
   }
@@ -5093,6 +5280,8 @@ const _origSwitchTab = switchTab;
 window.switchTab = function(name){
   if(!canAccessTab(name)) return;
   if(currentUser){
+    // 前回の続きから再開できるよう、最後に開いたタブを控える（ユーザーごと）
+    try { localStorage.setItem('asl_last_tab', JSON.stringify({ u: currentUser.id, t: name })); } catch(e){}
     // ログイン後はshowActiveLessonで直接切替
     showActiveLesson(name);
     const completed = loadCompleted();
@@ -5141,7 +5330,8 @@ const PLAN_RANGE_LABEL  = { basic: '第1〜5章', standard: '第1〜6章', premi
 function lessonNo(id){ const i = ALL_LESSONS_LIST.indexOf(id); return i < 0 ? '' : String(i + 1).padStart(2,'0'); }
 function getPlanLessons(){
   const plan = currentUserPlan || 'basic';
-  return ALL_LESSONS_LIST.slice(0, PLAN_LESSON_COUNT[plan] || ALL_LESSONS_LIST.length);
+  // 未知のプラン（無料登録のみの 'free' など）は0本。Worker と同じく拒否側に倒す（2026-11-22）
+  return ALL_LESSONS_LIST.slice(0, PLAN_LESSON_COUNT[plan] || 0);
 }
 
 function loadCompleted(){
@@ -5173,7 +5363,17 @@ function markComplete(tabId){
         startedAt: startIso,
         durationSeconds: secs,
       }),
-    }).catch(e => console.warn('受講記録の保存に失敗:', e.message));
+    }).catch(e => {
+      // 保存に失敗したら画面の「受講済み」を取り消して知らせる（2026-11-22）。
+      // 以前は画面だけ受講済みになり、修了証の申請時に「28/29」で弾かれても原因が分からなかった
+      console.warn('受講記録の保存に失敗:', e.message);
+      saveCompleted(loadCompleted().filter(x => x !== tabId));
+      const b = document.getElementById('complete-' + tabId);
+      if(b){ b.classList.remove('done'); b.textContent = '✓ 受講済みにする（もう一度）'; }
+      updateCompletionUI();
+      updateDashboard();
+      alert('受講済みの記録を保存できませんでした。\n' + (e.message || '') + '\n通信環境をご確認のうえ、もう一度「受講済み」を押してください。');
+    });
   }
 }
 
@@ -5225,7 +5425,23 @@ function updateCompletionUI(){
     return;
   }
   // レッスン追加より前に修了証を受け取った人は、追加分が未受講でも申請（再発行）できる
-  const allDone = planLessons.every(id => completed.includes(id)) || currentCertifiedEarlier;
+  let allDone = planLessons.every(id => completed.includes(id)) || currentCertifiedEarlier;
+  // 修了条件のチェックリスト（2026-11-22）。以前はレッスン数しか見えず、ワークやテストが
+  // 未了でも申請ボタンが押せて、送信後にサーバーで弾かれていた
+  const sm = window._recSummary;
+  const ckEl = document.getElementById('cert-checklist');
+  if(ckEl && sm){
+    const row = (ok, label, val) => `<div>${ok ? '✅' : '⬜'} ${label}　<span style="color:var(--text3)">${val}</span></div>`;
+    const chs = sm.chaptersTotal || 0;
+    let h = row(planDone.length >= planTotal || currentCertifiedEarlier, '全レッスンを受講済みにする', planDone.length + ' / ' + planTotal);
+    if(chs){
+      h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章');
+      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章');
+    }
+    if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格');
+    ckEl.innerHTML = '<div style="font-weight:700;margin-bottom:4px">修了の条件</div>' + h;
+    if(!currentCertifiedEarlier && chs && ((sm.chaptersSubmitted || 0) < chs || (sm.testPassedChapters || 0) < chs)) allDone = false;
+  }
   const examPassed = currentExamPassed;
   const canApply = plan === 'premium' ? (allDone && examPassed) : allDone;
   const certDesc = document.querySelector('.cert-desc');
@@ -5243,7 +5459,7 @@ function updateCompletionUI(){
       ? `⚠️ 第1〜7章の全${planTotal}レッスンを受講済みにしてから申請してください。`
       : `⚠️ 第1〜6章の全${planTotal}レッスンを受講済みにしてから申請してください。`;
   if(notice){ notice.textContent = noticeText; notice.style.display = canApply ? 'none' : 'block'; }
-  if(submitBtn){ submitBtn.disabled = !canApply; submitBtn.style.opacity = canApply ? '1' : '.4'; }
+  if(submitBtn){ const ok = canApply && !window._certSubmitted; submitBtn.disabled = !ok; submitBtn.style.opacity = ok ? '1' : '.4'; }
   if(canApply){ const tb = document.getElementById('cert-tab-btn'); if(tb) tb.style.display = ''; }
 }
 
@@ -5254,7 +5470,7 @@ function updateCompletionUI(){
 // id は Worker 側のキーと1対1で対応する。並べ替えても id を変えないこと。
 const EXAM_QUESTIONS = [
   {id:"e1", lesson:"L06", q:"Claudeの利用規約上、企業利用時にデータ学習を無効化するために必要なものはどれか？", o:["API利用またはTeamsプランへの加入","アカウント設定画面での学習オフの切り替え","利用開始時に日本語での利用目的の申請","無料プランでも初回ログイン時に自動適用"]},
-  {id:"e2", lesson:"L01", q:"「ChatGPT Team」プランでデータ学習がオフになる条件として正しいものはどれか？", o:["管理者の設定が必要","毎回の手動解除が必要","自動的にオフになる","日本国内では常にオフ"]},
+  {id:"e2", lesson:"L01", q:"「ChatGPT Business」（旧 Team）プランでデータ学習がオフになる条件として正しいものはどれか？", o:["管理者の設定が必要","毎回の手動解除が必要","自動的にオフになる","日本国内では常にオフ"]},
   {id:"e3", lesson:"L33", q:"医療・介護分野でAIを活用する際に最も注意すべき法規制はどれか？", o:["個人情報保護法（要配慮個人情報の取り扱い）","著作権法（学習データの利用と権利処理）","景品表示法（サービス広告の表示規制）","電気通信事業法（通信の秘密の保護義務）"]},
   {id:"e4", lesson:"L04", q:"クラウドAIとオンプレAIの最大の違いは何か？", o:["応答が返るまでの処理速度","利用画面の操作性の設計","障害時の問い合わせ体制","データの保管・管理場所"]},
   {id:"e5", lesson:"L24", q:"プロンプトインジェクション攻撃とはどのような攻撃か？", o:["悪意のある指示をAIに混入させてAIの行動を乗っ取る","学習済みモデルの重みを外部から複製して持ち出す","外部のAIサーバーに物理的に侵入して機器を奪い取る","AIに大量の要求を送り応答できない状態に追い込む"]},
@@ -5381,7 +5597,7 @@ async function fetchRecordData(){
       duration:    reportableDuration(log),
       answered:    !!q,
       selected:    q ? q.selected + 1 : null,       // 表示は1始まり
-      correctNo:   q ? q.correct_index + 1 : null,
+      correctNo:   null,   // 正答番号はサーバーが返さない（2026-11-22。読めば再回答で正解できたため）
       isCorrect:   q ? q.is_correct : null,
       answeredAt:  q ? q.answered_at : null,
     };
@@ -5442,7 +5658,7 @@ async function fetchRecordData(){
       items: items.map(i => ({
         questionId: i.question_id,
         selected: i.selected + 1,
-        correctNo: i.correct_index + 1,
+        correctNo: null,
         isCorrect: i.is_correct,
         answeredAt: i.answered_at
       }))
@@ -5483,7 +5699,7 @@ async function openRecordReport(){
         <td>${fmtDateTime(r.completedAt)}</td>
         <td class="n">${fmtDuration(r.duration)}</td>
         <td class="n">${r.answered ? '選択肢' + r.selected : '未回答'}</td>
-        <td class="n">${r.answered ? (r.isCorrect ? '正解' : '不正解（正答：選択肢' + r.correctNo + '）') : '—'}</td>
+        <td class="n">${r.answered ? (r.isCorrect ? '正解' : '不正解') : '—'}</td>
       </tr>`).join('');
 
     const rate = s.quizAnswered ? Math.round(s.quizCorrect / s.quizAnswered * 1000)/10 : 0;
@@ -5672,16 +5888,15 @@ async function downloadRecordCSV(){
       [name, company, d.email || '', 'AI Security Lab 生成AI×セキュリティ eラーニング',
        d.meta.name, d.meta.range, d.meta.hours].map(q).join(','),
       '',
-      ['レッスンID','レッスン名','開始日時','完了日時','学習時間(秒)','選択した選択肢','正答の選択肢','評価結果','回答日時'].map(q).join(','),
+      ['レッスン番号','レッスン名','開始日時','完了日時','学習時間(秒)','選択した選択肢','評価結果','回答日時'].map(q).join(','),
     ];
     d.rows.forEach(r => {
       lines.push([
-        r.id, r.title,
+        'L' + lessonNo(r.id), r.title,
         r.startedAt ? fmtDateTime(r.startedAt) : '',
         r.completedAt ? fmtDateTime(r.completedAt) : '',
         r.duration == null ? '' : r.duration,
         r.answered ? r.selected : '',
-        r.answered ? r.correctNo : '',
         r.answered ? (r.isCorrect ? '正解' : '不正解') : '未回答',
         r.answeredAt ? fmtDateTime(r.answeredAt) : '',
       ].map(q).join(','));
@@ -5689,10 +5904,10 @@ async function downloadRecordCSV(){
 
     // 章末確認テスト
     if((d.tests || []).some(t => t.answered > 0)){
-      lines.push('', ['章','設問ID','選択した選択肢','正答の選択肢','評価結果','回答日時'].map(q).join(','));
+      lines.push('', ['章','設問ID','選択した選択肢','評価結果','回答日時'].map(q).join(','));
       d.tests.forEach(t => {
         t.items.forEach(i => {
-          lines.push(['第'+t.chapter+'章', i.questionId, i.selected, i.correctNo,
+          lines.push(['第'+t.chapter+'章', i.questionId, i.selected,
                       i.isCorrect ? '正解' : '不正解',
                       i.answeredAt ? fmtDateTime(i.answeredAt) : ''].map(q).join(','));
         });
@@ -6150,6 +6365,7 @@ async function ensureLessonLoaded(tabId){
       shuffleQuizOptions(tabId);
       updateCompletionUI();
       initQuizLocks();
+      fixLessonNav(tabId);
     } catch(e) {
       const msg = document.createElement('span');
       msg.textContent = e && e.message ? e.message : '';
@@ -6196,16 +6412,67 @@ function showActiveLesson(tabId){
 }
 
 // ---- 前後ナビ ----
+// プランで開けるタブだけをたどる（2026-11-22）。以前は ALL_TABS_ORDERED をそのままたどり、
+// Basic は章末ワーク（開けない）で、Standard は第7章（開けない）でアラートが出て止まった。
+function tabOpenable(id){
+  const plan = currentUserPlan || 'basic';
+  if(FREE_TABS.includes(id)) return true;
+  if(id === 'records') return false;                       // 流れの外（進捗パネルから開く）
+  if(id === 'exam') return plan === 'premium';
+  if(id === 'certificate') return plan === 'standard' || plan === 'premium';
+  if(PREMIUM_TABS.includes(id)) return plan === 'premium';
+  if(STANDARD_TABS.includes(id)) return plan === 'standard' || plan === 'premium';
+  if(ALL_LESSONS_LIST.includes(id)) return getPlanLessons().includes(id);
+  return true;
+}
+function planTabsOrdered(){ return ALL_TABS_ORDERED.filter(tabOpenable); }
+window.tabOpenable = tabOpenable;
+function tabLabel(id){
+  if(id === 'certificate') return '🎉 修了証を申請する';
+  if(id === 'exam') return '🏆 認定試験を受験する';
+  if(/^work\d$/.test(id)) return 'W' + id.slice(4) + '：章末ワーク・確認テスト';
+  if(id === 'intro') return '序章';
+  return LESSON_LABELS[id] || id;
+}
+function lessonNavFrom(fromId, dir){
+  const order = planTabsOrdered();
+  let idx = order.indexOf(fromId);
+  if(idx < 0){
+    // 開けないタブにいる場合は、全体の並びでいちばん近い開けるタブを探す
+    const all = ALL_TABS_ORDERED, at = all.indexOf(fromId);
+    for(let i = at + dir; i >= 0 && i < all.length; i += dir){ if(tabOpenable(all[i])) { window.switchTab(all[i]); return; } }
+    return;
+  }
+  const next = order[idx + dir];
+  if(next) window.switchTab(next);
+}
+window.lessonNavFrom = lessonNavFrom;
 function lessonNav(dir){
   const inner = document.getElementById('learn-content-inner');
   const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
   const currentId = activeTcon?.id?.replace('tab-','') || 'intro';
-  const idx = ALL_TABS_ORDERED.indexOf(currentId);
-  const next = ALL_TABS_ORDERED[idx + dir];
-  // window.switchTab（上書き版）を経由させ、ガードと表示更新の両方を通す
-  if(next) window.switchTab(next);
+  lessonNavFrom(currentId, dir);
 }
 window.lessonNav = lessonNav;
+
+// レッスン本文の末尾にある前後ナビを、受講者のプランに合わせて作り直す。
+// 本文（DB）のナビは章末ワークを飛ばして次のレッスンを指しているため（2026-11-22）
+function fixLessonNav(tabId){
+  const tcon = document.getElementById('tab-' + tabId);
+  const nav = tcon ? tcon.querySelector('.lnav') : null;
+  if(!nav) return;
+  const order = planTabsOrdered();
+  const idx = order.indexOf(tabId);
+  const prev = idx > 0 ? order[idx - 1] : null;
+  const next = idx >= 0 ? order[idx + 1] : null;
+  const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  let html = '';
+  if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${esc(tabLabel(prev))}</span></a>`;
+  if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${esc(tabLabel(next))}</span></a>`;
+  else if((currentUserPlan || 'basic') === 'basic') html += `<div class="lnbtn" style="text-align:right;cursor:default"><span class="lnl">Basic の範囲はここまで</span><span class="lnt">Standard 以上で第6章と修了証へ進めます</span></div>`;
+  nav.innerHTML = html;
+}
+window.fixLessonNav = fixLessonNav;
 
 // ---- サイドバーのレッスンリスト生成 ----
 function buildSideNav(completed){
@@ -6215,7 +6482,15 @@ function buildSideNav(completed){
   // 現在のタブ
   const inner = document.getElementById('learn-content-inner');
   const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
-  const currentTab = activeTcon?.id?.replace('tab-','') || 'intro';
+  let currentTab = activeTcon?.id?.replace('tab-','') || 'intro';
+  // ログイン直後の最初の表示だけ、前回開いていたタブから再開する（以前は毎回序章が開いた。2026-11-22）
+  if(!window._aslResumed){
+    window._aslResumed = true;
+    try {
+      const last = JSON.parse(localStorage.getItem('asl_last_tab') || 'null');
+      if(last && last.u === currentUser.id && last.t && last.t !== currentTab && tabOpenable(last.t)) currentTab = last.t;
+    } catch(e){}
+  }
 
   // レッスン表示
   showActiveLesson(currentTab);
@@ -6243,7 +6518,7 @@ function buildSideNav(completed){
       const raw = LESSON_LABELS[id] || id;
       const title = raw.replace(/^L\d+[：:]/,'').replace(/^序章[：:]/,'').replace(/^【序章】/,'');
       const num = id === 'intro' ? '00' : lessonNo(id);
-      html += `<div class="sb-row${active?' active':''}${done?' done':''}" onclick="switchTab('${id}');closeSbDrawer()">
+      html += `<div class="sb-row${active?' active':''}${done?' done':''}" tabindex="0" role="button" onclick="switchTab('${id}');closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">${num}</span>
         <span class="sb-row-title">${title}</span>
@@ -6255,7 +6530,7 @@ function buildSideNav(completed){
       const wid = 'work' + chNo;
       const wactive = wid === currentTab;
       const wdone = !!_workSubmittedCh[chNo];
-      html += `<div class="sb-row sb-row-work${wactive?' active':''}${wdone?' done':''}" onclick="switchTab('${wid}');closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${wactive?' active':''}${wdone?' done':''}" tabindex="0" role="button" onclick="switchTab('${wid}');closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">W${chNo}</span>
         <span class="sb-row-title">章末ワーク：${WORK_CHAPTERS[chNo].goal}</span>
@@ -6273,6 +6548,15 @@ function buildSideNav(completed){
       div.innerHTML = '<div class="sb-ch-label">認定試験</div><div class="sb-row" onclick="switchTab(&#39;exam&#39;);closeSbDrawer()" style="color:var(--purple);font-weight:600"><div class="sb-row-dot" style="background:var(--purple)"></div><span class="sb-row-num">EX</span><span class="sb-row-title">AI Security Lab 認定試験</span></div>';
       list.appendChild(div);
     }
+  }
+
+  // 修了証の申請（Standard 以上）。サイドバーの最後に常に出す
+  if((currentUserPlan === 'standard' || currentUserPlan === 'premium') && !list.querySelector('[data-cert]')){
+    const div = document.createElement('div');
+    div.setAttribute('data-cert','1');
+    const cactive = currentTab === 'certificate';
+    div.innerHTML = '<div class="sb-ch-label">修了</div><div class="sb-row' + (cactive ? ' active' : '') + '" onclick="switchTab(&#39;certificate&#39;);closeSbDrawer()" style="font-weight:600"><div class="sb-row-dot"></div><span class="sb-row-num">🎓</span><span class="sb-row-title">修了証の申請</span></div>';
+    list.appendChild(div);
   }
 
   // プランロック適用
@@ -6301,7 +6585,7 @@ function updateLearnTopBar(tabId){
       bc.innerHTML = `<span class="bc-ch" style="color:${ch.color}">${ch.tag}</span><span class="bc-sep">/</span><span>L${num}</span><span class="bc-sep">—</span><span style="color:var(--text2)">${title}</span>`;
     }
   }
-  const allTabs = ALL_TABS_ORDERED;
+  const allTabs = planTabsOrdered();
   const idx = allTabs.indexOf(tabId);
   const prevBtn = document.getElementById('learn-prev-btn');
   const nextBtn = document.getElementById('learn-next-btn');
@@ -6332,6 +6616,15 @@ function buildProgressPanel(){
       <div class="sb-dash-items">${dots}</div>
     </div>`;
   });
+  // 修了証への導線（Standard 以上）。以前はサイドバーにも進捗にも行が無く、Standard の人がたどり着けなかった
+  if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
+    html += `<div class="sb-ch-label" style="margin-top:14px">修了</div>
+    <div class="sb-row" onclick="switchTab('certificate');closeSbDrawer()">
+      <div class="sb-row-dot"></div>
+      <span class="sb-row-num">🎓</span>
+      <span class="sb-row-title">修了証の申請</span>
+    </div>`;
+  }
   // 受講記録（実績レポート）への導線
   html += `<div class="sb-ch-label" style="margin-top:14px">記録の出力</div>
     <div class="sb-row" onclick="switchTab('records');closeSbDrawer()">
@@ -6348,7 +6641,8 @@ function updateBreadcrumb(tabId){ updateLearnTopBar(tabId); }
 
 
 /* ===== クイズ未正解時は受講済みボタンをロック ===== */
-const QUIZ_DONE_KEY = 'asl_quiz_done';   // { 設問ID: 正解した元の選択肢番号 }
+// { 設問ID: 正解した元の選択肢番号 }。共用PCで前の人の正解が混ざらないよう、ユーザーごとに分ける（2026-11-22）
+function quizDoneKey(){ return 'asl_quiz_done:' + ((currentUser && currentUser.id) || 'anon'); }
 
 /**
  * 正解済みの設問を、開き直したあとも回答済みの見た目に戻す。
@@ -6358,7 +6652,7 @@ const QUIZ_DONE_KEY = 'asl_quiz_done';   // { 設問ID: 正解した元の選択
  */
 function restoreQuizLocks(){
   let done = {};
-  try { done = JSON.parse(localStorage.getItem(QUIZ_DONE_KEY) || '{}'); } catch(e){ return; }
+  try { done = JSON.parse(localStorage.getItem(quizDoneKey()) || '{}'); } catch(e){ return; }
   const escQ = t => String(t == null ? '' : t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   Object.keys(done).forEach(id => {
     const okEl = document.getElementById(id + '-ok');
@@ -6378,6 +6672,15 @@ function restoreQuizLocks(){
     const ngEl = document.getElementById(id + '-ng');
     if(ngEl) ngEl.classList.remove('show');
     qopts.dataset.restored = '1';
+    // 正解済みなのに「受講済み」が押せなくなる不具合の修正（2026-11-22）。
+    // 以前は選択肢だけを閉じ、受講済みボタンは閉じたままだった
+    const tcon = quiz.closest('.tcon');
+    const tabId = tcon ? tcon.id.replace('tab-', '') : null;
+    if(tabId){
+      const cb = document.getElementById('complete-' + tabId);
+      if(cb) cb.classList.remove('quiz-locked');
+      unlockCompleteBtn(tabId);
+    }
   });
 }
 window.restoreQuizLocks = restoreQuizLocks;
@@ -6393,7 +6696,7 @@ function initQuizLocks(){
     if(completed.includes(tabId)) return;
     // そのレッスンにクイズがあるか確認
     const tcon = document.getElementById('tab-' + tabId);
-    if(tcon && tcon.querySelector('.quiz')){
+    if(tcon && tcon.querySelector('.quiz') && !tcon.querySelector('.qopts[data-restored="1"]')){
       btn.classList.add('quiz-locked');
       const note = document.getElementById('note-' + tabId);
       if(note) note.innerHTML = '理解度チェックに正解すると受講済みにできます';
@@ -6403,6 +6706,17 @@ function initQuizLocks(){
 window.unlockCompleteBtn = unlockCompleteBtn;
 
 document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); initPodcast(); });
+// キーボードで操作できるように（2026-11-22）：クリックで動く div にフォーカスを与え、Enter / Space で押せるようにする
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelectorAll('.lrow[onclick], .chd').forEach(el => { el.tabIndex = 0; el.setAttribute('role','button'); });
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const el = e.target;
+  if(el && el.matches && el.matches('.sb-row[role=button], .lrow[role=button], .chd[role=button], .sb-dash-dot')){
+    e.preventDefault(); el.click();
+  }
+});
 setTimeout(()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); }, 800);
 
 
@@ -6473,6 +6787,7 @@ async function startExam(){
   }
   const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
   if(!confirmed) return;
+  if(typeof window.switchTab === 'function') window.switchTab('exam');
   examState.active = true;
   examState.answers = {};
   examState.questions = buildExamSet();  // 受験ごとに問題順・選択肢順を変える
@@ -6660,16 +6975,13 @@ function renderExamResult(res){
     // 不合格のときは正解も解説も出さない。1回受ければ答えが全部手に入る状態だと
     // 2回目は必ず満点になり、修了証が受講を証明しなくなる。
     // サーバーも不合格時は correctIndex / explanation を返していない。
-    // 復習の手がかりとして、誤答した設問の該当レッスンだけを示す。
-    const wrongLessons = {};
-    QS.forEach(q => {
-      const r = resById[q.id];
-      if(r && !r.isCorrect){ wrongLessons[q.lesson] = (wrongLessons[q.lesson] || 0) + 1; }
-    });
-    const keys = Object.keys(wrongLessons).sort();
-    html += `<div style="font-weight:700;font-size:18px;margin-bottom:12px">📚 復習が必要なレッスン</div>
+    // 復習の手がかりとして、誤答のあった章と問数だけを示す（2026-11-22）。
+    // 設問ごとの正誤を返すと、受け直しの差分で正解が割り出せるため、サーバーも章単位でしか返さない。
+    const wrongLessons = res.wrongByChapter || {};
+    const keys = Object.keys(wrongLessons).sort((a, b) => (a === '序章' ? -1 : b === '序章' ? 1 : a.localeCompare(b, 'ja', {numeric:true})));
+    html += `<div style="font-weight:700;font-size:18px;margin-bottom:12px">📚 復習が必要な章</div>
       <p style="color:var(--muted);font-size:14px;line-height:1.8;margin:0 0 16px">
-        公平な認定のため、正解と解説は表示していません。誤答のあったレッスンを読み直してから、あらためて受験してください。
+        公平な認定のため、正解と解説、どの設問を間違えたかは表示していません。誤答のあった章を読み直してから、あらためて受験してください。
       </p>`;
     if(keys.length){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
@@ -6725,6 +7037,7 @@ async function submitCertificate(){
                       '</strong> 宛にお送りします。<br>証明書番号：' + escCert(r.certNo || '') ;
     }
     btn.textContent = '申請済み';
+    window._certSubmitted = true;   // 画面の更新でボタンが押せる状態に戻らないように（二重申請の防止）
   } catch(e) {
     btn.disabled = false;
     btn.textContent = '修了証を申請する';
