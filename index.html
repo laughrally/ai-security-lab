@@ -6583,6 +6583,11 @@ function updateLearnTopBar(tabId){
     const num = tabId === 'intro' ? '00' : lessonNo(tabId);
     if(ch){
       bc.innerHTML = `<span class="bc-ch" style="color:${ch.color}">${ch.tag}</span><span class="bc-sep">/</span><span>L${num}</span><span class="bc-sep">—</span><span style="color:var(--text2)">${title}</span>`;
+    } else {
+      // 章末ワーク・修了証・試験・記録のページでは、前のレッスンの表示を残さない（2026-11-22）
+      const other = { certificate:'修了証の申請', exam:'認定試験', records:'受講実績レポート' };
+      const t = /^work\d$/.test(tabId) ? ('第' + tabId.slice(4) + '章 章末ワーク・確認テスト') : (other[tabId] || '');
+      bc.textContent = t;
     }
   }
   const allTabs = planTabsOrdered();
