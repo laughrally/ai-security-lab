@@ -155,6 +155,16 @@
 <style>
   html.fontgate body{visibility:hidden}
   html.fontgate body.fonts-loaded{visibility:visible}
+
+/* 2026年秋の流出と「見分けられる前提の研修」 */
+.nowbox{border:1px solid var(--border);border-left:4px solid var(--red);border-radius:12px;padding:26px 28px;background:var(--bg2)}
+.nowbox .nb-eye{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);letter-spacing:.18em;margin-bottom:10px}
+.nowbox h3{font-size:20px;font-weight:800;line-height:1.5;margin-bottom:12px}
+.nowbox p{font-size:14px;color:var(--text3);line-height:1.9;margin-bottom:10px}
+.nowbox .nb-key{color:var(--text);font-weight:700}
+.nowbox .nb-links{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:14px}
+.nowbox .nb-links a{font-size:13.5px;font-weight:700;color:var(--blue);text-decoration:none}
+@media(max-width:480px){.nowbox{padding:20px 18px}.nowbox h3{font-size:17px}}
 </style>
 <script>
   document.documentElement.className += " fontgate";
@@ -1778,6 +1788,22 @@
   </div>
 </section>
 
+<section class="sec" id="why-now" style="padding-top:0">
+  <div class="conw">
+    <div class="nowbox">
+      <div class="nb-eye">// 2026年秋に起きたこと</div>
+      <h3>「見分けられる前提」の研修は、もう効きません。</h3>
+      <p>2026年秋、大手で情報漏洩が続きました。佐川急便では送り主と届け先の氏名・住所・電話番号が、ソースネクストでは会社名・役職名・部署名などが、流出した可能性があると各社が公表しています。</p>
+      <p>この2つが揃った状態で、自然な日本語の文面をいくらでも作れる道具が、いまは誰にでも使えます。IPAも「情報セキュリティ10大脅威 2026」の解説書で、攻撃する側の翻訳能力が上がったことを指摘しています。</p>
+      <p class="nb-key">不自然な日本語で見分ける研修は、見分けられなかった日に崩れます。講座では、送信元の確認・別経路での本人確認・組織としての承認の流れなど、文面の出来に頼らない守り方を扱います（レッスン18）。</p>
+      <div class="nb-links">
+        <a href="/articles/rouei-to-ai-phishing.html">3件の整理と考え方を読む →</a>
+        <a href="/articles/ai-kenshu-joseikin-2026.html">AI研修と助成金（2026年8月改正）→</a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="sec" style="padding-top:0">
   <div class="conw">
     <div class="freebox">
@@ -1792,7 +1818,7 @@
         </a>
         <a class="fb-card" href="/articles/">
           <div class="fb-ic">📖</div>
-          <div class="fb-t">記事を読む（全42本）</div>
+          <div class="fb-t">記事を読む（全44本）</div>
           <div class="fb-d">業種別・場面別。登録は要りません</div>
         </a>
         <a class="fb-card" href="https://lin.ee/Zw4aNjn" target="_blank" rel="noopener noreferrer">
@@ -3015,6 +3041,9 @@
         受講者さまの情報をご入力いただくと、<strong>受講申込確認書（PDF）</strong>をその場で発行し、ご担当者さま宛にお送りします。<br>
         社内の稟議や各種申請の添付資料としてそのままご利用いただけます。お支払いは銀行振込にも対応しております。
       </p>
+      <p style="font-size:13.5px;color:var(--text2);line-height:1.9;margin:-6px auto 20px;max-width:620px;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px 16px">
+        <strong>受講者は、業務で個人情報や機密を扱う方から</strong>始めるのがおすすめです（経理・営業事務・顧客対応・人事など）。手順が変わる効果が出やすく、助成金をご検討の場合も、職務との関連を説明しやすくなります。対象可否は制度と交付団体の判断によります。<a href="/articles/ai-kenshu-joseikin-2026.html">2026年8月の改正点</a>
+      </p>
       <button class="pcbtn bpr" style="max-width:340px;margin:0 auto" onclick="openCorpModal()">法人・複数名でお申し込み</button>
       <div style="font-size:12px;color:var(--text4);margin-top:14px">アカウントは受講者1名につき1つ発行いたします</div>
     </div>
@@ -3138,7 +3167,7 @@
         </a>
         <a class="fb-card" href="/articles/">
           <div class="fb-ic">📖</div>
-          <div class="fb-t">記事を読む（全42本）</div>
+          <div class="fb-t">記事を読む（全44本）</div>
           <div class="fb-d">業種別・場面別。登録は要りません</div>
         </a>
         <a class="fb-card" href="https://lin.ee/Zw4aNjn" target="_blank" rel="noopener noreferrer">
@@ -6705,6 +6734,10 @@ async function corpSubmit(){
 }
 
 window.openCorpModal  = openCorpModal;
+// https://ai-security-lab.com/#corp で法人申込を直接開く（営業メールのリンク用）
+window.addEventListener('load', function(){
+  if (location.hash === '#corp') { try { openCorpModal(); } catch (e) {} }
+});
 window.closeCorpModal = closeCorpModal;
 window.corpAddRow     = corpAddRow;
 window.corpRecalc     = corpRecalc;

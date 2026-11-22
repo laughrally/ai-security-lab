@@ -166,6 +166,11 @@ body.dark .sheet{border-color:#2a3347}
 .msg{font-size:13.5px;margin-top:12px;line-height:1.8;display:none}
 .msg.ok{color:var(--green);display:block}
 .msg.ng{color:var(--red);display:block}
+.dlbox{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.dlbox[hidden]{display:none}
+.dlbox a{display:block;padding:11px 14px;border:1px solid var(--green);border-radius:7px;
+  color:var(--green);font-size:13.5px;font-weight:700;text-decoration:none}
+.dlbox a::before{content:'⬇ '}
 
 footer{margin-top:60px;border-top:1px solid var(--border);padding:30px 20px 40px;text-align:center;
        background:var(--bg)}
@@ -300,18 +305,22 @@ footer{margin-top:60px;border-top:1px solid var(--border);padding:30px 20px 40px
     </div>
   </div>
 
-  <div class="optin noprint">
-    <h3>現場で起きたことを、月に1回だけ送ります</h3>
-    <p>生成AIまわりで実際に起きた事故と、社内でどう手当てするか。中小企業の現場目線で、月1回のメールにまとめています。</p>
-    <p>売り込みのメールは送りません。いつでも1クリックで解除できます。</p>
+  <div class="optin noprint" id="get-word">
+    <h3>社名を入れて、そのまま配れる Word 版</h3>
+    <p>このチェックリストと、<a href="/articles/seisei-ai-guideline-template.html">社内ルールのひな形</a>を、編集できる Word 版でお渡しします。社名と連絡先を書き換えれば、そのまま社内に配れます。書き換える箇所は黄色にしてあります。</p>
+    <p>あわせて、生成AIまわりで実際に起きた事故と手当てを、ときどきお知らせします（月1回まで）。売り込みのメールは送りません。いつでも1クリックで解除できます。</p>
     <div class="row">
       <input type="email" id="lead-email" placeholder="you@example.com" autocomplete="email" maxlength="200">
       <!-- ボットよけ。人には見えない。埋まっていたらWorker側が黙って捨てる -->
       <input type="text" id="lead-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true"
              style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
-      <button class="btn btn-p" id="lead-btn" onclick="subscribe()">受け取る</button>
+      <button class="btn btn-p" id="lead-btn" onclick="subscribe()">Word 版を受け取る</button>
     </div>
     <div class="msg" id="lead-msg"></div>
+    <div class="dlbox" id="lead-dl" hidden>
+      <a href="/dl/ai-checklist-henshu.docx" download>入れてはいけない情報 チェックリスト（Word）</a>
+      <a href="/dl/ai-riyou-rule-hinagata.docx" download>生成AIの業務利用ルール ひな形（Word）</a>
+    </div>
     <div class="linebox">
       <div class="lb-t">メールより LINE がよければ</div>
       <p class="lb-d">同じ内容を LINE でも受け取れます。「これ入れていいのか」の相談も、そのまま送ってください。平日10:00〜18:00に返します。</p>
@@ -367,8 +376,9 @@ function subscribe(){
   }).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
   .then(function(res){
     if(res.ok){
-      msg.textContent='登録しました。次回の配信からお送りします。';
+      msg.textContent='登録しました。下からダウンロードしてください。';
       msg.className='msg ok'; el.value='';
+      document.getElementById('lead-dl').hidden=false;
       if(window.gtag) gtag('event','subscribe',{method:'checklist'});
     }else{
       msg.textContent=(res.j && res.j.error) ? res.j.error : '送信できませんでした。時間をおいてお試しください。';
@@ -378,7 +388,7 @@ function subscribe(){
     msg.textContent='送信できませんでした。通信環境をご確認ください。';
     msg.className='msg ng';
   }).finally(function(){
-    btn.disabled=false; btn.textContent='受け取る';
+    btn.disabled=false; btn.textContent='Word 版を受け取る';
   });
 }
 document.getElementById('lead-email').addEventListener('keydown',function(e){
