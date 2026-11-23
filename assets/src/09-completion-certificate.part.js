@@ -70,6 +70,7 @@ function nextStep(){
     if(!(_testResultCh[c] && _testResultCh[c].passed) && !(sm.testPassedList || []).includes(c)) return mk(`第${c}章の確認テスト`, `goChapterTest(${c})`, () => goChapterTest(c));
   }
   if(currentUserPlan === 'premium' && !(sm.examPassed || currentExamPassed)) return mk('認定試験', `switchTab('exam')`, () => window.switchTab('exam'));
+  if(currentUserPlan === 'basic') return mk('受講実績レポート（Basic の全レッスンを受講済み）', `switchTab('records')`, () => window.switchTab('records'));
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium') return mk('修了証の申請', `switchTab('certificate')`, () => window.switchTab('certificate'));
   return null;
 }
@@ -117,7 +118,9 @@ function updateCompletionUI(){
   // ナビ進捗ボタン（全プランで更新する）
   const navProg  = document.getElementById('nav-progress');
   const progFill = document.getElementById('nav-progress-fill');
-  if(navProg)  navProg.textContent = '📊 進捗 ' + planDone.length + '/' + planTotal;
+  if(navProg){ navProg.textContent = '📊 進捗 ' + planDone.length + '/' + planTotal; if(currentUser) navProg.style.display = planTotal ? 'inline-flex' : 'none'; }
+  const examBadge = document.getElementById('exam-plan-badge');
+  if(examBadge) examBadge.textContent = plan === 'premium' ? '✅ ご契約のプランで受験できます' : '🔒 Premiumプラン限定';
   if(progFill) progFill.style.width = pct + '%';
 
   // 修了証は Standard・Premium だけ（Basic と無料登録は対象外。無料登録は受講対象が0本で

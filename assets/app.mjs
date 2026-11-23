@@ -3,7 +3,7 @@
 // app.mjs を直接直さないこと（check-all.sh が食い違いを止める）。つないだ全体で1つの ES モジュールになる。
 // 冒頭の COURSE ブロックは course.json から書き出す
 // <COURSE:BEGIN> course/course-sync.py が course.json から書き出す。手で直さない
-const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "rules": {"quizMaxAttempts": 3, "workQuestions": 4, "testQuestions": 5, "testPass": 4, "testMaxAttempts": 3, "examQuestions": 60, "examPass": 48, "examMinutes": 60, "examCooldownHours": 24}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
+const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "rules": {"quizMaxAttempts": 3, "workQuestions": 4, "testQuestions": 5, "testPass": 4, "testMaxAttempts": 3, "examQuestions": 60, "examPass": 48, "examMinutes": 60, "examCooldownHours": 24, "lessonMaxMinutes": 180}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
 const FREE_TABS = COURSE.free;
 // 受講順の内部ID（序章を除く）。内部IDは追加順なので番号順ではない。表示番号はこの並び順
 const ALL_LESSONS_LIST = COURSE.chapters.filter(c => c.no >= 1).flatMap(c => c.lessons);
@@ -443,7 +443,7 @@ async function _fetchUserPlan(){
   }
   if(!window._corpLoaded){ window._corpLoaded = true; loadCorpProgress(); }
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
-    refreshRecords();
+    window._recordsPromise = refreshRecords();
   }
   updateCertificateUI();
   applyPlanLock();
@@ -748,7 +748,7 @@ const IDLE_LESSON_MS = 3 * 60 * 1000;      // レッスンは読むので3分
 const IDLE_WORK_MS   = 5 * 60 * 1000;      // ワークは書くので5分（考える時間を削らない）
 const RESYNC_STEP_S  = 60;                 // 完了済みレッスンは60秒たまるごとに送り直す
 const MAX_TICK_S = 30;                     // 1回の加算上限。スリープ復帰の跳ねを抑える
-const MAX_TOTAL_S = 3 * 3600;              // 1レッスンの上限（Worker の LESSON_MAX_SECONDS と同じ）
+const MAX_TOTAL_S = COURSE.rules.lessonMaxMinutes * 60;   // 1レッスンの上限（Worker の LESSON_MAX_SECONDS と同じ値を course.json から）
 const TRACK_RE = /^(lesson\d+|work\d+)$/;
 
 let activeItem  = null;   // いま表示している lessonN / workN（それ以外は null）
@@ -1745,10 +1745,10 @@ function setWorkSubmitted(ch, submitted, answers){
     const at = (answers.find(a=>a.submitted_at)||{}).submitted_at;
     const d = at ? new Date(at).toLocaleString('ja-JP') : '';
     status.innerHTML = `<span class="work-done">✓ 提出済み</span>${d?`　${d}`:''}<br><span class="work-note">内容は受講実績レポートに記録されます。書き直した場合は最新の内容と提出日時が記録されます。</span><br><button class="work-reopen" onclick="reopenWork(${ch})">書き直す</button>`;
-    if(btn){ btn.disabled = true; btn.textContent = '提出済み'; }
+    if(btn){ btn.disabled = true; btn.textContent = '✓ 提出済み'; btn.classList.add('is-done'); }
   }else{
     status.textContent = '';
-    if(btn) btn.disabled = false;
+    if(btn){ btn.disabled = false; btn.classList.remove('is-done'); }
     updateWorkSubmitBtn(ch);
   }
 }
@@ -1770,7 +1770,7 @@ function updateWorkSubmitBtn(ch){
   let ok = 0;
   for(let i=1;i<=4;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
   updateWorkSteps(ch);
-  if(!btn || btn.textContent === '提出済み') return;
+  if(!btn || btn.classList.contains('is-done')) return;   // 提出済み
   btn.disabled = ok < 4;
   btn.textContent = ok < 4 ? `提出する（${ok}/4 問が必要文字数に到達）` : '提出する';
 }
@@ -1868,7 +1868,7 @@ async function reopenWork(ch){
   const status = document.getElementById('work-status-'+ch);
   if(status) status.innerHTML = '<span class="work-note">書き直しモードです。修正後、あらためて提出してください。</span>';
   const btn = document.getElementById('work-submit-'+ch);
-  if(btn){ btn.textContent = '提出する'; btn.disabled = false; }
+  if(btn){ btn.textContent = '提出する'; btn.disabled = false; btn.classList.remove('is-done'); }
   updateWorkSubmitBtn(ch);
   try{ buildSideNav(loadCompleted()); }catch(e){}
 }
@@ -2201,6 +2201,7 @@ function nextStep(){
     if(!(_testResultCh[c] && _testResultCh[c].passed) && !(sm.testPassedList || []).includes(c)) return mk(`第${c}章の確認テスト`, `goChapterTest(${c})`, () => goChapterTest(c));
   }
   if(currentUserPlan === 'premium' && !(sm.examPassed || currentExamPassed)) return mk('認定試験', `switchTab('exam')`, () => window.switchTab('exam'));
+  if(currentUserPlan === 'basic') return mk('受講実績レポート（Basic の全レッスンを受講済み）', `switchTab('records')`, () => window.switchTab('records'));
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium') return mk('修了証の申請', `switchTab('certificate')`, () => window.switchTab('certificate'));
   return null;
 }
@@ -2248,7 +2249,9 @@ function updateCompletionUI(){
   // ナビ進捗ボタン（全プランで更新する）
   const navProg  = document.getElementById('nav-progress');
   const progFill = document.getElementById('nav-progress-fill');
-  if(navProg)  navProg.textContent = '📊 進捗 ' + planDone.length + '/' + planTotal;
+  if(navProg){ navProg.textContent = '📊 進捗 ' + planDone.length + '/' + planTotal; if(currentUser) navProg.style.display = planTotal ? 'inline-flex' : 'none'; }
+  const examBadge = document.getElementById('exam-plan-badge');
+  if(examBadge) examBadge.textContent = plan === 'premium' ? '✅ ご契約のプランで受験できます' : '🔒 Premiumプラン限定';
   if(progFill) progFill.style.width = pct + '%';
 
   // 修了証は Standard・Premium だけ（Basic と無料登録は対象外。無料登録は受講対象が0本で
@@ -2664,7 +2667,7 @@ ${blocks}`;
 
 
 </style></head><body><div class="wrap">
-<button class="btn noprint" onclick="window.print()">印刷 / PDFとして保存</button>
+<button class="btn noprint" data-print>印刷 / PDFとして保存</button>
 <h1>受講実績レポート</h1>
 <div class="sub">AI Security Lab 生成AI×セキュリティ eラーニング</div>
 
@@ -2714,6 +2717,8 @@ ${worksHTML}
 </div>
 </div></body></html>`);
     win.document.close();
+    // 別ウィンドウも元のページの CSP を引き継ぐので、onclick は動かない。ボタンはここで登録する（2026-11-23）
+    win.document.querySelectorAll('[data-print]').forEach(b => b.addEventListener('click', () => win.print()));
     repMsg('success','レポートを別ウィンドウで開きました。');
   } catch(e) {
     win.close();
@@ -3323,8 +3328,15 @@ function buildSideNav(completed){
         setTimeout(() => window.switchTab(last.t), 0);   // 中身の読み込み（ワーク・テスト・修了証）を通常の経路で行う
       } else if(!last && completed.length){
         // 前回の記録が端末に無い（別の端末・ブラウザ）ときは、受講順で最初の未了から開く（2026-11-23。以前は序章が開いた）
-        const nx = nextStep();
-        if(nx) setTimeout(() => nx.run(), 0);
+        // 受講記録（ワーク・テストの状況）を受け取ってから決める（2026-11-23。以前は受け取る前に決めて、開く場所が毎回変わった）。
+        // 待つあいだに本人が別の画面を開いていたら、動かさない
+        const startTab = currentTab;
+        Promise.resolve(window._recordsPromise).catch(() => {}).then(() => {
+          const now = (document.querySelector('#learn-content-inner .tcon.active') || {}).id || '';
+          if(now && now !== 'tab-' + startTab) return;
+          const nx = nextStep();
+          if(nx) nx.run();
+        });
       }
     } catch(e){}
   }
@@ -3386,8 +3398,10 @@ function buildSideNav(completed){
       </div>`;
       // 確認テストを別の行に（2026-11-22）。以前はワークと同じ1行だけで、テストを見落としやすかった
       const tpass = !!(_testResultCh[chNo] && _testResultCh[chNo].passed);
+      // 5問すべて答えて不合格なら「再挑戦」の印（未受験と見分けられるように）
+      const tfail = !tpass && !!(_testResultCh[chNo] && _testResultCh[chNo].answered >= TEST_TOTAL_PER_CHAPTER);
       const tactive = wactive && window._aslTestFocus === chNo;
-      html += `<div class="sb-row sb-row-work${tactive?' active':''}${tpass?' done':''}" tabindex="0" role="button" onclick="goChapterTest(${chNo});closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${tactive?' active':''}${tpass?' done':''}${tfail?' test-failed':''}" tabindex="0" role="button" onclick="goChapterTest(${chNo});closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">T${chNo}</span>
         <span class="sb-row-title">章末確認テスト（5問）</span>
@@ -3652,7 +3666,7 @@ let examState = {
   answers: {},   // 出題インデックス: 「元の」選択肢番号（表示順ではない）
   questions: [], // 受験ごとにシャッフルした問題セット
   timer: null,
-  remaining: 3600, // 60分
+  remaining: COURSE.rules.examMinutes * 60,
   submitted: false,
   sending: false,  // 提出中の二重送信ガード
   startedAt: null, // 開始時刻（受験時間の実測用）
@@ -3711,7 +3725,8 @@ async function startExam(){
           'これまでの受験回数：' + st.attempts + '回');
     return;
   }
-  const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
+  const R = COURSE.rules;
+  const confirmed = confirm(`認定試験を開始しますか？\n\n制限時間: ${R.examMinutes}分\n問題数: ${R.examQuestions}問\n合格ライン: ${R.examPass}問以上（${Math.round(R.examPass / R.examQuestions * 100)}%）\n\n開始後はカウントダウンが始まります。`);
   if(!confirmed) return;
   // 開始の署名は「開始する」を押したあとに受け取る（提出のときにサーバーが制限時間を確かめるのに使う。2026-11-23）
   st = await status();
@@ -3721,7 +3736,7 @@ async function startExam(){
   examState.active = true;
   examState.answers = {};
   examState.questions = buildExamSet();  // 受験ごとに問題順・選択肢順を変える
-  examState.remaining = 3600;
+  examState.remaining = COURSE.rules.examMinutes * 60;
   examState.submitted = false;
   examState.sending = false;
   examState.startedAt = Date.now();
@@ -3732,8 +3747,10 @@ async function startExam(){
 
 function startExamTimer(){
   if(examState.timer) clearInterval(examState.timer);
+  // 残り時間は「制限時間 −（今 − 開始時刻）」で毎回計算する（2026-11-23）。以前は1秒ずつ減らすだけで、
+  // タブを裏に回したときのタイマーの間引きやスリープで表示が遅れ、サーバーの判定（開始の署名からの実時間）とずれた
   examState.timer = setInterval(() => {
-    examState.remaining--;
+    examState.remaining = Math.max(0, COURSE.rules.examMinutes * 60 - Math.floor((Date.now() - examState.startedAt) / 1000));
     const timerEl = document.getElementById('examTimer');
     if(timerEl) timerEl.textContent = fmtTime(examState.remaining);
     if(examState.remaining <= 0){
@@ -3751,7 +3768,7 @@ function renderExam(){
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
         <div style="font-weight:700;font-size:18px">🏆 AI Security Lab 認定試験</div>
         <div style="display:flex;gap:16px;align-items:center">
-          <div style="font-weight:600;color:var(--text2)">回答済み ${Object.keys(examState.answers).length} / ${examState.questions.length}</div>
+          <div style="font-weight:600;color:var(--text2)">回答済み <span id="examAnswered">${Object.keys(examState.answers).length}</span> / ${examState.questions.length}</div>
           <div style="font-weight:700;color:var(--purple)">⏰ <span id="examTimer">${fmtTime(examState.remaining)}</span></div>
           <button onclick="submitExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
         </div>
@@ -3760,7 +3777,7 @@ function renderExam(){
   `;
   const QS = examState.questions;
   QS.forEach((q, i) => {
-    html += `<div style="margin-bottom:32px;padding:20px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
+    html += `<div id="exq-${i}" style="margin-bottom:32px;padding:20px;background:var(--bg2);border-radius:12px;border:1px solid var(--border)">
       <div style="font-size:12px;color:var(--text3);margin-bottom:8px">問題 ${i+1} / ${QS.length}　[${q.lesson}]</div>
       <div style="font-weight:700;margin-bottom:16px;line-height:1.6">${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:8px">`;
@@ -3783,9 +3800,16 @@ function renderExam(){
   if(introEl) introEl.style.display = 'none';
 }
 
+// 選んだ設問の見た目と回答数だけを更新する（2026-11-23。以前は1つ選ぶたびに60問すべてを描き直していた）
 function selectAnswer(qIdx, optIdx){
   examState.answers[qIdx] = optIdx;
-  renderExam();
+  document.querySelectorAll(`#exq-${qIdx} label`).forEach(l => {
+    const on = Number(l.querySelector('input').value) === optIdx;
+    l.style.borderColor = on ? 'var(--purple)' : 'var(--border)';
+    l.style.background = on ? 'rgba(124,58,237,0.05)' : 'transparent';
+  });
+  const cnt = document.getElementById('examAnswered');
+  if(cnt) cnt.textContent = Object.keys(examState.answers).length;
 }
 
 /**
@@ -3838,7 +3862,12 @@ async function submitExam(){
       updateCertificateUI();
     }
   } catch(e) {
-    if(e && e.status === 429){
+    if(e && e.status === 409){
+      // 制限時間を過ぎた（サーバーの判定）。何度提出しても受け付けられないので、そのことを伝えて受験の画面に戻す
+      alert((e.message || '制限時間を過ぎたため、この解答は受け付けられませんでした。') + '\n\nもう一度受験してください。');
+      clearInterval(examState.timer);
+      retryExam();
+    } else if(e && e.status === 429){
       // 再受験の間隔制限。開始前にも確認しているので通常ここには来ないが、
       // 来た場合は解答を保持したまま試験画面に戻す（60分の労力を捨てない）。
       alert((e.message || '次の受験まで時間をおいてください。') +
@@ -3936,7 +3965,7 @@ function nextExamAt(){
   return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 function retryExam(){
-  examState = { active:false, answers:{}, questions:[], timer:null, remaining:3600, submitted:false, sending:false, startedAt:null };
+  examState = { active:false, answers:{}, questions:[], timer:null, remaining:COURSE.rules.examMinutes * 60, submitted:false, sending:false, startedAt:null };
   const container = document.getElementById('examContainer');
   if(container) container.style.display = 'none';
   const introEl = document.getElementById('examIntro');

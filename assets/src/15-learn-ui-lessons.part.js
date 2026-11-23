@@ -241,8 +241,15 @@ function buildSideNav(completed){
         setTimeout(() => window.switchTab(last.t), 0);   // 中身の読み込み（ワーク・テスト・修了証）を通常の経路で行う
       } else if(!last && completed.length){
         // 前回の記録が端末に無い（別の端末・ブラウザ）ときは、受講順で最初の未了から開く（2026-11-23。以前は序章が開いた）
-        const nx = nextStep();
-        if(nx) setTimeout(() => nx.run(), 0);
+        // 受講記録（ワーク・テストの状況）を受け取ってから決める（2026-11-23。以前は受け取る前に決めて、開く場所が毎回変わった）。
+        // 待つあいだに本人が別の画面を開いていたら、動かさない
+        const startTab = currentTab;
+        Promise.resolve(window._recordsPromise).catch(() => {}).then(() => {
+          const now = (document.querySelector('#learn-content-inner .tcon.active') || {}).id || '';
+          if(now && now !== 'tab-' + startTab) return;
+          const nx = nextStep();
+          if(nx) nx.run();
+        });
       }
     } catch(e){}
   }
@@ -304,8 +311,10 @@ function buildSideNav(completed){
       </div>`;
       // 確認テストを別の行に（2026-11-22）。以前はワークと同じ1行だけで、テストを見落としやすかった
       const tpass = !!(_testResultCh[chNo] && _testResultCh[chNo].passed);
+      // 5問すべて答えて不合格なら「再挑戦」の印（未受験と見分けられるように）
+      const tfail = !tpass && !!(_testResultCh[chNo] && _testResultCh[chNo].answered >= TEST_TOTAL_PER_CHAPTER);
       const tactive = wactive && window._aslTestFocus === chNo;
-      html += `<div class="sb-row sb-row-work${tactive?' active':''}${tpass?' done':''}" tabindex="0" role="button" onclick="goChapterTest(${chNo});closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${tactive?' active':''}${tpass?' done':''}${tfail?' test-failed':''}" tabindex="0" role="button" onclick="goChapterTest(${chNo});closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">T${chNo}</span>
         <span class="sb-row-title">章末確認テスト（5問）</span>

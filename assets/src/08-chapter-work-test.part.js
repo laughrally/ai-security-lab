@@ -152,10 +152,10 @@ function setWorkSubmitted(ch, submitted, answers){
     const at = (answers.find(a=>a.submitted_at)||{}).submitted_at;
     const d = at ? new Date(at).toLocaleString('ja-JP') : '';
     status.innerHTML = `<span class="work-done">✓ 提出済み</span>${d?`　${d}`:''}<br><span class="work-note">内容は受講実績レポートに記録されます。書き直した場合は最新の内容と提出日時が記録されます。</span><br><button class="work-reopen" onclick="reopenWork(${ch})">書き直す</button>`;
-    if(btn){ btn.disabled = true; btn.textContent = '提出済み'; }
+    if(btn){ btn.disabled = true; btn.textContent = '✓ 提出済み'; btn.classList.add('is-done'); }
   }else{
     status.textContent = '';
-    if(btn) btn.disabled = false;
+    if(btn){ btn.disabled = false; btn.classList.remove('is-done'); }
     updateWorkSubmitBtn(ch);
   }
 }
@@ -177,7 +177,7 @@ function updateWorkSubmitBtn(ch){
   let ok = 0;
   for(let i=1;i<=4;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
   updateWorkSteps(ch);
-  if(!btn || btn.textContent === '提出済み') return;
+  if(!btn || btn.classList.contains('is-done')) return;   // 提出済み
   btn.disabled = ok < 4;
   btn.textContent = ok < 4 ? `提出する（${ok}/4 問が必要文字数に到達）` : '提出する';
 }
@@ -275,7 +275,7 @@ async function reopenWork(ch){
   const status = document.getElementById('work-status-'+ch);
   if(status) status.innerHTML = '<span class="work-note">書き直しモードです。修正後、あらためて提出してください。</span>';
   const btn = document.getElementById('work-submit-'+ch);
-  if(btn){ btn.textContent = '提出する'; btn.disabled = false; }
+  if(btn){ btn.textContent = '提出する'; btn.disabled = false; btn.classList.remove('is-done'); }
   updateWorkSubmitBtn(ch);
   try{ buildSideNav(loadCompleted()); }catch(e){}
 }

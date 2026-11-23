@@ -4,7 +4,7 @@ let examState = {
   answers: {},   // 出題インデックス: 「元の」選択肢番号（表示順ではない）
   questions: [], // 受験ごとにシャッフルした問題セット
   timer: null,
-  remaining: 3600, // 60分
+  remaining: COURSE.rules.examMinutes * 60,
   submitted: false,
   sending: false,  // 提出中の二重送信ガード
   startedAt: null, // 開始時刻（受験時間の実測用）
@@ -63,7 +63,8 @@ async function startExam(){
           'これまでの受験回数：' + st.attempts + '回');
     return;
   }
-  const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
+  const R = COURSE.rules;
+  const confirmed = confirm(`認定試験を開始しますか？\n\n制限時間: ${R.examMinutes}分\n問題数: ${R.examQuestions}問\n合格ライン: ${R.examPass}問以上（${Math.round(R.examPass / R.examQuestions * 100)}%）\n\n開始後はカウントダウンが始まります。`);
   if(!confirmed) return;
   // 開始の署名は「開始する」を押したあとに受け取る（提出のときにサーバーが制限時間を確かめるのに使う。2026-11-23）
   st = await status();
@@ -73,7 +74,7 @@ async function startExam(){
   examState.active = true;
   examState.answers = {};
   examState.questions = buildExamSet();  // 受験ごとに問題順・選択肢順を変える
-  examState.remaining = 3600;
+  examState.remaining = COURSE.rules.examMinutes * 60;
   examState.submitted = false;
   examState.sending = false;
   examState.startedAt = Date.now();
@@ -84,8 +85,10 @@ async function startExam(){
 
 function startExamTimer(){
   if(examState.timer) clearInterval(examState.timer);
+  // 残り時間は「制限時間 −（今 − 開始時刻）」で毎回計算する（2026-11-23）。以前は1秒ずつ減らすだけで、
+  // タブを裏に回したときのタイマーの間引きやスリープで表示が遅れ、サーバーの判定（開始の署名からの実時間）とずれた
   examState.timer = setInterval(() => {
-    examState.remaining--;
+    examState.remaining = Math.max(0, COURSE.rules.examMinutes * 60 - Math.floor((Date.now() - examState.startedAt) / 1000));
     const timerEl = document.getElementById('examTimer');
     if(timerEl) timerEl.textContent = fmtTime(examState.remaining);
     if(examState.remaining <= 0){
@@ -103,7 +106,7 @@ function renderExam(){
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
         <div style="font-weight:700;font-size:18px">🏆 AI Security Lab 認定試験</div>
         <div style="display:flex;gap:16px;align-items:center">
-          <div style="font-weight:600;color:var(--text2)">回答済み ${Object.keys(examState.answers).length} / ${examState.questions.length}</div>
+          <div style="font-weight:600;color:var(--text2)">回答済み <span id="examAnswered">${Object.keys(examState.answers).length}</span> / ${examState.questions.length}</div>
           <div style="font-weight:700;color:var(--purple)">⏰ <span id="examTimer">${fmtTime(examState.remaining)}</span></div>
           <button onclick="submitExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
         </div>
@@ -112,7 +115,7 @@ function renderExam(){
   `;
   const QS = examState.questions;
   QS.forEach((q, i) => {
-    html += `<div style="margin-bottom:32px;padding:20px;background:var(--card);border-radius:12px;border:1px solid var(--border)">
+    html += `<div id="exq-${i}" style="margin-bottom:32px;padding:20px;background:var(--bg2);border-radius:12px;border:1px solid var(--border)">
       <div style="font-size:12px;color:var(--text3);margin-bottom:8px">問題 ${i+1} / ${QS.length}　[${q.lesson}]</div>
       <div style="font-weight:700;margin-bottom:16px;line-height:1.6">${q.q}</div>
       <div style="display:flex;flex-direction:column;gap:8px">`;
@@ -135,9 +138,16 @@ function renderExam(){
   if(introEl) introEl.style.display = 'none';
 }
 
+// 選んだ設問の見た目と回答数だけを更新する（2026-11-23。以前は1つ選ぶたびに60問すべてを描き直していた）
 function selectAnswer(qIdx, optIdx){
   examState.answers[qIdx] = optIdx;
-  renderExam();
+  document.querySelectorAll(`#exq-${qIdx} label`).forEach(l => {
+    const on = Number(l.querySelector('input').value) === optIdx;
+    l.style.borderColor = on ? 'var(--purple)' : 'var(--border)';
+    l.style.background = on ? 'rgba(124,58,237,0.05)' : 'transparent';
+  });
+  const cnt = document.getElementById('examAnswered');
+  if(cnt) cnt.textContent = Object.keys(examState.answers).length;
 }
 
 /**
@@ -190,7 +200,12 @@ async function submitExam(){
       updateCertificateUI();
     }
   } catch(e) {
-    if(e && e.status === 429){
+    if(e && e.status === 409){
+      // 制限時間を過ぎた（サーバーの判定）。何度提出しても受け付けられないので、そのことを伝えて受験の画面に戻す
+      alert((e.message || '制限時間を過ぎたため、この解答は受け付けられませんでした。') + '\n\nもう一度受験してください。');
+      clearInterval(examState.timer);
+      retryExam();
+    } else if(e && e.status === 429){
       // 再受験の間隔制限。開始前にも確認しているので通常ここには来ないが、
       // 来た場合は解答を保持したまま試験画面に戻す（60分の労力を捨てない）。
       alert((e.message || '次の受験まで時間をおいてください。') +
@@ -288,7 +303,7 @@ function nextExamAt(){
   return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0');
 }
 function retryExam(){
-  examState = { active:false, answers:{}, questions:[], timer:null, remaining:3600, submitted:false, sending:false, startedAt:null };
+  examState = { active:false, answers:{}, questions:[], timer:null, remaining:COURSE.rules.examMinutes * 60, submitted:false, sending:false, startedAt:null };
   const container = document.getElementById('examContainer');
   if(container) container.style.display = 'none';
   const introEl = document.getElementById('examIntro');

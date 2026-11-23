@@ -1209,6 +1209,8 @@
 
 /* ===== 章末ワーク ===== */
 .tab-work{ background:rgba(16,185,129,.12)!important; border-color:rgba(16,185,129,.35)!important; font-weight:700; }
+body.dark .tab-work{ color:#cbd5e1!important; }
+@media(max-width:640px){ .tab-work{ font-size:12px!important; } }
 .sb-row-work .sb-row-num{ color:var(--green); font-weight:700; }
 .sb-row-work .sb-row-dot{ background:#10b981; opacity:.35; }
 .sb-row-work.done .sb-row-dot{ background:#10b981; opacity:1; }
@@ -1263,7 +1265,7 @@
 .work-submit{ padding:15px 48px; font-size:15.5px; font-weight:700; font-family:inherit;
   color:#fff; background:#10b981; border:none; border-radius:10px; cursor:pointer; transition:.15s; }
 .work-submit:hover:not(:disabled){ background:#059669; }
-.work-submit:disabled{ background:rgba(127,127,127,.25); color:rgba(127,127,127,.7); cursor:not-allowed; }
+.work-submit:disabled{ background:var(--bg3); color:var(--text2); border:1.5px dashed var(--border2); cursor:not-allowed; }
 @media(max-width:640px){
   .work-input{ min-height:260px; padding:14px 15px; font-size:15px; }
   .work-submit,.work-nav-btn{ width:100%; }
@@ -1412,8 +1414,8 @@ body.logged-in .hprice{display:none}
 /* 目次の章見出しの件数 */
 .sb-ch-cnt{float:right;font-weight:600;color:var(--text3);letter-spacing:0}
 /* 進捗パネルの章末ワーク・確認テスト */
-.sb-dash-wt{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
-.sb-dash-wt-item{font-size:11.5px;padding:3px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit}
+.sb-dash-wt{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;padding:0 2px 4px}
+.sb-dash-wt-item{font-size:12px;min-height:28px;padding:4px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit}
 .sb-dash-wt-item.done{border-color:var(--green);color:var(--green)}
 /* ナビのログイン（以前は onmouseover で色を変えていた。インラインのスクリプトを無くすため CSS に） */
 .nav-login-link{font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s}
@@ -1426,3 +1428,14 @@ body.logged-in .hprice{display:none}
   #nav-login{font-size:0!important}
   #nav-login::before{content:"👤";font-size:16px}
 }
+/* 提出済みの章末ワーク：押せないボタンではなく「✓ 提出済み」の表示に（読めるように） */
+.work-submit.is-done:disabled{background:var(--green-l);color:var(--green);border:1.5px solid var(--green);opacity:1}
+/* 目次：不合格の確認テスト（再挑戦） */
+.sb-row.test-failed .sb-row-dot{background:var(--amber)}
+.sb-row.test-failed .sb-row-title::after{content:"　再挑戦";font-size:11px;color:var(--amber);font-weight:700}
+/* スマホの目次ボタンは少し小さく、本文の上では半透明に（重なっても読めるように） */
+@media (max-width:860px){ #sb-fab{width:44px;height:44px;opacity:.85} #sb-fab:hover,#sb-fab:focus{opacity:1} }
+/* 文字のリンクの押せる高さ（24px 以上） */
+footer a, .nright a, .fnav a{padding-block:4px;display:inline-block}
+/* 確認テストで選んだ選択肢 */
+.test-opt.is-done.is-correct::after,.test-opt.is-done.is-wrong::after{content:"（あなたの回答）";font-size:12px;margin-left:6px;color:var(--text2)}

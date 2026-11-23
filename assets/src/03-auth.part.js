@@ -169,7 +169,7 @@ async function _fetchUserPlan(){
   }
   if(!window._corpLoaded){ window._corpLoaded = true; loadCorpProgress(); }
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
-    refreshRecords();
+    window._recordsPromise = refreshRecords();
   }
   updateCertificateUI();
   applyPlanLock();

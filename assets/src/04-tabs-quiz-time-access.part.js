@@ -59,7 +59,7 @@ const IDLE_LESSON_MS = 3 * 60 * 1000;      // レッスンは読むので3分
 const IDLE_WORK_MS   = 5 * 60 * 1000;      // ワークは書くので5分（考える時間を削らない）
 const RESYNC_STEP_S  = 60;                 // 完了済みレッスンは60秒たまるごとに送り直す
 const MAX_TICK_S = 30;                     // 1回の加算上限。スリープ復帰の跳ねを抑える
-const MAX_TOTAL_S = 3 * 3600;              // 1レッスンの上限（Worker の LESSON_MAX_SECONDS と同じ）
+const MAX_TOTAL_S = COURSE.rules.lessonMaxMinutes * 60;   // 1レッスンの上限（Worker の LESSON_MAX_SECONDS と同じ値を course.json から）
 const TRACK_RE = /^(lesson\d+|work\d+)$/;
 
 let activeItem  = null;   // いま表示している lessonN / workN（それ以外は null）

@@ -273,7 +273,7 @@ ${blocks}`;
 
 
 </style></head><body><div class="wrap">
-<button class="btn noprint" onclick="window.print()">印刷 / PDFとして保存</button>
+<button class="btn noprint" data-print>印刷 / PDFとして保存</button>
 <h1>受講実績レポート</h1>
 <div class="sub">AI Security Lab 生成AI×セキュリティ eラーニング</div>
 
@@ -323,6 +323,8 @@ ${worksHTML}
 </div>
 </div></body></html>`);
     win.document.close();
+    // 別ウィンドウも元のページの CSP を引き継ぐので、onclick は動かない。ボタンはここで登録する（2026-11-23）
+    win.document.querySelectorAll('[data-print]').forEach(b => b.addEventListener('click', () => win.print()));
     repMsg('success','レポートを別ウィンドウで開きました。');
   } catch(e) {
     win.close();

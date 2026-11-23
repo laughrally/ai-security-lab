@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=cf9163374d">
+<link rel="stylesheet" href="/assets/app.css?v=3bcbb0a046">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -498,7 +498,7 @@
         <div class="guide-step-num">3</div>
         <div class="guide-step-icon">📊</div>
         <div class="guide-step-title">進捗を確認する</div>
-        <div class="guide-step-desc">上部の「📊 進捗」ボタンで修了証申請ページへ、ページ下部で各レッスンの受講状況を確認できます。</div>
+        <div class="guide-step-desc">上部の「📊 進捗」ボタンで、章ごとのレッスン・章末ワーク・確認テストの状況を確認できます。修了証の申請は、目次の下の「修了証の申請」からどうぞ。</div>
       </div>
       <div class="guide-step">
         <div class="guide-step-num">4</div>
@@ -1624,7 +1624,7 @@
             <span style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px">📋 60問</span>
             <span style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px">⏱ 制限時間60分</span>
             <span style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 14px;font-size:13px">🎯 80%以上（48問）で合格</span>
-            <span style="background:var(--purple-l);border:1px solid var(--purple);border-radius:6px;padding:6px 14px;font-size:13px;color:var(--purple)">🔒 Premiumプラン限定</span>
+            <span id="exam-plan-badge" style="background:var(--purple-l);border:1px solid var(--purple);border-radius:6px;padding:6px 14px;font-size:13px;color:var(--purple)">🔒 Premiumプラン限定</span>
           </div>
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:32px">
             <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">受験前に確認してください</h3>
@@ -2271,6 +2271,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=597dcefa03"></script>
+<script type="module" src="/assets/app.mjs?v=e4f688273d"></script>
 </body>
 </html>
