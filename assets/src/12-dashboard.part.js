@@ -38,7 +38,7 @@ function updateDashboard(){
       const done = completed.includes(id);
       const lbl = LESSON_LABELS[id] || id;
       const short = lbl.replace(/^L\d+：/,'').replace(/^序章：/,'');
-      return `<div class="dash-lesson-item${done?' done':''}" onclick="switchTab('${id}');document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">
+      return `<div class="dash-lesson-item${done?' done':''}" onclick="switchTab('${id}');scrollToId('lessons')">
         <div class="dlcheck">${done?'✓':''}</div>
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="${lbl}">${short}</span>
       </div>`;

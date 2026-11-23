@@ -14,6 +14,8 @@ const ALL_TABS_ORDERED = (function(){
 // ---- サイドバータブ切替 ----
 function setSbTab(tab, btn){
   document.querySelectorAll('.sb-tab').forEach(t => t.classList.remove('active'));
+  // ボタンを渡さないときは、同じ種類のタブ（先頭が目次・2つ目が進捗）を選んだ状態にする
+  if(!btn) btn = document.querySelectorAll('.sb-tab')[tab === 'lessons' ? 0 : 1];
   if(btn) btn.classList.add('active');
   const list = document.getElementById('sb-lesson-list');
   const panel = document.getElementById('sb-progress-panel');

@@ -19,7 +19,7 @@
      frame-ancestors と HSTS はmetaでは指定できないため、CDN前段での付与が必要。 -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
-  script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
+  script-src 'self' 'sha256-N7PA85e+6CHua12+sL+u9oRJxixxKpyDOUQ5DBSGMMw=' 'sha256-SiVa8EWPNWLi+AF7O3WtsR0x0dBnLUfu2Thv67cEu+M=' 'sha256-/OctIHG6iUeaVVEXmD6mTNflPXApiazbISNkhX+SqBg=' 'sha256-pzmRtxI/CbnMM3XClNVKG7ms1GeVKC+c2X77KFmkEAI=' https://www.googletagmanager.com;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   font-src 'self' data: https://fonts.gstatic.com;
   img-src 'self' data: https:;
@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=cb851a9ca7">
+<link rel="stylesheet" href="/assets/app.css?v=a60415988c">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -418,7 +418,7 @@
     <a href="#lessons" id="nav-lessons" onclick="return navGo('lessons')">レッスン</a>
     <a href="#plans" id="nav-pricing">料金</a>
     <a href="#plans" class="ncta" id="nav-cta">受講を始める</a>
-    <a href="#" id="nav-login" onclick="openAuthModal();return false;" style="font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text3)'">ログイン</a>
+    <a href="#" id="nav-login" onclick="openAuthModal();return false;" class="nav-login-link">ログイン</a>
     <button class="ncta" id="nav-progress" onclick="openProgressPanel();return false;" style="display:none;background:var(--green-s)!important;border:none;cursor:pointer;font-family:inherit">📊 進捗 0/0</button>
     <button id="guide-toggle" onclick="openGuideModal()" aria-label="使い方ガイド" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--text3);transition:all .2s;flex-shrink:0;font-weight:700" id="guide-toggle-btn">?</button>
     <button id="dark-toggle" onclick="toggleDark()" aria-label="ダークモード切替" style="background:none;border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text3);transition:all .2s;flex-shrink:0">☀️</button>
@@ -522,7 +522,7 @@
     </div>
     <div class="guide-cta">
       <button class="guide-btn guide-btn-primary" onclick="goLesson('intro')" >▶ レッスンを始める</button>
-      <button class="guide-btn guide-btn-secondary" onclick="document.getElementById('curriculum').scrollIntoView({behavior:'smooth'})">カリキュラムを確認</button>
+      <button class="guide-btn guide-btn-secondary" onclick="scrollToId('curriculum')">カリキュラムを確認</button>
     </div>
   </div>
 </div>
@@ -2285,6 +2285,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=0c7c21a623"></script>
+<script type="module" src="/assets/app.mjs?v=40a592a1c3"></script>
 </body>
 </html>

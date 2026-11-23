@@ -1412,3 +1412,6 @@ body.logged-in .hprice{display:none}
 .sb-dash-wt{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
 .sb-dash-wt-item{font-size:11.5px;padding:3px 8px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text3);cursor:pointer;font-family:inherit}
 .sb-dash-wt-item.done{border-color:var(--green);color:var(--green)}
+/* ナビのログイン（以前は onmouseover で色を変えていた。インラインのスクリプトを無くすため CSS に） */
+.nav-login-link{font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s}
+.nav-login-link:hover{color:var(--text)}

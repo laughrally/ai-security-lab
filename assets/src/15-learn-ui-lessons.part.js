@@ -391,7 +391,7 @@ function buildProgressPanel(){
     const dots = ch.lessons.map(id => {
       const d = completed.includes(id);
       const num = id === 'intro' ? '00' : lessonNo(id);
-      return `<div class="sb-dash-dot${d?' done':''}" tabindex="0" role="button" onclick="switchTab('${id}');setSbTab('lessons',document.querySelector('.sb-tab'))" title="${LESSON_LABELS[id]||id}">${num}</div>`;
+      return `<div class="sb-dash-dot${d?' done':''}" tabindex="0" role="button" onclick="switchTab('${id}');setSbTab('lessons')" title="${LESSON_LABELS[id]||id}">${num}</div>`;
     }).join('');
     html += `<div class="sb-dash-ch">
       <div class="sb-dash-ch-head">
