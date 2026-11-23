@@ -360,12 +360,8 @@ document.getElementById('auth-pw').addEventListener('keydown', e=>{
 lockPaidTabs(true);
 initSupabase();
 
-/* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
-
 // ---- プランによるアクセス判定（全ての遷移経路で必ず通す） ----
-// ログイン中はプラン制限が一切効かなかった（Basicでも L23〜L34 が閲覧できた）。
-// タブを開けるかどうかの判定は、この1か所だけで行う。
-// 片方だけ直して食い違うことがあった。
+// タブを開けるかどうかの判定は、この1か所（tabDenyReason）だけで行う。
 // 戻り値：null＝開ける／'login'＝ログインが必要／{msg, upgrade}＝開けない（理由と、プラン案内を出すか）
 function tabDenyReason(name){
   if(FREE_TABS.includes(name)) return null;

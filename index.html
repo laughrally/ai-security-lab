@@ -12,11 +12,11 @@
 <meta charset="UTF-8">
 <script>if(window.top!==window.self){try{window.top.location=window.self.location.href}catch(e){document.documentElement.style.display='none'}}</script>
 
-<!-- Content Security Policy（GitHub Pagesはレスポンスヘッダを設定できないためmetaで指定）
-     script-src に 'unsafe-inline' が必要なのは、本ファイルがインラインJSとonclick属性で
-     構成されているため。XSSの実行そのものは防げないが、万一注入された場合の
-     通信先（connect-src）・埋め込み（frame-src）・object/base の悪用は制限できる。
-     frame-ancestors と HSTS はmetaでは指定できないため、CDN前段での付与が必要。 -->
+<!-- Content Security Policy（GitHub Pages はレスポンスヘッダを設定できないため meta で指定）
+     script-src は自サイトと、インラインスクリプトの sha256（course-sync.py が付ける）だけ。'unsafe-inline' は使わない。
+     onclick などの属性はブラウザが実行しないので、assets/src/00-core の inlineShim が
+     90-inline-actions の一覧にある関数だけを呼ぶ。
+     frame-ancestors と HSTS は meta では指定できないため、CDN の前段での付与が必要。 -->
 <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' 'sha256-N7PA85e+6CHua12+sL+u9oRJxixxKpyDOUQ5DBSGMMw=' 'sha256-SiVa8EWPNWLi+AF7O3WtsR0x0dBnLUfu2Thv67cEu+M=' 'sha256-/OctIHG6iUeaVVEXmD6mTNflPXApiazbISNkhX+SqBg=' 'sha256-pzmRtxI/CbnMM3XClNVKG7ms1GeVKC+c2X77KFmkEAI=' https://www.googletagmanager.com;
@@ -2271,6 +2271,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=56e9433073"></script>
+<script type="module" src="/assets/app.mjs?v=41bf6a25c4"></script>
 </body>
 </html>

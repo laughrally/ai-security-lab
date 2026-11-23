@@ -291,7 +291,7 @@ function lockPaidTabs(lock){
   });
 }
 
-// プランに応じてL23〜L34のアクセスをロック
+// プランの範囲外の行に鍵を付ける（判定は tabDenyReason）
 function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
     // どのタブへの行かは data-tab 属性で持つ（onclick の文字は読まない）。章末テストの行は、その章のワークと同じ判定

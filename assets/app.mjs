@@ -3,7 +3,7 @@
 // app.mjs を直接直さないこと（check-all.sh が食い違いを止める）。つないだ全体で1つの ES モジュールになる。
 // 冒頭の COURSE ブロックは course.json から書き出す
 // <COURSE:BEGIN> course/course-sync.py が course.json から書き出す。手で直さない
-const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "rules": {"quizMaxAttempts": 3, "workQuestions": 4, "testQuestions": 5, "testPass": 4, "testMaxAttempts": 3, "examQuestions": 60, "examPass": 48, "examMinutes": 60, "examCooldownHours": 24, "lessonMaxMinutes": 180}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
+const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "rules": {"quizMaxAttempts": 3, "workQuestions": 4, "testQuestions": 5, "testPass": 4, "testMaxAttempts": 3, "examQuestions": 60, "examPass": 48, "examMinutes": 60, "examCooldownHours": 24, "lessonMaxMinutes": 180, "corpMaxSeats": 50}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
 const FREE_TABS = COURSE.free;
 // 受講順の内部ID（序章を除く）。内部IDは追加順なので番号順ではない。表示番号はこの並び順
 const ALL_LESSONS_LIST = COURSE.chapters.filter(c => c.no >= 1).flatMap(c => c.lessons);
@@ -563,7 +563,7 @@ function lockPaidTabs(lock){
   });
 }
 
-// プランに応じてL23〜L34のアクセスをロック
+// プランの範囲外の行に鍵を付ける（判定は tabDenyReason）
 function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
     // どのタブへの行かは data-tab 属性で持つ（onclick の文字は読まない）。章末テストの行は、その章のワークと同じ判定
@@ -1039,12 +1039,8 @@ document.getElementById('auth-pw').addEventListener('keydown', e=>{
 lockPaidTabs(true);
 initSupabase();
 
-/* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
-
 // ---- プランによるアクセス判定（全ての遷移経路で必ず通す） ----
-// ログイン中はプラン制限が一切効かなかった（Basicでも L23〜L34 が閲覧できた）。
-// タブを開けるかどうかの判定は、この1か所だけで行う。
-// 片方だけ直して食い違うことがあった。
+// タブを開けるかどうかの判定は、この1か所（tabDenyReason）だけで行う。
 // 戻り値：null＝開ける／'login'＝ログインが必要／{msg, upgrade}＝開けない（理由と、プラン案内を出すか）
 function tabDenyReason(name){
   if(FREE_TABS.includes(name)) return null;
@@ -1643,7 +1639,7 @@ function renderWorkChapter(ch){
     html += `
       <div class="work-q${i===1?' is-active':''}" id="wq-${qid}">
         <div class="work-q-head">
-          <span class="work-q-no">設問 ${i} / 4</span>
+          <span class="work-q-no">設問 ${i} / ${COURSE.rules.workQuestions}</span>
           <span class="work-q-ref">参照：${d.ref}</span>
         </div>
         <p class="work-q-text">${d.q}</p>
@@ -1665,7 +1661,7 @@ function renderWorkChapter(ch){
 }
 
 function gotoWorkQ(ch, n){
-  if(n<1 || n>4) return;
+  if(n<1 || n>COURSE.rules.workQuestions) return;
   for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const el = document.getElementById(`wq-w${ch}-${i}`);
     if(el) el.classList.toggle('is-active', i===n);
@@ -1754,8 +1750,9 @@ function updateWorkSubmitBtn(ch){
   for(let i=1;i<=COURSE.rules.workQuestions;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
   updateWorkSteps(ch);
   if(!btn || btn.classList.contains('is-done')) return;   // 提出済み
-  btn.disabled = ok < 4;
-  btn.textContent = ok < 4 ? `提出する（${ok}/4 問が必要文字数に到達）` : '提出する';
+  btn.disabled = ok < COURSE.rules.workQuestions;
+  const need = COURSE.rules.workQuestions;
+  btn.textContent = ok < need ? `提出する（${ok}/${need} 問が必要文字数に到達）` : '提出する';
 }
 
 function onWorkInput(qid){
@@ -1910,7 +1907,8 @@ const TEST_QUESTIONS = {
 const TEST_TOTAL_PER_CHAPTER = COURSE.rules.testQuestions;   // course.json の rules
 const TEST_PASS_COUNT_UI = COURSE.rules.testPass;
 const _testAnswered = {};   // { questionId: true } 回答済み
-const _testAttemptsLeft = {};   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
+const _testAttemptsLeft = {};
+const _testRetry = {};   // { 章: true } 学び直しの途中（戻した設問にまだ答えていない）   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
 const _testResultCh = {};   // { 章番号: {answered, correct, passed} }
 
 function renderTestChapter(ch){
@@ -1999,7 +1997,10 @@ async function answerTest(qid, idx){
     if(d.attemptsLeft != null) _testAttemptsLeft[qid] = d.attemptsLeft;
     lockTestQuestion(qid, idx, d.isCorrect, d.explanation);
     const cur = _testResultCh[ch] || { answered:0, correct:0 };
-    cur.answered += 1;
+    // 学び直し（前に間違えた設問への再回答）では、回答数は増やさず、正解なら正解数だけ増やす
+    // （以前の数え方では、学び直しのたびに回答数が5を超えていった）
+    const again = (cur.wrongIds || []).includes(qid);
+    if(!again) cur.answered += 1;
     if(d.isCorrect) cur.correct += 1;
     cur.passed = cur.answered >= TEST_TOTAL_PER_CHAPTER && cur.correct >= TEST_PASS_COUNT_UI;
     if(!d.isCorrect){ cur.wrongIds = (cur.wrongIds || []).filter(x => x !== qid).concat(qid); }
@@ -2018,6 +2019,16 @@ function updateTestSummary(ch){
   if(!el) return;
   const r = _testResultCh[ch] || { answered:0, correct:0, passed:false };
   if(r.answered === 0){ el.innerHTML = ''; return; }
+  // 学び直しの途中は、戻した設問にすべて答えるまで結果を出さない（1問答えた時点で「不合格」が出ていた）
+  if(_testRetry[ch]){
+    const left = (r.wrongIds || []).filter(q => !_testAnswered[q]).length;
+    if(left > 0){
+      el.innerHTML = `<div class="test-retry-box"><p class="test-retry-msg">学び直し中：あと ${left} 問。第${ch}章のレッスンで確かめてから答えてください。</p>
+        <div class="test-retry-links">${chapterLessonLinks(ch)}</div></div>`;
+      return;
+    }
+    delete _testRetry[ch];
+  }
   const done = r.answered >= TEST_TOTAL_PER_CHAPTER;
   if(!done){
     el.innerHTML = `<span class="test-prog">回答済み ${r.answered} / ${TEST_TOTAL_PER_CHAPTER} 問</span>`;
@@ -2055,6 +2066,7 @@ function chapterLessonLinks(ch){
   return c.lessons.map(id => `<button type="button" class="work-nav-btn" data-tab="${id}" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
 }
 function retryTestChapter(ch){
+  _testRetry[ch] = true;
   const r = _testResultCh[ch] || {};
   // 回答回数を使い切った設問は戻さない
   const wrong = (r.wrongIds || []).filter(q => _testAttemptsLeft[q] !== 0);
@@ -3109,7 +3121,7 @@ function hideLearnUI(){
 }
 
 /* ===== 有料レッスン本文のサーバー配信 =====
- * L02〜L34 の本文は index.html に含めない。
+ * 無料公開（序章・L01）以外の本文は index.html に含めない。
  * data-remote="1" が付いた器だけを置き、開いたときに
  * GET /api/lesson/:id から取得して流し込む。
  * Worker 側でログインとプランを検証しているため、
@@ -4015,13 +4027,9 @@ window.renderExamResult = renderExamResult;
 
 /* ===== 法人一括申込 =====
    受講者情報を受け取り、Worker 経由で受講申込確認書PDFを発行する。
-   金額とプラン表記の定義元は Worker の CORP_PLAN。ここは表示用の写し。 */
-const CORP_PLANS = {
-  basic:    { label: 'Basicプラン',    price: 9800   },
-  standard: { label: 'Standardプラン', price: 59800  },
-  premium:  { label: 'Premiumプラン',  price: 149800 },
-};
-const CORP_MAX_SEATS = 50;
+   価格と人数の上限は course.json（COURSE.prices・COURSE.rules.corpMaxSeats）から。Worker の CORP_PLAN も同じ値を使う。 */
+const CORP_PLANS = Object.fromEntries(Object.entries(COURSE.prices).map(([p, price]) => [p, { label: p[0].toUpperCase() + p.slice(1) + 'プラン', price }]));
+const CORP_MAX_SEATS = COURSE.rules.corpMaxSeats;
 
 function corpMsg(type, text){
   const el = document.getElementById('corp-msg');

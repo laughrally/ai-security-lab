@@ -66,7 +66,7 @@ function renderWorkChapter(ch){
     html += `
       <div class="work-q${i===1?' is-active':''}" id="wq-${qid}">
         <div class="work-q-head">
-          <span class="work-q-no">設問 ${i} / 4</span>
+          <span class="work-q-no">設問 ${i} / ${COURSE.rules.workQuestions}</span>
           <span class="work-q-ref">参照：${d.ref}</span>
         </div>
         <p class="work-q-text">${d.q}</p>
@@ -88,7 +88,7 @@ function renderWorkChapter(ch){
 }
 
 function gotoWorkQ(ch, n){
-  if(n<1 || n>4) return;
+  if(n<1 || n>COURSE.rules.workQuestions) return;
   for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const el = document.getElementById(`wq-w${ch}-${i}`);
     if(el) el.classList.toggle('is-active', i===n);
@@ -177,8 +177,9 @@ function updateWorkSubmitBtn(ch){
   for(let i=1;i<=COURSE.rules.workQuestions;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
   updateWorkSteps(ch);
   if(!btn || btn.classList.contains('is-done')) return;   // 提出済み
-  btn.disabled = ok < 4;
-  btn.textContent = ok < 4 ? `提出する（${ok}/4 問が必要文字数に到達）` : '提出する';
+  btn.disabled = ok < COURSE.rules.workQuestions;
+  const need = COURSE.rules.workQuestions;
+  btn.textContent = ok < need ? `提出する（${ok}/${need} 問が必要文字数に到達）` : '提出する';
 }
 
 function onWorkInput(qid){
@@ -333,7 +334,8 @@ const TEST_QUESTIONS = {
 const TEST_TOTAL_PER_CHAPTER = COURSE.rules.testQuestions;   // course.json の rules
 const TEST_PASS_COUNT_UI = COURSE.rules.testPass;
 const _testAnswered = {};   // { questionId: true } 回答済み
-const _testAttemptsLeft = {};   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
+const _testAttemptsLeft = {};
+const _testRetry = {};   // { 章: true } 学び直しの途中（戻した設問にまだ答えていない）   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
 const _testResultCh = {};   // { 章番号: {answered, correct, passed} }
 
 function renderTestChapter(ch){
@@ -422,7 +424,10 @@ async function answerTest(qid, idx){
     if(d.attemptsLeft != null) _testAttemptsLeft[qid] = d.attemptsLeft;
     lockTestQuestion(qid, idx, d.isCorrect, d.explanation);
     const cur = _testResultCh[ch] || { answered:0, correct:0 };
-    cur.answered += 1;
+    // 学び直し（前に間違えた設問への再回答）では、回答数は増やさず、正解なら正解数だけ増やす
+    // （以前の数え方では、学び直しのたびに回答数が5を超えていった）
+    const again = (cur.wrongIds || []).includes(qid);
+    if(!again) cur.answered += 1;
     if(d.isCorrect) cur.correct += 1;
     cur.passed = cur.answered >= TEST_TOTAL_PER_CHAPTER && cur.correct >= TEST_PASS_COUNT_UI;
     if(!d.isCorrect){ cur.wrongIds = (cur.wrongIds || []).filter(x => x !== qid).concat(qid); }
@@ -441,6 +446,16 @@ function updateTestSummary(ch){
   if(!el) return;
   const r = _testResultCh[ch] || { answered:0, correct:0, passed:false };
   if(r.answered === 0){ el.innerHTML = ''; return; }
+  // 学び直しの途中は、戻した設問にすべて答えるまで結果を出さない（1問答えた時点で「不合格」が出ていた）
+  if(_testRetry[ch]){
+    const left = (r.wrongIds || []).filter(q => !_testAnswered[q]).length;
+    if(left > 0){
+      el.innerHTML = `<div class="test-retry-box"><p class="test-retry-msg">学び直し中：あと ${left} 問。第${ch}章のレッスンで確かめてから答えてください。</p>
+        <div class="test-retry-links">${chapterLessonLinks(ch)}</div></div>`;
+      return;
+    }
+    delete _testRetry[ch];
+  }
   const done = r.answered >= TEST_TOTAL_PER_CHAPTER;
   if(!done){
     el.innerHTML = `<span class="test-prog">回答済み ${r.answered} / ${TEST_TOTAL_PER_CHAPTER} 問</span>`;
@@ -478,6 +493,7 @@ function chapterLessonLinks(ch){
   return c.lessons.map(id => `<button type="button" class="work-nav-btn" data-tab="${id}" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
 }
 function retryTestChapter(ch){
+  _testRetry[ch] = true;
   const r = _testResultCh[ch] || {};
   // 回答回数を使い切った設問は戻さない
   const wrong = (r.wrongIds || []).filter(q => _testAttemptsLeft[q] !== 0);

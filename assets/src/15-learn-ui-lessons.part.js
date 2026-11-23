@@ -41,7 +41,7 @@ function hideLearnUI(){
 }
 
 /* ===== 有料レッスン本文のサーバー配信 =====
- * L02〜L34 の本文は index.html に含めない。
+ * 無料公開（序章・L01）以外の本文は index.html に含めない。
  * data-remote="1" が付いた器だけを置き、開いたときに
  * GET /api/lesson/:id から取得して流し込む。
  * Worker 側でログインとプランを検証しているため、

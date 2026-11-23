@@ -1,12 +1,8 @@
 /* ===== 法人一括申込 =====
    受講者情報を受け取り、Worker 経由で受講申込確認書PDFを発行する。
-   金額とプラン表記の定義元は Worker の CORP_PLAN。ここは表示用の写し。 */
-const CORP_PLANS = {
-  basic:    { label: 'Basicプラン',    price: 9800   },
-  standard: { label: 'Standardプラン', price: 59800  },
-  premium:  { label: 'Premiumプラン',  price: 149800 },
-};
-const CORP_MAX_SEATS = 50;
+   価格と人数の上限は course.json（COURSE.prices・COURSE.rules.corpMaxSeats）から。Worker の CORP_PLAN も同じ値を使う。 */
+const CORP_PLANS = Object.fromEntries(Object.entries(COURSE.prices).map(([p, price]) => [p, { label: p[0].toUpperCase() + p.slice(1) + 'プラン', price }]));
+const CORP_MAX_SEATS = COURSE.rules.corpMaxSeats;
 
 function corpMsg(type, text){
   const el = document.getElementById('corp-msg');
