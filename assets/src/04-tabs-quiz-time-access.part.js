@@ -228,10 +228,15 @@ async function doQ(btn, selected, id){
       } catch(e){}
     } else {
       // 不正解：この選択肢だけ無効化。他は引き続き選べる。
-      btn.style.pointerEvents = 'none';
+      btn.style.pointerEvents = 'none'; btn.disabled = true; btn.setAttribute('aria-disabled', 'true');
       btn.classList.add('ng');
       document.getElementById(id+'-ng').classList.add('show');
       if(r.attemptsLeft === 0) quizAttemptsUsedUp(qopts, id, tabId);
+      else if(Number.isInteger(r.attemptsLeft)){
+        const ng = document.getElementById(id + '-ng');
+        if(ng){ let left = ng.querySelector('.q-left'); if(!left){ left = document.createElement('div'); left.className = 'q-used-up q-left'; ng.appendChild(left); }
+          left.textContent = 'この設問は、あと ' + r.attemptsLeft + ' 回答えられます。'; }
+      }
     }
   } catch(e) {
     btn.style.opacity = '';
@@ -251,7 +256,7 @@ function quizAttemptsUsedUp(qopts, id, tabId){
     ng.classList.add('show');
     const note = document.createElement('div');
     note.className = 'q-used-up';
-    note.textContent = '回答できる回数（3回）を使い切りました。レッスンを読み直してから、受講済みにしてください（正誤は受講実績レポートに記録されます）。';
+    note.textContent = '回答できる回数（' + COURSE.rules.quizMaxAttempts + '回）を使い切りました。レッスンを読み直してから、受講済みにしてください（正誤は受講実績レポートに記録されます）。';
     if(!ng.querySelector('.q-used-up')) ng.appendChild(note);
   }
   unlockCompleteBtn(tabId);
@@ -280,7 +285,7 @@ async function doQGuest(btn, selected, id){
       document.getElementById(id + '-ok').classList.add('show');
       document.getElementById(id + '-ng').classList.remove('show');
     } else {
-      btn.style.pointerEvents = 'none';
+      btn.style.pointerEvents = 'none'; btn.disabled = true; btn.setAttribute('aria-disabled', 'true');
       btn.classList.add('ng');
       document.getElementById(id + '-ng').classList.add('show');
     }
@@ -300,12 +305,14 @@ function goChapterTest(ch){
   let tries = 0;
   const go = () => {
     const el = document.getElementById('test-body-' + ch);
+    // 回答済みなら、結果（合否・学び直す）の欄へ。まだなら設問の先頭へ（2026-11-23。以前は結果が設問の下に隠れた）
+    const sum = document.getElementById('test-summary-' + ch);
+    if(sum && sum.textContent.trim()){ sum.scrollIntoView({ block:'center', behavior:'smooth' }); return; }
     if(el && el.children.length){ el.scrollIntoView({ block:'start', behavior:'smooth' }); return; }
     if(++tries < 30) setTimeout(go, 100);
   };
   go();
 }
-window.goChapterTest = goChapterTest;
 
 // 受講実績の要約（修了条件・章ごとの提出／合格）をサーバーから取り直し、画面に反映する（2026-11-23）。
 // ログイン時の1回だけだと、その場でワーク提出・テスト合格・試験合格をしても修了証の申請ボタンが押せなかった
@@ -415,6 +422,4 @@ function showPlans(reason){
   const b = ov.querySelector('.pp-btn, .pp-close'); if(b) b.focus();
 }
 function closePlanPick(){ const ov = document.getElementById('plan-pick-overlay'); if(ov) ov.remove(); }
-window.closePlanPick = closePlanPick;
-window.showPlans = showPlans;
 window.canAccessTab = canAccessTab;

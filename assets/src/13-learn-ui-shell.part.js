@@ -27,5 +27,4 @@ function setSbTab(tab, btn){
     if(panel){ panel.style.display = ''; panel.classList.add('show'); buildProgressPanel(); }
   }
 }
-window.setSbTab = setSbTab;
 

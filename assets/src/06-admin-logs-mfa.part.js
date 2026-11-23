@@ -70,6 +70,4 @@ async function adminMfaChallengeIfNeeded(){
     adminMfaRefresh();
   } catch(e) { console.warn('二段階認証の確認に失敗:', e.message); }
 }
-window.adminMfaEnroll = adminMfaEnroll;
-window.adminMfaVerify = adminMfaVerify;
 

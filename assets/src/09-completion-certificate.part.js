@@ -146,7 +146,7 @@ function updateCompletionUI(){
     if(chs){
       h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章',
         missW.length ? go(`switchTab('work${missW[0]}')`, `第${missW[0]}章のワークへ`) : '');
-      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章',
+      h += row((sm.testPassedChapters || 0) >= chs, `章末確認テストに全章合格する（各章${COURSE.rules.testQuestions}問中${COURSE.rules.testPass}問以上）`, (sm.testPassedChapters || 0) + ' / ' + chs + ' 章',
         missT.length ? go(`goChapterTest(${missT[0]})`, `第${missT[0]}章のテストへ`) : '');
     }
     if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格', go(`switchTab('exam')`, '認定試験へ'));
@@ -177,6 +177,13 @@ function updateCompletionUI(){
     } else if(plan === 'premium' && !examPassed){
       noticeText = '⚠️ 認定試験に合格してから申請してください。';
     }
+  }
+  // 同じプランの修了証が発行済みなら、申請はできない（Worker は 409 を返す）。最初から「発行済み」と示す（2026-11-23）
+  if(currentCertifiedEarlier){
+    window._certSubmitted = true;
+    if(notice){ notice.textContent = '✅ このプランの修了証は発行済みです。再送や氏名の訂正は、お問い合わせからご連絡ください。'; notice.style.display = 'block'; }
+    if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = '発行済み'; }
+    return;
   }
   if(notice){ notice.textContent = noticeText; notice.style.display = canApply ? 'none' : 'block'; }
   if(submitBtn){ const ok = canApply && !window._certSubmitted; submitBtn.disabled = !ok; submitBtn.style.opacity = ok ? '1' : '.4'; }

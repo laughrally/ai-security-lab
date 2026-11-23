@@ -50,22 +50,25 @@ async function startExam(){
     alert('認定試験はPremiumプランの受講者のみ受験できます。');
     return;
   }
-  // 開始前にクールダウンを確認する。
-  // 提出時にしか確認しないと、60分かけて解答したあとに弾かれ、その労力が失われる。
-  // 通信できないときは開始を妨げない（提出時にサーバー側で改めて判定される）。
-  try {
-    const st = await apiFetch('/api/exam/status', { method: 'GET' });
-    if(st && st.canStart === false && st.reason === 'cooldown'){
-      alert('次の受験まで、あと約' + st.retryAfterHours + '時間お待ちください。\n\n' +
-            '2回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
-            'これまでの受験回数：' + st.attempts + '回');
-      return;
-    }
-  } catch(e) {
-    console.warn('受験状況を確認できませんでした:', e.message);
+  // 開始前に、受験できるか（24時間の間隔）を確かめる。提出時にしか確認しないと、60分かけた解答が弾かれる
+  const status = async () => {
+    try { return await apiFetch('/api/exam/status', { method: 'GET' }); }
+    catch(e) { alert('受験の準備ができませんでした。通信環境をご確認のうえ、もう一度お試しください。\n' + (e.message || '')); return null; }
+  };
+  let st = await status();
+  if(!st) return;
+  if(st.canStart === false && st.reason === 'cooldown'){
+    alert('次の受験まで、あと約' + st.retryAfterHours + '時間お待ちください。\n\n' +
+          '2回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
+          'これまでの受験回数：' + st.attempts + '回');
+    return;
   }
   const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
   if(!confirmed) return;
+  // 開始の署名は「開始する」を押したあとに受け取る（提出のときにサーバーが制限時間を確かめるのに使う。2026-11-23）
+  st = await status();
+  if(!st || !st.start) { if(st) alert('受験を開始できませんでした。時間をおいてもう一度お試しください。'); return; }
+  examState.start = st.start;
   if(typeof window.switchTab === 'function') window.switchTab('exam');
   examState.active = true;
   examState.answers = {};
@@ -100,6 +103,7 @@ function renderExam(){
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
         <div style="font-weight:700;font-size:18px">🏆 AI Security Lab 認定試験</div>
         <div style="display:flex;gap:16px;align-items:center">
+          <div style="font-weight:600;color:var(--text2)">回答済み ${Object.keys(examState.answers).length} / ${examState.questions.length}</div>
           <div style="font-weight:700;color:var(--purple)">⏰ <span id="examTimer">${fmtTime(examState.remaining)}</span></div>
           <button onclick="submitExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
         </div>
@@ -171,6 +175,7 @@ async function submitExam(){
       method: 'POST',
       body: JSON.stringify({
         answers,
+        start: examState.start || null,
         startedAt: examState.startedAt ? new Date(examState.startedAt).toISOString() : null,
         durationSeconds: examState.startedAt ? Math.floor((Date.now() - examState.startedAt) / 1000) : null,
       }),
@@ -226,7 +231,7 @@ function renderExamResult(res){
       <div style="font-size:20px;margin-bottom:16px">${correct} / ${total} 問正解（${pct}%）</div>
       <div style="color:var(--text3);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
       <div style="color:var(--text3);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
-      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
+      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 受験の画面に戻る（再受験は ${nextExamAt()} ごろから）</button></div>`}
     </div>
   `;
 
@@ -352,25 +357,8 @@ function requestCertificate(){
   }, 300);
 }
 
-window.markComplete = markComplete;
-window.doQ = doQ;
-window.toggleCh = toggleCh;
-window.openFormModal = openFormModal;
-window.closeFormModal = closeFormModal;
-window.openAuthModal = openAuthModal;
-window.closeAuthModal = closeAuthModal;
-window.toggleAuthMode = toggleAuthMode;
-window.toggleDark = toggleDark;
-window.toggleSbDrawer = toggleSbDrawer;
 window.openSbDrawer = openSbDrawer;
-window.closeSbDrawer = closeSbDrawer;
-window.startExam = startExam;
-window.submitCertificate = submitCertificate;
-window.submitExam = submitExam;
-window.selectAnswer = selectAnswer;
-window.retryExam = retryExam;
 window.renderExam = renderExam;
 window.renderExamResult = renderExamResult;
-window.requestCertificate = requestCertificate;
 
 

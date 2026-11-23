@@ -329,7 +329,6 @@ ${worksHTML}
     repMsg('error','レポートを取得できませんでした。' + (e.message ? '（' + e.message + '）' : ''));
   }
 }
-window.openRecordReport = openRecordReport;
 
 async function downloadRecordCSV(){
   const name    = (document.getElementById('rep-name')?.value || '').trim();
@@ -413,5 +412,4 @@ async function downloadRecordCSV(){
     repMsg('error','CSVを作成できませんでした。' + (e.message ? '（' + e.message + '）' : ''));
   }
 }
-window.downloadRecordCSV = downloadRecordCSV;
 

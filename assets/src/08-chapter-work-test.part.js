@@ -263,8 +263,6 @@ async function submitWorkChapter(ch){
 }
 
 window.loadWorkChapter   = loadWorkChapter;
-window.onWorkInput       = onWorkInput;
-window.submitWorkChapter = submitWorkChapter;
 // 提出済みの章を編集可能に戻す（記録は保持され、再提出で上書きされる）
 async function reopenWork(ch){
   if(!confirm(`第${ch}章の章末ワークを書き直します。\n再提出するまで提出済みの扱いは解除されます。よろしいですか？`)) return;
@@ -281,8 +279,6 @@ async function reopenWork(ch){
   updateWorkSubmitBtn(ch);
   try{ buildSideNav(loadCompleted()); }catch(e){}
 }
-window.reopenWork        = reopenWork;
-window.gotoWorkQ         = gotoWorkQ;
 // ===================== 章末確認テスト =====================
 const TEST_QUESTIONS = {
   't1-1': { q:'社内で「ChatGPTは有料版なら学習に使われないので安全だ」という説明がなされていました。この説明の問題点はどれですか。', c:['プランに関わらず入力内容はすべて学習に使われることになるため','学習利用の有無はプランではなく国ごとの法規制によって決まるため','学習利用の有無は個人向けか法人向けかで決まり、別の論点もあるから','有料版であっても入力内容は他の利用者から閲覧できてしまうから'] },
@@ -328,8 +324,8 @@ const TEST_QUESTIONS = {
   't7-5': { q:'AI活用のロードマップを描く際、各段階で併せて検討すべきことはどれですか。', c:['その段階で扱う情報の範囲と、対応するセキュリティ対策','導入するツールの提供元が持つブランドとしての価値の高さ','同業の競合他社が導入に踏み切る時期とその内容','AI技術の分野で今後流行が移り変わっていく方向'] }
 };
 
-const TEST_TOTAL_PER_CHAPTER = 5;
-const TEST_PASS_COUNT_UI = 4;
+const TEST_TOTAL_PER_CHAPTER = COURSE.rules.testQuestions;   // course.json の rules
+const TEST_PASS_COUNT_UI = COURSE.rules.testPass;
 const _testAnswered = {};   // { questionId: true } 回答済み
 const _testAttemptsLeft = {};   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
 const _testResultCh = {};   // { 章番号: {answered, correct, passed} }
@@ -458,7 +454,7 @@ function updateTestSummary(ch){
   const retryable = (r.wrongIds||[]).filter(q => _testAttemptsLeft[q] !== 0).length;
   if(!retryable){
     el.innerHTML = `<span class="test-fail">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格ラインは ${TEST_PASS_COUNT_UI} 問です</span>${att}
-      <div class="test-retry-box"><p class="test-retry-msg">間違えた設問は、回答できる回数（各3回）を使い切りました。<br>
+      <div class="test-retry-box"><p class="test-retry-msg">間違えた設問は、回答できる回数（各${COURSE.rules.testMaxAttempts}回）を使い切りました。<br>
       章のレッスンを読み直したうえで、お問い合わせから運営までご連絡ください。</p></div>`;
     return;
   }
@@ -507,9 +503,7 @@ function retryTestChapter(ch){
   const first = document.getElementById('tq-'+wrong[0]);
   if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
 }
-window.retryTestChapter = retryTestChapter;
 
-window.answerTest      = answerTest;
 window.loadTestChapter = loadTestChapter;
 // ===================== /章末確認テスト =====================
 
@@ -541,10 +535,4 @@ window.switchTab = function(name){
 };
 window.openGuideModal  = function(){ document.getElementById('guide-modal-overlay').classList.add('show'); };
 window.closeGuideModal = function(){ document.getElementById('guide-modal-overlay').classList.remove('show'); };
-window.signInWithEmail = signInWithEmail;
-window.signUpWithEmail = signUpWithEmail;
-window.signOut             = signOut;
-window.sendPasswordReset   = sendPasswordReset;
-window.updatePassword      = updatePassword;
-window.submitForm      = submitForm;
 

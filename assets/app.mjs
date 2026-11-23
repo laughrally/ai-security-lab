@@ -2,10 +2,8 @@
 // 正本は assets/src/*.part.js（機能ごと）。asl-worker/course/course-sync.py が番号の順につないで assets/app.mjs を作る。
 // app.mjs を直接直さないこと（check-all.sh が食い違いを止める）。つないだ全体で1つの ES モジュールになる。
 // 冒頭の COURSE ブロックは course.json から書き出す
-// このスクリプトより前から window にあるもの（inlineShim が「呼べない関数」として使う）
-const WINDOW_BEFORE = new Set(Object.getOwnPropertyNames(window));
 // <COURSE:BEGIN> course/course-sync.py が course.json から書き出す。手で直さない
-const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
+const COURSE = {"free": ["intro", "lesson1"], "plans": {"basic": 5, "standard": 6, "premium": 7}, "workChapters": {"basic": 0, "standard": 6, "premium": 7}, "prices": {"basic": 9800, "standard": 59800, "premium": 149800}, "rules": {"quizMaxAttempts": 3, "workQuestions": 4, "testQuestions": 5, "testPass": 4, "testMaxAttempts": 3, "examQuestions": 60, "examPass": 48, "examMinutes": 60, "examCooldownHours": 24}, "chapters": [{"no": 0, "tag": "序章", "name": "なぜ今、AIセキュリティを学ぶ必要があるのか", "color": "var(--red)", "lessons": ["intro"]}, {"no": 1, "tag": "第1章", "name": "AIと情報漏洩の基礎知識", "color": "var(--red)", "lessons": ["lesson1", "lesson2", "lesson3", "lesson4"], "workGoal": "自社のAI利用実態マップ"}, {"no": 2, "tag": "第2章", "name": "ツール別リスクと設定", "color": "var(--amber)", "lessons": ["lesson5", "lesson6", "lesson7", "lesson8"], "workGoal": "入力禁止情報リスト"}, {"no": 3, "tag": "第3章", "name": "法律・著作権・ハルシネーション", "color": "var(--amber)", "lessons": ["lesson9", "lesson10", "lesson11"], "workGoal": "リスク評価シート"}, {"no": 4, "tag": "第4章", "name": "組織・ガイドライン整備", "color": "var(--blue)", "lessons": ["lesson12", "lesson13", "lesson14", "lesson15"], "workGoal": "社内AI利用ガイドライン"}, {"no": 5, "tag": "第5章", "name": "実践：事例研究とツール別ガイド", "color": "var(--blue)", "lessons": ["lesson16", "lesson17", "lesson28", "lesson29", "lesson30", "lesson31", "lesson32"], "workGoal": "AI導入計画メモ"}, {"no": 6, "tag": "第6章", "name": "AI攻撃手口と防衛策・管理者設定", "color": "#0ea5e9", "lessons": ["lesson18", "lesson19", "lesson20", "lesson21", "lesson22", "lesson33", "lesson34"], "badge": "Standard+", "workGoal": "インシデント対応フロー"}, {"no": 7, "tag": "第7章", "name": "AI技術とセキュリティの深層・開発", "color": "#8b5cf6", "lessons": ["lesson23", "lesson24", "lesson25", "lesson26", "lesson27", "lesson35", "lesson36"], "badge": "Premium", "workGoal": "AI活用ロードマップ"}], "titles": {"intro": "序章：なぜ今学ぶか", "lesson1": "入力情報はどこへ行くのか", "lesson2": "学習オフ設定の意味と限界", "lesson3": "シャドーAIとは何か", "lesson4": "クラウドAIとオンプレAIの違い", "lesson5": "ChatGPT各プランの違い", "lesson6": "Claude・Gemini・Copilot比較", "lesson7": "社外秘・個人情報の判断基準", "lesson8": "業種別リスク事例", "lesson9": "AIと個人情報保護法", "lesson10": "著作権侵害になるケース", "lesson11": "ハルシネーションと法的責任", "lesson12": "ガイドライン作成テンプレート", "lesson13": "インシデント初動対応フロー", "lesson14": "中小企業の最低限の体制", "lesson15": "今日からできる10のアクション", "lesson16": "よくある事例集（20事例）", "lesson17": "主要AIツール完全比較", "lesson18": "AIを使ったフィッシング詐欺", "lesson19": "プロンプトインジェクション攻撃", "lesson20": "ディープフェイクと音声詐欺", "lesson21": "AIエージェント・自動化ツールのリスク", "lesson22": "インシデント対応ロールプレイ", "lesson23": "LLMの仕組み入門", "lesson24": "プロンプトエンジニアリング基礎", "lesson25": "RAG・ファインチューニングのリスク", "lesson26": "業種別AIロードマップ", "lesson27": "MCPとAIエージェント最前線", "lesson28": "ChatGPTを安全に使う", "lesson29": "GeminiとGoogle Workspace", "lesson30": "CopilotとMicrosoft 365", "lesson31": "Claudeを安全に使う", "lesson32": "MetaのMuseとSNSのAI", "lesson33": "AIブラウザとエージェント機能", "lesson34": "管理者のための設定集", "lesson35": "Claude Codeを安全に使う", "lesson36": "AIコーディングと秘密情報"}};
 const FREE_TABS = COURSE.free;
 // 受講順の内部ID（序章を除く）。内部IDは追加順なので番号順ではない。表示番号はこの並び順
 const ALL_LESSONS_LIST = COURSE.chapters.filter(c => c.no >= 1).flatMap(c => c.lessons);
@@ -55,16 +53,13 @@ const { createClient } = window.supabase;
 // ページ・目次・レッスン本文（DB から配信）には onclick="switchTab('lesson3');return false;" のような書き方が
 // 多数あり、すべてを書き換えるのは本文の入れ直しも要る。そこで、ブラウザがインラインの実行を止めているときだけ、
 // 属性の文字を小さな構文解析器で読み、決まった形の呼び出しだけを実行する。
-//   使える形：関数(引数, …) ／ window.関数(…) ／ return 式 ／ if(event.target===this) 文 ／ window._名前 = 値
+//   使える形：関数(引数, …) ／ window.関数(…) ／ return 式 ／ if(event.target===this) 文
 //   引数：'文字列' "文字列" 数 true false null this event this.value document.querySelector('…')
-//   呼べる関数：このページが window に載せた関数だけ（fetch・eval などのブラウザ組み込みは呼べない）
+//   呼べる関数：90-inline-actions の INLINE_ACTIONS にある名前だけ（それ以外は fetch も自前の関数も呼べない）
 function scrollToId(id){ const el = document.getElementById(id); if(el) el.scrollIntoView({ behavior: 'smooth' }); }
-window.scrollToId = scrollToId;
 const inlineShim = (() => {
-  // 呼べるのは、このスクリプトが読み込まれた後に window に載った関数だけ（fetch・eval・gtag など、
-  // それより前からある関数は呼べない。差し替えられた fetch も同じ）
-  const before = WINDOW_BEFORE;
-  const isOwnFn = (f, name) => typeof f === 'function' && !before.has(name) && !/\[native code\]/.test(Function.prototype.toString.call(f));
+  // 呼べるのは INLINE_ACTIONS（90-inline-actions）にある名前だけ。一覧は呼ぶときに参照する（このファイルより後で定義されるため）
+  const action = (name) => (typeof INLINE_ACTIONS !== 'undefined' && Object.prototype.hasOwnProperty.call(INLINE_ACTIONS, name)) ? INLINE_ACTIONS[name] : null;
   function tokenize(src){
     const t = []; let i = 0;
     while(i < src.length){
@@ -81,7 +76,7 @@ const inlineShim = (() => {
       const id = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*)*/.exec(src.slice(i));
       if(id){ t.push({ k: 'i', v: id[0] }); i += id[0].length; continue; }
       if(src.startsWith('===', i)){ t.push({ k: 'p', v: '===' }); i += 3; continue; }
-      if('(),;='.includes(c)){ t.push({ k: 'p', v: c }); i++; continue; }
+      if('(),;'.includes(c)){ t.push({ k: 'p', v: c }); i++; continue; }
       throw new Error('使えない文字: ' + c);
     }
     return t;
@@ -108,8 +103,8 @@ const inlineShim = (() => {
     function call(name){
       const fname = name.startsWith('window.') ? name.slice(7) : name;
       if(fname.includes('.')) throw new Error('呼べない: ' + name);
-      const fn = window[fname];
-      if(!isOwnFn(fn, fname)) throw new Error('呼べない: ' + name);
+      const fn = action(fname);
+      if(typeof fn !== 'function') throw new Error('呼べない: ' + name);
       eat('('); const args = [];
       if(peek() && peek().v !== ')'){ args.push(value()); while(peek() && peek().v === ','){ eat(','); args.push(value()); } }
       eat(')');
@@ -122,9 +117,6 @@ const inlineShim = (() => {
       if(x.k === 'i' && x.v === 'if'){
         eat(); eat('('); const a = value(); eat('==='); const b = value(); eat(')');
         if(a === b || dry) return stmt(); else { while(peek() && peek().v !== ';') eat(); return undefined; }
-      }
-      if(x.k === 'i' && /^window\._\w+$/.test(x.v) && t[p + 1] && t[p + 1].v === '='){
-        eat(); eat('='); const v = value(); if(!dry) window[x.v.slice(7)] = v; return undefined;
       }
       value(); return undefined;
     }
@@ -182,7 +174,6 @@ function toggleSubmitBtn(){
   btn.style.opacity = checked ? '1' : '0.5';
   btn.style.cursor = checked ? 'pointer' : 'not-allowed';
 }
-window.toggleSubmitBtn = toggleSubmitBtn;
 
 function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
@@ -404,7 +395,9 @@ const SERVED_KEY = 'asl_lesson_served';
 function rememberServed(lessonId, served){
   if(!served || !served.at || !served.sig) return;
   const all = store.getJSON(SERVED_KEY, {}) || {};
-  if(all[lessonId] && all[lessonId].at <= served.at) return;
+  // 最初に受け取ったものを残す。ただし Worker は30日より古い署名を使わないので、29日を過ぎたら新しいものに替える
+  const old = all[lessonId];
+  if(old && old.at <= served.at && Date.now() - old.at < 29 * 864e5) return;
   all[lessonId] = served;
   store.set(SERVED_KEY, all);
 }
@@ -471,11 +464,10 @@ async function syncCompletedFromSupabase(){
       .eq('user_id', currentUser.id);
     if(error){ console.warn('sync error:', error.message); return; }
 
-    // Supabaseのログをマージ（ローカルのデータも保持してマイグレーション対応）
-    const localCompleted = loadCompleted();
+    // 受講済みはサーバーの記録で置き換える（2026-11-23）。以前は端末の記録と合わせており、送信に失敗した
+    // レッスンが端末にだけ「受講済み」として残り、修了の条件は満たした表示なのに申請がサーバーで弾かれた
     const remoteCompleted = (data || []).map(r => r.lesson_id);
-    const merged = Array.from(new Set([...localCompleted, ...remoteCompleted]));
-    saveCompleted(merged);
+    saveCompleted(remoteCompleted);
 
     // ※ lesson_logs への書き込みはWorker経由のみ。
     //   ローカルの申告をそのまま正とすると受講記録を捏造できるため、
@@ -584,7 +576,7 @@ function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
     const onclick = el.getAttribute('onclick') || '';
     // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
-    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/goChapterTest\((\d+)\)/);
+    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/(?:goChapterTest|openWorkTab)\((\d+)\)/);
     // キーボード・読み上げで使えるように（2026-11-23。認定試験・修了証・レポートの行に無かった）
     if(el.classList.contains('sb-row') && onclick){
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
@@ -620,10 +612,9 @@ function setAuthMsg(type, text){
 }
 function toggleAuthMode(mode){
   document.getElementById('auth-form-login' ).style.display = mode==='login'  ? 'block' : 'none';
-  document.getElementById('auth-form-signup').style.display = mode==='signup' ? 'block' : 'none';
   document.getElementById('auth-form-reset' ).style.display = mode==='reset'  ? 'block' : 'none';
   document.getElementById('auth-form-newpw' ).style.display = mode==='newpw'  ? 'block' : 'none';
-  const titles = {login:'受講者ログイン', signup:'新規登録', reset:'パスワードの再設定', newpw:'新しいパスワードを設定'};
+  const titles = {login:'受講者ログイン', reset:'パスワードの再設定', newpw:'新しいパスワードを設定'};
   document.getElementById('auth-modal-title').textContent = titles[mode] || '受講者ログイン';
   setAuthMsg('', '');
 }
@@ -641,22 +632,6 @@ async function signInWithEmail(){
     setAuthMsg('error', 'ログインに失敗しました。メールアドレスまたはパスワードをご確認ください。');
   } else {
     closeAuthModal();
-  }
-}
-
-/* ===== メール+PW 新規登録 ===== */
-async function signUpWithEmail(){
-  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
-  const email = document.getElementById('auth-signup-email').value.trim();
-  const pw    = document.getElementById('auth-signup-pw').value;
-  if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
-  if(pw.length < 10){ setAuthMsg('error','パスワードは10文字以上で設定してください（推測されにくくするため）。'); return; }
-  setAuthMsg('', '登録中...');
-  const {error} = await _supabase.auth.signUp({email, password:pw});
-  if(error){
-    setAuthMsg('error', error.message);
-  } else {
-    setAuthMsg('success', '確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。');
   }
 }
 
@@ -942,10 +917,15 @@ async function doQ(btn, selected, id){
       } catch(e){}
     } else {
       // 不正解：この選択肢だけ無効化。他は引き続き選べる。
-      btn.style.pointerEvents = 'none';
+      btn.style.pointerEvents = 'none'; btn.disabled = true; btn.setAttribute('aria-disabled', 'true');
       btn.classList.add('ng');
       document.getElementById(id+'-ng').classList.add('show');
       if(r.attemptsLeft === 0) quizAttemptsUsedUp(qopts, id, tabId);
+      else if(Number.isInteger(r.attemptsLeft)){
+        const ng = document.getElementById(id + '-ng');
+        if(ng){ let left = ng.querySelector('.q-left'); if(!left){ left = document.createElement('div'); left.className = 'q-used-up q-left'; ng.appendChild(left); }
+          left.textContent = 'この設問は、あと ' + r.attemptsLeft + ' 回答えられます。'; }
+      }
     }
   } catch(e) {
     btn.style.opacity = '';
@@ -965,7 +945,7 @@ function quizAttemptsUsedUp(qopts, id, tabId){
     ng.classList.add('show');
     const note = document.createElement('div');
     note.className = 'q-used-up';
-    note.textContent = '回答できる回数（3回）を使い切りました。レッスンを読み直してから、受講済みにしてください（正誤は受講実績レポートに記録されます）。';
+    note.textContent = '回答できる回数（' + COURSE.rules.quizMaxAttempts + '回）を使い切りました。レッスンを読み直してから、受講済みにしてください（正誤は受講実績レポートに記録されます）。';
     if(!ng.querySelector('.q-used-up')) ng.appendChild(note);
   }
   unlockCompleteBtn(tabId);
@@ -994,7 +974,7 @@ async function doQGuest(btn, selected, id){
       document.getElementById(id + '-ok').classList.add('show');
       document.getElementById(id + '-ng').classList.remove('show');
     } else {
-      btn.style.pointerEvents = 'none';
+      btn.style.pointerEvents = 'none'; btn.disabled = true; btn.setAttribute('aria-disabled', 'true');
       btn.classList.add('ng');
       document.getElementById(id + '-ng').classList.add('show');
     }
@@ -1014,12 +994,14 @@ function goChapterTest(ch){
   let tries = 0;
   const go = () => {
     const el = document.getElementById('test-body-' + ch);
+    // 回答済みなら、結果（合否・学び直す）の欄へ。まだなら設問の先頭へ（2026-11-23。以前は結果が設問の下に隠れた）
+    const sum = document.getElementById('test-summary-' + ch);
+    if(sum && sum.textContent.trim()){ sum.scrollIntoView({ block:'center', behavior:'smooth' }); return; }
     if(el && el.children.length){ el.scrollIntoView({ block:'start', behavior:'smooth' }); return; }
     if(++tries < 30) setTimeout(go, 100);
   };
   go();
 }
-window.goChapterTest = goChapterTest;
 
 // 受講実績の要約（修了条件・章ごとの提出／合格）をサーバーから取り直し、画面に反映する（2026-11-23）。
 // ログイン時の1回だけだと、その場でワーク提出・テスト合格・試験合格をしても修了証の申請ボタンが押せなかった
@@ -1129,8 +1111,6 @@ function showPlans(reason){
   const b = ov.querySelector('.pp-btn, .pp-close'); if(b) b.focus();
 }
 function closePlanPick(){ const ov = document.getElementById('plan-pick-overlay'); if(ov) ov.remove(); }
-window.closePlanPick = closePlanPick;
-window.showPlans = showPlans;
 window.canAccessTab = canAccessTab;
 // ===================== 法的ページモーダル =====================
 const LEGAL_PAGES = {
@@ -1295,8 +1275,6 @@ document.addEventListener('keydown', e => {
   if(e.key === 'Escape') closeLegalModal();
 });
 
-window.openLegalModal  = openLegalModal;
-window.closeLegalModal = closeLegalModal;
 
 // ===================== ガイドラインテンプレートのダウンロード =====================
 function downloadGuideline(){
@@ -1424,7 +1402,6 @@ function downloadGuideline(){
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-window.downloadGuideline = downloadGuideline;
 
 // ===================== 管理者：受講ログのエクスポート =====================
 // #admin-dashboard は既定で display:none。管理者アカウントでログインしたときのみ表示する。
@@ -1498,8 +1475,6 @@ async function adminMfaChallengeIfNeeded(){
     adminMfaRefresh();
   } catch(e) { console.warn('二段階認証の確認に失敗:', e.message); }
 }
-window.adminMfaEnroll = adminMfaEnroll;
-window.adminMfaVerify = adminMfaVerify;
 
 // ===== 法人の担当者：受講者の進捗（2026-11-22） =====
 let _corpApps = null;
@@ -1571,9 +1546,6 @@ function downloadCorpCsv(){
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
-window.openCorpProgress = openCorpProgress;
-window.closeCorpProgress = closeCorpProgress;
-window.downloadCorpCsv = downloadCorpCsv;
 
 window.applyAdminVisibility = applyAdminVisibility;
 
@@ -1616,7 +1588,6 @@ async function adminExportLogs(){
     if(btn){ btn.disabled = false; btn.textContent = '📥 受講ログCSVをダウンロード'; }
   }
 }
-window.adminExportLogs = adminExportLogs;
 
 
 
@@ -1885,8 +1856,6 @@ async function submitWorkChapter(ch){
 }
 
 window.loadWorkChapter   = loadWorkChapter;
-window.onWorkInput       = onWorkInput;
-window.submitWorkChapter = submitWorkChapter;
 // 提出済みの章を編集可能に戻す（記録は保持され、再提出で上書きされる）
 async function reopenWork(ch){
   if(!confirm(`第${ch}章の章末ワークを書き直します。\n再提出するまで提出済みの扱いは解除されます。よろしいですか？`)) return;
@@ -1903,8 +1872,6 @@ async function reopenWork(ch){
   updateWorkSubmitBtn(ch);
   try{ buildSideNav(loadCompleted()); }catch(e){}
 }
-window.reopenWork        = reopenWork;
-window.gotoWorkQ         = gotoWorkQ;
 // ===================== 章末確認テスト =====================
 const TEST_QUESTIONS = {
   't1-1': { q:'社内で「ChatGPTは有料版なら学習に使われないので安全だ」という説明がなされていました。この説明の問題点はどれですか。', c:['プランに関わらず入力内容はすべて学習に使われることになるため','学習利用の有無はプランではなく国ごとの法規制によって決まるため','学習利用の有無は個人向けか法人向けかで決まり、別の論点もあるから','有料版であっても入力内容は他の利用者から閲覧できてしまうから'] },
@@ -1950,8 +1917,8 @@ const TEST_QUESTIONS = {
   't7-5': { q:'AI活用のロードマップを描く際、各段階で併せて検討すべきことはどれですか。', c:['その段階で扱う情報の範囲と、対応するセキュリティ対策','導入するツールの提供元が持つブランドとしての価値の高さ','同業の競合他社が導入に踏み切る時期とその内容','AI技術の分野で今後流行が移り変わっていく方向'] }
 };
 
-const TEST_TOTAL_PER_CHAPTER = 5;
-const TEST_PASS_COUNT_UI = 4;
+const TEST_TOTAL_PER_CHAPTER = COURSE.rules.testQuestions;   // course.json の rules
+const TEST_PASS_COUNT_UI = COURSE.rules.testPass;
 const _testAnswered = {};   // { questionId: true } 回答済み
 const _testAttemptsLeft = {};   // { questionId: 残りの回答回数 }（サーバーの値。0 の設問は学び直しの対象にしない）
 const _testResultCh = {};   // { 章番号: {answered, correct, passed} }
@@ -2080,7 +2047,7 @@ function updateTestSummary(ch){
   const retryable = (r.wrongIds||[]).filter(q => _testAttemptsLeft[q] !== 0).length;
   if(!retryable){
     el.innerHTML = `<span class="test-fail">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格ラインは ${TEST_PASS_COUNT_UI} 問です</span>${att}
-      <div class="test-retry-box"><p class="test-retry-msg">間違えた設問は、回答できる回数（各3回）を使い切りました。<br>
+      <div class="test-retry-box"><p class="test-retry-msg">間違えた設問は、回答できる回数（各${COURSE.rules.testMaxAttempts}回）を使い切りました。<br>
       章のレッスンを読み直したうえで、お問い合わせから運営までご連絡ください。</p></div>`;
     return;
   }
@@ -2129,9 +2096,7 @@ function retryTestChapter(ch){
   const first = document.getElementById('tq-'+wrong[0]);
   if(first) first.scrollIntoView({behavior:'smooth', block:'center'});
 }
-window.retryTestChapter = retryTestChapter;
 
-window.answerTest      = answerTest;
 window.loadTestChapter = loadTestChapter;
 // ===================== /章末確認テスト =====================
 
@@ -2163,12 +2128,6 @@ window.switchTab = function(name){
 };
 window.openGuideModal  = function(){ document.getElementById('guide-modal-overlay').classList.add('show'); };
 window.closeGuideModal = function(){ document.getElementById('guide-modal-overlay').classList.remove('show'); };
-window.signInWithEmail = signInWithEmail;
-window.signUpWithEmail = signUpWithEmail;
-window.signOut             = signOut;
-window.sendPasswordReset   = sendPasswordReset;
-window.updatePassword      = updatePassword;
-window.submitForm      = submitForm;
 
 /* ===== 受講済み管理・修了証 ===== */
 // 受講順・章・プランの範囲は course.json が正本（ファイル先頭の COURSE ブロック）。ここに件数や並びを書かないこと。
@@ -2318,7 +2277,7 @@ function updateCompletionUI(){
     if(chs){
       h += row((sm.chaptersSubmitted || 0) >= chs, '章末ワークを全章提出する', (sm.chaptersSubmitted || 0) + ' / ' + chs + ' 章',
         missW.length ? go(`switchTab('work${missW[0]}')`, `第${missW[0]}章のワークへ`) : '');
-      h += row((sm.testPassedChapters || 0) >= chs, '章末確認テストに全章合格する（各章5問中4問以上）', (sm.testPassedChapters || 0) + ' / ' + chs + ' 章',
+      h += row((sm.testPassedChapters || 0) >= chs, `章末確認テストに全章合格する（各章${COURSE.rules.testQuestions}問中${COURSE.rules.testPass}問以上）`, (sm.testPassedChapters || 0) + ' / ' + chs + ' 章',
         missT.length ? go(`goChapterTest(${missT[0]})`, `第${missT[0]}章のテストへ`) : '');
     }
     if(plan === 'premium') h += row(!!(sm.examPassed || currentExamPassed), '認定試験に合格する', (sm.examPassed || currentExamPassed) ? '合格' : '未合格', go(`switchTab('exam')`, '認定試験へ'));
@@ -2349,6 +2308,13 @@ function updateCompletionUI(){
     } else if(plan === 'premium' && !examPassed){
       noticeText = '⚠️ 認定試験に合格してから申請してください。';
     }
+  }
+  // 同じプランの修了証が発行済みなら、申請はできない（Worker は 409 を返す）。最初から「発行済み」と示す（2026-11-23）
+  if(currentCertifiedEarlier){
+    window._certSubmitted = true;
+    if(notice){ notice.textContent = '✅ このプランの修了証は発行済みです。再送や氏名の訂正は、お問い合わせからご連絡ください。'; notice.style.display = 'block'; }
+    if(submitBtn){ submitBtn.disabled = true; submitBtn.textContent = '発行済み'; }
+    return;
   }
   if(notice){ notice.textContent = noticeText; notice.style.display = canApply ? 'none' : 'block'; }
   if(submitBtn){ const ok = canApply && !window._certSubmitted; submitBtn.disabled = !ok; submitBtn.style.opacity = ok ? '1' : '.4'; }
@@ -2754,7 +2720,6 @@ ${worksHTML}
     repMsg('error','レポートを取得できませんでした。' + (e.message ? '（' + e.message + '）' : ''));
   }
 }
-window.openRecordReport = openRecordReport;
 
 async function downloadRecordCSV(){
   const name    = (document.getElementById('rep-name')?.value || '').trim();
@@ -2838,7 +2803,6 @@ async function downloadRecordCSV(){
     repMsg('error','CSVを作成できませんでした。' + (e.message ? '（' + e.message + '）' : ''));
   }
 }
-window.downloadRecordCSV = downloadRecordCSV;
 
 /* ===== 進捗ダッシュボード ===== */
 
@@ -2929,7 +2893,6 @@ function setSbTab(tab, btn){
     if(panel){ panel.style.display = ''; panel.classList.add('show'); buildProgressPanel(); }
   }
 }
-window.setSbTab = setSbTab;
 
 /* ===== 序章のポッドキャスト（自前プレーヤー） =====
  * Google Drive の埋め込みは別ドメインのiframeで見た目を一切制御できず、
@@ -3031,11 +2994,6 @@ function initPodcast(){
   });
   podSyncMute();
 }
-window.podToggle = podToggle;
-window.podSeek   = podSeek;
-window.podVol    = podVol;
-window.podMute   = podMute;
-window.podSpeed  = podSpeed;
 
 /**
  * ヘッダーのロゴ・カリキュラム・レッスンの遷移先。
@@ -3072,7 +3030,6 @@ function navGo(where){
   if(window.innerWidth <= 860) closeSbDrawer();
   return false;
 }
-window.navGo = navGo;
 
 // 進捗ボタン → サイドバーの進捗タブを開く
 function openProgressPanel(){
@@ -3086,7 +3043,6 @@ function openProgressPanel(){
   // learn-wrapperが表示されていなければ表示
   showLearnUI();
 }
-window.openProgressPanel = openProgressPanel;
 
 // モバイル：ドロワー開閉
 function toggleSbDrawer(){
@@ -3123,7 +3079,6 @@ function goLesson(tabId){
     if(s) s.scrollIntoView({behavior:'smooth'});
   }
 }
-window.goLesson = goLesson;
 
 // ---- 学習画面 表示/非表示 ----
 function showLearnUI(){
@@ -3225,7 +3180,6 @@ function reloadLesson(tabId){
   tcon.innerHTML = LESSON_PLACEHOLDER;
   ensureLessonLoaded(tabId);
 }
-window.reloadLesson = reloadLesson;
 
 // ---- アクティブtconをlearn-content-innerに表示 ----
 // 初めて学習画面に入った人への案内（2026-11-23）。プランごとの進め方と修了の条件、最初のレッスンへのボタン。
@@ -3241,10 +3195,11 @@ function renderOnboard(){
   const chs = COURSE.workChapters[plan] || 0;
   const steps = [];
   if(paid){
-    steps.push(`左の目次の順にレッスンを読み、最後の理解度チェックに答えて「受講済み」にします（全${PLAN_LESSON_COUNT[plan]}レッスン）。`);
-    if(chs) steps.push(`各章の終わりに、章末ワーク（記述4問）を提出し、章末確認テスト（5問中4問以上で合格）を受けます（全${chs}章）。`);
-    if(plan === 'premium') steps.push('全章を終えたら、認定試験（60問・48問以上で合格）を受けます。');
-    steps.push(plan === 'basic' ? '修了証は Standard 以上のプランで発行できます。' : '条件をすべて満たすと、目次の下の「修了証の申請」から申請できます。');
+    const toc = window.innerWidth <= 860 ? '左下の ≡ から開く目次' : '左の目次';
+    steps.push(`${toc}の順にレッスンを読み、最後の理解度チェック（各設問${COURSE.rules.quizMaxAttempts}回まで）に答えて「受講済み」にします（全${PLAN_LESSON_COUNT[plan]}レッスン）。`);
+    if(chs) steps.push(`各章の終わりに、章末ワーク（記述${COURSE.rules.workQuestions}問）を提出し、章末確認テスト（${COURSE.rules.testQuestions}問中${COURSE.rules.testPass}問以上で合格）を受けます（全${chs}章）。`);
+    if(plan === 'premium') steps.push(`全章を終えたら、認定試験（${COURSE.rules.examQuestions}問・${COURSE.rules.examPass}問以上で合格、${COURSE.rules.examMinutes}分）を受けます。`);
+    steps.push(plan === 'basic' ? '全レッスンを終えたら、受講実績レポートを出力できます（修了証は Standard 以上のプランで発行できます）。' : '条件をすべて満たすと、目次の下の「修了証の申請」から申請できます。');
   } else {
     steps.push('序章と L01 は無料でお読みいただけます。');
     steps.push('L02 以降は、ご購入後に受講できます。');
@@ -3266,8 +3221,11 @@ function closeOnboard(){
   const box = document.getElementById('learn-onboard');
   if(box){ box.hidden = true; box.innerHTML = ''; }
 }
-window.closeOnboard = closeOnboard;
 
+// 理解度チェックの答え合わせを読み上げで伝える（本文は DB から来るので、表示のたびに印を付ける。2026-11-23）
+function markLiveRegions(root){
+  (root || document).querySelectorAll('.qfb:not([role])').forEach(el => { el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); });
+}
 function showActiveLesson(tabId){
   // 全tconをhidden
   document.querySelectorAll('.tcon').forEach(t => {
@@ -3281,7 +3239,8 @@ function showActiveLesson(tabId){
   tcon.style.display = 'block';
   tcon.classList.add('active');
   markLessonStart(tabId);
-  ensureLessonLoaded(tabId);
+  Promise.resolve(ensureLessonLoaded(tabId)).then(() => markLiveRegions(tcon));
+  markLiveRegions(tcon);
   shuffleQuizOptions(tabId);
   // 本文が最初から入っている序章・L01 も、前後ナビをプランに合わせる（無料登録の人に購入の案内を出すため）
   if(tcon.dataset.remote !== '1') fixLessonNav(tabId);
@@ -3315,14 +3274,12 @@ function lessonNavFrom(fromId, dir){
   const next = order[idx + dir];
   if(next) window.switchTab(next);
 }
-window.lessonNavFrom = lessonNavFrom;
 function lessonNav(dir){
   const inner = document.getElementById('learn-content-inner');
   const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
   const currentId = activeTcon?.id?.replace('tab-','') || 'intro';
   lessonNavFrom(currentId, dir);
 }
-window.lessonNav = lessonNav;
 
 // レッスン本文の末尾にある前後ナビを、受講者のプランに合わせて作り直す。
 // 本文（DB）のナビは章末ワークを飛ばして次のレッスンを指しているため（2026-11-22）
@@ -3338,13 +3295,16 @@ function fixLessonNav(tabId){
   if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${escHtml(tabLabel(prev))}</span></a>`;
   if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${escHtml(tabLabel(next))}</span></a>`;
   // 範囲の終わりでは、上のプランの案内を開けるようにする（2026-11-23。以前は文字だけで押せなかった）
-  else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">Basic の範囲はここまで</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
+  else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="switchTab('records');return false;" class="lnbtn" style="text-align:right"><span class="lnl">🎉 Basic の全レッスンはここまで</span><span class="lnt">受講実績レポートを出力する →</span></a>`
+    + `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">続けて学ぶ</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
   else if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">無料公開はここまで</span><span class="lnt">L02 以降はご購入後に受講できます →</span></a>`;
   nav.innerHTML = html;
 }
 window.fixLessonNav = fixLessonNav;
 
 // ---- サイドバーのレッスンリスト生成 ----
+// 目次の W 行：章末ワークを開く（確認テストへの位置合わせは解除する）
+function openWorkTab(ch){ window._aslTestFocus = 0; window.switchTab('work' + ch); }
 function buildSideNav(completed){
   if(!currentUser){ hideLearnUI(); return; }
   showLearnUI();
@@ -3419,7 +3379,7 @@ function buildSideNav(completed){
       const wid = 'work' + chNo;
       const wactive = wid === currentTab;
       const wdone = !!_workSubmittedCh[chNo];
-      html += `<div class="sb-row sb-row-work${wactive && window._aslTestFocus !== chNo?' active':''}${wdone?' done':''}" tabindex="0" role="button" onclick="window._aslTestFocus=0;switchTab('${wid}');closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${wactive && window._aslTestFocus !== chNo?' active':''}${wdone?' done':''}" tabindex="0" role="button" onclick="openWorkTab(${chNo});closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">W${chNo}</span>
         <span class="sb-row-title">章末ワーク：${WORK_CHAPTERS[chNo].goal}</span>
@@ -3513,6 +3473,12 @@ function buildProgressPanel(){
   const completed = loadCompleted();
   let html = '';
   CHAPTER_DATA.forEach(ch => {
+    // プランの外の章は、鍵付きで1行だけ出す（2026-11-23。以前は Standard でも第7章が「0/7」と鍵なしで出た）
+    if(ch.tag !== '序章' && !ch.lessons.some(id => getPlanLessons().includes(id))){
+      html += `<div class="sb-dash-ch sb-dash-locked"><div class="sb-dash-ch-head"><div><span class="sb-dash-ch-tag">${ch.tag}</span>${ch.name}</div>
+        <button type="button" class="sb-dash-wt-item" onclick="showPlans()">🔒 ${escHtml(ch.plan || '上位プラン')}</button></div></div>`;
+      return;
+    }
     const done = ch.lessons.filter(id => completed.includes(id));
     const pct = ch.lessons.length > 0 ? done.length / ch.lessons.length * 100 : 0;
     const dots = ch.lessons.map(id => {
@@ -3732,22 +3698,25 @@ async function startExam(){
     alert('認定試験はPremiumプランの受講者のみ受験できます。');
     return;
   }
-  // 開始前にクールダウンを確認する。
-  // 提出時にしか確認しないと、60分かけて解答したあとに弾かれ、その労力が失われる。
-  // 通信できないときは開始を妨げない（提出時にサーバー側で改めて判定される）。
-  try {
-    const st = await apiFetch('/api/exam/status', { method: 'GET' });
-    if(st && st.canStart === false && st.reason === 'cooldown'){
-      alert('次の受験まで、あと約' + st.retryAfterHours + '時間お待ちください。\n\n' +
-            '2回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
-            'これまでの受験回数：' + st.attempts + '回');
-      return;
-    }
-  } catch(e) {
-    console.warn('受験状況を確認できませんでした:', e.message);
+  // 開始前に、受験できるか（24時間の間隔）を確かめる。提出時にしか確認しないと、60分かけた解答が弾かれる
+  const status = async () => {
+    try { return await apiFetch('/api/exam/status', { method: 'GET' }); }
+    catch(e) { alert('受験の準備ができませんでした。通信環境をご確認のうえ、もう一度お試しください。\n' + (e.message || '')); return null; }
+  };
+  let st = await status();
+  if(!st) return;
+  if(st.canStart === false && st.reason === 'cooldown'){
+    alert('次の受験まで、あと約' + st.retryAfterHours + '時間お待ちください。\n\n' +
+          '2回目以降の受験は、前回から24時間の間隔をいただいています。\n' +
+          'これまでの受験回数：' + st.attempts + '回');
+    return;
   }
   const confirmed = confirm('認定試験を開始しますか？\n\n制限時間: 60分\n問題数: 60問\n合格ライン: 48問以上（80%）\n\n開始後はカウントダウンが始まります。');
   if(!confirmed) return;
+  // 開始の署名は「開始する」を押したあとに受け取る（提出のときにサーバーが制限時間を確かめるのに使う。2026-11-23）
+  st = await status();
+  if(!st || !st.start) { if(st) alert('受験を開始できませんでした。時間をおいてもう一度お試しください。'); return; }
+  examState.start = st.start;
   if(typeof window.switchTab === 'function') window.switchTab('exam');
   examState.active = true;
   examState.answers = {};
@@ -3782,6 +3751,7 @@ function renderExam(){
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
         <div style="font-weight:700;font-size:18px">🏆 AI Security Lab 認定試験</div>
         <div style="display:flex;gap:16px;align-items:center">
+          <div style="font-weight:600;color:var(--text2)">回答済み ${Object.keys(examState.answers).length} / ${examState.questions.length}</div>
           <div style="font-weight:700;color:var(--purple)">⏰ <span id="examTimer">${fmtTime(examState.remaining)}</span></div>
           <button onclick="submitExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-weight:700;cursor:pointer">提出する</button>
         </div>
@@ -3853,6 +3823,7 @@ async function submitExam(){
       method: 'POST',
       body: JSON.stringify({
         answers,
+        start: examState.start || null,
         startedAt: examState.startedAt ? new Date(examState.startedAt).toISOString() : null,
         durationSeconds: examState.startedAt ? Math.floor((Date.now() - examState.startedAt) / 1000) : null,
       }),
@@ -3908,7 +3879,7 @@ function renderExamResult(res){
       <div style="font-size:20px;margin-bottom:16px">${correct} / ${total} 問正解（${pct}%）</div>
       <div style="color:var(--text3);font-size:14px">合格ライン: ${passMark}問以上（80%）${res.attemptNo ? '　／　受験回数: ' + res.attemptNo + '回目' : ''}</div>
       <div style="color:var(--text3);font-size:12px;margin-top:8px">採点は当社サーバーで行っており、受講者による自己採点ではありません。</div>
-      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 再受験する</button></div>`}
+      ${passed ? `<div style="margin-top:24px"><button onclick="requestCertificate()" style="background:var(--purple-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">📜 修了証を申請する</button></div>` : `<div style="margin-top:24px"><button onclick="retryExam()" style="background:var(--red-s);color:#fff;border:none;border-radius:12px;padding:14px 36px;font-size:15px;font-weight:700;cursor:pointer">🔄 受験の画面に戻る（再受験は ${nextExamAt()} ごろから）</button></div>`}
     </div>
   `;
 
@@ -4034,26 +4005,9 @@ function requestCertificate(){
   }, 300);
 }
 
-window.markComplete = markComplete;
-window.doQ = doQ;
-window.toggleCh = toggleCh;
-window.openFormModal = openFormModal;
-window.closeFormModal = closeFormModal;
-window.openAuthModal = openAuthModal;
-window.closeAuthModal = closeAuthModal;
-window.toggleAuthMode = toggleAuthMode;
-window.toggleDark = toggleDark;
-window.toggleSbDrawer = toggleSbDrawer;
 window.openSbDrawer = openSbDrawer;
-window.closeSbDrawer = closeSbDrawer;
-window.startExam = startExam;
-window.submitCertificate = submitCertificate;
-window.submitExam = submitExam;
-window.selectAnswer = selectAnswer;
-window.retryExam = retryExam;
 window.renderExam = renderExam;
 window.renderExamResult = renderExamResult;
-window.requestCertificate = requestCertificate;
 
 
 /* ===== 法人一括申込 =====
@@ -4183,16 +4137,11 @@ async function corpSubmit(){
   }
 }
 
-window.openCorpModal  = openCorpModal;
 // https://ai-security-lab.com/#corp で法人申込を直接開く（営業メールのリンク用）
 // このモジュールは load のあとに走り終えることがあるので、済んでいればその場で開く
 function openCorpFromHash(){ if (location.hash === '#corp') { try { openCorpModal(); } catch (e) {} } }
 if (document.readyState === 'complete') openCorpFromHash();
 else window.addEventListener('load', openCorpFromHash);
-window.closeCorpModal = closeCorpModal;
-window.corpAddRow     = corpAddRow;
-window.corpRecalc     = corpRecalc;
-window.corpSubmit     = corpSubmit;
 
 
 /* ===== 管理者：法人申込の一覧と請求書送信 ===== */
@@ -4275,6 +4224,79 @@ async function sendCorpInvoice(appNo, btn){
   }
 }
 
-window.loadCorpApplications = loadCorpApplications;
-window.sendCorpInvoice      = sendCorpInvoice;
 
+// ---- onclick などから呼べる関数の一覧（2026-11-23）----
+// ページ・目次・レッスン本文（DB）の onclick="…" は、CSP でブラウザが実行しないため、00-core の inlineShim が
+// この一覧にある名前だけを呼ぶ。ボタンを足すときは、ここに関数を足すこと（ページのテストが漏れを見つける）。
+// あわせて window にも載せる（ほかのスクリプトやテストが window.名前 で呼ぶため）。以前は各ファイルに散らばっていた
+const INLINE_ACTIONS = {
+  adminExportLogs,
+  adminMfaEnroll,
+  adminMfaVerify,
+  answerTest,
+  closeAuthModal,
+  closeCorpModal,
+  closeCorpProgress,
+  closeFormModal,
+  closeGuideModal: (...a) => window.closeGuideModal(...a),
+  closeLegalModal,
+  closeOnboard,
+  closePlanPick,
+  closeSbDrawer,
+  corpAddRow,
+  corpRecalc,
+  corpSubmit,
+  doQ,
+  downloadCorpCsv,
+  downloadGuideline,
+  downloadRecordCSV,
+  goChapterTest,
+  goLesson,
+  gotoWorkQ,
+  lessonNav,
+  lessonNavFrom,
+  loadCorpApplications,
+  markComplete,
+  navGo,
+  onWorkInput,
+  openAuthModal,
+  openCorpModal,
+  openCorpProgress,
+  openFormModal,
+  openGuideModal: (...a) => window.openGuideModal(...a),
+  openLegalModal,
+  openProgressPanel,
+  openRecordReport,
+  openWorkTab,
+  podMute,
+  podSeek,
+  podSpeed,
+  podToggle,
+  podVol,
+  reloadLesson,
+  reopenWork,
+  requestCertificate,
+  retryExam,
+  retryTestChapter,
+  scrollToId,
+  selectAnswer,
+  sendCorpInvoice,
+  sendPasswordReset,
+  setSbTab,
+  showPlans,
+  signInWithEmail,
+  signOut,
+  startExam,
+  submitCertificate,
+  submitExam,
+  submitForm,
+  submitWorkChapter,
+  switchTab: (...a) => window.switchTab(...a),   // プランの判定つきの版（08 で定義）
+  toggleAuthMode,
+  toggleCh,
+  toggleDark,
+  toggleSbDrawer,
+  toggleSubmitBtn,
+  updatePassword,
+};
+Object.entries(INLINE_ACTIONS).forEach(([name, fn]) => { if(typeof window[name] !== 'function') window[name] = fn; });

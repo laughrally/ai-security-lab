@@ -121,7 +121,9 @@ const SERVED_KEY = 'asl_lesson_served';
 function rememberServed(lessonId, served){
   if(!served || !served.at || !served.sig) return;
   const all = store.getJSON(SERVED_KEY, {}) || {};
-  if(all[lessonId] && all[lessonId].at <= served.at) return;
+  // 最初に受け取ったものを残す。ただし Worker は30日より古い署名を使わないので、29日を過ぎたら新しいものに替える
+  const old = all[lessonId];
+  if(old && old.at <= served.at && Date.now() - old.at < 29 * 864e5) return;
   all[lessonId] = served;
   store.set(SERVED_KEY, all);
 }
@@ -188,11 +190,10 @@ async function syncCompletedFromSupabase(){
       .eq('user_id', currentUser.id);
     if(error){ console.warn('sync error:', error.message); return; }
 
-    // Supabaseのログをマージ（ローカルのデータも保持してマイグレーション対応）
-    const localCompleted = loadCompleted();
+    // 受講済みはサーバーの記録で置き換える（2026-11-23）。以前は端末の記録と合わせており、送信に失敗した
+    // レッスンが端末にだけ「受講済み」として残り、修了の条件は満たした表示なのに申請がサーバーで弾かれた
     const remoteCompleted = (data || []).map(r => r.lesson_id);
-    const merged = Array.from(new Set([...localCompleted, ...remoteCompleted]));
-    saveCompleted(merged);
+    saveCompleted(remoteCompleted);
 
     // ※ lesson_logs への書き込みはWorker経由のみ。
     //   ローカルの申告をそのまま正とすると受講記録を捏造できるため、
@@ -301,7 +302,7 @@ function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
     const onclick = el.getAttribute('onclick') || '';
     // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
-    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/goChapterTest\((\d+)\)/);
+    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/(?:goChapterTest|openWorkTab)\((\d+)\)/);
     // キーボード・読み上げで使えるように（2026-11-23。認定試験・修了証・レポートの行に無かった）
     if(el.classList.contains('sb-row') && onclick){
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
@@ -337,10 +338,9 @@ function setAuthMsg(type, text){
 }
 function toggleAuthMode(mode){
   document.getElementById('auth-form-login' ).style.display = mode==='login'  ? 'block' : 'none';
-  document.getElementById('auth-form-signup').style.display = mode==='signup' ? 'block' : 'none';
   document.getElementById('auth-form-reset' ).style.display = mode==='reset'  ? 'block' : 'none';
   document.getElementById('auth-form-newpw' ).style.display = mode==='newpw'  ? 'block' : 'none';
-  const titles = {login:'受講者ログイン', signup:'新規登録', reset:'パスワードの再設定', newpw:'新しいパスワードを設定'};
+  const titles = {login:'受講者ログイン', reset:'パスワードの再設定', newpw:'新しいパスワードを設定'};
   document.getElementById('auth-modal-title').textContent = titles[mode] || '受講者ログイン';
   setAuthMsg('', '');
 }
@@ -358,22 +358,6 @@ async function signInWithEmail(){
     setAuthMsg('error', 'ログインに失敗しました。メールアドレスまたはパスワードをご確認ください。');
   } else {
     closeAuthModal();
-  }
-}
-
-/* ===== メール+PW 新規登録 ===== */
-async function signUpWithEmail(){
-  if(!_supabase){ setAuthMsg('error','Supabaseが未設定です。'); return; }
-  const email = document.getElementById('auth-signup-email').value.trim();
-  const pw    = document.getElementById('auth-signup-pw').value;
-  if(!email||!pw){ setAuthMsg('error','メールアドレスとパスワードを入力してください。'); return; }
-  if(pw.length < 10){ setAuthMsg('error','パスワードは10文字以上で設定してください（推測されにくくするため）。'); return; }
-  setAuthMsg('', '登録中...');
-  const {error} = await _supabase.auth.signUp({email, password:pw});
-  if(error){
-    setAuthMsg('error', error.message);
-  } else {
-    setAuthMsg('success', '確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。');
   }
 }
 

@@ -78,6 +78,4 @@ async function sendCorpInvoice(appNo, btn){
   }
 }
 
-window.loadCorpApplications = loadCorpApplications;
-window.sendCorpInvoice      = sendCorpInvoice;
 

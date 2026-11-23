@@ -98,11 +98,6 @@ function initPodcast(){
   });
   podSyncMute();
 }
-window.podToggle = podToggle;
-window.podSeek   = podSeek;
-window.podVol    = podVol;
-window.podMute   = podMute;
-window.podSpeed  = podSpeed;
 
 /**
  * ヘッダーのロゴ・カリキュラム・レッスンの遷移先。
@@ -139,7 +134,6 @@ function navGo(where){
   if(window.innerWidth <= 860) closeSbDrawer();
   return false;
 }
-window.navGo = navGo;
 
 // 進捗ボタン → サイドバーの進捗タブを開く
 function openProgressPanel(){
@@ -153,7 +147,6 @@ function openProgressPanel(){
   // learn-wrapperが表示されていなければ表示
   showLearnUI();
 }
-window.openProgressPanel = openProgressPanel;
 
 // モバイル：ドロワー開閉
 function toggleSbDrawer(){
@@ -190,5 +183,4 @@ function goLesson(tabId){
     if(s) s.scrollIntoView({behavior:'smooth'});
   }
 }
-window.goLesson = goLesson;
 

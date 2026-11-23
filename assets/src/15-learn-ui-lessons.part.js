@@ -98,7 +98,6 @@ function reloadLesson(tabId){
   tcon.innerHTML = LESSON_PLACEHOLDER;
   ensureLessonLoaded(tabId);
 }
-window.reloadLesson = reloadLesson;
 
 // ---- アクティブtconをlearn-content-innerに表示 ----
 // 初めて学習画面に入った人への案内（2026-11-23）。プランごとの進め方と修了の条件、最初のレッスンへのボタン。
@@ -114,10 +113,11 @@ function renderOnboard(){
   const chs = COURSE.workChapters[plan] || 0;
   const steps = [];
   if(paid){
-    steps.push(`左の目次の順にレッスンを読み、最後の理解度チェックに答えて「受講済み」にします（全${PLAN_LESSON_COUNT[plan]}レッスン）。`);
-    if(chs) steps.push(`各章の終わりに、章末ワーク（記述4問）を提出し、章末確認テスト（5問中4問以上で合格）を受けます（全${chs}章）。`);
-    if(plan === 'premium') steps.push('全章を終えたら、認定試験（60問・48問以上で合格）を受けます。');
-    steps.push(plan === 'basic' ? '修了証は Standard 以上のプランで発行できます。' : '条件をすべて満たすと、目次の下の「修了証の申請」から申請できます。');
+    const toc = window.innerWidth <= 860 ? '左下の ≡ から開く目次' : '左の目次';
+    steps.push(`${toc}の順にレッスンを読み、最後の理解度チェック（各設問${COURSE.rules.quizMaxAttempts}回まで）に答えて「受講済み」にします（全${PLAN_LESSON_COUNT[plan]}レッスン）。`);
+    if(chs) steps.push(`各章の終わりに、章末ワーク（記述${COURSE.rules.workQuestions}問）を提出し、章末確認テスト（${COURSE.rules.testQuestions}問中${COURSE.rules.testPass}問以上で合格）を受けます（全${chs}章）。`);
+    if(plan === 'premium') steps.push(`全章を終えたら、認定試験（${COURSE.rules.examQuestions}問・${COURSE.rules.examPass}問以上で合格、${COURSE.rules.examMinutes}分）を受けます。`);
+    steps.push(plan === 'basic' ? '全レッスンを終えたら、受講実績レポートを出力できます（修了証は Standard 以上のプランで発行できます）。' : '条件をすべて満たすと、目次の下の「修了証の申請」から申請できます。');
   } else {
     steps.push('序章と L01 は無料でお読みいただけます。');
     steps.push('L02 以降は、ご購入後に受講できます。');
@@ -139,8 +139,11 @@ function closeOnboard(){
   const box = document.getElementById('learn-onboard');
   if(box){ box.hidden = true; box.innerHTML = ''; }
 }
-window.closeOnboard = closeOnboard;
 
+// 理解度チェックの答え合わせを読み上げで伝える（本文は DB から来るので、表示のたびに印を付ける。2026-11-23）
+function markLiveRegions(root){
+  (root || document).querySelectorAll('.qfb:not([role])').forEach(el => { el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); });
+}
 function showActiveLesson(tabId){
   // 全tconをhidden
   document.querySelectorAll('.tcon').forEach(t => {
@@ -154,7 +157,8 @@ function showActiveLesson(tabId){
   tcon.style.display = 'block';
   tcon.classList.add('active');
   markLessonStart(tabId);
-  ensureLessonLoaded(tabId);
+  Promise.resolve(ensureLessonLoaded(tabId)).then(() => markLiveRegions(tcon));
+  markLiveRegions(tcon);
   shuffleQuizOptions(tabId);
   // 本文が最初から入っている序章・L01 も、前後ナビをプランに合わせる（無料登録の人に購入の案内を出すため）
   if(tcon.dataset.remote !== '1') fixLessonNav(tabId);
@@ -188,14 +192,12 @@ function lessonNavFrom(fromId, dir){
   const next = order[idx + dir];
   if(next) window.switchTab(next);
 }
-window.lessonNavFrom = lessonNavFrom;
 function lessonNav(dir){
   const inner = document.getElementById('learn-content-inner');
   const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
   const currentId = activeTcon?.id?.replace('tab-','') || 'intro';
   lessonNavFrom(currentId, dir);
 }
-window.lessonNav = lessonNav;
 
 // レッスン本文の末尾にある前後ナビを、受講者のプランに合わせて作り直す。
 // 本文（DB）のナビは章末ワークを飛ばして次のレッスンを指しているため（2026-11-22）
@@ -211,13 +213,16 @@ function fixLessonNav(tabId){
   if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${escHtml(tabLabel(prev))}</span></a>`;
   if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${escHtml(tabLabel(next))}</span></a>`;
   // 範囲の終わりでは、上のプランの案内を開けるようにする（2026-11-23。以前は文字だけで押せなかった）
-  else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">Basic の範囲はここまで</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
+  else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="switchTab('records');return false;" class="lnbtn" style="text-align:right"><span class="lnl">🎉 Basic の全レッスンはここまで</span><span class="lnt">受講実績レポートを出力する →</span></a>`
+    + `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">続けて学ぶ</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
   else if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">無料公開はここまで</span><span class="lnt">L02 以降はご購入後に受講できます →</span></a>`;
   nav.innerHTML = html;
 }
 window.fixLessonNav = fixLessonNav;
 
 // ---- サイドバーのレッスンリスト生成 ----
+// 目次の W 行：章末ワークを開く（確認テストへの位置合わせは解除する）
+function openWorkTab(ch){ window._aslTestFocus = 0; window.switchTab('work' + ch); }
 function buildSideNav(completed){
   if(!currentUser){ hideLearnUI(); return; }
   showLearnUI();
@@ -292,7 +297,7 @@ function buildSideNav(completed){
       const wid = 'work' + chNo;
       const wactive = wid === currentTab;
       const wdone = !!_workSubmittedCh[chNo];
-      html += `<div class="sb-row sb-row-work${wactive && window._aslTestFocus !== chNo?' active':''}${wdone?' done':''}" tabindex="0" role="button" onclick="window._aslTestFocus=0;switchTab('${wid}');closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${wactive && window._aslTestFocus !== chNo?' active':''}${wdone?' done':''}" tabindex="0" role="button" onclick="openWorkTab(${chNo});closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">W${chNo}</span>
         <span class="sb-row-title">章末ワーク：${WORK_CHAPTERS[chNo].goal}</span>
@@ -386,6 +391,12 @@ function buildProgressPanel(){
   const completed = loadCompleted();
   let html = '';
   CHAPTER_DATA.forEach(ch => {
+    // プランの外の章は、鍵付きで1行だけ出す（2026-11-23。以前は Standard でも第7章が「0/7」と鍵なしで出た）
+    if(ch.tag !== '序章' && !ch.lessons.some(id => getPlanLessons().includes(id))){
+      html += `<div class="sb-dash-ch sb-dash-locked"><div class="sb-dash-ch-head"><div><span class="sb-dash-ch-tag">${ch.tag}</span>${ch.name}</div>
+        <button type="button" class="sb-dash-wt-item" onclick="showPlans()">🔒 ${escHtml(ch.plan || '上位プラン')}</button></div></div>`;
+      return;
+    }
     const done = ch.lessons.filter(id => completed.includes(id));
     const pct = ch.lessons.length > 0 ? done.length / ch.lessons.length * 100 : 0;
     const dots = ch.lessons.map(id => {

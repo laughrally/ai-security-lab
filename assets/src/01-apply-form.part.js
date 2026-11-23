@@ -18,7 +18,6 @@ function toggleSubmitBtn(){
   btn.style.opacity = checked ? '1' : '0.5';
   btn.style.cursor = checked ? 'pointer' : 'not-allowed';
 }
-window.toggleSubmitBtn = toggleSubmitBtn;
 
 function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');

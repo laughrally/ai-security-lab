@@ -161,8 +161,6 @@ document.addEventListener('keydown', e => {
   if(e.key === 'Escape') closeLegalModal();
 });
 
-window.openLegalModal  = openLegalModal;
-window.closeLegalModal = closeLegalModal;
 
 // ===================== ガイドラインテンプレートのダウンロード =====================
 function downloadGuideline(){
@@ -290,5 +288,4 @@ function downloadGuideline(){
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-window.downloadGuideline = downloadGuideline;
 

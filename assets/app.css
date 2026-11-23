@@ -13,7 +13,7 @@
     /* ライトモード */
     --bg:#ffffff; --bg2:#f8f9fb; --bg3:#f1f3f7;
     --border:#e5e7eb; --border2:#d1d5db;
-    --text:#0f172a; --text2:#334155; --text3:#64748b; --text4:#6b7789;
+    --text:#0f172a; --text2:#334155; --text3:#5b6577; --text4:#566173;   /* 淡い色の背景の上でも 4.5:1 以上（2026-11-23） */
     /* 文字にも使う色は、淡い背景の上でも 4.5:1 以上になる濃さにする（2026-11-23。以前は 2.9〜3.9:1 の箇所があった）。
        ボタンの背景（白い文字を載せる側）は下の --red-s などを使う */
     --red:#b91c1c; --red-l:#fee2e2;
@@ -119,9 +119,11 @@
   .pcard:hover{background:var(--bg2)}
   .pcard-head{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
   .pbadge{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px}
-  .pb1{background:#fee2e2;color:#dc2626} .pb2{background:#fef3c7;color:#d97706}
-  .pb3{background:#dbeafe;color:#2563eb} .pb4{background:#dcfce7;color:#16a34a}
-  .pb5{background:#ede9fe;color:#7c3aed} .pb6{background:#fce7f3;color:#db2777}
+  /* 番号の四角：色はトークンから（ダークでも沈まないように。2026-11-23） */
+  .pb1{background:var(--red-l);color:var(--red)} .pb2{background:var(--amber-l);color:var(--amber)}
+  .pb3{background:var(--blue-l);color:var(--blue)} .pb4{background:var(--green-l);color:var(--green)}
+  .pb5{background:var(--purple-l);color:var(--purple)} .pb6{background:#fce7f3;color:#9d174d}
+  body.dark .pb6{background:rgba(244,114,182,.12);color:#f9a8d4}
   .pttl{font-size:13px;font-weight:700;line-height:1.5;color:var(--text)}
   .ptxt{font-size:13px;color:var(--text3);line-height:1.8;padding-left:40px}
   .sbanner{margin-top:36px;background:var(--bg2);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:10px;padding:22px 28px;font-size:14px;color:var(--text2);line-height:1.9}
@@ -130,7 +132,7 @@
   .chapter{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;box-shadow:var(--sh)}
   .chd{display:flex;align-items:center;gap:14px;padding:18px 22px;background:var(--bg);cursor:pointer;user-select:none;transition:background .15s}
   .chd:hover{background:var(--bg2)}
-  .ctag{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text4);min-width:52px;letter-spacing:.05em}
+  .ctag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);min-width:52px;letter-spacing:.05em}
   .cname{font-size:14px;font-weight:700;flex:1}
   .ccnt{font-size:12px;color:var(--text4)}
   .carr{font-size:11px;color:var(--text4);transition:transform .2s}
@@ -142,7 +144,7 @@
   .lrow:hover{background:var(--bg2)}
   .ln{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text4);min-width:28px}
   .lname{font-size:13px;color:var(--text2);flex:1}
-  .badge{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:4px}
+  .badge{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:4px}
   .bf{background:var(--green-l);color:var(--green);border:1px solid rgba(22,163,74,.2)}
   .bl{background:var(--bg3);color:var(--text4);border:1px solid var(--border)}
   .bs{background:#e0f2fe;color:#0369a1;border:1px solid rgba(3,105,161,.2)}
@@ -678,7 +680,8 @@
        .ncta の white-space:nowrap と、ここでの縮小で1行に収まる */
     nav{padding:0 12px}
     .nright{gap:8px;flex:0 0 auto}
-    .nlogo{font-size:13px;flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap}
+    /* ロゴは縮めない（以前は overflow で切れて「AISecurityLa…」になった）。代わりに中の「Security」を小さく */
+    .nlogo{font-size:13px;flex:0 0 auto;white-space:nowrap}
     .ncta{padding:6px 11px;font-size:11.5px!important}
     #nav-login{font-size:11.5px!important;white-space:nowrap}
     .hero{padding:90px 16px 48px}
@@ -1052,7 +1055,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  #learn-breadcrumb .bc-sep { color: var(--border2); }
+  #learn-breadcrumb .bc-sep { color: var(--text4); }
   #learn-breadcrumb .bc-ch { font-weight: 600; }
   #learn-nav-btns { display: flex; gap: 6px; flex-shrink: 0; }
   .learn-nav-btn {
@@ -1101,12 +1104,12 @@
   /* 進捗パネル内 */
   .sb-dash-ch { margin-bottom: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
   .sb-dash-ch-head { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; font-size: 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
-  .sb-dash-ch-tag { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text4); margin-right: 6px; }
-  .sb-dash-ch-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--text4); }
+  .sb-dash-ch-tag { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); margin-right: 6px; }
+  .sb-dash-ch-cnt { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); }
   .sb-dash-bar { height: 3px; background: var(--border); }
   .sb-dash-bar-fill { height: 100%; transition: width .4s; background: var(--green); }
   .sb-dash-items { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 10px; }
-  .sb-dash-dot { width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--text4); cursor: pointer; transition: all .12s; }
+  .sb-dash-dot { width: 26px; height: 26px; border-radius: 4px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--text3); cursor: pointer; transition: all .12s; }
   .sb-dash-dot:hover { border-color: var(--border2); color: var(--text2); }
   .sb-dash-dot.done { background: var(--green-l); border-color: rgba(22,163,74,.3); color: var(--green); }
 
@@ -1415,3 +1418,11 @@ body.logged-in .hprice{display:none}
 /* ナビのログイン（以前は onmouseover で色を変えていた。インラインのスクリプトを無くすため CSS に） */
 .nav-login-link{font-size:13px;color:var(--text3);text-decoration:none;transition:color .2s}
 .nav-login-link:hover{color:var(--text)}
+/* 受講済みの進捗の四角：色だけでなく ✓ でも示す */
+.sb-dash-dot.done::after{content:"✓";font-size:9px;margin-left:1px}
+/* 320〜400px：ログインの文字を隠してアイコンに、ロゴは「AI Sec Lab」相当の幅に収める */
+@media (max-width:400px){
+  .nlogo{font-size:12px;letter-spacing:-.03em}
+  #nav-login{font-size:0!important}
+  #nav-login::before{content:"👤";font-size:16px}
+}

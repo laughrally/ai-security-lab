@@ -68,9 +68,6 @@ function downloadCorpCsv(){
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
 }
-window.openCorpProgress = openCorpProgress;
-window.closeCorpProgress = closeCorpProgress;
-window.downloadCorpCsv = downloadCorpCsv;
 
 window.applyAdminVisibility = applyAdminVisibility;
 
@@ -113,7 +110,6 @@ async function adminExportLogs(){
     if(btn){ btn.disabled = false; btn.textContent = '📥 受講ログCSVをダウンロード'; }
   }
 }
-window.adminExportLogs = adminExportLogs;
 
 
 

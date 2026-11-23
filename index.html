@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=a60415988c">
+<link rel="stylesheet" href="/assets/app.css?v=cf9163374d">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -350,9 +350,10 @@
         <input type="password" id="auth-pw" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="auth-btn-email" onclick="signInWithEmail()">ログイン</button>
+      <!-- 新規登録はしない（2026-11-23）。アカウントはご購入・法人のお申込みのあと Worker が作り、パスワード設定のメールが届く -->
       <div class="auth-toggle">
-        アカウントをお持ちでない方は
-        <a onclick="toggleAuthMode('signup')">新規登録</a>
+        アカウントは、ご購入後に自動で作られます。<br>届いたメールからパスワードを設定してください。
+        <a onclick="closeAuthModal();showPlans()">料金プランを見る</a>
       </div>
       <div style="text-align:center;margin-top:10px">
         <a onclick="toggleAuthMode('reset')" style="font-size:12px;color:var(--text3);cursor:pointer;text-decoration:underline">パスワードをお忘れの方</a>
@@ -382,20 +383,6 @@
       <button class="auth-btn-email" onclick="updatePassword()">パスワードを更新する</button>
     </div>
 
-    <div id="auth-form-signup" style="display:none">
-      <div class="auth-field">
-        <label>メールアドレス</label>
-        <input type="email" id="auth-signup-email" placeholder="you@example.com" autocomplete="email">
-      </div>
-      <div class="auth-field">
-        <label>パスワード（10文字以上）</label>
-        <input type="password" id="auth-signup-pw" placeholder="••••••••" autocomplete="new-password">
-      </div>
-      <button class="auth-btn-email" onclick="signUpWithEmail()">新規登録する</button>
-      <div class="auth-toggle">
-        すでにアカウントをお持ちの方は
-        <a onclick="toggleAuthMode('login')">ログイン</a>
-      </div>
     </div>
 
   </div>
@@ -411,7 +398,7 @@
   <!-- ログイン後は #learn-wrapper が position:fixed で画面全体を覆うため、
        LPのセクションへスクロールしても見た目が変わらない。
        そのためログイン中は学習UI側の操作に振り替える（navGo）。 -->
-  <a href="#top" class="nlogo" onclick="return navGo('top')">AI<span class="r">Security</span>Lab</a>
+  <a href="#top" class="nlogo" onclick="return navGo('top')" aria-label="AI Security Lab トップへ">AI<span class="r">Security</span>Lab</a>
   <div class="nright">
     <a href="#problem" id="nav-problem">なぜ必要か</a>
     <a href="#curriculum" id="nav-curriculum" onclick="return navGo('curriculum')">カリキュラム</a>
@@ -792,7 +779,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-1"></div>
-          <div class="test-summary" id="test-summary-1"></div>
+          <div class="test-summary" id="test-summary-1" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -828,7 +815,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-2"></div>
-          <div class="test-summary" id="test-summary-2"></div>
+          <div class="test-summary" id="test-summary-2" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -864,7 +851,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-3"></div>
-          <div class="test-summary" id="test-summary-3"></div>
+          <div class="test-summary" id="test-summary-3" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -900,7 +887,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-4"></div>
-          <div class="test-summary" id="test-summary-4"></div>
+          <div class="test-summary" id="test-summary-4" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -936,7 +923,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-5"></div>
-          <div class="test-summary" id="test-summary-5"></div>
+          <div class="test-summary" id="test-summary-5" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -972,7 +959,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-6"></div>
-          <div class="test-summary" id="test-summary-6"></div>
+          <div class="test-summary" id="test-summary-6" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -1008,7 +995,7 @@
           </div>
           <p class="test-note">章全体の理解を確認します。回答すると自動で採点され、結果は受講実績レポートに記録されます。不合格の場合は該当レッスンを確認のうえ再挑戦できます。正解した設問には解説が表示されます。間違えた設問は解説の代わりに読み直す範囲を示し、1問につき3回まで回答できます（初回の回答は理解度の記録として保持されます）。</p>
           <div id="test-body-7"></div>
-          <div class="test-summary" id="test-summary-7"></div>
+          <div class="test-summary" id="test-summary-7" role="status" aria-live="polite"></div>
         </div>
       </div>
     </div>
@@ -1642,11 +1629,10 @@
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:32px">
             <h3 style="font-size:15px;font-weight:700;margin-bottom:12px">受験前に確認してください</h3>
             <ul style="font-size:14px;color:var(--text2);line-height:2;list-style:none;padding:0">
-              <li>✅ 全36レッスンを受講済みにしてから受験することを推奨します</li>
-              <li>✅ 試験開始後は60分のカウントダウンが始まります</li>
-              <li>✅ 途中で中断しても時間は進みます</li>
-              <li>✅ 合格すると、全問の正誤と解説が表示されます（不合格のときは、復習が必要な章だけを表示します）</li>
-              <li>✅ 不合格でも再受験できます</li>
+              <li>・全36レッスンを受講済みにしてから受験することをおすすめします</li>
+              <li>・試験開始後は60分のカウントダウンが始まり、途中で中断しても時間は進みます</li>
+              <li>・合格すると、全問の正誤と解説が表示されます（不合格のときは、復習が必要な章だけを表示します）</li>
+              <li>・不合格のときは、前回の受験から24時間あければ再受験できます</li>
             </ul>
           </div>
           <div id="examIntro" style="text-align:center">
@@ -2285,6 +2271,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=07147c309a"></script>
+<script type="module" src="/assets/app.mjs?v=597dcefa03"></script>
 </body>
 </html>
