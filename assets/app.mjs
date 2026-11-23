@@ -888,6 +888,11 @@ window.apiFetch = apiFetch;
  * 正解はクライアントに存在せず、Workerが判定して返す。
  * 初回回答が評価対象として記録される。
  */
+// 答え合わせの先頭の記号。解説が「✅ 正解です」で始まるときは付けない（以前は「✅ ✅」と二重になった。2026-11-23）
+function quizMark(r){
+  const ex = String(r.explanation || '');
+  return /^[✅❌]/.test(ex) ? '' : (r.isCorrect ? '✅ ' : '❌ ');
+}
 async function doQ(btn, selected, id){
   if(!currentUser){
     const tq = btn.closest('.tcon');
@@ -919,7 +924,7 @@ async function doQ(btn, selected, id){
     // 解説はレッスン本文に無く、回答した後にサーバーから返ってくる。
     // 先読みされないよう、受け取ってから流し込む。
     const fbEl = document.getElementById(id + (r.isCorrect ? '-ok' : '-ng'));
-    if(fbEl && r.explanation) fbEl.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escHtml(r.explanation);
+    if(fbEl && r.explanation) fbEl.innerHTML = quizMark(r) + escHtml(r.explanation);
 
     if(r.isCorrect){
       qopts.querySelectorAll('.qopt').forEach(b => { b.style.pointerEvents = 'none'; });
@@ -982,7 +987,7 @@ async function doQGuest(btn, selected, id){
     if(!res.ok) throw new Error(r.error || '通信に失敗しました');
     const fb = document.getElementById(id + (r.isCorrect ? '-ok' : '-ng'));
     const note = '<br><span style="font-size:12px;opacity:.8">※ 未ログインのため記録はされません。ご購入後は回答と受講記録が残ります。</span>';
-    if(fb) fb.innerHTML = (r.isCorrect ? '✅ ' : '❌ ') + escHtml(r.explanation || '') + note;
+    if(fb) fb.innerHTML = quizMark(r) + escHtml(r.explanation || '') + note;
     if(r.isCorrect){
       qopts.querySelectorAll('.qopt').forEach(b => { b.style.pointerEvents = 'none'; });
       btn.classList.add('ok');
