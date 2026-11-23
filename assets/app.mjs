@@ -555,10 +555,8 @@ function updateAuthUI(){
 
 /* ログイン済みかどうかで有料タブのクラスを切り替え */
 function lockPaidTabs(lock){
-  document.querySelectorAll('.tab').forEach(t=>{
-    const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
-    if(!m) return;
-    const name = m[1];
+  document.querySelectorAll('.tab[data-tab]').forEach(t=>{
+    const name = t.dataset.tab;
     if(!FREE_TABS.includes(name)){
       t.classList.toggle('locked', lock);
     }
@@ -568,11 +566,10 @@ function lockPaidTabs(lock){
 // プランに応じてL23〜L34のアクセスをロック
 function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
-    const onclick = el.getAttribute('onclick') || '';
-    // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
-    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/(?:goChapterTest|openWorkTab)\((\d+)\)/);
+    // どのタブへの行かは data-tab 属性で持つ（onclick の文字は読まない）。章末テストの行は、その章のワークと同じ判定
+    const m = el.dataset.tab ? [null, el.dataset.tab] : null;
     // キーボード・読み上げで使えるように
-    if(el.classList.contains('sb-row') && onclick){
+    if(el.classList.contains('sb-row') && el.hasAttribute('onclick')){
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
       if(!el.hasAttribute('role')) el.setAttribute('role', 'button');
       if(el.classList.contains('active')) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
@@ -580,7 +577,7 @@ function applyPlanLock(){
       if(t && el.classList.contains('done') && !t.querySelector('.sr-only')) t.insertAdjacentHTML('beforeend', '<span class="sr-only">（受講済み）</span>');
     }
     if(!m) return;
-    const id = /^\d+$/.test(m[1]) ? 'work' + m[1] : m[1];
+    const id = m[1];
     const r = currentUser ? tabDenyReason(id) : null;
     const locked = !!(r && r !== 'login');
     el.classList.toggle('plan-locked', locked);
@@ -683,10 +680,7 @@ async function signOut(){
 /* ===== タブ切り替え（認証チェック付き） ===== */
 // 未ログインのときのタブ表示の切り替え（トップページのタブ）。開けるかどうかは window.switchTab が判定済み。
 function showTabGuest(name){
-  document.querySelectorAll('.tab').forEach(t=>{
-    const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
-    if(m) t.classList.toggle('active', m[1]===name);
-  });
+  document.querySelectorAll('.tab[data-tab]').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.tcon').forEach(t=>t.classList.remove('active'));
   const el = document.getElementById('tab-'+name);
   if(el) el.classList.add('active');
@@ -1640,10 +1634,10 @@ function renderWorkChapter(ch){
   const host = document.getElementById('work-body-'+ch);
   if(!host) return;
   let steps = '<div class="work-steps" id="work-steps-'+ch+'">';
-  for(let i=1;i<=4;i++) steps += `<div class="work-step" id="wst-${ch}-${i}"></div>`;
+  for(let i=1;i<=COURSE.rules.workQuestions;i++) steps += `<div class="work-step" id="wst-${ch}-${i}"></div>`;
   steps += '</div>';
   let html = steps;
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const qid = `w${ch}-${i}`;
     const d = WORK_QUESTIONS[qid];
     html += `
@@ -1662,7 +1656,7 @@ function renderWorkChapter(ch){
         </div>
         <div class="work-nav">
           <button class="work-nav-btn" onclick="gotoWorkQ(${ch},${i-1})" ${i===1?'disabled':''}>← 前の設問</button>
-          <button class="work-nav-btn" onclick="gotoWorkQ(${ch},${i+1})" ${i===4?'disabled':''}>次の設問 →</button>
+          <button class="work-nav-btn" onclick="gotoWorkQ(${ch},${i+1})" ${i===COURSE.rules.workQuestions?'disabled':''}>次の設問 →</button>
         </div>
       </div>`;
   }
@@ -1672,7 +1666,7 @@ function renderWorkChapter(ch){
 
 function gotoWorkQ(ch, n){
   if(n<1 || n>4) return;
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const el = document.getElementById(`wq-w${ch}-${i}`);
     if(el) el.classList.toggle('is-active', i===n);
   }
@@ -1685,7 +1679,7 @@ function gotoWorkQ(ch, n){
 }
 
 function updateWorkSteps(ch){
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const st = document.getElementById(`wst-${ch}-${i}`);
     if(!st) continue;
     const qid = `w${ch}-${i}`;
@@ -1712,7 +1706,7 @@ async function loadWorkChapter(ch){
       // 保存前の入力がある欄は上書きしない。入力後1.5秒以内にタブを切り替えて戻ると、古い値で上書きされ、その古い値が保存されて入力が消えていた
       if(el && el.dataset.dirty !== '1'){ el.value = a.answer_text || ''; }
     });
-    for(let i=1;i<=4;i++) updateWorkCount(`w${ch}-${i}`);
+    for(let i=1;i<=COURSE.rules.workQuestions;i++) updateWorkCount(`w${ch}-${i}`);
     _workLoaded[ch] = true;
     if(d.reopened){ _workReopen[ch] = true; }
     setWorkSubmitted(ch, !!d.submitted, d.answers||[]);
@@ -1757,7 +1751,7 @@ function updateWorkCount(qid){
 function updateWorkSubmitBtn(ch){
   const btn = document.getElementById('work-submit-'+ch);
   let ok = 0;
-  for(let i=1;i<=4;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
+  for(let i=1;i<=COURSE.rules.workQuestions;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
   updateWorkSteps(ch);
   if(!btn || btn.classList.contains('is-done')) return;   // 提出済み
   btn.disabled = ok < 4;
@@ -1776,13 +1770,14 @@ function onWorkInput(qid){
   _workTimers[qid] = setTimeout(()=>saveWorkDraft(qid), 1500);
 }
 
+// 下書きを保存する。保存できたか（または保存の必要が無いか）を true／false で返す
 async function saveWorkDraft(qid){
   const el = document.getElementById('wa-'+qid);
   const s  = document.getElementById('ws-'+qid);
-  if(!el || el.readOnly) return;
+  if(!el || el.readOnly) return true;
   const sentValue = el.value;
   const t = await workToken();
-  if(!t) return;
+  if(!t) return false;
   try{
     const r = await fetch(`${WORK_API}/api/work/draft`, {
       method:'POST',
@@ -1794,8 +1789,10 @@ async function saveWorkDraft(qid){
     if(r.ok && el.value === sentValue) el.dataset.dirty = '';
     if(s) s.textContent = r.ok ? '保存しました' : (d.error||'保存に失敗しました');
     if(s && r.ok) setTimeout(()=>{ if(s.textContent==='保存しました') s.textContent=''; }, 2500);
+    return r.ok;
   }catch(e){
     if(s) s.textContent = '保存に失敗しました';
+    return false;
   }
 }
 
@@ -1805,11 +1802,15 @@ async function submitWorkChapter(ch){
   if(!confirm(`第${ch}章の章末ワークを提出します。\n提出後は編集できません。よろしいですか？`)) return;
   btn.disabled = true;
   btn.textContent = '提出中...';
-  // 未保存の下書きを確定させる
-  for(let i=1;i<=4;i++){
+  // 未保存の下書きを確定させる。1件でも保存できなければ提出しない（画面と違う古い文が提出済みになるため）
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const qid = `w${ch}-${i}`;
     clearTimeout(_workTimers[qid]);
-    await saveWorkDraft(qid);
+    if(!(await saveWorkDraft(qid))){
+      btn.disabled = false; btn.textContent = '提出する';
+      if(status) status.textContent = '下書きを保存できなかったため、提出していません。通信環境をご確認のうえ、もう一度「提出する」を押してください。';
+      return;
+    }
   }
   const t = await workToken();
   try{
@@ -2051,7 +2052,7 @@ function updateTestSummary(ch){
 function chapterLessonLinks(ch){
   const c = COURSE.chapters.find(x => x.no === ch);
   if(!c) return '';
-  return c.lessons.map(id => `<button type="button" class="work-nav-btn" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
+  return c.lessons.map(id => `<button type="button" class="work-nav-btn" data-tab="${id}" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
 }
 function retryTestChapter(ch){
   const r = _testResultCh[ch] || {};
@@ -2829,7 +2830,7 @@ function updateDashboard(){
       const done = completed.includes(id);
       const lbl = LESSON_LABELS[id] || id;
       const short = lbl.replace(/^L\d+：/,'').replace(/^序章：/,'');
-      return `<div class="dash-lesson-item${done?' done':''}" onclick="switchTab('${id}');scrollToId('lessons')">
+      return `<div class="dash-lesson-item${done?' done':''}" data-tab="${id}" onclick="switchTab('${id}');scrollToId('lessons')">
         <div class="dlcheck">${done?'✓':''}</div>
         <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="${lbl}">${short}</span>
       </div>`;
@@ -3279,7 +3280,7 @@ function fixLessonNav(tabId){
   if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${escHtml(tabLabel(prev))}</span></a>`;
   if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${escHtml(tabLabel(next))}</span></a>`;
   // 範囲の終わりでは、上のプランの案内を開けるようにする
-  else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="switchTab('records');return false;" class="lnbtn" style="text-align:right"><span class="lnl">🎉 Basic の全レッスンはここまで</span><span class="lnt">受講実績レポートを出力する →</span></a>`
+  else if(currentUserPlan === 'basic') html += `<a href="#lessons" data-tab="records" onclick="switchTab('records');return false;" class="lnbtn" style="text-align:right"><span class="lnl">🎉 Basic の全レッスンはここまで</span><span class="lnt">受講実績レポートを出力する →</span></a>`
     + `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">続けて学ぶ</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
   else if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">無料公開はここまで</span><span class="lnt">L02 以降はご購入後に受講できます →</span></a>`;
   nav.innerHTML = html;
@@ -3356,7 +3357,7 @@ function buildSideNav(completed){
       const raw = LESSON_LABELS[id] || id;
       const title = raw.replace(/^L\d+[：:]/,'').replace(/^序章[：:]/,'').replace(/^【序章】/,'');
       const num = id === 'intro' ? '00' : lessonNo(id);
-      html += `<div class="sb-row${active?' active':''}${done?' done':''}" tabindex="0" role="button" onclick="switchTab('${id}');closeSbDrawer()">
+      html += `<div class="sb-row${active?' active':''}${done?' done':''}" tabindex="0" role="button" data-tab="${id}" onclick="switchTab('${id}');closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">${num}</span>
         <span class="sb-row-title">${title}</span>
@@ -3369,7 +3370,7 @@ function buildSideNav(completed){
       const wid = 'work' + chNo;
       const wactive = wid === currentTab;
       const wdone = !!_workSubmittedCh[chNo];
-      html += `<div class="sb-row sb-row-work${wactive && window._aslTestFocus !== chNo?' active':''}${wdone?' done':''}" tabindex="0" role="button" onclick="openWorkTab(${chNo});closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${wactive && window._aslTestFocus !== chNo?' active':''}${wdone?' done':''}" tabindex="0" role="button" data-tab="work${chNo}" onclick="openWorkTab(${chNo});closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">W${chNo}</span>
         <span class="sb-row-title">章末ワーク：${WORK_CHAPTERS[chNo].goal}</span>
@@ -3379,7 +3380,7 @@ function buildSideNav(completed){
       // 5問すべて答えて不合格なら「再挑戦」の印（未受験と見分けられるように）
       const tfail = !tpass && !!(_testResultCh[chNo] && _testResultCh[chNo].answered >= TEST_TOTAL_PER_CHAPTER);
       const tactive = wactive && window._aslTestFocus === chNo;
-      html += `<div class="sb-row sb-row-work${tactive?' active':''}${tpass?' done':''}${tfail?' test-failed':''}" tabindex="0" role="button" onclick="goChapterTest(${chNo});closeSbDrawer()">
+      html += `<div class="sb-row sb-row-work${tactive?' active':''}${tpass?' done':''}${tfail?' test-failed':''}" tabindex="0" role="button" data-tab="work${chNo}" onclick="goChapterTest(${chNo});closeSbDrawer()">
         <div class="sb-row-dot"></div>
         <span class="sb-row-num">T${chNo}</span>
         <span class="sb-row-title">章末確認テスト（5問）</span>
@@ -3394,7 +3395,7 @@ function buildSideNav(completed){
     if(!examRow){
       const div = document.createElement('div');
       div.setAttribute('data-exam','1');
-      div.innerHTML = '<div class="sb-ch-label">認定試験</div><div class="sb-row" onclick="switchTab(&#39;exam&#39;);closeSbDrawer()" style="color:var(--purple);font-weight:600"><div class="sb-row-dot" style="background:var(--purple)"></div><span class="sb-row-num">EX</span><span class="sb-row-title">AI Security Lab 認定試験</span></div>';
+      div.innerHTML = '<div class="sb-ch-label">認定試験</div><div class="sb-row" data-tab="exam" onclick="switchTab(&#39;exam&#39;);closeSbDrawer()" style="color:var(--purple);font-weight:600"><div class="sb-row-dot" style="background:var(--purple)"></div><span class="sb-row-num">EX</span><span class="sb-row-title">AI Security Lab 認定試験</span></div>';
       list.appendChild(div);
     }
   }
@@ -3404,7 +3405,7 @@ function buildSideNav(completed){
     const div = document.createElement('div');
     div.setAttribute('data-cert','1');
     const cactive = currentTab === 'certificate';
-    div.innerHTML = '<div class="sb-ch-label">修了</div><div class="sb-row' + (cactive ? ' active' : '') + '" onclick="switchTab(&#39;certificate&#39;);closeSbDrawer()" style="font-weight:600"><div class="sb-row-dot"></div><span class="sb-row-num">🎓</span><span class="sb-row-title">修了証の申請</span></div>';
+    div.innerHTML = '<div class="sb-ch-label">修了</div><div class="sb-row' + (cactive ? ' active' : '') + '" data-tab="certificate" onclick="switchTab(&#39;certificate&#39;);closeSbDrawer()" style="font-weight:600"><div class="sb-row-dot"></div><span class="sb-row-num">🎓</span><span class="sb-row-title">修了証の申請</span></div>';
     list.appendChild(div);
   }
 
@@ -3456,8 +3457,8 @@ function wtLine(ch){
   const sm = window._recSummary || {};
   const w = !!_workSubmittedCh[no] || (sm.workDoneList || []).includes(no);
   const t = !!(_testResultCh[no] && _testResultCh[no].passed) || (sm.testPassedList || []).includes(no);
-  return `<div class="sb-dash-wt"><button type="button" class="sb-dash-wt-item${w ? ' done' : ''}" onclick="switchTab('work${no}')">章末ワーク ${w ? '✓ 提出済み' : '未提出'}</button>`
-    + `<button type="button" class="sb-dash-wt-item${t ? ' done' : ''}" onclick="goChapterTest(${no})">確認テスト ${t ? '✓ 合格' : '未合格'}</button></div>`;
+  return `<div class="sb-dash-wt"><button type="button" class="sb-dash-wt-item${w ? ' done' : ''}" data-tab="work${no}" onclick="switchTab('work${no}')">章末ワーク ${w ? '✓ 提出済み' : '未提出'}</button>`
+    + `<button type="button" class="sb-dash-wt-item${t ? ' done' : ''}" data-tab="work${no}" onclick="goChapterTest(${no})">確認テスト ${t ? '✓ 合格' : '未合格'}</button></div>`;
 }
 function buildProgressPanel(){
   const panel = document.getElementById('sb-progress-panel');
@@ -3476,7 +3477,7 @@ function buildProgressPanel(){
     const dots = ch.lessons.map(id => {
       const d = completed.includes(id);
       const num = id === 'intro' ? '00' : lessonNo(id);
-      return `<div class="sb-dash-dot${d?' done':''}" tabindex="0" role="button" onclick="switchTab('${id}');setSbTab('lessons')" title="${LESSON_LABELS[id]||id}">${num}</div>`;
+      return `<div class="sb-dash-dot${d?' done':''}" tabindex="0" role="button" data-tab="${id}" onclick="switchTab('${id}');setSbTab('lessons')" title="${LESSON_LABELS[id]||id}">${num}</div>`;
     }).join('');
     html += `<div class="sb-dash-ch">
       <div class="sb-dash-ch-head">
@@ -3491,7 +3492,7 @@ function buildProgressPanel(){
   // 修了証への導線（Standard 以上）。
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
     html += `<div class="sb-ch-label" style="margin-top:14px">修了</div>
-    <div class="sb-row" onclick="switchTab('certificate');closeSbDrawer()">
+    <div class="sb-row" data-tab="certificate" onclick="switchTab('certificate');closeSbDrawer()">
       <div class="sb-row-dot"></div>
       <span class="sb-row-num">🎓</span>
       <span class="sb-row-title">修了証の申請</span>
@@ -3508,7 +3509,7 @@ function buildProgressPanel(){
   }
   // 受講記録（実績レポート）への導線
   html += `<div class="sb-ch-label" style="margin-top:14px">記録の出力</div>
-    <div class="sb-row" onclick="switchTab('records');closeSbDrawer()">
+    <div class="sb-row" data-tab="records" onclick="switchTab('records');closeSbDrawer()">
       <div class="sb-row-dot"></div>
       <span class="sb-row-num">📄</span>
       <span class="sb-row-title">受講実績レポート</span>
@@ -3846,7 +3847,7 @@ async function submitExam(){
       // 再受験の間隔制限。開始前にも確認しているので通常ここには来ないが、
       // 来た場合は解答を保持したまま試験画面に戻す（60分の労力を捨てない）。
       alert((e.message || '次の受験まで時間をおいてください。') +
-            '\n\n解答はこの画面に保持しています。時間をおいてから、あらためて「提出する」を押してください。');
+            '\n\n開始から時間がたつと、この解答は受け付けられなくなります（制限時間 ' + COURSE.rules.examMinutes + '分）。次に受験できるようになってから、あらためて受験してください。');
       renderExam();
     } else {
       alert('採点結果を受け取れませんでした。\n' + (e.message || '') + '\n\n解答は保持しています。通信環境をご確認のうえ、もう一度「提出する」を押してください。');
@@ -3923,7 +3924,7 @@ function renderExamResult(res){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
         // 章を押すと、その章の最初のレッスンが開く
         keys.map(L => { const no = L === '序章' ? 0 : parseInt(L.replace(/[^0-9]/g, ''), 10); const first = no === 0 ? 'intro' : ((COURSE.chapters.find(c => c.no === no) || {}).lessons || [])[0];
-          return `<button type="button" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
+          return `<button type="button" data-tab="${first}" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
         `</div>`;
     }
     html += `<p style="color:var(--text3);font-size:13px;line-height:1.8;margin:0">

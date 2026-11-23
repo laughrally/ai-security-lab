@@ -1,10 +1,7 @@
 /* ===== タブ切り替え（認証チェック付き） ===== */
 // 未ログインのときのタブ表示の切り替え（トップページのタブ）。開けるかどうかは window.switchTab が判定済み。
 function showTabGuest(name){
-  document.querySelectorAll('.tab').forEach(t=>{
-    const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
-    if(m) t.classList.toggle('active', m[1]===name);
-  });
+  document.querySelectorAll('.tab[data-tab]').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.tcon').forEach(t=>t.classList.remove('active'));
   const el = document.getElementById('tab-'+name);
   if(el) el.classList.add('active');

@@ -508,7 +508,7 @@
       </div>
     </div>
     <div class="guide-cta">
-      <button class="guide-btn guide-btn-primary" onclick="goLesson('intro')" >▶ レッスンを始める</button>
+      <button class="guide-btn guide-btn-primary" data-tab="intro" onclick="goLesson('intro')" >▶ レッスンを始める</button>
       <button class="guide-btn guide-btn-secondary" onclick="scrollToId('curriculum')">カリキュラムを確認</button>
     </div>
   </div>
@@ -604,84 +604,84 @@
     <p class="sdesc" style="margin-bottom:40px">序章 + 全7章・36レッスン。Basic（第1〜5章・22本）・Standard（＋第6章・29本）・Premium（＋第7章・36本）の3段階で深く学べます。ChatGPT・Gemini・Copilot・Claude・Meta Muse のツール別ガイドと、図解を多数収録。各レッスンに理解度テスト付き。</p>
     <div class="chapter open" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">序章</span><span class="cname">なぜ今、AIセキュリティを学ぶ必要があるのか</span><span class="ccnt">1レッスン</span><span class="carr">▼</span></div>
-      <div class="cbd"><div class="lrow" onclick="goLesson('intro')"><span class="ln">00</span><span class="lname">日本企業の8割が教育なしでAIを使っている現実</span><span class="badge bf">無料</span></div></div>
+      <div class="cbd"><div class="lrow" data-tab="intro" onclick="goLesson('intro')"><span class="ln">00</span><span class="lname">日本企業の8割が教育なしでAIを使っている現実</span><span class="badge bf">無料</span></div></div>
     </div>
 
     <div class="chapter open" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第1章</span><span class="cname">AIと情報漏洩の基礎知識</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson1')"><span class="ln">01</span><span class="lname">ChatGPTに入力した情報はどこへ行くのか</span><span class="badge bf">無料</span></div>
-        <div class="lrow" onclick="goLesson('lesson2')"  style="cursor:pointer"><span class="ln">02</span><span class="lname">「学習オフ」設定の意味と限界</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson3')"  style="cursor:pointer"><span class="ln">03</span><span class="lname">シャドーAIとは何か・なぜ危険か</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson4')"  style="cursor:pointer"><span class="ln">04</span><span class="lname">クラウドAIとオンプレAIの違い</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson1" onclick="goLesson('lesson1')"><span class="ln">01</span><span class="lname">ChatGPTに入力した情報はどこへ行くのか</span><span class="badge bf">無料</span></div>
+        <div class="lrow" data-tab="lesson2" onclick="goLesson('lesson2')"  style="cursor:pointer"><span class="ln">02</span><span class="lname">「学習オフ」設定の意味と限界</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson3" onclick="goLesson('lesson3')"  style="cursor:pointer"><span class="ln">03</span><span class="lname">シャドーAIとは何か・なぜ危険か</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson4" onclick="goLesson('lesson4')"  style="cursor:pointer"><span class="ln">04</span><span class="lname">クラウドAIとオンプレAIの違い</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第2章</span><span class="cname">ツール別リスクと設定</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson5')"  style="cursor:pointer"><span class="ln">05</span><span class="lname">ChatGPT（無料版・有料版・Business版）の違い</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson6')"  style="cursor:pointer"><span class="ln">06</span><span class="lname">Claude・Gemini・Copilotのセキュリティ設定比較</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson7')"  style="cursor:pointer"><span class="ln">07</span><span class="lname">「社外秘」「個人情報」「顧客情報」の判断基準</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson8')"  style="cursor:pointer"><span class="ln">08</span><span class="lname">業種別リスク事例（不動産・介護・飲食・士業）</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson5" onclick="goLesson('lesson5')"  style="cursor:pointer"><span class="ln">05</span><span class="lname">ChatGPT（無料版・有料版・Business版）の違い</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson6" onclick="goLesson('lesson6')"  style="cursor:pointer"><span class="ln">06</span><span class="lname">Claude・Gemini・Copilotのセキュリティ設定比較</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson7" onclick="goLesson('lesson7')"  style="cursor:pointer"><span class="ln">07</span><span class="lname">「社外秘」「個人情報」「顧客情報」の判断基準</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson8" onclick="goLesson('lesson8')"  style="cursor:pointer"><span class="ln">08</span><span class="lname">業種別リスク事例（不動産・介護・飲食・士業）</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第3章</span><span class="cname">法律・著作権・ハルシネーション</span><span class="ccnt">3レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson9')"  style="cursor:pointer"><span class="ln">09</span><span class="lname">AIと個人情報保護法の関係</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson10')"  style="cursor:pointer"><span class="ln">10</span><span class="lname">著作権侵害になるケース・ならないケース</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson11')"  style="cursor:pointer"><span class="ln">11</span><span class="lname">ハルシネーションと法的責任</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson9" onclick="goLesson('lesson9')"  style="cursor:pointer"><span class="ln">09</span><span class="lname">AIと個人情報保護法の関係</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson10" onclick="goLesson('lesson10')"  style="cursor:pointer"><span class="ln">10</span><span class="lname">著作権侵害になるケース・ならないケース</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson11" onclick="goLesson('lesson11')"  style="cursor:pointer"><span class="ln">11</span><span class="lname">ハルシネーションと法的責任</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第4章</span><span class="cname">組織・ガイドライン整備</span><span class="ccnt">4レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson12')"  style="cursor:pointer"><span class="ln">12</span><span class="lname">AI利用ガイドライン作成テンプレート（DL可）</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson13')"  style="cursor:pointer"><span class="ln">13</span><span class="lname">インシデント発生時の初動対応フロー</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson14')"  style="cursor:pointer"><span class="ln">14</span><span class="lname">中小企業でもできる最低限の体制づくり</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson15')"  style="cursor:pointer"><span class="ln">15</span><span class="lname">【まとめ】今日からできる10のアクション</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson12" onclick="goLesson('lesson12')"  style="cursor:pointer"><span class="ln">12</span><span class="lname">AI利用ガイドライン作成テンプレート（DL可）</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson13" onclick="goLesson('lesson13')"  style="cursor:pointer"><span class="ln">13</span><span class="lname">インシデント発生時の初動対応フロー</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson14" onclick="goLesson('lesson14')"  style="cursor:pointer"><span class="ln">14</span><span class="lname">中小企業でもできる最低限の体制づくり</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson15" onclick="goLesson('lesson15')"  style="cursor:pointer"><span class="ln">15</span><span class="lname">【まとめ】今日からできる10のアクション</span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第5章</span><span class="cname">実践：事例研究とツール別ガイド</span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson16')"  style="cursor:pointer"><span class="ln">16</span><span class="lname">業種・シーン別 よくある事例集（20事例）</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson17')"  style="cursor:pointer"><span class="ln">17</span><span class="lname">ChatGPT / Gemini / Claude / Genspark / Manus / Gemini Notebook 完全比較</span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson28')"  style="cursor:pointer"><span class="ln">18</span><span class="lname">ChatGPT を安全に使う——機能ごとの落とし穴と設定<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson29')"  style="cursor:pointer"><span class="ln">19</span><span class="lname">Gemini と Google Workspace——Google 環境ならではの注意点<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson30')"  style="cursor:pointer"><span class="ln">20</span><span class="lname">Microsoft Copilot と Microsoft 365——「共有しすぎ」がそのまま見える<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson31')"  style="cursor:pointer"><span class="ln">21</span><span class="lname">Claude を安全に使う——チャット・デスクトップ・Cowork・Chrome 拡張<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
-        <div class="lrow" onclick="goLesson('lesson32')"  style="cursor:pointer"><span class="ln">22</span><span class="lname">Meta の Muse と SNS に組み込まれた AI——任せる前に確かめること<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson16" onclick="goLesson('lesson16')"  style="cursor:pointer"><span class="ln">16</span><span class="lname">業種・シーン別 よくある事例集（20事例）</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson17" onclick="goLesson('lesson17')"  style="cursor:pointer"><span class="ln">17</span><span class="lname">ChatGPT / Gemini / Claude / Genspark / Manus / Gemini Notebook 完全比較</span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson28" onclick="goLesson('lesson28')"  style="cursor:pointer"><span class="ln">18</span><span class="lname">ChatGPT を安全に使う——機能ごとの落とし穴と設定<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson29" onclick="goLesson('lesson29')"  style="cursor:pointer"><span class="ln">19</span><span class="lname">Gemini と Google Workspace——Google 環境ならではの注意点<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson30" onclick="goLesson('lesson30')"  style="cursor:pointer"><span class="ln">20</span><span class="lname">Microsoft Copilot と Microsoft 365——「共有しすぎ」がそのまま見える<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson31" onclick="goLesson('lesson31')"  style="cursor:pointer"><span class="ln">21</span><span class="lname">Claude を安全に使う——チャット・デスクトップ・Cowork・Chrome 拡張<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
+        <div class="lrow" data-tab="lesson32" onclick="goLesson('lesson32')"  style="cursor:pointer"><span class="ln">22</span><span class="lname">Meta の Muse と SNS に組み込まれた AI——任せる前に確かめること<span class="newb">NEW</span></span><span class="badge bl">Basic+</span></div>
       </div>
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第6章</span><span class="cname">AI攻撃手口と防衛策・管理者設定 <span style="font-size:10px;background:#0369a1;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Standard+</span></span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson18')"  style="cursor:pointer"><span class="ln">23</span><span class="lname">AIを使ったフィッシング詐欺——攻撃者の手口と見分け方</span><span class="badge bs">Standard+</span></div>
-        <div class="lrow" onclick="goLesson('lesson19')"  style="cursor:pointer"><span class="ln">24</span><span class="lname">プロンプトインジェクション攻撃——AIそのものを武器に変える手口</span><span class="badge bs">Standard+</span></div>
-        <div class="lrow" onclick="goLesson('lesson20')"  style="cursor:pointer"><span class="ln">25</span><span class="lname">ディープフェイクと音声詐欺——「見た目」も「声」も信用できない時代</span><span class="badge bs">Standard+</span></div>
-        <div class="lrow" onclick="goLesson('lesson21')"  style="cursor:pointer"><span class="ln">26</span><span class="lname">AIエージェント・自動化ツールのリスク</span><span class="badge bs">Standard+</span></div>
-        <div class="lrow" onclick="goLesson('lesson22')"  style="cursor:pointer"><span class="ln">27</span><span class="lname">インシデント対応ロールプレイ——「もし今、漏洩が起きたら」を体験する</span><span class="badge bs">Standard+</span></div>
-        <div class="lrow" onclick="goLesson('lesson33')"  style="cursor:pointer"><span class="ln">28</span><span class="lname">AI ブラウザとエージェント機能——操作を任せるときの線引き<span class="newb">NEW</span></span><span class="badge bs">Standard+</span></div>
-        <div class="lrow" onclick="goLesson('lesson34')"  style="cursor:pointer"><span class="ln">29</span><span class="lname">管理者のための設定集——Workspace・Microsoft 365・ChatGPT・Claude<span class="newb">NEW</span></span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson18" onclick="goLesson('lesson18')"  style="cursor:pointer"><span class="ln">23</span><span class="lname">AIを使ったフィッシング詐欺——攻撃者の手口と見分け方</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson19" onclick="goLesson('lesson19')"  style="cursor:pointer"><span class="ln">24</span><span class="lname">プロンプトインジェクション攻撃——AIそのものを武器に変える手口</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson20" onclick="goLesson('lesson20')"  style="cursor:pointer"><span class="ln">25</span><span class="lname">ディープフェイクと音声詐欺——「見た目」も「声」も信用できない時代</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson21" onclick="goLesson('lesson21')"  style="cursor:pointer"><span class="ln">26</span><span class="lname">AIエージェント・自動化ツールのリスク</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson22" onclick="goLesson('lesson22')"  style="cursor:pointer"><span class="ln">27</span><span class="lname">インシデント対応ロールプレイ——「もし今、漏洩が起きたら」を体験する</span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson33" onclick="goLesson('lesson33')"  style="cursor:pointer"><span class="ln">28</span><span class="lname">AI ブラウザとエージェント機能——操作を任せるときの線引き<span class="newb">NEW</span></span><span class="badge bs">Standard+</span></div>
+        <div class="lrow" data-tab="lesson34" onclick="goLesson('lesson34')"  style="cursor:pointer"><span class="ln">29</span><span class="lname">管理者のための設定集——Workspace・Microsoft 365・ChatGPT・Claude<span class="newb">NEW</span></span><span class="badge bs">Standard+</span></div>
       </div>
     </div>
 
     <div class="chapter" onclick="toggleCh(this)">
       <div class="chd"><span class="ctag">第7章</span><span class="cname">AI技術とセキュリティの深層・開発 <span style="font-size:10px;background:#7c3aed;color:#fff;padding:2px 7px;border-radius:4px;margin-left:6px;font-weight:700">Premium</span></span><span class="ccnt">7レッスン</span><span class="carr">▼</span></div>
       <div class="cbd">
-        <div class="lrow" onclick="goLesson('lesson23')"  style="cursor:pointer"><span class="ln">30</span><span class="lname">LLMの仕組み入門——なぜAIは「嘘」をつくのか</span><span class="badge bp">Premium</span></div>
-        <div class="lrow" onclick="goLesson('lesson24')"  style="cursor:pointer"><span class="ln">31</span><span class="lname">プロンプトエンジニアリング基礎——安全で精度の高い指示の書き方</span><span class="badge bp">Premium</span></div>
-        <div class="lrow" onclick="goLesson('lesson25')"  style="cursor:pointer"><span class="ln">32</span><span class="lname">RAG・ファインチューニングのリスク——社内データをAIに学習させる前に</span><span class="badge bp">Premium</span></div>
-        <div class="lrow" onclick="goLesson('lesson26')"  style="cursor:pointer"><span class="ln">33</span><span class="lname">業種別AIロードマップ——職種ごとの安全活用と禁止事項</span><span class="badge bp">Premium</span></div>
-        <div class="lrow" onclick="goLesson('lesson27')"  style="cursor:pointer"><span class="ln">34</span><span class="lname">MCPとAIエージェント最前線——これからのAI活用とセキュリティ</span><span class="badge bp">Premium</span></div>
-        <div class="lrow" onclick="goLesson('lesson35')"  style="cursor:pointer"><span class="ln">35</span><span class="lname">Claude Code を安全に使う——権限・秘密情報・指示の乗っ取り<span class="newb">NEW</span></span><span class="badge bp">Premium</span></div>
-        <div class="lrow" onclick="goLesson('lesson36')"  style="cursor:pointer"><span class="ln">36</span><span class="lname">AI コーディングと秘密情報——API キー・依存パッケージ・MCP サーバー<span class="newb">NEW</span></span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson23" onclick="goLesson('lesson23')"  style="cursor:pointer"><span class="ln">30</span><span class="lname">LLMの仕組み入門——なぜAIは「嘘」をつくのか</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson24" onclick="goLesson('lesson24')"  style="cursor:pointer"><span class="ln">31</span><span class="lname">プロンプトエンジニアリング基礎——安全で精度の高い指示の書き方</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson25" onclick="goLesson('lesson25')"  style="cursor:pointer"><span class="ln">32</span><span class="lname">RAG・ファインチューニングのリスク——社内データをAIに学習させる前に</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson26" onclick="goLesson('lesson26')"  style="cursor:pointer"><span class="ln">33</span><span class="lname">業種別AIロードマップ——職種ごとの安全活用と禁止事項</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson27" onclick="goLesson('lesson27')"  style="cursor:pointer"><span class="ln">34</span><span class="lname">MCPとAIエージェント最前線——これからのAI活用とセキュリティ</span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson35" onclick="goLesson('lesson35')"  style="cursor:pointer"><span class="ln">35</span><span class="lname">Claude Code を安全に使う——権限・秘密情報・指示の乗っ取り<span class="newb">NEW</span></span><span class="badge bp">Premium</span></div>
+        <div class="lrow" data-tab="lesson36" onclick="goLesson('lesson36')"  style="cursor:pointer"><span class="ln">36</span><span class="lname">AI コーディングと秘密情報——API キー・依存パッケージ・MCP サーバー<span class="newb">NEW</span></span><span class="badge bp">Premium</span></div>
       </div>
     </div>
   </div>
@@ -699,51 +699,51 @@
       <div class="lesson-breadcrumb" id="lesson-breadcrumb"></div>
       <div class="tabs-wrap" id="tabs-wrap">
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('intro')">序章</button>
-      <button class="tab" onclick="goLesson('lesson1')">L01</button>
-      <button class="tab" onclick="switchTab('lesson2')">L02</button>
-      <button class="tab" onclick="switchTab('lesson3')">L03</button>
-      <button class="tab" onclick="switchTab('lesson4')">L04</button>
-      <button class="tab tab-work" onclick="switchTab('work1')">W1</button>
-      <button class="tab" onclick="switchTab('lesson5')">L05</button>
-      <button class="tab" onclick="switchTab('lesson6')">L06</button>
-      <button class="tab" onclick="switchTab('lesson7')">L07</button>
-      <button class="tab" onclick="switchTab('lesson8')">L08</button>
-      <button class="tab tab-work" onclick="switchTab('work2')">W2</button>
-      <button class="tab" onclick="switchTab('lesson9')">L09</button>
-      <button class="tab" onclick="switchTab('lesson10')">L10</button>
-      <button class="tab" onclick="switchTab('lesson11')">L11</button>
-      <button class="tab tab-work" onclick="switchTab('work3')">W3</button>
-      <button class="tab" onclick="switchTab('lesson12')">L12</button>
-      <button class="tab" onclick="switchTab('lesson13')">L13</button>
-      <button class="tab" onclick="switchTab('lesson14')">L14</button>
-      <button class="tab" onclick="switchTab('lesson15')">L15</button>
-      <button class="tab tab-work" onclick="switchTab('work4')">W4</button>
-      <button class="tab" onclick="switchTab('lesson16')">L16</button>
-      <button class="tab" onclick="switchTab('lesson17')">L17</button>
-      <button class="tab" onclick="switchTab('lesson28')">L18</button>
-      <button class="tab" onclick="switchTab('lesson29')">L19</button>
-      <button class="tab" onclick="switchTab('lesson30')">L20</button>
-      <button class="tab" onclick="switchTab('lesson31')">L21</button>
-      <button class="tab" onclick="switchTab('lesson32')">L22</button>
-      <button class="tab tab-work" onclick="switchTab('work5')">W5</button>
-      <button class="tab" onclick="switchTab('lesson18')">L23</button>
-      <button class="tab" onclick="switchTab('lesson19')">L24</button>
-      <button class="tab" onclick="switchTab('lesson20')">L25</button>
-      <button class="tab" onclick="switchTab('lesson21')">L26</button>
-      <button class="tab" onclick="switchTab('lesson22')">L27</button>
-      <button class="tab" onclick="switchTab('lesson33')">L28</button>
-      <button class="tab" onclick="switchTab('lesson34')">L29</button>
-      <button class="tab tab-work" onclick="switchTab('work6')">W6</button>
-      <button class="tab" onclick="switchTab('lesson23')">L30</button>
-      <button class="tab" onclick="switchTab('lesson24')">L31</button>
-      <button class="tab" onclick="switchTab('lesson25')">L32</button>
-      <button class="tab" onclick="switchTab('lesson26')">L33</button>
-      <button class="tab" onclick="switchTab('lesson27')">L34</button>
-      <button class="tab" onclick="switchTab('lesson35')">L35</button>
-      <button class="tab" onclick="switchTab('lesson36')">L36</button>
-      <button class="tab tab-work" onclick="switchTab('work7')">W7</button>
-      <button class="tab" id="cert-tab-btn" onclick="switchTab('certificate')" style="display:none">🎓</button>
+      <button class="tab active" data-tab="intro" onclick="switchTab('intro')">序章</button>
+      <button class="tab" data-tab="lesson1" onclick="goLesson('lesson1')">L01</button>
+      <button class="tab" data-tab="lesson2" onclick="switchTab('lesson2')">L02</button>
+      <button class="tab" data-tab="lesson3" onclick="switchTab('lesson3')">L03</button>
+      <button class="tab" data-tab="lesson4" onclick="switchTab('lesson4')">L04</button>
+      <button class="tab tab-work" data-tab="work1" onclick="switchTab('work1')">W1</button>
+      <button class="tab" data-tab="lesson5" onclick="switchTab('lesson5')">L05</button>
+      <button class="tab" data-tab="lesson6" onclick="switchTab('lesson6')">L06</button>
+      <button class="tab" data-tab="lesson7" onclick="switchTab('lesson7')">L07</button>
+      <button class="tab" data-tab="lesson8" onclick="switchTab('lesson8')">L08</button>
+      <button class="tab tab-work" data-tab="work2" onclick="switchTab('work2')">W2</button>
+      <button class="tab" data-tab="lesson9" onclick="switchTab('lesson9')">L09</button>
+      <button class="tab" data-tab="lesson10" onclick="switchTab('lesson10')">L10</button>
+      <button class="tab" data-tab="lesson11" onclick="switchTab('lesson11')">L11</button>
+      <button class="tab tab-work" data-tab="work3" onclick="switchTab('work3')">W3</button>
+      <button class="tab" data-tab="lesson12" onclick="switchTab('lesson12')">L12</button>
+      <button class="tab" data-tab="lesson13" onclick="switchTab('lesson13')">L13</button>
+      <button class="tab" data-tab="lesson14" onclick="switchTab('lesson14')">L14</button>
+      <button class="tab" data-tab="lesson15" onclick="switchTab('lesson15')">L15</button>
+      <button class="tab tab-work" data-tab="work4" onclick="switchTab('work4')">W4</button>
+      <button class="tab" data-tab="lesson16" onclick="switchTab('lesson16')">L16</button>
+      <button class="tab" data-tab="lesson17" onclick="switchTab('lesson17')">L17</button>
+      <button class="tab" data-tab="lesson28" onclick="switchTab('lesson28')">L18</button>
+      <button class="tab" data-tab="lesson29" onclick="switchTab('lesson29')">L19</button>
+      <button class="tab" data-tab="lesson30" onclick="switchTab('lesson30')">L20</button>
+      <button class="tab" data-tab="lesson31" onclick="switchTab('lesson31')">L21</button>
+      <button class="tab" data-tab="lesson32" onclick="switchTab('lesson32')">L22</button>
+      <button class="tab tab-work" data-tab="work5" onclick="switchTab('work5')">W5</button>
+      <button class="tab" data-tab="lesson18" onclick="switchTab('lesson18')">L23</button>
+      <button class="tab" data-tab="lesson19" onclick="switchTab('lesson19')">L24</button>
+      <button class="tab" data-tab="lesson20" onclick="switchTab('lesson20')">L25</button>
+      <button class="tab" data-tab="lesson21" onclick="switchTab('lesson21')">L26</button>
+      <button class="tab" data-tab="lesson22" onclick="switchTab('lesson22')">L27</button>
+      <button class="tab" data-tab="lesson33" onclick="switchTab('lesson33')">L28</button>
+      <button class="tab" data-tab="lesson34" onclick="switchTab('lesson34')">L29</button>
+      <button class="tab tab-work" data-tab="work6" onclick="switchTab('work6')">W6</button>
+      <button class="tab" data-tab="lesson23" onclick="switchTab('lesson23')">L30</button>
+      <button class="tab" data-tab="lesson24" onclick="switchTab('lesson24')">L31</button>
+      <button class="tab" data-tab="lesson25" onclick="switchTab('lesson25')">L32</button>
+      <button class="tab" data-tab="lesson26" onclick="switchTab('lesson26')">L33</button>
+      <button class="tab" data-tab="lesson27" onclick="switchTab('lesson27')">L34</button>
+      <button class="tab" data-tab="lesson35" onclick="switchTab('lesson35')">L35</button>
+      <button class="tab" data-tab="lesson36" onclick="switchTab('lesson36')">L36</button>
+      <button class="tab tab-work" data-tab="work7" onclick="switchTab('work7')">W7</button>
+      <button class="tab" id="cert-tab-btn" data-tab="certificate" onclick="switchTab('certificate')" style="display:none">🎓</button>
     </div>
     </div><!-- /tabs-wrap -->
 
@@ -1180,7 +1180,7 @@
           <div class="hr"></div>
           <div class="lnav">
             <div></div>
-            <a href="#lessons" onclick="switchTab('lesson1');return false;" class="lnbtn" style="text-align:right">
+            <a href="#lessons" data-tab="lesson1" onclick="switchTab('lesson1');return false;" class="lnbtn" style="text-align:right">
               <span class="lnl">NEXT →</span>
               <span class="lnt">L01：ChatGPTに入力した情報はどこへ行くのか</span>
             </a>
@@ -1373,8 +1373,8 @@
             <div class="completion-note" id="note-lesson1"></div>
           </div>
           <div class="lnav">
-            <a href="#lessons" onclick="switchTab('intro');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">序章：なぜ今学ぶ必要があるのか</span></a>
-            <a href="#lessons" onclick="switchTab('lesson2');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L02：「学習オフ」設定の意味と限界</span></a>
+            <a href="#lessons" data-tab="intro" onclick="switchTab('intro');return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">序章：なぜ今学ぶ必要があるのか</span></a>
+            <a href="#lessons" data-tab="lesson2" onclick="switchTab('lesson2');return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">L02：「学習オフ」設定の意味と限界</span></a>
           </div>
         </div>
       </div>
@@ -2271,6 +2271,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=a667006320"></script>
+<script type="module" src="/assets/app.mjs?v=56e9433073"></script>
 </body>
 </html>

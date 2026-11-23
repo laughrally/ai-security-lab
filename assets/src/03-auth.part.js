@@ -283,10 +283,8 @@ function updateAuthUI(){
 
 /* ログイン済みかどうかで有料タブのクラスを切り替え */
 function lockPaidTabs(lock){
-  document.querySelectorAll('.tab').forEach(t=>{
-    const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
-    if(!m) return;
-    const name = m[1];
+  document.querySelectorAll('.tab[data-tab]').forEach(t=>{
+    const name = t.dataset.tab;
     if(!FREE_TABS.includes(name)){
       t.classList.toggle('locked', lock);
     }
@@ -296,11 +294,10 @@ function lockPaidTabs(lock){
 // プランに応じてL23〜L34のアクセスをロック
 function applyPlanLock(){
   document.querySelectorAll('.sb-row, .lrow').forEach(el => {
-    const onclick = el.getAttribute('onclick') || '';
-    // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
-    const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/(?:goChapterTest|openWorkTab)\((\d+)\)/);
+    // どのタブへの行かは data-tab 属性で持つ（onclick の文字は読まない）。章末テストの行は、その章のワークと同じ判定
+    const m = el.dataset.tab ? [null, el.dataset.tab] : null;
     // キーボード・読み上げで使えるように
-    if(el.classList.contains('sb-row') && onclick){
+    if(el.classList.contains('sb-row') && el.hasAttribute('onclick')){
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
       if(!el.hasAttribute('role')) el.setAttribute('role', 'button');
       if(el.classList.contains('active')) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
@@ -308,7 +305,7 @@ function applyPlanLock(){
       if(t && el.classList.contains('done') && !t.querySelector('.sr-only')) t.insertAdjacentHTML('beforeend', '<span class="sr-only">（受講済み）</span>');
     }
     if(!m) return;
-    const id = /^\d+$/.test(m[1]) ? 'work' + m[1] : m[1];
+    const id = m[1];
     const r = currentUser ? tabDenyReason(id) : null;
     const locked = !!(r && r !== 'login');
     el.classList.toggle('plan-locked', locked);

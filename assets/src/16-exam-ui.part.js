@@ -207,7 +207,7 @@ async function submitExam(){
       // 再受験の間隔制限。開始前にも確認しているので通常ここには来ないが、
       // 来た場合は解答を保持したまま試験画面に戻す（60分の労力を捨てない）。
       alert((e.message || '次の受験まで時間をおいてください。') +
-            '\n\n解答はこの画面に保持しています。時間をおいてから、あらためて「提出する」を押してください。');
+            '\n\n開始から時間がたつと、この解答は受け付けられなくなります（制限時間 ' + COURSE.rules.examMinutes + '分）。次に受験できるようになってから、あらためて受験してください。');
       renderExam();
     } else {
       alert('採点結果を受け取れませんでした。\n' + (e.message || '') + '\n\n解答は保持しています。通信環境をご確認のうえ、もう一度「提出する」を押してください。');
@@ -284,7 +284,7 @@ function renderExamResult(res){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
         // 章を押すと、その章の最初のレッスンが開く
         keys.map(L => { const no = L === '序章' ? 0 : parseInt(L.replace(/[^0-9]/g, ''), 10); const first = no === 0 ? 'intro' : ((COURSE.chapters.find(c => c.no === no) || {}).lessons || [])[0];
-          return `<button type="button" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
+          return `<button type="button" data-tab="${first}" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
         `</div>`;
     }
     html += `<p style="color:var(--text3);font-size:13px;line-height:1.8;margin:0">

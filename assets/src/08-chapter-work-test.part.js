@@ -57,10 +57,10 @@ function renderWorkChapter(ch){
   const host = document.getElementById('work-body-'+ch);
   if(!host) return;
   let steps = '<div class="work-steps" id="work-steps-'+ch+'">';
-  for(let i=1;i<=4;i++) steps += `<div class="work-step" id="wst-${ch}-${i}"></div>`;
+  for(let i=1;i<=COURSE.rules.workQuestions;i++) steps += `<div class="work-step" id="wst-${ch}-${i}"></div>`;
   steps += '</div>';
   let html = steps;
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const qid = `w${ch}-${i}`;
     const d = WORK_QUESTIONS[qid];
     html += `
@@ -79,7 +79,7 @@ function renderWorkChapter(ch){
         </div>
         <div class="work-nav">
           <button class="work-nav-btn" onclick="gotoWorkQ(${ch},${i-1})" ${i===1?'disabled':''}>← 前の設問</button>
-          <button class="work-nav-btn" onclick="gotoWorkQ(${ch},${i+1})" ${i===4?'disabled':''}>次の設問 →</button>
+          <button class="work-nav-btn" onclick="gotoWorkQ(${ch},${i+1})" ${i===COURSE.rules.workQuestions?'disabled':''}>次の設問 →</button>
         </div>
       </div>`;
   }
@@ -89,7 +89,7 @@ function renderWorkChapter(ch){
 
 function gotoWorkQ(ch, n){
   if(n<1 || n>4) return;
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const el = document.getElementById(`wq-w${ch}-${i}`);
     if(el) el.classList.toggle('is-active', i===n);
   }
@@ -102,7 +102,7 @@ function gotoWorkQ(ch, n){
 }
 
 function updateWorkSteps(ch){
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const st = document.getElementById(`wst-${ch}-${i}`);
     if(!st) continue;
     const qid = `w${ch}-${i}`;
@@ -129,7 +129,7 @@ async function loadWorkChapter(ch){
       // 保存前の入力がある欄は上書きしない。入力後1.5秒以内にタブを切り替えて戻ると、古い値で上書きされ、その古い値が保存されて入力が消えていた
       if(el && el.dataset.dirty !== '1'){ el.value = a.answer_text || ''; }
     });
-    for(let i=1;i<=4;i++) updateWorkCount(`w${ch}-${i}`);
+    for(let i=1;i<=COURSE.rules.workQuestions;i++) updateWorkCount(`w${ch}-${i}`);
     _workLoaded[ch] = true;
     if(d.reopened){ _workReopen[ch] = true; }
     setWorkSubmitted(ch, !!d.submitted, d.answers||[]);
@@ -174,7 +174,7 @@ function updateWorkCount(qid){
 function updateWorkSubmitBtn(ch){
   const btn = document.getElementById('work-submit-'+ch);
   let ok = 0;
-  for(let i=1;i<=4;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
+  for(let i=1;i<=COURSE.rules.workQuestions;i++) if(updateWorkCount(`w${ch}-${i}`)) ok++;
   updateWorkSteps(ch);
   if(!btn || btn.classList.contains('is-done')) return;   // 提出済み
   btn.disabled = ok < 4;
@@ -193,13 +193,14 @@ function onWorkInput(qid){
   _workTimers[qid] = setTimeout(()=>saveWorkDraft(qid), 1500);
 }
 
+// 下書きを保存する。保存できたか（または保存の必要が無いか）を true／false で返す
 async function saveWorkDraft(qid){
   const el = document.getElementById('wa-'+qid);
   const s  = document.getElementById('ws-'+qid);
-  if(!el || el.readOnly) return;
+  if(!el || el.readOnly) return true;
   const sentValue = el.value;
   const t = await workToken();
-  if(!t) return;
+  if(!t) return false;
   try{
     const r = await fetch(`${WORK_API}/api/work/draft`, {
       method:'POST',
@@ -211,8 +212,10 @@ async function saveWorkDraft(qid){
     if(r.ok && el.value === sentValue) el.dataset.dirty = '';
     if(s) s.textContent = r.ok ? '保存しました' : (d.error||'保存に失敗しました');
     if(s && r.ok) setTimeout(()=>{ if(s.textContent==='保存しました') s.textContent=''; }, 2500);
+    return r.ok;
   }catch(e){
     if(s) s.textContent = '保存に失敗しました';
+    return false;
   }
 }
 
@@ -222,11 +225,15 @@ async function submitWorkChapter(ch){
   if(!confirm(`第${ch}章の章末ワークを提出します。\n提出後は編集できません。よろしいですか？`)) return;
   btn.disabled = true;
   btn.textContent = '提出中...';
-  // 未保存の下書きを確定させる
-  for(let i=1;i<=4;i++){
+  // 未保存の下書きを確定させる。1件でも保存できなければ提出しない（画面と違う古い文が提出済みになるため）
+  for(let i=1;i<=COURSE.rules.workQuestions;i++){
     const qid = `w${ch}-${i}`;
     clearTimeout(_workTimers[qid]);
-    await saveWorkDraft(qid);
+    if(!(await saveWorkDraft(qid))){
+      btn.disabled = false; btn.textContent = '提出する';
+      if(status) status.textContent = '下書きを保存できなかったため、提出していません。通信環境をご確認のうえ、もう一度「提出する」を押してください。';
+      return;
+    }
   }
   const t = await workToken();
   try{
@@ -468,7 +475,7 @@ function updateTestSummary(ch){
 function chapterLessonLinks(ch){
   const c = COURSE.chapters.find(x => x.no === ch);
   if(!c) return '';
-  return c.lessons.map(id => `<button type="button" class="work-nav-btn" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
+  return c.lessons.map(id => `<button type="button" class="work-nav-btn" data-tab="${id}" onclick="switchTab('${id}')">L${lessonNo(id)} ${escHtml(COURSE.titles[id] || '')}</button>`).join('');
 }
 function retryTestChapter(ch){
   const r = _testResultCh[ch] || {};
