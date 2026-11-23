@@ -112,7 +112,7 @@ function initSupabase(){
 
 // この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。別の人がログインしたら先に消す。
 // ログアウトせずにセッションが切れたあと、次の人の受講済みや学習時間に前の人の分が混ざらないように
-const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab','asl_lesson_served'];
+const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab','asl_lesson_served','asl_read_pos'];
 // 本文を受け取った時刻の署名（Worker が付ける）。受講済みにするときに送り返し、受講時間の上限に使われる。
 // 最初に受け取ったものを残す（開き直しで時刻が新しくなると、それまでの受講時間が短く数えられるため）
 const SERVED_KEY = 'asl_lesson_served';

@@ -1439,3 +1439,84 @@ body.logged-in .hprice{display:none}
 footer a, .nright a, .fnav a{padding-block:4px;display:inline-block}
 /* 確認テストで選んだ選択肢 */
 .test-opt.is-done.is-correct::after,.test-opt.is-done.is-wrong::after{content:"（あなたの回答）";font-size:12px;margin-left:6px;color:var(--text2)}
+
+/* =====================================================================
+   読みやすさ（2026-11-23）：色とフォントはそのまま、1行の長さ・行間・文字の大きさを整え、
+   レッスン内の目次と読んだ位置を出す（assets/src/19-reading-aids）
+   ===================================================================== */
+#learn-content-inner{--lesson-fs:16px}
+#learn-content-inner[data-fs="s"]{--lesson-fs:14.5px}
+#learn-content-inner[data-fs="l"]{--lesson-fs:18px}
+@media (max-width:480px){
+  #learn-content-inner{--lesson-fs:15.5px}
+  #learn-content-inner[data-fs="s"]{--lesson-fs:14px}
+  #learn-content-inner[data-fs="l"]{--lesson-fs:17.5px}
+}
+/* 1行は約42字まで（長すぎる行は、次の行の頭を探す目の動きが増えて疲れる） */
+#learn-content-inner .lc{max-width:calc(var(--lesson-fs) * 42 + 16px)}
+#learn-content-inner .lb p{font-size:var(--lesson-fs)!important;line-height:2!important;margin-bottom:1.55em!important}
+#learn-content-inner .lb li,#learn-content-inner .lb .co,#learn-content-inner .lb .cdesc,#learn-content-inner .lb .slist li{font-size:calc(var(--lesson-fs) - 1px)!important;line-height:1.95!important}
+#learn-content-inner .lb h2{scroll-margin-top:24px;margin-top:2.8em}
+#learn-content-inner .lb h3{scroll-margin-top:24px}
+
+/* 上部：残りの目安時間・文字の大きさ・読み進めた割合 */
+#learn-topbar{position:relative}
+#read-meta{display:flex;align-items:center;gap:10px;margin-left:auto}
+#read-left{font-size:12px;color:var(--text3);white-space:nowrap}
+#learn-topbar:not(.is-reading) #read-left{display:none}
+#fs-btn{padding:6px 12px;min-height:36px;font-size:12px;white-space:nowrap}
+#read-progress-track{position:absolute;left:0;right:0;bottom:-1px;height:2px;pointer-events:none}
+#read-progress{height:100%;width:0;background:var(--red);transition:width .12s linear}
+@media (max-width:600px){ #read-left{display:none} #fs-btn{padding:6px 10px} }
+
+/* レッスン内の目次：広い画面は右の欄（本文の横に固定）、狭い画面は本文の前に畳んで */
+#lesson-toc{display:none;font-size:13px}
+.toc-inline{border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin:0 0 32px;background:var(--bg2);font-size:14px}
+.toc-inline summary{cursor:pointer;font-weight:600;color:var(--text2);min-height:28px;display:flex;align-items:center}
+.toc-inline ol{margin:10px 0 2px 1.3em;line-height:1.9}
+.toc-inline a{color:var(--text2);text-decoration:none}
+.toc-inline a:hover{text-decoration:underline}
+.toc-inline a.is-current{color:var(--red);font-weight:600}
+@media (min-width:1200px){
+  #learn-content-inner.has-toc{display:grid;grid-template-columns:minmax(0,1fr) 220px;column-gap:40px;align-items:start}
+  #learn-content-inner.has-toc>.tcon{grid-column:1;grid-row:1}
+  #learn-content-inner.has-toc #lesson-toc{display:block;grid-column:2;grid-row:1;position:sticky;top:24px;max-height:calc(100vh - 180px);overflow-y:auto}
+  .toc-inline{display:none}
+}
+#lesson-toc .toc-h{font-weight:700;color:var(--text2);margin-bottom:10px;font-size:12px}
+#lesson-toc ol{list-style:none;margin:0;padding:0;border-left:2px solid var(--border)}
+#lesson-toc a{display:block;padding:6px 0 6px 14px;margin-left:-2px;border-left:2px solid transparent;color:var(--text3);text-decoration:none;line-height:1.55}
+#lesson-toc a:hover{color:var(--text)}
+#lesson-toc a.is-current{color:var(--text);border-left-color:var(--red);font-weight:600}
+
+/* 続きから読む */
+.resume-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border:1px solid var(--border);background:var(--bg2);border-radius:12px;padding:10px 14px;margin:0 0 24px;font-size:13.5px;color:var(--text2)}
+.resume-bar .resume-go{min-height:36px;padding:6px 14px}
+.resume-bar .resume-close{margin-left:auto;background:none;border:none;font-size:18px;color:var(--text3);cursor:pointer;min-width:32px;min-height:32px}
+
+/* =====================================================================
+   用語集（2026-11-23）：本文の用語の点線と説明の吹き出し、用語集のページ（assets/src/20-glossary）
+   ===================================================================== */
+.gl-term{font:inherit;color:inherit;background:none;border:none;padding:0;margin:0;cursor:help;
+  text-decoration:underline dotted var(--text3);text-decoration-thickness:1.5px;text-underline-offset:4px}
+.gl-term:hover,.gl-term[aria-expanded="true"]{text-decoration-color:var(--red);color:var(--text)}
+.gl-term:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:3px}
+#gl-pop{position:fixed;z-index:9990;background:var(--bg);color:var(--text);border:1px solid var(--border2);border-radius:12px;
+  box-shadow:0 10px 30px rgba(15,23,42,.14);padding:14px 16px;font-size:14px;line-height:1.75}
+#gl-pop[hidden]{display:none}
+.gl-pop-term{font-weight:700;margin-bottom:4px}
+.gl-pop-alias{font-weight:400;color:var(--text3);font-size:12.5px;margin-left:4px}
+.gl-pop-short{margin:0;color:var(--text2)}
+.gl-pop-more{margin-top:8px;background:none;border:none;padding:4px 0;color:var(--blue);font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.gl-lead{color:var(--text2);font-size:14px;line-height:1.9;margin:0 0 18px}
+.gl-search{width:100%;padding:12px 16px;border:1px solid var(--border2);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:15px;margin-bottom:8px}
+.gl-group-h{font-size:15px;font-weight:700;color:var(--text);margin:32px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.gl-item{padding:14px 4px;border-bottom:1px solid var(--border);scroll-margin-top:24px;transition:background .4s}
+.gl-item.is-flash{background:var(--amber-l)}
+.gl-item-term{font-weight:700;font-size:15.5px}
+.gl-item-short{margin:4px 0 8px;color:var(--text2);font-size:14.5px;line-height:1.85}
+.gl-item-lessons{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;color:var(--text3)}
+.gl-lesson{font:inherit;font-size:12.5px;padding:4px 10px;min-height:30px;border:1px solid var(--border2);border-radius:999px;background:var(--bg);color:var(--text2);cursor:pointer}
+.gl-lesson:hover{border-color:var(--text3);color:var(--text)}
+.gl-lesson.is-locked{cursor:default;color:var(--text4)}
+.gl-empty{color:var(--text3);margin-top:24px}

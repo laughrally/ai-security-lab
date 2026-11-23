@@ -157,7 +157,12 @@ function showActiveLesson(tabId){
   tcon.style.display = 'block';
   tcon.classList.add('active');
   markLessonStart(tabId);
-  Promise.resolve(ensureLessonLoaded(tabId)).then(() => markLiveRegions(tcon));
+  Promise.resolve(ensureLessonLoaded(tabId)).then(() => {
+    markLiveRegions(tcon);
+    annotateTerms(tcon);
+    if(tabId === 'glossary') renderGlossary();
+    setupReading(tabId);
+  });
   markLiveRegions(tcon);
   shuffleQuizOptions(tabId);
   // 本文が最初から入っている序章・L01 も、前後ナビをプランに合わせる（無料登録の人に購入の案内を出すため）
@@ -341,6 +346,14 @@ function buildSideNav(completed){
     list.appendChild(div);
   }
 
+  // 用語集（どのプランでも、無料登録でも開ける）
+  if(!list.querySelector('[data-gl-row]')){
+    const div = document.createElement('div');
+    div.setAttribute('data-gl-row', '1');
+    div.innerHTML = '<div class="sb-ch-label">調べる</div><div class="sb-row' + (currentTab === 'glossary' ? ' active' : '') + '" data-tab="glossary" onclick="switchTab(&#39;glossary&#39;);closeSbDrawer()"><div class="sb-row-dot"></div><span class="sb-row-num">📘</span><span class="sb-row-title">用語集</span></div>';
+    list.appendChild(div);
+  }
+
   // プランロック適用
   applyPlanLock();
   renderOnboard();
@@ -368,7 +381,7 @@ function updateLearnTopBar(tabId){
       bc.innerHTML = `<span class="bc-ch" style="color:${ch.color}">${ch.tag}</span><span class="bc-sep">/</span><span>L${num}</span><span class="bc-sep">—</span><span style="color:var(--text2)">${title}</span>`;
     } else {
       // 章末ワーク・修了証・試験・記録のページでは、前のレッスンの表示を残さない
-      const other = { certificate:'修了証の申請', exam:'認定試験', records:'受講実績レポート' };
+      const other = { certificate:'修了証の申請', exam:'認定試験', records:'受講実績レポート', glossary:'用語集' };
       const t = /^work\d$/.test(tabId) ? ('第' + tabId.slice(4) + '章 章末ワーク・確認テスト') : (other[tabId] || '');
       bc.textContent = t;
     }

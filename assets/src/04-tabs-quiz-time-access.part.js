@@ -368,7 +368,7 @@ function tabDenyReason(name){
   if(!currentUser) return 'login';
   const plan = currentUserPlan || 'free';
   const paid = plan === 'basic' || plan === 'standard' || plan === 'premium';
-  if(name === 'records') return null;
+  if(name === 'records' || name === 'glossary') return null;
   if(name === 'exam') return plan === 'premium' ? null : { msg: '認定試験は Premium プランで受験できます。', upgrade: true };
   if(name === 'certificate') return (plan === 'standard' || plan === 'premium') ? null : { msg: '修了証は Standard 以上のプランで発行できます。', upgrade: true };
   if(!paid) return { msg: '序章と L01 は無料でお読みいただけます。L02 以降はご購入後に受講できます。', upgrade: true };

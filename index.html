@@ -173,7 +173,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@400;600;700;900&family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600;1,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=block" rel="stylesheet">
-<link rel="stylesheet" href="/assets/app.css?v=3bcbb0a046">
+<link rel="stylesheet" href="/assets/app.css?v=35438205bc">
 </head>
 <body>
 <script>/* ダークモードを本文の描画前に適用する（以前は読み込み後に切り替えて一瞬白く光った。2026-11-22） */try{var _t=localStorage.getItem('theme');if(_t==='dark'||(!_t&&window.matchMedia('(prefers-color-scheme:dark)').matches))document.body.classList.add('dark')}catch(e){}</script>
@@ -1672,6 +1672,9 @@
     </div>
 
 <!-- ===== 受講記録タブ（実績レポート／FAQ／管理者） ===== -->
+    <!-- 用語集（中身は assets/src/20-glossary が作る） -->
+    <div class="tcon" id="tab-glossary"></div>
+
     <div class="tcon" id="tab-records">
       <div class="lc">
         <div style="padding:40px 0 24px">
@@ -2228,6 +2231,9 @@
     <!-- 上部バー -->
     <div id="learn-topbar">
       <div id="learn-breadcrumb"></div>
+      <!-- 読みやすさ：残りの目安時間・文字の大きさ・読み進めた割合（19-reading-aids） -->
+      <div id="read-meta"><span id="read-left" aria-live="off"></span><button type="button" class="learn-nav-btn" id="fs-btn">文字 中</button></div>
+      <div id="read-progress-track" aria-hidden="true"><div id="read-progress"></div></div>
       <div id="learn-nav-btns">
         <button class="learn-nav-btn" id="learn-prev-btn" onclick="lessonNav(-1)">← 前へ</button>
         <button class="learn-nav-btn" id="learn-next-btn" onclick="lessonNav(1)">次へ →</button>
@@ -2271,6 +2277,6 @@
 </footer>
 
 <script src="/assets/vendor/supabase-js-2.112.3.js"></script>
-<script type="module" src="/assets/app.mjs?v=41bf6a25c4"></script>
+<script type="module" src="/assets/app.mjs?v=8c7558b739"></script>
 </body>
 </html>
