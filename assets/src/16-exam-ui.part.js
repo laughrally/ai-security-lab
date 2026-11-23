@@ -32,8 +32,7 @@ function shuffled(arr){
 function buildExamSet(){
   return shuffled(EXAM_QUESTIONS).map(q => ({
     id: q.id,
-    // 設問は内部ID（lesson10 など）で持ち、表示のときに受講順の番号（L10）にする（2026-11-23）。
-    // 以前は表示番号で持っており、レッスンを並べ替えると古い番号のまま残った
+    // 設問は内部ID（lesson10 など）で持ち、表示のときに受講順の番号（L10）にする。
     lesson: q.lesson === 'intro' ? '序章' : 'L' + lessonNo(q.lesson),
     q: q.q,
     o: shuffled(q.o.map((text, orig) => ({ text, orig }))),
@@ -66,7 +65,7 @@ async function startExam(){
   const R = COURSE.rules;
   const confirmed = confirm(`認定試験を開始しますか？\n\n制限時間: ${R.examMinutes}分\n問題数: ${R.examQuestions}問\n合格ライン: ${R.examPass}問以上（${Math.round(R.examPass / R.examQuestions * 100)}%）\n\n開始後はカウントダウンが始まります。`);
   if(!confirmed) return;
-  // 開始の署名は「開始する」を押したあとに受け取る（提出のときにサーバーが制限時間を確かめるのに使う。2026-11-23）
+  // 開始の署名は「開始する」を押したあとに受け取る
   st = await status();
   if(!st || !st.start) { if(st) alert('受験を開始できませんでした。時間をおいてもう一度お試しください。'); return; }
   examState.start = st.start;
@@ -85,8 +84,7 @@ async function startExam(){
 
 function startExamTimer(){
   if(examState.timer) clearInterval(examState.timer);
-  // 残り時間は「制限時間 −（今 − 開始時刻）」で毎回計算する（2026-11-23）。以前は1秒ずつ減らすだけで、
-  // タブを裏に回したときのタイマーの間引きやスリープで表示が遅れ、サーバーの判定（開始の署名からの実時間）とずれた
+  // 残り時間は「制限時間 −（今 − 開始時刻）」で毎回計算する。
   examState.timer = setInterval(() => {
     examState.remaining = Math.max(0, COURSE.rules.examMinutes * 60 - Math.floor((Date.now() - examState.startedAt) / 1000));
     const timerEl = document.getElementById('examTimer');
@@ -138,7 +136,7 @@ function renderExam(){
   if(introEl) introEl.style.display = 'none';
 }
 
-// 選んだ設問の見た目と回答数だけを更新する（2026-11-23。以前は1つ選ぶたびに60問すべてを描き直していた）
+// 選んだ設問の見た目と回答数だけを更新する
 function selectAnswer(qIdx, optIdx){
   examState.answers[qIdx] = optIdx;
   document.querySelectorAll(`#exq-${qIdx} label`).forEach(l => {
@@ -272,10 +270,9 @@ function renderExamResult(res){
       </div>`;
     });
   } else {
-    // 不合格のときは正解も解説も出さない。1回受ければ答えが全部手に入る状態だと
-    // 2回目は必ず満点になり、修了証が受講を証明しなくなる。
+    // 不合格のときは正解も解説も出さない。1回受ければ答えが全部手に入る状態だと2回目は必ず満点になり、修了証が受講を証明しなくなる。
     // サーバーも不合格時は correctIndex / explanation を返していない。
-    // 復習の手がかりとして、誤答のあった章と問数だけを示す（2026-11-22）。
+    // 復習の手がかりとして、誤答のあった章と問数だけを示す。
     // 設問ごとの正誤を返すと、受け直しの差分で正解が割り出せるため、サーバーも章単位でしか返さない。
     const wrongLessons = res.wrongByChapter || {};
     const keys = Object.keys(wrongLessons).sort((a, b) => (a === '序章' ? -1 : b === '序章' ? 1 : a.localeCompare(b, 'ja', {numeric:true})));
@@ -285,7 +282,7 @@ function renderExamResult(res){
       </p>`;
     if(keys.length){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
-        // 章を押すと、その章の最初のレッスンが開く（2026-11-23。以前はただの文字だった）
+        // 章を押すと、その章の最初のレッスンが開く
         keys.map(L => { const no = L === '序章' ? 0 : parseInt(L.replace(/[^0-9]/g, ''), 10); const first = no === 0 ? 'intro' : ((COURSE.chapters.find(c => c.no === no) || {}).lessons || [])[0];
           return `<button type="button" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
         `</div>`;
@@ -362,8 +359,7 @@ async function submitCertificate(){
   }
 }
 
-// 認定試験の合格画面から：修了証の申請欄を開き、氏名の入力欄へ移る（2026-11-23）。
-// 以前はその場で送信しており、氏名が空のため必ず「氏名を入力してください」で止まった
+// 認定試験の合格画面から：修了証の申請欄を開き、氏名の入力欄へ移る。
 function requestCertificate(){
   if(typeof window.switchTab === 'function') window.switchTab('certificate');
   setTimeout(() => {

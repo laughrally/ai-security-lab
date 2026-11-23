@@ -85,8 +85,7 @@ function initSupabase(){
         toggleAuthMode('newpw');
         return;
       }
-      // ログイン・ログアウトで人が切り替わったら読み直す（2026-11-23）。以前は前の人の章末ワークの記述、
-      // テストの回答済み表示、法人の受講者一覧がメモリに残り、同じタブで次にログインした人に見えた
+      // ログイン・ログアウトで人が切り替わったら読み直す。
       const _uid = session?.user?.id || null;
       if(window._aslUid !== undefined && window._aslUid !== _uid && (_event === 'SIGNED_IN' || _event === 'SIGNED_OUT')){
         location.reload();
@@ -111,9 +110,8 @@ function initSupabase(){
   }
 }
 
-// この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。
-// 別の人がログインしたら先に消す（2026-11-23）。ログアウトせずにセッションが切れたあと、
-// 次の人の受講済みや学習時間に前の人の分が混ざらないように
+// この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。別の人がログインしたら先に消す。
+// ログアウトせずにセッションが切れたあと、次の人の受講済みや学習時間に前の人の分が混ざらないように
 const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab','asl_lesson_served'];
 // 本文を受け取った時刻の署名（Worker が付ける）。受講済みにするときに送り返し、受講時間の上限に使われる。
 // 最初に受け取ったものを残す（開き直しで時刻が新しくなると、それまでの受講時間が短く数えられるため）
@@ -147,8 +145,7 @@ async function fetchUserPlan(){
   return window._planFetching;
 }
 async function _fetchUserPlan(){
-  // .single() は失敗しても例外を投げず { error } を返す。以前は通信失敗でも 'basic' 扱いになり、
-  // 有料の受講者が自分の講座を開けなかった。2回まで取り直し、それでも駄目なら知らせる（2026-11-22）
+  // .single() は失敗しても例外を投げず { error } を返す。2回まで取り直し、それでも駄目なら知らせる
   let data = null, error = null;
   for(let i = 0; i < 3; i++){
     try {
@@ -161,7 +158,7 @@ async function _fetchUserPlan(){
     currentUserPlan = data.plan ?? 'free';
     currentExamPassed = data.exam_passed ?? false;
   } else {
-    // 読めなかったときは Worker と同じく「プランなし」に倒す（以前は画面だけ Basic 扱いで、本文の取得で弾かれた）
+    // 読めなかったときは Worker と同じく「プランなし」に倒す
     currentUserPlan = currentUserPlan || 'free';
     currentExamPassed = false;
     console.warn('プランを取得できませんでした:', error && error.message);
@@ -190,8 +187,7 @@ async function syncCompletedFromSupabase(){
       .eq('user_id', currentUser.id);
     if(error){ console.warn('sync error:', error.message); return; }
 
-    // 受講済みはサーバーの記録で置き換える（2026-11-23）。以前は端末の記録と合わせており、送信に失敗した
-    // レッスンが端末にだけ「受講済み」として残り、修了の条件は満たした表示なのに申請がサーバーで弾かれた
+    // 受講済みはサーバーの記録で置き換える。
     const remoteCompleted = (data || []).map(r => r.lesson_id);
     saveCompleted(remoteCompleted);
 
@@ -303,7 +299,7 @@ function applyPlanLock(){
     const onclick = el.getAttribute('onclick') || '';
     // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
     const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/(?:goChapterTest|openWorkTab)\((\d+)\)/);
-    // キーボード・読み上げで使えるように（2026-11-23。認定試験・修了証・レポートの行に無かった）
+    // キーボード・読み上げで使えるように
     if(el.classList.contains('sb-row') && onclick){
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
       if(!el.hasAttribute('role')) el.setAttribute('role', 'button');
@@ -404,7 +400,6 @@ async function updatePassword(){
 async function signOut(){
   if(!_supabase) return;
   // ログアウト時に、この端末に残る受講データを消す（共用PCで次の人の記録に混ざらないように）。
-  // 以前は受講済みだけを消しており、学習時間の累計や開始時刻が次の人の送信に乗っていた（2026-11-22）
   LOCAL_LEARN_KEYS.forEach(k => store.remove(k));
   currentCertifiedEarlier = false;
   currentExamPassed = false;

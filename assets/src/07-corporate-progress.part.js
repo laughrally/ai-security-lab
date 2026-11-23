@@ -1,4 +1,4 @@
-// ===== 法人の担当者：受講者の進捗（2026-11-22） =====
+// ===== 法人の担当者：受講者の進捗 =====
 let _corpApps = null;
 async function loadCorpProgress(){
   try {
@@ -29,7 +29,7 @@ function openCorpProgress(){
       '<tr style="text-align:left;color:var(--text3)"><th style="padding:6px">氏名</th><th>レッスン</th><th>章末ワーク</th><th>確認テスト</th><th>試験</th><th>学習時間</th><th>最終受講</th><th>修了証</th></tr>';
     (a.participants || []).forEach(p => {
       const td = v => `<td style="padding:6px;border-top:1px solid var(--border)">${v}</td>`;
-      // 申込より前からご本人が持っていたアカウントは、Worker が進捗を返さない（ご本人の同意が要るため。2026-11-23）
+      // 申込より前からご本人が持っていたアカウントは、Worker が進捗を返さない
       if(p.existingAccount){ html += '<tr>' + td(escHtml(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">お申込み前からのアカウントのため、進捗は表示しません（表示にはご本人の同意が必要です。運営までご連絡ください）</td></tr>`; return; }
       if(!p.registered){ html += '<tr>' + td(escHtml(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">アカウント未発行（お支払い確認後に発行されます）</td></tr>`; return; }
       html += '<tr>' + td(escHtml(p.name || p.email)) + td(`${p.lessonsDone} / ${a.lessonsTotal}`) +

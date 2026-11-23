@@ -28,13 +28,12 @@ const PLAN_RANGE_TEXT = {"basic": "序章＋第1〜5章（全22レッスン）",
 const PLAN_LABELS_JA = Object.fromEntries(Object.keys(COURSE.plans).map(p => [p, { name: p[0].toUpperCase() + p.slice(1) + 'プラン', range: PLAN_RANGE_TEXT[p], hours: PLAN_HOURS[p] }]));
 // <COURSE:END>
 
-// HTML に文字を入れるときのエスケープ（2026-11-23。以前は同じ関数が9か所に別々に書かれていた）
+// HTML に文字を入れるときのエスケープ
 function escHtml(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 // CSV の1セル：数式として解釈されうる先頭（= + - @ タブ 改行）を無害化し、ダブルクォートで囲む
 function csvCell(v){ let t = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; }
 window.escHtml = escHtml;
-// 端末への保存（localStorage）の読み書き。サイトデータを止めた環境では読むだけで例外になり、
-// 以前はページ全体のスクリプトが止まって、どのボタンも効かなくなった（2026-11-23）
+// 端末への保存（localStorage）の読み書き。
 const store = {
   get(k, def = null){ try { const v = localStorage.getItem(k); return v == null ? def : v; } catch(e){ return def; } },
   getJSON(k, def){ try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch(e){ return def; } },
@@ -42,14 +41,13 @@ const store = {
   remove(k){ try { localStorage.removeItem(k); } catch(e){} },
 };
 
-// バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。
-// Supabase のライブラリは自前で配信する（/assets/vendor/supabase-js-2.112.3.js。2026-11-23）。
+// バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。Supabase のライブラリは自前で配信する。
 // 外部の配信元の改ざんや停止の影響を受けないように。取得時に jsDelivr と unpkg の SHA-256 が一致することを確かめた
 const { createClient } = window.supabase;
 
 
 
-// ---- インラインのイベントハンドラ（onclick="…"）を、CSP で 'unsafe-inline' を外しても動かす（2026-11-23）----
+// ---- インラインのイベントハンドラ（onclick="…"）を、CSP で 'unsafe-inline' を外しても動かす----
 // ページ・目次・レッスン本文（DB から配信）には onclick="switchTab('lesson3');return false;" のような書き方が
 // 多数あり、すべてを書き換えるのは本文の入れ直しも要る。そこで、ブラウザがインラインの実行を止めているときだけ、
 // 属性の文字を小さな構文解析器で読み、決まった形の呼び出しだけを実行する。

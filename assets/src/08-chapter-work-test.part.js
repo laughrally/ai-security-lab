@@ -126,8 +126,7 @@ async function loadWorkChapter(ch){
     if(!r.ok){ status.textContent = d.error || '読み込みに失敗しました'; return; }
     (d.answers||[]).forEach(a=>{
       const el = document.getElementById('wa-'+a.question_id);
-      // 保存前の入力がある欄は上書きしない（2026-11-22）。入力後1.5秒以内にタブを切り替えて戻ると、
-      // 古い値で上書きされ、その古い値が保存されて入力が消えていた
+      // 保存前の入力がある欄は上書きしない。入力後1.5秒以内にタブを切り替えて戻ると、古い値で上書きされ、その古い値が保存されて入力が消えていた
       if(el && el.dataset.dirty !== '1'){ el.value = a.answer_text || ''; }
     });
     for(let i=1;i<=4;i++) updateWorkCount(`w${ch}-${i}`);
@@ -409,7 +408,6 @@ async function answerTest(qid, idx){
     const d = await r.json();
     if(!r.ok){
       if(box) box.querySelectorAll('.test-opt').forEach(b=>b.disabled = false);
-      // 以前はエラー（回数の上限など）を何も表示しなかった（2026-11-22）
       alert(d.error || '回答を記録できませんでした。時間をおいてもう一度お試しください。');
       return;
     }
@@ -420,7 +418,6 @@ async function answerTest(qid, idx){
     cur.answered += 1;
     if(d.isCorrect) cur.correct += 1;
     cur.passed = cur.answered >= TEST_TOTAL_PER_CHAPTER && cur.correct >= TEST_PASS_COUNT_UI;
-    // 以前は wrongIds を更新せず、初めて不合格になったとき「学び直す」が何もしなかった（2026-11-23）
     if(!d.isCorrect){ cur.wrongIds = (cur.wrongIds || []).filter(x => x !== qid).concat(qid); }
     else if(cur.wrongIds){ cur.wrongIds = cur.wrongIds.filter(x => x !== qid); }
     if(cur.answered >= TEST_TOTAL_PER_CHAPTER) refreshRecords();
@@ -444,7 +441,7 @@ function updateTestSummary(ch){
   }
   const att = (r.attempts && r.attempts > 1) ? `　<span class="test-att">受験 ${r.attempts} 回目</span>` : '';
   if(r.passed){
-    // 次の行き先（次の章の最初のレッスン、最後なら認定試験・修了証）を出す（2026-11-23）
+    // 次の行き先（次の章の最初のレッスン、最後なら認定試験・修了証）を出す
     const nx = typeof nextStep === 'function' ? nextStep() : null;
     el.innerHTML = `<span class="test-pass">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格</span>${att}`
       + (nx ? `<div style="margin-top:12px"><button type="button" class="form-submit ob-btn" onclick="${nx.onclick}">次へ：${escHtml(nx.label)} →</button></div>` : '');
@@ -467,8 +464,7 @@ function updateTestSummary(ch){
      </div>`;
 }
 
-// 間違えた設問だけを未回答に戻し、参照レッスンへの導線を出す
-// 章のレッスンへのリンク（番号と題名）。以前は「章の最初のレッスンへ」の1つだけだった（2026-11-23）
+// 間違えた設問だけを未回答に戻し、参照レッスンへの導線を出す章のレッスンへのリンク（番号と題名）。
 function chapterLessonLinks(ch){
   const c = COURSE.chapters.find(x => x.no === ch);
   if(!c) return '';
@@ -476,7 +472,7 @@ function chapterLessonLinks(ch){
 }
 function retryTestChapter(ch){
   const r = _testResultCh[ch] || {};
-  // 回答回数を使い切った設問は戻さない（戻しても送信時に 429 で弾かれる。2026-11-23）
+  // 回答回数を使い切った設問は戻さない
   const wrong = (r.wrongIds || []).filter(q => _testAttemptsLeft[q] !== 0);
   if(!wrong.length) return;
   wrong.forEach(qid => {

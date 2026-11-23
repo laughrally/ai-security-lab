@@ -24,11 +24,9 @@ function fmtDuration(sec){
   return `${s}秒`;
 }
 
-// 受講記録をサーバーから取得し、レポート用に整形する
-// 受講時間の計測を作り直した時刻（2026-08-30 18:32 JST 本番反映）。
-// これより前の duration_seconds は旧方式（開いた時刻→完了を押した時刻）で
-// 記録されており、実態の3.8倍に膨らんだ例がある。数値として信用できないため
-// レポートには出さない。DBの値は書き換えず、表示だけ伏せる。
+// 受講記録をサーバーから取得し、レポート用に整形する受講時間の計測を作り直した時刻。
+// これより前の duration_seconds は旧方式（開いた時刻→完了を押した時刻）で記録されており、実態の3.8倍に膨らんだ例がある。
+// 数値として信用できないためレポートには出さない。DBの値は書き換えず、表示だけ伏せる。
 const MEASURE_FIXED_AT = Date.parse('2026-08-30T19:00:00+09:00');
 function reportableDuration(log){
   const d = (log.duration_seconds === undefined || log.duration_seconds === null) ? null : log.duration_seconds;
@@ -80,8 +78,7 @@ async function fetchRecordData(){
       chapter: c,
       name: info.name || '',
       goal: info.goal || '',
-      // 4問すべて提出した章だけを「提出済み」とする（修了の判定と同じ。2026-11-23。
-      // 以前は1問でも提出していれば提出済みと出て、修了条件の表示と食い違った）
+      // 4問すべて提出した章だけを「提出済み」とする
       submitted: ((data.summary && data.summary.workDoneList) || []).includes(c),
       submittedAt: (items.find(i => i.submitted_at) || {}).submitted_at || null,
       // duration_seconds は章内の全行に同じ値が入る仕様なので、合計せず最大を取る
@@ -323,7 +320,7 @@ ${worksHTML}
 </div>
 </div></body></html>`);
     win.document.close();
-    // 別ウィンドウも元のページの CSP を引き継ぐので、onclick は動かない。ボタンはここで登録する（2026-11-23）
+    // 別ウィンドウも元のページの CSP を引き継ぐので、onclick は動かない。ボタンはここで登録する
     win.document.querySelectorAll('[data-print]').forEach(b => b.addEventListener('click', () => win.print()));
     repMsg('success','レポートを別ウィンドウで開きました。');
   } catch(e) {

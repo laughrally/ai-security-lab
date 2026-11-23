@@ -10,7 +10,7 @@ function applyAdminVisibility(){
   sec.style.display = isAdminUser() ? 'block' : 'none';
   if(isAdminUser() && !window._mfaChecked){ window._mfaChecked = true; adminMfaChallengeIfNeeded().then(adminMfaRefresh); }
 }
-// ===== 管理者の二段階認証（2026-11-22） =====
+// ===== 管理者の二段階認証 =====
 let _mfaEnrollId = null;
 async function adminMfaRefresh(){
   const st = document.getElementById('admin-mfa-status');

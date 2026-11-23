@@ -28,13 +28,12 @@ const PLAN_RANGE_TEXT = {"basic": "序章＋第1〜5章（全22レッスン）",
 const PLAN_LABELS_JA = Object.fromEntries(Object.keys(COURSE.plans).map(p => [p, { name: p[0].toUpperCase() + p.slice(1) + 'プラン', range: PLAN_RANGE_TEXT[p], hours: PLAN_HOURS[p] }]));
 // <COURSE:END>
 
-// HTML に文字を入れるときのエスケープ（2026-11-23。以前は同じ関数が9か所に別々に書かれていた）
+// HTML に文字を入れるときのエスケープ
 function escHtml(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 // CSV の1セル：数式として解釈されうる先頭（= + - @ タブ 改行）を無害化し、ダブルクォートで囲む
 function csvCell(v){ let t = String(v == null ? '' : v); if(/^[=+\-@\t\r]/.test(t)) t = "'" + t; return '"' + t.replace(/"/g, '""') + '"'; }
 window.escHtml = escHtml;
-// 端末への保存（localStorage）の読み書き。サイトデータを止めた環境では読むだけで例外になり、
-// 以前はページ全体のスクリプトが止まって、どのボタンも効かなくなった（2026-11-23）
+// 端末への保存（localStorage）の読み書き。
 const store = {
   get(k, def = null){ try { const v = localStorage.getItem(k); return v == null ? def : v; } catch(e){ return def; } },
   getJSON(k, def){ try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch(e){ return def; } },
@@ -42,14 +41,13 @@ const store = {
   remove(k){ try { localStorage.removeItem(k); } catch(e){} },
 };
 
-// バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。
-// Supabase のライブラリは自前で配信する（/assets/vendor/supabase-js-2.112.3.js。2026-11-23）。
+// バージョンを固定する。@2 のままだとCDN側の更新がそのまま本番に入るため。Supabase のライブラリは自前で配信する。
 // 外部の配信元の改ざんや停止の影響を受けないように。取得時に jsDelivr と unpkg の SHA-256 が一致することを確かめた
 const { createClient } = window.supabase;
 
 
 
-// ---- インラインのイベントハンドラ（onclick="…"）を、CSP で 'unsafe-inline' を外しても動かす（2026-11-23）----
+// ---- インラインのイベントハンドラ（onclick="…"）を、CSP で 'unsafe-inline' を外しても動かす----
 // ページ・目次・レッスン本文（DB から配信）には onclick="switchTab('lesson3');return false;" のような書き方が
 // 多数あり、すべてを書き換えるのは本文の入れ直しも要る。そこで、ブラウザがインラインの実行を止めているときだけ、
 // 属性の文字を小さな構文解析器で読み、決まった形の呼び出しだけを実行する。
@@ -179,7 +177,7 @@ function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
   currentPriceId = PRICE_ID_MAP[plan] || '';
   currentPlanName = plan;
-  // 表記は course.json の価格と受講範囲から作る（2026-11-23。以前は価格を3か所に手で書いていた）
+  // 表記は course.json の価格と受講範囲から作る
   const key = FORM_PLAN_KEY[plan];
   const range = key ? '第1〜' + COURSE.plans[key] + '章・' + (key === 'premium' ? '全' : '') + PLAN_LESSON_COUNT[key] + 'レッスン' : '';
   document.getElementById('form-plan-label').textContent = key ? key.toUpperCase() + ' · ' + yen(COURSE.prices[key]) : plan;
@@ -359,8 +357,7 @@ function initSupabase(){
         toggleAuthMode('newpw');
         return;
       }
-      // ログイン・ログアウトで人が切り替わったら読み直す（2026-11-23）。以前は前の人の章末ワークの記述、
-      // テストの回答済み表示、法人の受講者一覧がメモリに残り、同じタブで次にログインした人に見えた
+      // ログイン・ログアウトで人が切り替わったら読み直す。
       const _uid = session?.user?.id || null;
       if(window._aslUid !== undefined && window._aslUid !== _uid && (_event === 'SIGNED_IN' || _event === 'SIGNED_OUT')){
         location.reload();
@@ -385,9 +382,8 @@ function initSupabase(){
   }
 }
 
-// この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。
-// 別の人がログインしたら先に消す（2026-11-23）。ログアウトせずにセッションが切れたあと、
-// 次の人の受講済みや学習時間に前の人の分が混ざらないように
+// この端末に残る受講データ（受講済み・学習時間）は、最後にログインした人のもの。別の人がログインしたら先に消す。
+// ログアウトせずにセッションが切れたあと、次の人の受講済みや学習時間に前の人の分が混ざらないように
 const LOCAL_LEARN_KEYS = ['asl_completed','asl_active_seconds','asl_lesson_started','asl_synced_seconds','asl_last_tab','asl_lesson_served'];
 // 本文を受け取った時刻の署名（Worker が付ける）。受講済みにするときに送り返し、受講時間の上限に使われる。
 // 最初に受け取ったものを残す（開き直しで時刻が新しくなると、それまでの受講時間が短く数えられるため）
@@ -421,8 +417,7 @@ async function fetchUserPlan(){
   return window._planFetching;
 }
 async function _fetchUserPlan(){
-  // .single() は失敗しても例外を投げず { error } を返す。以前は通信失敗でも 'basic' 扱いになり、
-  // 有料の受講者が自分の講座を開けなかった。2回まで取り直し、それでも駄目なら知らせる（2026-11-22）
+  // .single() は失敗しても例外を投げず { error } を返す。2回まで取り直し、それでも駄目なら知らせる
   let data = null, error = null;
   for(let i = 0; i < 3; i++){
     try {
@@ -435,7 +430,7 @@ async function _fetchUserPlan(){
     currentUserPlan = data.plan ?? 'free';
     currentExamPassed = data.exam_passed ?? false;
   } else {
-    // 読めなかったときは Worker と同じく「プランなし」に倒す（以前は画面だけ Basic 扱いで、本文の取得で弾かれた）
+    // 読めなかったときは Worker と同じく「プランなし」に倒す
     currentUserPlan = currentUserPlan || 'free';
     currentExamPassed = false;
     console.warn('プランを取得できませんでした:', error && error.message);
@@ -464,8 +459,7 @@ async function syncCompletedFromSupabase(){
       .eq('user_id', currentUser.id);
     if(error){ console.warn('sync error:', error.message); return; }
 
-    // 受講済みはサーバーの記録で置き換える（2026-11-23）。以前は端末の記録と合わせており、送信に失敗した
-    // レッスンが端末にだけ「受講済み」として残り、修了の条件は満たした表示なのに申請がサーバーで弾かれた
+    // 受講済みはサーバーの記録で置き換える。
     const remoteCompleted = (data || []).map(r => r.lesson_id);
     saveCompleted(remoteCompleted);
 
@@ -577,7 +571,7 @@ function applyPlanLock(){
     const onclick = el.getAttribute('onclick') || '';
     // 章末テストの行（goChapterTest(7)）は、その章のワーク（work7）と同じ判定にする
     const m = onclick.match(/(?:switchTab|goLesson)\('([^']+)'\)/) || onclick.match(/(?:goChapterTest|openWorkTab)\((\d+)\)/);
-    // キーボード・読み上げで使えるように（2026-11-23。認定試験・修了証・レポートの行に無かった）
+    // キーボード・読み上げで使えるように
     if(el.classList.contains('sb-row') && onclick){
       if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
       if(!el.hasAttribute('role')) el.setAttribute('role', 'button');
@@ -678,7 +672,6 @@ async function updatePassword(){
 async function signOut(){
   if(!_supabase) return;
   // ログアウト時に、この端末に残る受講データを消す（共用PCで次の人の記録に混ざらないように）。
-  // 以前は受講済みだけを消しており、学習時間の累計や開始時刻が次の人の送信に乗っていた（2026-11-22）
   LOCAL_LEARN_KEYS.forEach(k => store.remove(k));
   currentCertifiedEarlier = false;
   currentExamPassed = false;
@@ -689,7 +682,6 @@ async function signOut(){
 
 /* ===== タブ切り替え（認証チェック付き） ===== */
 // 未ログインのときのタブ表示の切り替え（トップページのタブ）。開けるかどうかは window.switchTab が判定済み。
-// 以前は同じ switchTab という名前で、上書き版と2つあった（2026-11-23 に名前を分けた）
 function showTabGuest(name){
   document.querySelectorAll('.tab').forEach(t=>{
     const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
@@ -736,7 +728,7 @@ function shuffleQuizOptions(tabId){
 }
 window.shuffleQuizOptions = shuffleQuizOptions;
 
-// ---- 受講時間の実測（2026-08-26 全面改修）----
+// ---- 受講時間の実測----
 // 旧実装は「初めて開いた時刻」から「受講済みを押した時刻」までの単純な経過時間で、
 // 複数レッスンを開くと同じ時間帯が何重にも計上され、離席分も加算され、
 // リロードで消えていた。実績が実稼働の3.2倍に膨らむ例が出ていた。
@@ -863,7 +855,7 @@ window.apiFetch = apiFetch;
  * 正解はクライアントに存在せず、Workerが判定して返す。
  * 初回回答が評価対象として記録される。
  */
-// 答え合わせの先頭の記号。解説が「✅ 正解です」で始まるときは付けない（以前は「✅ ✅」と二重になった。2026-11-23）
+// 答え合わせの先頭の記号。解説が「✅ 正解です」で始まるときは付けない
 function quizMark(r){
   const ex = String(r.explanation || '');
   return /^[✅❌]/.test(ex) ? '' : (r.isCorrect ? '✅ ' : '❌ ');
@@ -951,7 +943,7 @@ function quizAttemptsUsedUp(qopts, id, tabId){
   unlockCompleteBtn(tabId);
 }
 
-// 未ログインで無料公開レッスンの設問に答えたとき（2026-11-22）。答え合わせと解説だけを出し、記録はしない
+// 未ログインで無料公開レッスンの設問に答えたとき。答え合わせと解説だけを出し、記録はしない
 async function doQGuest(btn, selected, id){
   const qopts = btn.closest('.qopts');
   if(!qopts || qopts.dataset.sending === '1') return;
@@ -994,7 +986,7 @@ function goChapterTest(ch){
   let tries = 0;
   const go = () => {
     const el = document.getElementById('test-body-' + ch);
-    // 回答済みなら、結果（合否・学び直す）の欄へ。まだなら設問の先頭へ（2026-11-23。以前は結果が設問の下に隠れた）
+    // 回答済みなら、結果（合否・学び直す）の欄へ。まだなら設問の先頭へ
     const sum = document.getElementById('test-summary-' + ch);
     if(sum && sum.textContent.trim()){ sum.scrollIntoView({ block:'center', behavior:'smooth' }); return; }
     if(el && el.children.length){ el.scrollIntoView({ block:'start', behavior:'smooth' }); return; }
@@ -1003,7 +995,7 @@ function goChapterTest(ch){
   go();
 }
 
-// 受講実績の要約（修了条件・章ごとの提出／合格）をサーバーから取り直し、画面に反映する（2026-11-23）。
+// 受講実績の要約（修了条件・章ごとの提出／合格）をサーバーから取り直し、画面に反映する。
 // ログイン時の1回だけだと、その場でワーク提出・テスト合格・試験合格をしても修了証の申請ボタンが押せなかった
 async function refreshRecords(){
   if(!currentUser || !(currentUserPlan === 'standard' || currentUserPlan === 'premium')) return;
@@ -1056,10 +1048,8 @@ initSupabase();
 /* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
 
 // ---- プランによるアクセス判定（全ての遷移経路で必ず通す） ----
-// 以前は上書き版 switchTab が showActiveLesson を直接呼んでおり、
 // ログイン中はプラン制限が一切効かなかった（Basicでも L23〜L34 が閲覧できた）。
-// タブを開けるかどうかの判定は、この1か所だけで行う（2026-11-23）。
-// 以前は switchTab・canAccessTab・tabOpenable・applyPlanLock がそれぞれ別の条件を持っており、
+// タブを開けるかどうかの判定は、この1か所だけで行う。
 // 片方だけ直して食い違うことがあった。
 // 戻り値：null＝開ける／'login'＝ログインが必要／{msg, upgrade}＝開けない（理由と、プラン案内を出すか）
 function tabDenyReason(name){
@@ -1082,13 +1072,13 @@ function canAccessTab(name){
   const r = tabDenyReason(name);
   if(!r) return true;
   if(r === 'login'){ openAuthModal(); return false; }
-  // ブラウザの確認ダイアログではなく、画面内のプラン案内に理由を添えて出す（2026-11-23）
+  // ブラウザの確認ダイアログではなく、画面内のプラン案内に理由を添えて出す
   if(r.upgrade) showPlans(r.msg);
   else alert(r.msg);
   return false;
 }
-// 料金プランの案内。ログイン中は学習画面がトップページの料金欄を隠しているので、
-// 今のプランより上のプランだけを小さな画面に出し、そこから申込フォームを開けるようにする（2026-11-23）
+// 料金プランの案内。
+// ログイン中は学習画面がトップページの料金欄を隠しているので、今のプランより上のプランだけを小さな画面に出し、そこから申込フォームを開けるようにする
 function showPlans(reason){
   if(!currentUser){ const p = document.getElementById('plans'); if(p) p.scrollIntoView({ behavior: 'smooth' }); return; }
   closePlanPick();
@@ -1415,7 +1405,7 @@ function applyAdminVisibility(){
   sec.style.display = isAdminUser() ? 'block' : 'none';
   if(isAdminUser() && !window._mfaChecked){ window._mfaChecked = true; adminMfaChallengeIfNeeded().then(adminMfaRefresh); }
 }
-// ===== 管理者の二段階認証（2026-11-22） =====
+// ===== 管理者の二段階認証 =====
 let _mfaEnrollId = null;
 async function adminMfaRefresh(){
   const st = document.getElementById('admin-mfa-status');
@@ -1476,7 +1466,7 @@ async function adminMfaChallengeIfNeeded(){
   } catch(e) { console.warn('二段階認証の確認に失敗:', e.message); }
 }
 
-// ===== 法人の担当者：受講者の進捗（2026-11-22） =====
+// ===== 法人の担当者：受講者の進捗 =====
 let _corpApps = null;
 async function loadCorpProgress(){
   try {
@@ -1507,7 +1497,7 @@ function openCorpProgress(){
       '<tr style="text-align:left;color:var(--text3)"><th style="padding:6px">氏名</th><th>レッスン</th><th>章末ワーク</th><th>確認テスト</th><th>試験</th><th>学習時間</th><th>最終受講</th><th>修了証</th></tr>';
     (a.participants || []).forEach(p => {
       const td = v => `<td style="padding:6px;border-top:1px solid var(--border)">${v}</td>`;
-      // 申込より前からご本人が持っていたアカウントは、Worker が進捗を返さない（ご本人の同意が要るため。2026-11-23）
+      // 申込より前からご本人が持っていたアカウントは、Worker が進捗を返さない
       if(p.existingAccount){ html += '<tr>' + td(escHtml(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">お申込み前からのアカウントのため、進捗は表示しません（表示にはご本人の同意が必要です。運営までご連絡ください）</td></tr>`; return; }
       if(!p.registered){ html += '<tr>' + td(escHtml(p.name || p.email)) + `<td colspan="7" style="padding:6px;border-top:1px solid var(--border);color:var(--text3)">アカウント未発行（お支払い確認後に発行されます）</td></tr>`; return; }
       html += '<tr>' + td(escHtml(p.name || p.email)) + td(`${p.lessonsDone} / ${a.lessonsTotal}`) +
@@ -1719,8 +1709,7 @@ async function loadWorkChapter(ch){
     if(!r.ok){ status.textContent = d.error || '読み込みに失敗しました'; return; }
     (d.answers||[]).forEach(a=>{
       const el = document.getElementById('wa-'+a.question_id);
-      // 保存前の入力がある欄は上書きしない（2026-11-22）。入力後1.5秒以内にタブを切り替えて戻ると、
-      // 古い値で上書きされ、その古い値が保存されて入力が消えていた
+      // 保存前の入力がある欄は上書きしない。入力後1.5秒以内にタブを切り替えて戻ると、古い値で上書きされ、その古い値が保存されて入力が消えていた
       if(el && el.dataset.dirty !== '1'){ el.value = a.answer_text || ''; }
     });
     for(let i=1;i<=4;i++) updateWorkCount(`w${ch}-${i}`);
@@ -2002,7 +1991,6 @@ async function answerTest(qid, idx){
     const d = await r.json();
     if(!r.ok){
       if(box) box.querySelectorAll('.test-opt').forEach(b=>b.disabled = false);
-      // 以前はエラー（回数の上限など）を何も表示しなかった（2026-11-22）
       alert(d.error || '回答を記録できませんでした。時間をおいてもう一度お試しください。');
       return;
     }
@@ -2013,7 +2001,6 @@ async function answerTest(qid, idx){
     cur.answered += 1;
     if(d.isCorrect) cur.correct += 1;
     cur.passed = cur.answered >= TEST_TOTAL_PER_CHAPTER && cur.correct >= TEST_PASS_COUNT_UI;
-    // 以前は wrongIds を更新せず、初めて不合格になったとき「学び直す」が何もしなかった（2026-11-23）
     if(!d.isCorrect){ cur.wrongIds = (cur.wrongIds || []).filter(x => x !== qid).concat(qid); }
     else if(cur.wrongIds){ cur.wrongIds = cur.wrongIds.filter(x => x !== qid); }
     if(cur.answered >= TEST_TOTAL_PER_CHAPTER) refreshRecords();
@@ -2037,7 +2024,7 @@ function updateTestSummary(ch){
   }
   const att = (r.attempts && r.attempts > 1) ? `　<span class="test-att">受験 ${r.attempts} 回目</span>` : '';
   if(r.passed){
-    // 次の行き先（次の章の最初のレッスン、最後なら認定試験・修了証）を出す（2026-11-23）
+    // 次の行き先（次の章の最初のレッスン、最後なら認定試験・修了証）を出す
     const nx = typeof nextStep === 'function' ? nextStep() : null;
     el.innerHTML = `<span class="test-pass">${r.correct} / ${TEST_TOTAL_PER_CHAPTER} 問正解　合格</span>${att}`
       + (nx ? `<div style="margin-top:12px"><button type="button" class="form-submit ob-btn" onclick="${nx.onclick}">次へ：${escHtml(nx.label)} →</button></div>` : '');
@@ -2060,8 +2047,7 @@ function updateTestSummary(ch){
      </div>`;
 }
 
-// 間違えた設問だけを未回答に戻し、参照レッスンへの導線を出す
-// 章のレッスンへのリンク（番号と題名）。以前は「章の最初のレッスンへ」の1つだけだった（2026-11-23）
+// 間違えた設問だけを未回答に戻し、参照レッスンへの導線を出す章のレッスンへのリンク（番号と題名）。
 function chapterLessonLinks(ch){
   const c = COURSE.chapters.find(x => x.no === ch);
   if(!c) return '';
@@ -2069,7 +2055,7 @@ function chapterLessonLinks(ch){
 }
 function retryTestChapter(ch){
   const r = _testResultCh[ch] || {};
-  // 回答回数を使い切った設問は戻さない（戻しても送信時に 429 で弾かれる。2026-11-23）
+  // 回答回数を使い切った設問は戻さない
   const wrong = (r.wrongIds || []).filter(q => _testAttemptsLeft[q] !== 0);
   if(!wrong.length) return;
   wrong.forEach(qid => {
@@ -2135,7 +2121,7 @@ window.closeGuideModal = function(){ document.getElementById('guide-modal-overla
 function lessonNo(id){ const i = ALL_LESSONS_LIST.indexOf(id); return i < 0 ? '' : String(i + 1).padStart(2,'0'); }
 function getPlanLessons(){
   const plan = currentUserPlan || 'free';
-  // 未知のプラン（無料登録のみの 'free' など）は0本。Worker と同じく拒否側に倒す（2026-11-22）
+  // 未知のプラン（無料登録のみの 'free' など）は0本。Worker と同じく拒否側に倒す
   return ALL_LESSONS_LIST.slice(0, PLAN_LESSON_COUNT[plan] || 0);
 }
 
@@ -2170,8 +2156,7 @@ function markComplete(tabId){
         durationSeconds: secs,
       }),
     }).catch(e => {
-      // 保存に失敗したら画面の「受講済み」を取り消して知らせる（2026-11-22）。
-      // 以前は画面だけ受講済みになり、修了証の申請時に「28/29」で弾かれても原因が分からなかった
+      // 保存に失敗したら画面の「受講済み」を取り消して知らせる。
       console.warn('受講記録の保存に失敗:', e.message);
       saveCompleted(loadCompleted().filter(x => x !== tabId));
       const b = document.getElementById('complete-' + tabId);
@@ -2183,7 +2168,7 @@ function markComplete(tabId){
   }
 }
 
-// 次にやること：受講順で最初の未了（レッスン → その章のワーク → 確認テスト …）。最後は認定試験・修了証（2026-11-23）。
+// 次にやること：受講順で最初の未了（レッスン → その章のワーク → 確認テスト …）。最後は認定試験・修了証。
 // 戻り値：{ label, onclick, run } または null
 function nextStep(){
   const completed = loadCompleted();
@@ -2217,7 +2202,7 @@ function updateCompletionUI(){
       else { btn.classList.remove('done'); }
     }
     if(note){
-      // 理解度チェックが未了で押せないあいだは、その理由を残す（2026-11-23。以前は件数で上書きして理由が消えた）
+      // 理解度チェックが未了で押せないあいだは、その理由を残す
       if(btn && btn.classList.contains('quiz-locked')) note.textContent = '理解度チェックに正解すると受講済みにできます';
       else {
         const pl = getPlanLessons();
@@ -2254,8 +2239,7 @@ function updateCompletionUI(){
   if(examBadge) examBadge.textContent = plan === 'premium' ? '✅ ご契約のプランで受験できます' : '🔒 Premiumプラン限定';
   if(progFill) progFill.style.width = pct + '%';
 
-  // 修了証は Standard・Premium だけ（Basic と無料登録は対象外。無料登録は受講対象が0本で
-  // 「全部受講済み」と判定され、申請ボタンが押せる表示になっていた。2026-11-23）
+  // 修了証は Standard・Premium だけ
   if(plan !== 'standard' && plan !== 'premium'){
     if(notice) notice.style.display = 'none';
     if(submitBtn){ submitBtn.disabled = true; submitBtn.style.opacity = '.4'; }
@@ -2265,12 +2249,11 @@ function updateCompletionUI(){
   let allDone = planLessons.every(id => completed.includes(id)) || currentCertifiedEarlier;
   const go = (onclick, text) => ` <button type="button" class="ck-go" onclick="${onclick}">${escHtml(text)} →</button>`;
   const firstLesson = planLessons.find(id => !completed.includes(id));
-  // 修了条件のチェックリスト（2026-11-22）。以前はレッスン数しか見えず、ワークやテストが
-  // 未了でも申請ボタンが押せて、送信後にサーバーで弾かれていた
+  // 修了条件のチェックリスト。
   const sm = window._recSummary;
   const ckEl = document.getElementById('cert-checklist');
   if(ckEl && sm){
-    // 足りない条件には、その場所へ移るボタンを付ける（2026-11-23。以前は文字だけで、スマホでは目次も隠れていた）
+    // 足りない条件には、その場所へ移るボタンを付ける
     const row = (ok, label, val, btn) => `<div class="ck-row">${ok ? '✅' : '⬜'} ${label}　<span style="color:var(--text3)">${val}</span>${ok ? '' : (btn || '')}</div>`;
     const chs = sm.chaptersTotal || 0;
     const missW = Array.from({length: chs}, (_, i) => i + 1).filter(c => !(sm.workDoneList || []).includes(c));
@@ -2291,13 +2274,13 @@ function updateCompletionUI(){
   const canApply = plan === 'premium' ? (allDone && examPassed) : allDone;
   const certDesc = document.querySelector('.cert-desc');
   if(certDesc){
-    // 説明は修了の条件（下の一覧）と同じ内容にする（2026-11-23。以前は「全レッスン受講で申請できる」とだけ書いていた）
+    // 説明は修了の条件（下の一覧）と同じ内容にする
     const chs = COURSE.workChapters[plan] || 0;
     const conds = [`全${planLessons.length}レッスンの受講`].concat(chs ? [`章末ワークの提出（全${chs}章）`, `章末確認テストの合格（全${chs}章）`] : []).concat(plan === 'premium' ? ['認定試験の合格'] : []);
     certDesc.innerHTML = escHtml(conds.join('・')) + 'で、修了証を申請できます。<br>申請後、修了証PDFをメールでお送りします。';
   }
 
-  // まだ満たしていない最初の条件を示す（2026-11-23。以前はワークやテストが足りなくても「全レッスンを…」と出た）
+  // まだ満たしていない最初の条件を示す
   let noticeText = `⚠️ ${PLAN_RANGE_LABEL[plan] || ''}の全${planTotal}レッスンを受講済みにしてから申請してください（いま ${planDone.length} / ${planTotal}）。`;
   const _sm = window._recSummary;
   if(planDone.length >= planTotal || currentCertifiedEarlier){
@@ -2312,7 +2295,7 @@ function updateCompletionUI(){
       noticeText = '⚠️ 認定試験に合格してから申請してください。';
     }
   }
-  // 同じプランの修了証が発行済みなら、申請はできない（Worker は 409 を返す）。最初から「発行済み」と示す（2026-11-23）
+  // 同じプランの修了証が発行済みなら、申請はできない（Worker は 409 を返す）。最初から「発行済み」と示す
   if(currentCertifiedEarlier){
     window._certSubmitted = true;
     if(notice){ notice.textContent = '✅ このプランの修了証は発行済みです。再送や氏名の訂正は、お問い合わせからご連絡ください。'; notice.style.display = 'block'; }
@@ -2418,11 +2401,9 @@ function fmtDuration(sec){
   return `${s}秒`;
 }
 
-// 受講記録をサーバーから取得し、レポート用に整形する
-// 受講時間の計測を作り直した時刻（2026-08-30 18:32 JST 本番反映）。
-// これより前の duration_seconds は旧方式（開いた時刻→完了を押した時刻）で
-// 記録されており、実態の3.8倍に膨らんだ例がある。数値として信用できないため
-// レポートには出さない。DBの値は書き換えず、表示だけ伏せる。
+// 受講記録をサーバーから取得し、レポート用に整形する受講時間の計測を作り直した時刻。
+// これより前の duration_seconds は旧方式（開いた時刻→完了を押した時刻）で記録されており、実態の3.8倍に膨らんだ例がある。
+// 数値として信用できないためレポートには出さない。DBの値は書き換えず、表示だけ伏せる。
 const MEASURE_FIXED_AT = Date.parse('2026-08-30T19:00:00+09:00');
 function reportableDuration(log){
   const d = (log.duration_seconds === undefined || log.duration_seconds === null) ? null : log.duration_seconds;
@@ -2474,8 +2455,7 @@ async function fetchRecordData(){
       chapter: c,
       name: info.name || '',
       goal: info.goal || '',
-      // 4問すべて提出した章だけを「提出済み」とする（修了の判定と同じ。2026-11-23。
-      // 以前は1問でも提出していれば提出済みと出て、修了条件の表示と食い違った）
+      // 4問すべて提出した章だけを「提出済み」とする
       submitted: ((data.summary && data.summary.workDoneList) || []).includes(c),
       submittedAt: (items.find(i => i.submitted_at) || {}).submitted_at || null,
       // duration_seconds は章内の全行に同じ値が入る仕様なので、合計せず最大を取る
@@ -2717,7 +2697,7 @@ ${worksHTML}
 </div>
 </div></body></html>`);
     win.document.close();
-    // 別ウィンドウも元のページの CSP を引き継ぐので、onclick は動かない。ボタンはここで登録する（2026-11-23）
+    // 別ウィンドウも元のページの CSP を引き継ぐので、onclick は動かない。ボタンはここで登録する
     win.document.querySelectorAll('[data-print]').forEach(b => b.addEventListener('click', () => win.print()));
     repMsg('success','レポートを別ウィンドウで開きました。');
   } catch(e) {
@@ -3187,7 +3167,7 @@ function reloadLesson(tabId){
 }
 
 // ---- アクティブtconをlearn-content-innerに表示 ----
-// 初めて学習画面に入った人への案内（2026-11-23）。プランごとの進め方と修了の条件、最初のレッスンへのボタン。
+// 初めて学習画面に入った人への案内。プランごとの進め方と修了の条件、最初のレッスンへのボタン。
 // 1本でも受講済みにするか、閉じるボタンを押すと出なくなる
 function renderOnboard(){
   const box = document.getElementById('learn-onboard');
@@ -3227,7 +3207,7 @@ function closeOnboard(){
   if(box){ box.hidden = true; box.innerHTML = ''; }
 }
 
-// 理解度チェックの答え合わせを読み上げで伝える（本文は DB から来るので、表示のたびに印を付ける。2026-11-23）
+// 理解度チェックの答え合わせを読み上げで伝える
 function markLiveRegions(root){
   (root || document).querySelectorAll('.qfb:not([role])').forEach(el => { el.setAttribute('role', 'status'); el.setAttribute('aria-live', 'polite'); });
 }
@@ -3252,7 +3232,7 @@ function showActiveLesson(tabId){
 }
 
 // ---- 前後ナビ ----
-// プランで開けるタブだけをたどる（2026-11-22）。以前は ALL_TABS_ORDERED をそのままたどり、
+// プランで開けるタブだけをたどる。
 // Basic は章末ワーク（開けない）で、Standard は第7章（開けない）でアラートが出て止まった。
 function tabOpenable(id){
   if(id === 'records') return false;                       // 流れの外（進捗パネルから開く）
@@ -3286,8 +3266,7 @@ function lessonNav(dir){
   lessonNavFrom(currentId, dir);
 }
 
-// レッスン本文の末尾にある前後ナビを、受講者のプランに合わせて作り直す。
-// 本文（DB）のナビは章末ワークを飛ばして次のレッスンを指しているため（2026-11-22）
+// レッスン本文の末尾にある前後ナビを、受講者のプランに合わせて作り直す。本文（DB）のナビは章末ワークを飛ばして次のレッスンを指しているため
 function fixLessonNav(tabId){
   const tcon = document.getElementById('tab-' + tabId);
   const nav = tcon ? tcon.querySelector('.lnav') : null;
@@ -3299,7 +3278,7 @@ function fixLessonNav(tabId){
   let html = '';
   if(prev) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',-1);return false;" class="lnbtn"><span class="lnl">← PREV</span><span class="lnt">${escHtml(tabLabel(prev))}</span></a>`;
   if(next) html += `<a href="#lessons" onclick="lessonNavFrom('${tabId}',1);return false;" class="lnbtn" style="text-align:right"><span class="lnl">NEXT →</span><span class="lnt">${escHtml(tabLabel(next))}</span></a>`;
-  // 範囲の終わりでは、上のプランの案内を開けるようにする（2026-11-23。以前は文字だけで押せなかった）
+  // 範囲の終わりでは、上のプランの案内を開けるようにする
   else if(currentUserPlan === 'basic') html += `<a href="#lessons" onclick="switchTab('records');return false;" class="lnbtn" style="text-align:right"><span class="lnl">🎉 Basic の全レッスンはここまで</span><span class="lnt">受講実績レポートを出力する →</span></a>`
     + `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">続けて学ぶ</span><span class="lnt">Standard 以上で第6章と修了証へ →</span></a>`;
   else if(currentUserPlan !== 'standard' && currentUserPlan !== 'premium') html += `<a href="#lessons" onclick="showPlans();return false;" class="lnbtn" style="text-align:right"><span class="lnl">無料公開はここまで</span><span class="lnt">L02 以降はご購入後に受講できます →</span></a>`;
@@ -3318,7 +3297,7 @@ function buildSideNav(completed){
   const inner = document.getElementById('learn-content-inner');
   const activeTcon = inner ? inner.querySelector('.tcon.active') : document.querySelector('.tcon.active');
   let currentTab = activeTcon?.id?.replace('tab-','') || 'intro';
-  // ログイン直後の最初の表示だけ、前回開いていたタブから再開する（以前は毎回序章が開いた。2026-11-22）
+  // ログイン直後の最初の表示だけ、前回開いていたタブから再開する
   if(!window._aslResumed && currentUserPlan){
     window._aslResumed = true;
     try {
@@ -3327,8 +3306,7 @@ function buildSideNav(completed){
         currentTab = last.t;
         setTimeout(() => window.switchTab(last.t), 0);   // 中身の読み込み（ワーク・テスト・修了証）を通常の経路で行う
       } else if(!last && completed.length){
-        // 前回の記録が端末に無い（別の端末・ブラウザ）ときは、受講順で最初の未了から開く（2026-11-23。以前は序章が開いた）
-        // 受講記録（ワーク・テストの状況）を受け取ってから決める（2026-11-23。以前は受け取る前に決めて、開く場所が毎回変わった）。
+        // 前回の記録が端末に無い（別の端末・ブラウザ）ときは、受講順で最初の未了から開く受講記録（ワーク・テストの状況）を受け取ってから決める。
         // 待つあいだに本人が別の画面を開いていたら、動かさない
         const startTab = currentTab;
         Promise.resolve(window._recordsPromise).catch(() => {}).then(() => {
@@ -3353,7 +3331,7 @@ function buildSideNav(completed){
   const pct = total ? done / total * 100 : 0;
   if(fill) fill.style.width = pct + '%';
   if(cnt) cnt.textContent = done + ' / ' + total;
-  // 修了条件のうちレッスン以外（ワーク・テスト・試験）も一目でわかるように（2026-11-23）
+  // 修了条件のうちレッスン以外（ワーク・テスト・試験）も一目でわかるように
   const sub = document.getElementById('sb-footer-sub');
   if(sub){
     const sm = window._recSummary, pl = currentUserPlan || '';
@@ -3386,7 +3364,7 @@ function buildSideNav(completed){
     });
     // 章末ワーク行（序章の擬似章には付けない）
     const chNo = parseInt((ch.tag||'').replace(/[^0-9]/g,''), 10);
-    // Basic には章末ワーク・テストが無いので行を出さない（2026-11-23。以前は押せない行が並んでいた）
+    // Basic には章末ワーク・テストが無いので行を出さない
     if(chNo >= 1 && WORK_CHAPTERS[chNo] && (COURSE.workChapters[currentUserPlan] || 0) > 0){
       const wid = 'work' + chNo;
       const wactive = wid === currentTab;
@@ -3396,7 +3374,7 @@ function buildSideNav(completed){
         <span class="sb-row-num">W${chNo}</span>
         <span class="sb-row-title">章末ワーク：${WORK_CHAPTERS[chNo].goal}</span>
       </div>`;
-      // 確認テストを別の行に（2026-11-22）。以前はワークと同じ1行だけで、テストを見落としやすかった
+      // 確認テストを別の行に。
       const tpass = !!(_testResultCh[chNo] && _testResultCh[chNo].passed);
       // 5問すべて答えて不合格なら「再挑戦」の印（未受験と見分けられるように）
       const tfail = !tpass && !!(_testResultCh[chNo] && _testResultCh[chNo].answered >= TEST_TOTAL_PER_CHAPTER);
@@ -3456,7 +3434,7 @@ function updateLearnTopBar(tabId){
     if(ch){
       bc.innerHTML = `<span class="bc-ch" style="color:${ch.color}">${ch.tag}</span><span class="bc-sep">/</span><span>L${num}</span><span class="bc-sep">—</span><span style="color:var(--text2)">${title}</span>`;
     } else {
-      // 章末ワーク・修了証・試験・記録のページでは、前のレッスンの表示を残さない（2026-11-22）
+      // 章末ワーク・修了証・試験・記録のページでは、前のレッスンの表示を残さない
       const other = { certificate:'修了証の申請', exam:'認定試験', records:'受講実績レポート' };
       const t = /^work\d$/.test(tabId) ? ('第' + tabId.slice(4) + '章 章末ワーク・確認テスト') : (other[tabId] || '');
       bc.textContent = t;
@@ -3471,7 +3449,7 @@ function updateLearnTopBar(tabId){
 }
 
 // ---- 進捗パネル ----
-// 進捗パネルの章ごとの「章末ワーク・確認テスト」の状態（2026-11-23。以前はレッスンだけだった）
+// 進捗パネルの章ごとの「章末ワーク・確認テスト」の状態
 function wtLine(ch){
   const no = parseInt((ch.tag || '').replace(/[^0-9]/g, ''), 10);
   if(!no || !WORK_CHAPTERS[no] || no > (COURSE.workChapters[currentUserPlan] || 0)) return '';
@@ -3487,7 +3465,7 @@ function buildProgressPanel(){
   const completed = loadCompleted();
   let html = '';
   CHAPTER_DATA.forEach(ch => {
-    // プランの外の章は、鍵付きで1行だけ出す（2026-11-23。以前は Standard でも第7章が「0/7」と鍵なしで出た）
+    // プランの外の章は、鍵付きで1行だけ出す
     if(ch.tag !== '序章' && !ch.lessons.some(id => getPlanLessons().includes(id))){
       html += `<div class="sb-dash-ch sb-dash-locked"><div class="sb-dash-ch-head"><div><span class="sb-dash-ch-tag">${ch.tag}</span>${ch.name}</div>
         <button type="button" class="sb-dash-wt-item" onclick="showPlans()">🔒 ${escHtml(ch.plan || '上位プラン')}</button></div></div>`;
@@ -3510,7 +3488,7 @@ function buildProgressPanel(){
       ${wtLine(ch)}
     </div>`;
   });
-  // 修了証への導線（Standard 以上）。以前はサイドバーにも進捗にも行が無く、Standard の人がたどり着けなかった
+  // 修了証への導線（Standard 以上）。
   if(currentUserPlan === 'standard' || currentUserPlan === 'premium'){
     html += `<div class="sb-ch-label" style="margin-top:14px">修了</div>
     <div class="sb-row" onclick="switchTab('certificate');closeSbDrawer()">
@@ -3545,7 +3523,7 @@ function updateBreadcrumb(tabId){ updateLearnTopBar(tabId); }
 
 
 /* ===== クイズ未正解時は受講済みボタンをロック ===== */
-// { 設問ID: 正解した元の選択肢番号 }。共用PCで前の人の正解が混ざらないよう、ユーザーごとに分ける（2026-11-22）
+// { 設問ID: 正解した元の選択肢番号 }。共用PCで前の人の正解が混ざらないよう、ユーザーごとに分ける
 function quizDoneKey(){ return 'asl_quiz_done:' + ((currentUser && currentUser.id) || 'anon'); }
 
 /**
@@ -3575,8 +3553,7 @@ function restoreQuizLocks(){
     const ngEl = document.getElementById(id + '-ng');
     if(ngEl) ngEl.classList.remove('show');
     qopts.dataset.restored = '1';
-    // 正解済みなのに「受講済み」が押せなくなる不具合の修正（2026-11-22）。
-    // 以前は選択肢だけを閉じ、受講済みボタンは閉じたままだった
+    // 正解済みなのに「受講済み」が押せなくなる不具合の修正。
     const tcon = quiz.closest('.tcon');
     const tabId = tcon ? tcon.id.replace('tab-', '') : null;
     if(tabId){
@@ -3609,11 +3586,11 @@ function initQuizLocks(){
 window.unlockCompleteBtn = unlockCompleteBtn;
 
 document.addEventListener('DOMContentLoaded', ()=>{ updateCompletionUI(); updateDashboard(); initQuizLocks(); initPodcast(); });
-// キーボードで操作できるように（2026-11-22）：クリックで動く div にフォーカスを与え、Enter / Space で押せるようにする
+// キーボードで操作できるように：クリックで動く div にフォーカスを与え、Enter / Space で押せるようにする
 document.addEventListener('DOMContentLoaded', ()=>{
   document.querySelectorAll('.lrow[onclick], .chd').forEach(el => { el.tabIndex = 0; el.setAttribute('role','button'); });
 });
-// トップページが長すぎる（序章の全文が LP の中にある）ので、未ログインでは途中で畳む（2026-11-22）
+// トップページが長すぎる（序章の全文が LP の中にある）ので、未ログインでは途中で畳む
 document.addEventListener('DOMContentLoaded', ()=>{
   const lb = document.querySelector('#tab-intro .lb');
   if(!lb || document.body.classList.contains('logged-in')) return;
@@ -3625,7 +3602,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   lb.after(more);
 });
 
-// ダイアログを Esc で閉じる・読み上げ用の印を付ける（2026-11-22）
+// ダイアログを Esc で閉じる・読み上げ用の印を付ける
 document.addEventListener('keydown', (e)=>{
   if(e.key !== 'Escape') return;
   const close = [
@@ -3694,8 +3671,7 @@ function shuffled(arr){
 function buildExamSet(){
   return shuffled(EXAM_QUESTIONS).map(q => ({
     id: q.id,
-    // 設問は内部ID（lesson10 など）で持ち、表示のときに受講順の番号（L10）にする（2026-11-23）。
-    // 以前は表示番号で持っており、レッスンを並べ替えると古い番号のまま残った
+    // 設問は内部ID（lesson10 など）で持ち、表示のときに受講順の番号（L10）にする。
     lesson: q.lesson === 'intro' ? '序章' : 'L' + lessonNo(q.lesson),
     q: q.q,
     o: shuffled(q.o.map((text, orig) => ({ text, orig }))),
@@ -3728,7 +3704,7 @@ async function startExam(){
   const R = COURSE.rules;
   const confirmed = confirm(`認定試験を開始しますか？\n\n制限時間: ${R.examMinutes}分\n問題数: ${R.examQuestions}問\n合格ライン: ${R.examPass}問以上（${Math.round(R.examPass / R.examQuestions * 100)}%）\n\n開始後はカウントダウンが始まります。`);
   if(!confirmed) return;
-  // 開始の署名は「開始する」を押したあとに受け取る（提出のときにサーバーが制限時間を確かめるのに使う。2026-11-23）
+  // 開始の署名は「開始する」を押したあとに受け取る
   st = await status();
   if(!st || !st.start) { if(st) alert('受験を開始できませんでした。時間をおいてもう一度お試しください。'); return; }
   examState.start = st.start;
@@ -3747,8 +3723,7 @@ async function startExam(){
 
 function startExamTimer(){
   if(examState.timer) clearInterval(examState.timer);
-  // 残り時間は「制限時間 −（今 − 開始時刻）」で毎回計算する（2026-11-23）。以前は1秒ずつ減らすだけで、
-  // タブを裏に回したときのタイマーの間引きやスリープで表示が遅れ、サーバーの判定（開始の署名からの実時間）とずれた
+  // 残り時間は「制限時間 −（今 − 開始時刻）」で毎回計算する。
   examState.timer = setInterval(() => {
     examState.remaining = Math.max(0, COURSE.rules.examMinutes * 60 - Math.floor((Date.now() - examState.startedAt) / 1000));
     const timerEl = document.getElementById('examTimer');
@@ -3800,7 +3775,7 @@ function renderExam(){
   if(introEl) introEl.style.display = 'none';
 }
 
-// 選んだ設問の見た目と回答数だけを更新する（2026-11-23。以前は1つ選ぶたびに60問すべてを描き直していた）
+// 選んだ設問の見た目と回答数だけを更新する
 function selectAnswer(qIdx, optIdx){
   examState.answers[qIdx] = optIdx;
   document.querySelectorAll(`#exq-${qIdx} label`).forEach(l => {
@@ -3934,10 +3909,9 @@ function renderExamResult(res){
       </div>`;
     });
   } else {
-    // 不合格のときは正解も解説も出さない。1回受ければ答えが全部手に入る状態だと
-    // 2回目は必ず満点になり、修了証が受講を証明しなくなる。
+    // 不合格のときは正解も解説も出さない。1回受ければ答えが全部手に入る状態だと2回目は必ず満点になり、修了証が受講を証明しなくなる。
     // サーバーも不合格時は correctIndex / explanation を返していない。
-    // 復習の手がかりとして、誤答のあった章と問数だけを示す（2026-11-22）。
+    // 復習の手がかりとして、誤答のあった章と問数だけを示す。
     // 設問ごとの正誤を返すと、受け直しの差分で正解が割り出せるため、サーバーも章単位でしか返さない。
     const wrongLessons = res.wrongByChapter || {};
     const keys = Object.keys(wrongLessons).sort((a, b) => (a === '序章' ? -1 : b === '序章' ? 1 : a.localeCompare(b, 'ja', {numeric:true})));
@@ -3947,7 +3921,7 @@ function renderExamResult(res){
       </p>`;
     if(keys.length){
       html += `<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px">` +
-        // 章を押すと、その章の最初のレッスンが開く（2026-11-23。以前はただの文字だった）
+        // 章を押すと、その章の最初のレッスンが開く
         keys.map(L => { const no = L === '序章' ? 0 : parseInt(L.replace(/[^0-9]/g, ''), 10); const first = no === 0 ? 'intro' : ((COURSE.chapters.find(c => c.no === no) || {}).lessons || [])[0];
           return `<button type="button" onclick="switchTab('${first}')" style="background:var(--red-l);border:1px solid var(--red);color:var(--red);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">${L}<span style="font-weight:400">　${wrongLessons[L]}問 →</span></button>`; }).join('') +
         `</div>`;
@@ -4024,8 +3998,7 @@ async function submitCertificate(){
   }
 }
 
-// 認定試験の合格画面から：修了証の申請欄を開き、氏名の入力欄へ移る（2026-11-23）。
-// 以前はその場で送信しており、氏名が空のため必ず「氏名を入力してください」で止まった
+// 認定試験の合格画面から：修了証の申請欄を開き、氏名の入力欄へ移る。
 function requestCertificate(){
   if(typeof window.switchTab === 'function') window.switchTab('certificate');
   setTimeout(() => {
@@ -4254,10 +4227,10 @@ async function sendCorpInvoice(appNo, btn){
 }
 
 
-// ---- onclick などから呼べる関数の一覧（2026-11-23）----
+// ---- onclick などから呼べる関数の一覧----
 // ページ・目次・レッスン本文（DB）の onclick="…" は、CSP でブラウザが実行しないため、00-core の inlineShim が
 // この一覧にある名前だけを呼ぶ。ボタンを足すときは、ここに関数を足すこと（ページのテストが漏れを見つける）。
-// あわせて window にも載せる（ほかのスクリプトやテストが window.名前 で呼ぶため）。以前は各ファイルに散らばっていた
+// あわせて window にも載せる（ほかのスクリプトやテストが window.名前 で呼ぶため）。
 const INLINE_ACTIONS = {
   adminExportLogs,
   adminMfaEnroll,

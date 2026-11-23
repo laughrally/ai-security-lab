@@ -23,7 +23,7 @@ function openFormModal(plan){
   document.getElementById('form-overlay').classList.remove('hidden');
   currentPriceId = PRICE_ID_MAP[plan] || '';
   currentPlanName = plan;
-  // 表記は course.json の価格と受講範囲から作る（2026-11-23。以前は価格を3か所に手で書いていた）
+  // 表記は course.json の価格と受講範囲から作る
   const key = FORM_PLAN_KEY[plan];
   const range = key ? '第1〜' + COURSE.plans[key] + '章・' + (key === 'premium' ? '全' : '') + PLAN_LESSON_COUNT[key] + 'レッスン' : '';
   document.getElementById('form-plan-label').textContent = key ? key.toUpperCase() + ' · ' + yen(COURSE.prices[key]) : plan;

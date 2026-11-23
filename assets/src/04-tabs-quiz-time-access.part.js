@@ -1,6 +1,5 @@
 /* ===== タブ切り替え（認証チェック付き） ===== */
 // 未ログインのときのタブ表示の切り替え（トップページのタブ）。開けるかどうかは window.switchTab が判定済み。
-// 以前は同じ switchTab という名前で、上書き版と2つあった（2026-11-23 に名前を分けた）
 function showTabGuest(name){
   document.querySelectorAll('.tab').forEach(t=>{
     const m = t.getAttribute('onclick')?.match(/switchTab\('([^']+)'\)/);
@@ -47,7 +46,7 @@ function shuffleQuizOptions(tabId){
 }
 window.shuffleQuizOptions = shuffleQuizOptions;
 
-// ---- 受講時間の実測（2026-08-26 全面改修）----
+// ---- 受講時間の実測----
 // 旧実装は「初めて開いた時刻」から「受講済みを押した時刻」までの単純な経過時間で、
 // 複数レッスンを開くと同じ時間帯が何重にも計上され、離席分も加算され、
 // リロードで消えていた。実績が実稼働の3.2倍に膨らむ例が出ていた。
@@ -174,7 +173,7 @@ window.apiFetch = apiFetch;
  * 正解はクライアントに存在せず、Workerが判定して返す。
  * 初回回答が評価対象として記録される。
  */
-// 答え合わせの先頭の記号。解説が「✅ 正解です」で始まるときは付けない（以前は「✅ ✅」と二重になった。2026-11-23）
+// 答え合わせの先頭の記号。解説が「✅ 正解です」で始まるときは付けない
 function quizMark(r){
   const ex = String(r.explanation || '');
   return /^[✅❌]/.test(ex) ? '' : (r.isCorrect ? '✅ ' : '❌ ');
@@ -262,7 +261,7 @@ function quizAttemptsUsedUp(qopts, id, tabId){
   unlockCompleteBtn(tabId);
 }
 
-// 未ログインで無料公開レッスンの設問に答えたとき（2026-11-22）。答え合わせと解説だけを出し、記録はしない
+// 未ログインで無料公開レッスンの設問に答えたとき。答え合わせと解説だけを出し、記録はしない
 async function doQGuest(btn, selected, id){
   const qopts = btn.closest('.qopts');
   if(!qopts || qopts.dataset.sending === '1') return;
@@ -305,7 +304,7 @@ function goChapterTest(ch){
   let tries = 0;
   const go = () => {
     const el = document.getElementById('test-body-' + ch);
-    // 回答済みなら、結果（合否・学び直す）の欄へ。まだなら設問の先頭へ（2026-11-23。以前は結果が設問の下に隠れた）
+    // 回答済みなら、結果（合否・学び直す）の欄へ。まだなら設問の先頭へ
     const sum = document.getElementById('test-summary-' + ch);
     if(sum && sum.textContent.trim()){ sum.scrollIntoView({ block:'center', behavior:'smooth' }); return; }
     if(el && el.children.length){ el.scrollIntoView({ block:'start', behavior:'smooth' }); return; }
@@ -314,7 +313,7 @@ function goChapterTest(ch){
   go();
 }
 
-// 受講実績の要約（修了条件・章ごとの提出／合格）をサーバーから取り直し、画面に反映する（2026-11-23）。
+// 受講実績の要約（修了条件・章ごとの提出／合格）をサーバーから取り直し、画面に反映する。
 // ログイン時の1回だけだと、その場でワーク提出・テスト合格・試験合格をしても修了証の申請ボタンが押せなかった
 async function refreshRecords(){
   if(!currentUser || !(currentUserPlan === 'standard' || currentUserPlan === 'premium')) return;
@@ -367,10 +366,8 @@ initSupabase();
 /* ESMスコープ内の関数をグローバルに公開（onclick属性から呼べるように） */
 
 // ---- プランによるアクセス判定（全ての遷移経路で必ず通す） ----
-// 以前は上書き版 switchTab が showActiveLesson を直接呼んでおり、
 // ログイン中はプラン制限が一切効かなかった（Basicでも L23〜L34 が閲覧できた）。
-// タブを開けるかどうかの判定は、この1か所だけで行う（2026-11-23）。
-// 以前は switchTab・canAccessTab・tabOpenable・applyPlanLock がそれぞれ別の条件を持っており、
+// タブを開けるかどうかの判定は、この1か所だけで行う。
 // 片方だけ直して食い違うことがあった。
 // 戻り値：null＝開ける／'login'＝ログインが必要／{msg, upgrade}＝開けない（理由と、プラン案内を出すか）
 function tabDenyReason(name){
@@ -393,13 +390,13 @@ function canAccessTab(name){
   const r = tabDenyReason(name);
   if(!r) return true;
   if(r === 'login'){ openAuthModal(); return false; }
-  // ブラウザの確認ダイアログではなく、画面内のプラン案内に理由を添えて出す（2026-11-23）
+  // ブラウザの確認ダイアログではなく、画面内のプラン案内に理由を添えて出す
   if(r.upgrade) showPlans(r.msg);
   else alert(r.msg);
   return false;
 }
-// 料金プランの案内。ログイン中は学習画面がトップページの料金欄を隠しているので、
-// 今のプランより上のプランだけを小さな画面に出し、そこから申込フォームを開けるようにする（2026-11-23）
+// 料金プランの案内。
+// ログイン中は学習画面がトップページの料金欄を隠しているので、今のプランより上のプランだけを小さな画面に出し、そこから申込フォームを開けるようにする
 function showPlans(reason){
   if(!currentUser){ const p = document.getElementById('plans'); if(p) p.scrollIntoView({ behavior: 'smooth' }); return; }
   closePlanPick();
